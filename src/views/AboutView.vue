@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" @click="show_settings ? (show_settings = false) : null">
     <div class="header">
       <div class="header_left">
         <div class="btns">
@@ -7,7 +7,7 @@
           <button class="btns_btn">Аналитика</button>
           <button class="btns_btn">Документы</button>
           <button class="btns_btn">Архив</button>
-          <button class="btns_btn">Инструкции</button>
+          <button class="btns_btn" @click="add()">Инструкции</button>
         </div>
         <div class="radio_btns">
           <div class="radio_btn">
@@ -31,13 +31,27 @@
       <div class="header_right">
         <div class="ref">
           <div class="ref_1_logo"></div>
-          <a>Выгрузка в эксель</a>
+          <a class="links">Выгрузка в эксель</a>
         </div>
         <div class="ref">
           <div class="ref_2_logo"></div>
-          <a>Синхронизировать товары</a>
+          <a class="links">Синхронизировать товары</a>
         </div>
-        <button class="settings_btn"></button>
+        <button
+          class="settings_btn"
+          @click.stop="show_settings = !show_settings"
+        >
+          <div v-show="show_settings" class="modal_settings">
+            <a><div class="modal_container">Настройка таблицы</div></a>
+            <a><div class="modal_container">Настройка товаров</div></a>
+            <a
+              ><div class="modal_container">
+                Настройка синхронизации склада с товарами anoCrm
+              </div></a
+            >
+            <a><div class="modal_container">Настройка документов</div></a>
+          </div>
+        </button>
       </div>
     </div>
     <div class="wrapper">
@@ -54,11 +68,17 @@
             aria-invalid="false"
             placeholder="Дата мероприятия"
           />
-          <p>Найдено: 6</p>
+          <p>Найдено: {{ users.length }}</p>
         </div>
         <div class="filters_right">
           <div class="filter_group">
-            <input type="checkbox" name="filter" id="filter" class="checkbox" />
+            <input
+              type="checkbox"
+              v-model="show_filter"
+              name="filter"
+              id="filter"
+              class="checkbox"
+            />
             <label for="filter">Фильтр</label>
           </div>
           <button class="button_1">Перемещение</button>
@@ -66,7 +86,9 @@
           <button class="button_3">Списать</button>
         </div>
       </div>
-      <div class="grid"><Main_grid :data="users" /></div>
+      <div class="grid">
+        <Main_grid :show_filter="show_filter" :data="users" :params="params" />
+      </div>
     </div>
   </div>
 </template>
@@ -80,6 +102,22 @@ export default {
   },
   data() {
     return {
+      show_settings: false,
+      show_filter: false,
+      params: [
+        "Название",
+        "Группа",
+        "Артикул",
+        "На складе",
+        "В резерве",
+        "Цена",
+        "Себестоимость",
+        "Описание",
+        "Единицы измерений",
+        "Изменение",
+        "Свободно для резерва",
+        "",
+      ],
       users: [
         {
           id: 1,
@@ -103,6 +141,9 @@ export default {
             catchPhrase: "Multi-layered client-server neural-net",
             bs: "harness real-time e-markets",
           },
+          a1: "1",
+          a2: "2",
+          a3: "3",
         },
         {
           id: 2,
@@ -126,6 +167,9 @@ export default {
             catchPhrase: "Proactive didactic contingency",
             bs: "synergize scalable supply-chains",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
         {
           id: 3,
@@ -149,6 +193,9 @@ export default {
             catchPhrase: "Face to face bifurcated interface",
             bs: "e-enable strategic applications",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
         {
           id: 4,
@@ -172,6 +219,9 @@ export default {
             catchPhrase: "Multi-tiered zero tolerance productivity",
             bs: "transition cutting-edge web services",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
         {
           id: 5,
@@ -195,6 +245,9 @@ export default {
             catchPhrase: "User-centric fault-tolerant solution",
             bs: "revolutionize end-to-end systems",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
         {
           id: 6,
@@ -218,6 +271,9 @@ export default {
             catchPhrase: "Synchronised bottom-line interface",
             bs: "e-enable innovative applications",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
         {
           id: 7,
@@ -241,6 +297,9 @@ export default {
             catchPhrase: "Configurable multimedia task-force",
             bs: "generate enterprise e-tailers",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
         {
           id: 8,
@@ -264,6 +323,9 @@ export default {
             catchPhrase: "Implemented secondary concept",
             bs: "e-enable extensible e-tailers",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
         {
           id: 9,
@@ -287,6 +349,9 @@ export default {
             catchPhrase: "Switchable contextually-based project",
             bs: "aggregate real-time technologies",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
         {
           id: 10,
@@ -310,9 +375,37 @@ export default {
             catchPhrase: "Centralized empowering task-force",
             bs: "target end-to-end models",
           },
+          a1: "",
+          a2: "",
+          a3: "",
         },
       ],
     };
+  },
+  methods: {
+    add() {
+      this.params = [
+        "Компания",
+        "Контакт",
+        "Сделки",
+        "Оборот",
+        "Прибыль",
+        "Ответственные",
+        "Позиции",
+        "",
+      ];
+      this.users = [
+        {
+          comp: "",
+          contact: "",
+          traeds: 11,
+          oborot: "2 570 102.00 р.",
+          pribl: "2 400 339.00 р.",
+          otv: "1",
+          poz: "2",
+        },
+      ];
+    },
   },
 };
 </script>
@@ -342,7 +435,7 @@ export default {
 }
 
 .app {
-  width: 100vw;
+  width: 100%;
   height: 100%;
 
   display: flex;
@@ -432,18 +525,48 @@ export default {
         @include bg_image("../assets/sync.svg");
       }
     }
-    a {
+    .links {
       cursor: pointer;
       text-decoration-line: underline;
       @include font(400, 18px, 30px);
     }
     .settings_btn {
+      cursor: pointer;
       width: 18px;
       height: 18px;
       border: none;
       background-color: transparent;
       @include bg_image("../assets/gear.svg");
       margin-right: 10px;
+    }
+    .modal_settings {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      flex-direction: column;
+      right: 17px;
+      top: 30px;
+      width: 358px;
+      border: 1px solid #c9c9c9;
+      border-radius: 4px;
+      background: white;
+      a {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+      a:hover {
+        background: #f5f5f5;
+      }
+    }
+    .modal_container {
+      width: 300px;
+      display: flex;
+      align-items: center;
+      text-align: left;
+      height: 56px;
+      cursor: pointer;
+      @include font(400, 18px, 30px);
     }
   }
 }
@@ -495,6 +618,7 @@ export default {
       display: flex;
       flex-direction: row;
       gap: 18px;
+      margin-right: 10px;
 
       .filter_group {
         display: flex;
