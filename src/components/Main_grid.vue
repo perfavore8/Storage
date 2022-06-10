@@ -1,40 +1,4 @@
 <template>
-  <!-- <div>
-    <div class="raws">
-      <div class="bar">
-        <button class="param" v-for="param in params" :key="param">
-          {{ param }}
-        </button>
-      </div>
-      <div class="raw" v-for="user in data" :key="user.id">
-        <div class="item" v-for="item in user" :key="item">{{ item }}</div>
-        <div class="item">12</div>
-        <div class="item">2</div>
-        <div class="item">3</div>
-        <div class="item">4</div>
-      </div>
-    </div>
-  </div> -->
-  <!-- 
-    
-    
-    
-    <div>
-    <div
-      class="columns"
-      :style="{ gridTemplateColumns: `repeat(${this.coll.length}, auto)` }"
-    >
-      <div class="column" v-for="(col, idx) in params" :key="col">
-        <div class="bar_item">{{ params[idx] }}</div>
-        <div class="item" v-for="item in data" :key="item.id">
-          {{ item[coll[idx]] }}
-        </div>
-      </div>
-    </div>
-  </div> 
-  
-  
-  -->
   <div class="wrapper">
     <tabel class="tabel" :key="updateKey">
       <tr class="bar_row">
@@ -68,12 +32,7 @@
           </div>
         </td>
       </tr>
-      <tr
-        style="border-bottom: 1px solid red"
-        class="row"
-        v-for="row in paginatedData"
-        :key="row"
-      >
+      <tr class="row" v-for="row in paginatedData" :key="row">
         <td class="item" v-for="(item, idx) in row" :key="idx">{{ item }}</td>
         <td class="item"><div class="edit_icon"></div></td>
       </tr>
@@ -149,9 +108,6 @@ export default {
   mounted() {
     this.fillColls();
   },
-  // updated() {
-  //   this.updateKey += 1;
-  // },
   methods: {
     fillColls() {
       this.coll = Object.keys(this.data[0]);
@@ -271,61 +227,4 @@ export default {
 .more_or_equal {
   @include bg_image("../assets/more_or_equal.svg", 60% 60%);
 }
-
-// .bar_item {
-//   height: 66px;
-//   background: #e5e5e5;
-//   border-bottom: 0.5px solid #c9c9c9;
-// }
-// .columns {
-//   display: grid;
-//   border-left: 0.5px solid #c9c9c9;
-//   border-top: 0.5px solid #c9c9c9;
-//   border-radius: 4px 4px 0 0;
-// }
-// .column {
-//   display: grid;
-//   border-right: 0.5px solid #c9c9c9;
-//   // align-content: stretch;
-// }
-//
-//
-//
-// .raws {
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-// }
-// .raw {
-//   border-left: 0.5px solid #c9c9c9;
-//   border-bottom: 0.5px solid #c9c9c9;
-//   width: 100%;
-//   display: grid;
-//   place-items: center;
-//   grid-template-columns: 9fr 6fr 7fr 8fr 8fr 6fr 11fr 8fr 14fr 8fr 14fr 3fr;
-//   grid-template-rows: auto;
-//   place-items: stretch;
-// }
-// .item {
-//   border-right: 0.5px solid #c9c9c9;
-//   // max-height: 100px;
-//   overflow: auto;
-// }
-// .bar {
-//   width: 100%;
-//   height: 66px;
-//   background: #e5e5e5;
-//   border: 0.5px solid #c9c9c9;
-//   border-right: 0;
-//   border-radius: 4px 4px 0 0;
-//   display: grid;
-//   place-items: center;
-//   grid-template-columns: 9fr 6fr 7fr 8fr 8fr 6fr 11fr 8fr 14fr 8fr 14fr 3fr;
-//   grid-template-rows: auto;
-//   place-items: stretch;
-// }
-// .param {
-//   border: 0;
-//   border-right: 1px solid #c9c9c9;
-// }
 </style>
