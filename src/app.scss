@@ -1,0 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap");
+
+@mixin bg_image($url, $size: 100% 100%) {
+  background-size: $size;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url($url);
+}
+
+@mixin _600 {
+  @media (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin font($w, $s, $h: 1.5) {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: $w;
+  font-size: $s;
+  line-height: $h;
+}

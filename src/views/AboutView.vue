@@ -1,13 +1,71 @@
 <template>
-  <div class="app" @click="show_settings ? (show_settings = false) : null">
-    <div class="header">
+  <div
+    class="app"
+    :class="{
+      disabled: show_table_settings || show_edit_modal || show_edit_stuff,
+    }"
+    @click="show_settings ? close_settings() : null"
+  >
+    <div v-show="show_table_settings" class="table_setings">
+      <table-setings
+        :names="paginatedParams"
+        :data="paginatedData"
+        :collval="collumn_value"
+        @returnData1="getData"
+      />
+    </div>
+    <div v-show="show_edit_stuff" class="edit_staff">
+      <edit-stuff></edit-stuff>
+    </div>
+    <div
+      class="header"
+      :class="{
+        blur: show_table_settings || show_edit_modal || show_edit_stuff,
+      }"
+    >
       <div class="header_left">
         <div class="btns">
-          <button class="btns_btn">Остатки</button>
-          <button class="btns_btn">Аналитика</button>
-          <button class="btns_btn">Документы</button>
-          <button class="btns_btn">Архив</button>
-          <button class="btns_btn" @click="add()">Инструкции</button>
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: catalog_page === 'Residue' }"
+            @click="catalog_page = 'Residue'"
+          >
+            Остатки
+          </button>
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: catalog_page === 'Analytics' }"
+            @click="catalog_page = 'Analytics'"
+          >
+            Аналитика
+          </button>
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: catalog_page === 'Documents' }"
+            @click="catalog_page = 'Documents'"
+          >
+            Документы
+          </button>
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: catalog_page === 'Archive' }"
+            @click="
+              add2();
+              catalog_page = 'Archive';
+            "
+          >
+            Архив
+          </button>
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: catalog_page === 'Instructions' }"
+            @click="
+              add();
+              catalog_page = 'Instructions';
+            "
+          >
+            Инструкции
+          </button>
         </div>
         <div class="radio_btns">
           <div class="radio_btn">
@@ -37,354 +95,148 @@
           <div class="ref_2_logo"></div>
           <a class="links">Синхронизировать товары</a>
         </div>
-        <button
-          class="settings_btn"
-          @click.stop="show_settings = !show_settings"
-        >
-          <div v-show="show_settings" class="modal_settings">
-            <a><div class="modal_container">Настройка таблицы</div></a>
-            <a><div class="modal_container">Настройка товаров</div></a>
-            <a
-              ><div class="modal_container">
-                Настройка синхронизации склада с товарами anoCrm
-              </div></a
-            >
-            <a><div class="modal_container">Настройка документов</div></a>
-          </div>
+        <button class="settings_btn" @click.stop="open_close_settings()">
+          <transition name="modal">
+            <div v-show="show_settings" class="modal_settings">
+              <a>
+                <div class="modal_container" @click="open_table_settings()">
+                  Настройка таблицы
+                </div>
+              </a>
+              <a>
+                <div class="modal_container" @click="open_edit_stuff()">
+                  Настройка товаров
+                </div>
+              </a>
+              <a>
+                <div class="modal_container">
+                  Синхронизация склада с товарами amoCrm
+                </div>
+              </a>
+            </div>
+          </transition>
         </button>
       </div>
     </div>
-    <div class="wrapper">
-      <div class="filters">
+    <div
+      class="wrapper"
+      :class="{ blur: show_table_settings || show_edit_stuff }"
+    >
+      <div class="filters" :class="{ blur: show_edit_modal }">
         <div class="filters_left">
-          <input
-            type="date"
-            id="start"
-            name="trip-start"
-            value="2018-07-22"
-            min="2018-01-01"
-            max="2032-12-31"
-            aria-required="true"
-            aria-invalid="false"
-            placeholder="Дата мероприятия"
-          />
-          <p>Найдено: {{ users.length }}</p>
+          <div class="date">
+            <input
+              type="date"
+              id="start"
+              name="trip-start"
+              value="2018-07-22"
+              min="2018-01-01"
+              max="2032-12-31"
+              aria-required="true"
+              aria-invalid="false"
+            />
+            <p>Найдено: {{ data.length }}</p>
+          </div>
+          <transition name="btns">
+            <div class="buttons" v-show="show_buttons">
+              <button class="button button_1 smallBtn">Архивировать</button>
+              <button class="button button_2 smallBtn">Добавить</button>
+              <button class="button button_3 smallBtn">Списать</button>
+            </div>
+          </transition>
         </div>
         <div class="filters_right">
           <div class="filter_group">
             <input
               type="checkbox"
-              v-model="show_filter"
+              v-model="filter_value"
               name="filter"
               id="filter"
               class="checkbox"
             />
             <label for="filter">Фильтр</label>
           </div>
-          <button class="button_1">Перемещение</button>
-          <button class="button_2">Добавить</button>
-          <button class="button_3">Списать</button>
+          <button class="button button_4 smallBtn" style="width: 170px">
+            Новая позиция
+          </button>
         </div>
       </div>
       <div class="grid">
-        <Main_grid :show_filter="show_filter" :data="users" :params="params" />
+        <main-grid
+          :data="paginatedData"
+          :params="paginatedParams"
+          :collval="collumn_value"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Main_grid from "@/components/Main_grid.vue";
+import MainGrid from "@/components/Main_grid.vue";
+import TableSetings from "@/components/Table_setings.vue";
+import EditStuff from "@/components/EditStuff.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
-    Main_grid,
+    MainGrid,
+    TableSetings,
+    EditStuff,
   },
   data() {
     return {
-      show_settings: false,
-      show_filter: false,
-      params: [
-        "Название",
-        "Группа",
-        "Артикул",
-        "На складе",
-        "В резерве",
-        "Цена",
-        "Себестоимость",
-        "Описание",
-        "Единицы измерений",
-        "Изменение",
-        "Свободно для резерва",
-        "",
-      ],
-      users: [
-        {
-          id: 1,
-          name: "Leanne Graham",
-          username: "Bret",
-          email: "Sincere@april.biz",
-          address: {
-            street: "Kulas Light",
-            suite: "Apt. 556",
-            city: "Gwenborough",
-            zipcode: "92998-3874",
-            geo: {
-              lat: "-37.3159",
-              lng: "81.1496",
-            },
-          },
-          phone: "1-770-736-8031 x56442",
-          website: "hildegard.org",
-          company: {
-            name: "Romaguera-Crona",
-            catchPhrase: "Multi-layered client-server neural-net",
-            bs: "harness real-time e-markets",
-          },
-          a1: "1",
-          a2: "2",
-          a3: "3",
-        },
-        {
-          id: 2,
-          name: "Ervin Howell",
-          username: "Antonette",
-          email: "Shanna@melissa.tv",
-          address: {
-            street: "Victor Plains",
-            suite: "Suite 879",
-            city: "Wisokyburgh",
-            zipcode: "90566-7771",
-            geo: {
-              lat: "-43.9509",
-              lng: "-34.4618",
-            },
-          },
-          phone: "010-692-6593 x09125",
-          website: "anastasia.net",
-          company: {
-            name: "Deckow-Crist",
-            catchPhrase: "Proactive didactic contingency",
-            bs: "synergize scalable supply-chains",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-        {
-          id: 3,
-          name: "Clementine Bauch",
-          username: "Samantha",
-          email: "Nathan@yesenia.net",
-          address: {
-            street: "Douglas Extension",
-            suite: "Suite 847",
-            city: "McKenziehaven",
-            zipcode: "59590-4157",
-            geo: {
-              lat: "-68.6102",
-              lng: "-47.0653",
-            },
-          },
-          phone: "1-463-123-4447",
-          website: "ramiro.info",
-          company: {
-            name: "Romaguera-Jacobson",
-            catchPhrase: "Face to face bifurcated interface",
-            bs: "e-enable strategic applications",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-        {
-          id: 4,
-          name: "Patricia Lebsack",
-          username: "Karianne",
-          email: "Julianne.OConner@kory.org",
-          address: {
-            street: "Hoeger Mall",
-            suite: "Apt. 692",
-            city: "South Elvis",
-            zipcode: "53919-4257",
-            geo: {
-              lat: "29.4572",
-              lng: "-164.2990",
-            },
-          },
-          phone: "493-170-9623 x156",
-          website: "kale.biz",
-          company: {
-            name: "Robel-Corkery",
-            catchPhrase: "Multi-tiered zero tolerance productivity",
-            bs: "transition cutting-edge web services",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-        {
-          id: 5,
-          name: "Chelsey Dietrich",
-          username: "Kamren",
-          email: "Lucio_Hettinger@annie.ca",
-          address: {
-            street: "Skiles Walks",
-            suite: "Suite 351",
-            city: "Roscoeview",
-            zipcode: "33263",
-            geo: {
-              lat: "-31.8129",
-              lng: "62.5342",
-            },
-          },
-          phone: "(254)954-1289",
-          website: "demarco.info",
-          company: {
-            name: "Keebler LLC",
-            catchPhrase: "User-centric fault-tolerant solution",
-            bs: "revolutionize end-to-end systems",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-        {
-          id: 6,
-          name: "Mrs. Dennis Schulist",
-          username: "Leopoldo_Corkery",
-          email: "Karley_Dach@jasper.info",
-          address: {
-            street: "Norberto Crossing",
-            suite: "Apt. 950",
-            city: "South Christy",
-            zipcode: "23505-1337",
-            geo: {
-              lat: "-71.4197",
-              lng: "71.7478",
-            },
-          },
-          phone: "1-477-935-8478 x6430",
-          website: "ola.org",
-          company: {
-            name: "Considine-Lockman",
-            catchPhrase: "Synchronised bottom-line interface",
-            bs: "e-enable innovative applications",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-        {
-          id: 7,
-          name: "Kurtis Weissnat",
-          username: "Elwyn.Skiles",
-          email: "Telly.Hoeger@billy.biz",
-          address: {
-            street: "Rex Trail",
-            suite: "Suite 280",
-            city: "Howemouth",
-            zipcode: "58804-1099",
-            geo: {
-              lat: "24.8918",
-              lng: "21.8984",
-            },
-          },
-          phone: "210.067.6132",
-          website: "elvis.io",
-          company: {
-            name: "Johns Group",
-            catchPhrase: "Configurable multimedia task-force",
-            bs: "generate enterprise e-tailers",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-        {
-          id: 8,
-          name: "Nicholas Runolfsdottir V",
-          username: "Maxime_Nienow",
-          email: "Sherwood@rosamond.me",
-          address: {
-            street: "Ellsworth Summit",
-            suite: "Suite 729",
-            city: "Aliyaview",
-            zipcode: "45169",
-            geo: {
-              lat: "-14.3990",
-              lng: "-120.7677",
-            },
-          },
-          phone: "586.493.6943 x140",
-          website: "jacynthe.com",
-          company: {
-            name: "Abernathy Group",
-            catchPhrase: "Implemented secondary concept",
-            bs: "e-enable extensible e-tailers",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-        {
-          id: 9,
-          name: "Glenna Reichert",
-          username: "Delphine",
-          email: "Chaim_McDermott@dana.io",
-          address: {
-            street: "Dayna Park",
-            suite: "Suite 449",
-            city: "Bartholomebury",
-            zipcode: "76495-3109",
-            geo: {
-              lat: "24.6463",
-              lng: "-168.8889",
-            },
-          },
-          phone: "(775)976-6794 x41206",
-          website: "conrad.com",
-          company: {
-            name: "Yost and Sons",
-            catchPhrase: "Switchable contextually-based project",
-            bs: "aggregate real-time technologies",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-        {
-          id: 10,
-          name: "Clementina DuBuque",
-          username: "Moriah.Stanton",
-          email: "Rey.Padberg@karina.biz",
-          address: {
-            street: "Kattie Turnpike",
-            suite: "Suite 198",
-            city: "Lebsackbury",
-            zipcode: "31428-2261",
-            geo: {
-              lat: "-38.2386",
-              lng: "57.2232",
-            },
-          },
-          phone: "024-648-3804",
-          website: "ambrose.net",
-          company: {
-            name: "Hoeger LLC",
-            catchPhrase: "Centralized empowering task-force",
-            bs: "target end-to-end models",
-          },
-          a1: "",
-          a2: "",
-          a3: "",
-        },
-      ],
+      filter_value: false,
+      paginatedData: [],
+      paginatedParams: [],
+      collumn_value: [],
+      old_data_length: null,
+      catalog_page: "Residue",
     };
+  },
+  created: function () {
+    this.old_data_length = this.data[0].length;
+    this.paginate();
+  },
+  computed: {
+    show_modals() {
+      return (
+        this.show_edit_modal ||
+        this.show_settings ||
+        this.show_table_settings ||
+        this.show_edit_stuff
+      );
+    },
+    ...mapGetters(["data"]),
+    ...mapGetters(["params"]),
+    ...mapGetters(["show_edit_modal"]),
+    ...mapGetters(["show_settings"]),
+    ...mapGetters(["show_table_settings"]),
+    ...mapGetters(["show_buttons"]),
+    ...mapGetters(["show_filter"]),
+    ...mapGetters(["show_edit_stuff"]),
+  },
+  watch: {
+    data: {
+      handler: function () {
+        this.paginate();
+      },
+      deep: true,
+    },
+    filter_value() {
+      this.$store.commit("open_close_filter", this.filter_value);
+    },
+    show_modals() {
+      this.show_modals
+        ? (window.scrollBy(-99999, 0),
+          (document.body.style.overflowX = "hidden"))
+        : (document.body.style.overflowX = "auto");
+    },
   },
   methods: {
     add() {
-      this.params = [
+      const params = [
+        "",
         "Компания",
         "Контакт",
         "Сделки",
@@ -394,55 +246,79 @@ export default {
         "Позиции",
         "",
       ];
-      this.users = [
-        {
-          comp: "",
-          contact: "",
-          traeds: 11,
-          oborot: "2 570 102.00 р.",
-          pribl: "2 400 339.00 р.",
-          otv: "1",
-          poz: "2",
-        },
+      const data = [
+        ["", "", 11, "2 570 102.00 р.", "2 400 339.00 р.", "1", "2"],
       ];
+      this.$store.commit("update_params", params);
+      this.$store.commit("update_data", data);
+    },
+    add2() {
+      const params = ["", "Компания", "Контакт", "Сделки", ""];
+      const data = [[11, "2 570 102.00 р.", "2 400 339.00 р."]];
+      this.$store.commit("update_params", params);
+      this.$store.commit("update_data", data);
+    },
+    getData(dat, par, check) {
+      this.paginatedData = [];
+      this.paginatedParams = [];
+      this.collumn_value = [];
+      dat.forEach((val) => this.paginatedData.push(val));
+      par.forEach((val) => this.paginatedParams.push(val));
+      check.forEach((val) => this.collumn_value.push(val));
+      this.paginatedParams.unshift("");
+      this.paginatedParams.push("");
+      this.filter_value = false;
+    },
+    open_table_settings() {
+      this.$store.commit("open_table_settings");
+    },
+    open_close_settings() {
+      this.$store.commit("open_close_settings");
+    },
+    close_settings() {
+      this.$store.commit("close_settings");
+    },
+    open_edit_stuff() {
+      this.$store.commit("open_close_show_edit_stuff", true);
+    },
+    paginate() {
+      this.paginatedData = [];
+      this.paginatedParams = [];
+      this.data.forEach((item) => this.paginatedData.push(item));
+      this.params.forEach((item) => this.paginatedParams.push(item));
+      if (this.old_data_length == this.data[0].length) {
+        this.collumn_value = [];
+        this.paginatedParams.forEach(() => this.collumn_value.push(true));
+        this.collumn_value.pop();
+        this.collumn_value.pop();
+      } else {
+        const len = this.data[0].length - this.old_data_length;
+        if (len > 0) {
+          for (let i = 0; i != len; i++) this.collumn_value.push(false);
+        }
+      }
+      // for (let i = 3; i != 6; i++) {
+      //   this.collumn_value[this.collumn_value.length - i] = false;
+      // }
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap");
-
-@mixin _600 {
-  @media (max-width: 600px) {
-    @content;
-  }
-}
-
-@mixin bg_image($url, $size: 100% 100%) {
-  background-size: $size;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-image: url($url);
-}
-
-@mixin font($w, $s, $h) {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: $w;
-  font-size: $s;
-  line-height: $h;
-}
-
+@import "@/app.scss";
 .app {
-  width: 100%;
+  width: calc(100vw - 60px);
   height: 100%;
+  padding: 0 30px;
 
   display: flex;
   flex-direction: column;
   user-select: none;
+  text-align: center;
 }
 .header {
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -451,23 +327,40 @@ export default {
       display: flex;
       flex-direction: row;
       gap: 12px;
+      flex-wrap: wrap;
       .btns_btn {
-        height: 49px;
-        padding: 13px;
+        height: 40px;
+        padding: 9px;
         cursor: pointer;
+        text-align: center;
+        vertical-align: center;
         box-sizing: border-box;
-        border: 1px solid #5aa1c9;
+        border: 1px solid #1b3546;
         border-radius: 4px;
-        color: #5aa1c9;
+        color: #1b3546;
         background: white;
 
+        transition: all 0.15s ease-out;
         @include font(400, 18px, 22px);
+      }
+      .btns_btn:hover {
+        border-color: #396f93;
+        color: #396f93;
+      }
+      .selected_catalog {
+        transition: all 0.15s ease-out;
+        background: #1b3546;
+        color: white;
+      }
+      .selected_catalog:hover {
+        color: hsl(204, 44%, 95%);
       }
     }
     .radio_btns {
       display: flex;
       flex-direction: row;
       gap: 16px;
+      flex-wrap: wrap;
       margin-top: 14px;
       .radio_btn {
         > input {
@@ -495,6 +388,8 @@ export default {
           background: #ffffff;
           border: 1px solid #c9c9c9;
           border-radius: 50%;
+          @include bg_image("../assets/Ellipse_2.svg", 0 0);
+          transition: background-size 0.15s ease-in-out;
         }
         > input:checked + label:before {
           @include bg_image("../assets/Ellipse_2.svg", 40% 40%);
@@ -537,26 +432,33 @@ export default {
       border: none;
       background-color: transparent;
       @include bg_image("../assets/gear.svg");
-      margin-right: 10px;
     }
     .modal_settings {
+      z-index: 99999;
       display: flex;
       align-items: center;
-      position: absolute;
+      position: sticky;
+      float: right;
+      margin: 20px 10px 0 0;
       flex-direction: column;
-      right: 17px;
-      top: 30px;
       width: 358px;
       border: 1px solid #c9c9c9;
       border-radius: 4px;
       background: white;
+      overflow: hidden;
       a {
         display: flex;
         justify-content: center;
         width: 100%;
+        transition: background-color 0.15s ease-in-out;
       }
       a:hover {
-        background: #f5f5f5;
+        background-color: #f5f5f5;
+      }
+    }
+    .modal_settings:last-child {
+      a {
+        padding: 0 0 10px 0;
       }
     }
     .modal_container {
@@ -564,9 +466,9 @@ export default {
       display: flex;
       align-items: center;
       text-align: left;
-      height: 56px;
+      height: 50px;
       cursor: pointer;
-      @include font(400, 18px, 30px);
+      @include font(400, 16px, 22px);
     }
   }
 }
@@ -578,52 +480,61 @@ export default {
     justify-content: space-between;
     &_left {
       display: flex;
-      flex-direction: column;
-      gap: 19px;
+      flex-direction: row;
+      gap: 20px;
+      .date {
+        display: flex;
+        flex-direction: column;
+        gap: 19px;
 
-      input {
-        position: relative;
-        width: 112px;
-        height: 34px;
-        background: #c9c9c9;
-        border-radius: 4px;
-        border: none;
-        color: #3f3f3f;
-        outline: none;
-        @include font(400, 16px, 19px);
+        input {
+          position: relative;
+          width: 112px;
+          height: 34px;
+          background: #c9c9c9;
+          border-radius: 4px;
+          border: none;
+          color: #3f3f3f;
+          outline: none;
+          @include font(400, 16px, 19px);
+        }
+        input::-webkit-datetime-edit-fields-wrapper {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+        }
+        input::-webkit-calendar-picker-indicator {
+          cursor: pointer;
+          opacity: 0;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          width: 100%;
+          height: 100%;
+          appearance: none;
+        }
+        p {
+          color: #757575;
+          @include font(400, 16px, 19px);
+        }
       }
-      input::-webkit-datetime-edit-fields-wrapper {
+      .buttons {
         display: flex;
         flex-direction: row;
-        justify-content: center;
-      }
-      input::-webkit-calendar-picker-indicator {
-        cursor: pointer;
-        opacity: 0;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        appearance: none;
-      }
-      p {
-        color: #757575;
-        @include font(400, 16px, 19px);
+        gap: 18px;
       }
     }
     &_right {
       display: flex;
       flex-direction: row;
       gap: 18px;
-      margin-right: 10px;
 
       .filter_group {
         display: flex;
         flex-direction: row;
-        margin-top: 16px;
+        margin-top: 8px;
         max-height: 20px;
 
         .checkbox {
@@ -648,7 +559,7 @@ export default {
           height: 23px;
           border-radius: 20px;
           background: #c4c4c4;
-          transition: 0.2s;
+          transition: 0.15s ease-out;
         }
         .checkbox + label:after {
           content: "";
@@ -659,7 +570,7 @@ export default {
           height: 17px;
           border-radius: 50%;
           background: #fff;
-          transition: 0.2s;
+          transition: 0.15s ease-out;
         }
         .checkbox:checked + label:before {
           background: #757575;
@@ -668,28 +579,65 @@ export default {
           left: 33px;
         }
       }
-
-      button {
-        width: 148px;
-        height: 49px;
-        cursor: pointer;
-        color: #ffffff;
-        border-radius: 4px;
-        border: none;
-        @include font(400, 18px, 22px);
-      }
-      .button_1 {
-        background: #757575;
-      }
-      .button_2 {
-        background: #5aa1c9;
-      }
-      .button_3 {
-        background: #599f68;
-      }
     }
   }
   .grid {
   }
+}
+.button {
+  cursor: pointer;
+  color: #ffffff;
+  border-radius: 4px;
+  border: none;
+  @include font(400, 18px, 22px);
+}
+.smallBtn {
+  @include font(400, 14px, 18px);
+}
+.button_1 {
+  width: 112px;
+  height: 34px;
+  background: #999999;
+}
+.button_2 {
+  width: 112px;
+  height: 34px;
+  // background: #1b3546;
+  background: #1b3546f1;
+}
+.button_3 {
+  width: 112px;
+  height: 34px;
+  background: #ea9197;
+}
+.button_4 {
+  width: 124px !important;
+  height: 34px;
+  background: #4e964d;
+}
+.disabled {
+  pointer-events: none;
+}
+.blur {
+  filter: blur(5px);
+}
+.overflow {
+  overflow-x: hidden;
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+.btns-enter-active,
+.btns-leave-active {
+  transition: opacity 0.15s ease-out;
+}
+.btns-enter-from,
+.btns-leave-to {
+  opacity: 0;
 }
 </style>
