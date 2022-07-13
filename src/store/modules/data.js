@@ -793,6 +793,20 @@ export default {
         state.data[idx].push(new_field);
       });
     },
+    add_new_data(state, payload) {
+      let dat = [];
+      state.data[0].forEach(() => dat.push(""));
+      dat[1] = payload[0];
+      dat[0] = payload[1];
+      dat[8] = payload[3];
+      dat[2] = payload[6];
+      dat[3] = payload[7];
+      dat[10] = payload[8];
+      dat[14] = payload[9];
+      dat[15] = payload[10];
+      dat[13] = payload[11];
+      state.data.push(dat);
+    },
     delete_data_idx(state, idxes) {
       state.data.forEach((val, index) => {
         idxes.forEach((value) => {

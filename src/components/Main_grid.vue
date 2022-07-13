@@ -10,11 +10,13 @@
             class="bar_item item"
             v-show="collval[idx - 1] === false ? false : true"
             :style="{
-              width:
+              minWidth:
                 idx === 0
-                  ? 17 + 'px' + !important
+                  ? 17 + 'px'
                   : idx === params.length - 1
-                  ? 20 + 'px' + !important
+                  ? 20 + 'px'
+                  : width[idx] != 0
+                  ? width[idx] + 'px'
                   : (collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) /
                       collsCount +
                     '%',
@@ -30,7 +32,9 @@
         </tr>
         <tr class="filters">
           <transition-group name="mdl">
-            <th class="item" v-show="show_filter" />
+            <transition name="mdl">
+              <th class="item" v-show="show_filter"></th>
+            </transition>
             <th
               class="item"
               v-show="
@@ -151,7 +155,7 @@
 
 <script>
 // ~~~~~~~FIXME 9!!! хз не смог словит этот баг еще раз
-// едут колонки в верху при добавлнеии новых пораметров!
+// едут колонки в верху при добавлнеии новых параметров!
 import EditItem from "@/components/EditItem.vue";
 import { mapGetters } from "vuex";
 import FilterNumber from "@/components/FiltersSelections/FilterNumber.vue";
@@ -265,6 +269,20 @@ export default {
     endidx() {
       return this.endId(this.startIdx);
     },
+    width() {
+      let arr = [];
+      this.params.forEach((value) => {
+        let a = 0;
+        this.fields.forEach((val) => {
+          if (value === val.field) {
+            if (val.type.value == 9) a = 70;
+            if (val.type.value == 7 || val.type.value == 8) a = 130;
+          }
+        });
+        arr.push(a);
+      });
+      return arr;
+    },
     ...mapGetters(["show_edit_modal"]),
     ...mapGetters(["show_filter"]),
     ...mapGetters(["fields"]),
@@ -273,6 +291,7 @@ export default {
     this.calcDuplicate();
     this.feelIdxes();
     this.feelFilters();
+    // this.open_edit_modal(this.data[0], 0);
   },
   methods: {
     calcDuplicate() {
@@ -371,6 +390,7 @@ export default {
   @include font(400, 14px, 17px);
   color: #3f3f3f;
   text-align: start;
+  min-width: 50px;
 }
 .edit_icon {
   width: 20px;
@@ -423,12 +443,17 @@ export default {
 }
 .item:first-child {
   width: 17px !important;
+  text-align: center;
   .filter {
     display: none;
   }
 }
 .item:last-child {
   width: 20px !important;
+  text-align: center;
+  .edit_icon {
+    margin: 0 auto;
+  }
   .filter {
     display: none;
   }

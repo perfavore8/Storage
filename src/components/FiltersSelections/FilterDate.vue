@@ -70,7 +70,7 @@ export default {
 @import "@/app.scss";
 .filter {
   max-width: 130px;
-  min-width: 70px;
+  min-width: 50px;
   display: flex;
   flex-direction: column;
   gap: 2px;

@@ -41,13 +41,6 @@
           </button>
           <button
             class="btns_btn"
-            :class="{ selected_catalog: catalog_page === 'Documents' }"
-            @click="catalog_page = 'Documents'"
-          >
-            Документы
-          </button>
-          <button
-            class="btns_btn"
             :class="{ selected_catalog: catalog_page === 'Archive' }"
             @click="
               add2();
@@ -112,6 +105,9 @@
                 <div class="modal_container">
                   Синхронизация склада с товарами amoCrm
                 </div>
+              </a>
+              <a>
+                <div class="modal_container">Документы</div>
               </a>
             </div>
           </transition>
@@ -253,10 +249,11 @@ export default {
       this.$store.commit("update_data", data);
     },
     add2() {
-      const params = ["", "Компания", "Контакт", "Сделки", ""];
-      const data = [[11, "2 570 102.00 р.", "2 400 339.00 р."]];
-      this.$store.commit("update_params", params);
-      this.$store.commit("update_data", data);
+      // const params = ["", "Компания", "Контакт", "Сделки", ""];
+      // const data = [[11, "2 570 102.00 р.", "2 400 339.00 р."]];
+      // this.$store.commit("update_params", params);
+      // this.$store.commit("update_data", data);
+      this.$router.push("/qwe");
     },
     getData(dat, par, check) {
       this.paginatedData = [];
@@ -589,6 +586,7 @@ export default {
   color: #ffffff;
   border-radius: 4px;
   border: none;
+  transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   @include font(400, 18px, 22px);
 }
 .smallBtn {
@@ -597,23 +595,38 @@ export default {
 .button_1 {
   width: 112px;
   height: 34px;
-  background: #999999;
+  background: #6c757d;
+}
+.button_1:hover {
+  background: #5f676d;
+  box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
 }
 .button_2 {
   width: 112px;
   height: 34px;
-  // background: #1b3546;
   background: #1b3546f1;
+}
+.button_2:hover {
+  background: #1b3546d9;
+  box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
 }
 .button_3 {
   width: 112px;
   height: 34px;
   background: #ea9197;
 }
+.button_3:hover {
+  background: rgb(226, 101, 109);
+  box-shadow: 0 0 5px 2px rgb(226 101 109 / 25%);
+}
 .button_4 {
   width: 124px !important;
   height: 34px;
   background: #4e964d;
+}
+.button_4:hover {
+  background: rgb(105, 177, 104);
+  box-shadow: 0 0 5px 2px rgb(105 177 104 / 25%);
 }
 .disabled {
   pointer-events: none;

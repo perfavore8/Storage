@@ -7,8 +7,8 @@
       </div>
       <div class="header_right">
         <div class="btns">
-          <button class="btn1" @click="close_edit_modal()">Назад</button>
-          <button class="btn2">Переместить в архив</button>
+          <button class="btn1" @click="close_edit_modal()">Отмена</button>
+          <button class="btn2">Архивировать</button>
           <button class="btn3" @click="save_data()">Сохранить</button>
         </div>
       </div>
@@ -21,14 +21,6 @@
           :options_props="options_1"
           @select="option_select_1"
           :selected_option="selected_option_1"
-        />
-      </div>
-      <div class="row">
-        <label>Тип:</label>
-        <MultiSelector
-          :options_props="options_3"
-          @select="option_select_multi"
-          :selected_options="selected_options_3"
         />
       </div>
       <div class="row" v-for="field in fields" :key="field.id">
@@ -100,8 +92,8 @@
     <div class="hr" />
     <div class="footer">
       <div class="btns">
-        <button class="btn1" @click="close_edit_modal()">Назад</button>
-        <button class="btn2">Переместить в архив</button>
+        <button class="btn1" @click="close_edit_modal()">Отмена</button>
+        <button class="btn2">Архивировать</button>
         <button class="btn3" @click="save_data()">Сохранить</button>
       </div>
     </div>
@@ -110,7 +102,6 @@
 
 <script>
 import SelectorVue from "@/components/SelectorVue";
-import MultiSelector from "@/components/MultiSelector";
 import EditInteger from "@/components/EditItemSelections/EditInteger.vue";
 import EditFloat from "@/components/EditItemSelections/EditFloat.vue";
 import EditString from "@/components/EditItemSelections/EditString.vue";
@@ -124,7 +115,6 @@ import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
-    MultiSelector,
     EditInteger,
     EditFloat,
     EditString,
@@ -245,49 +235,52 @@ export default {
     width: 80%;
     margin: 20px auto;
     margin-bottom: 20px;
-    height: 20xp;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
+    gap: 10px;
     &_left {
+      display: flex;
+      justify-content: start;
       @include font(500, 20px, 24px);
     }
     &_right {
+      display: flex;
     }
   }
   .btns {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     button {
       cursor: pointer;
       padding: 6px 12px;
       height: 36px;
+      width: 130px;
       border: none;
+      border-radius: 5px;
       font-weight: 400;
       line-height: 1.5;
       font-size: 1rem;
       transition: background-color 0.15s ease-in-out,
         box-shadow 0.15s ease-in-out;
     }
-    button:first-child {
-      border-radius: 5px 0 0 5px;
-    }
-    button:last-child {
-      border-radius: 0 5px 5px 0;
-    }
     .btn1 {
+      color: #fff;
+      background: #1b3546f1;
+    }
+    .btn1:hover {
+      background: #1b3546d9;
+      box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
+    }
+    .btn2 {
       color: #fff;
       background-color: #6c757d;
     }
-    .btn1:hover {
+    .btn2:hover {
       background-color: #5f676d;
       box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-    }
-    .btn2 {
-      color: #000;
-      background-color: #ffca2c;
-    }
-    .btn2:hover {
-      background-color: #ffbf00;
-      box-shadow: 0 0 5px 2px rgb(255 202 44 / 45%);
     }
     .btn3 {
       color: #fff;
@@ -317,6 +310,7 @@ export default {
         width: calc(100% - 24px);
         height: 20px;
         padding: 6px 12px;
+        @include font(400, 16px);
         background-color: white;
         border: 1px solid #ced4da;
         appearance: none;

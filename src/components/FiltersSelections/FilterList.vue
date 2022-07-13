@@ -96,7 +96,7 @@ export default {
         nextTick(() => {
           this.show_selector = false;
         });
-      }, 100);
+      }, 150);
     },
   },
 };
@@ -106,7 +106,7 @@ export default {
 @import "@/app.scss";
 .filter {
   max-width: 100px;
-  min-width: 70px;
+  min-width: 50px;
   display: flex;
   flex-direction: column;
   margin: 0 auto;

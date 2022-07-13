@@ -1,10 +1,10 @@
-<template><EditStuff></EditStuff></template>
+<template><NewPosition></NewPosition></template>
 
 <script>
-import EditStuff from "@/components/EditStuff.vue";
+import NewPosition from "@/components/NewPosition.vue";
 export default {
   components: {
-    EditStuff,
+    NewPosition,
   },
 };
 </script>
