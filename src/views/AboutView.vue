@@ -2,9 +2,16 @@
   <div
     class="app"
     :class="{
-      disabled: show_table_settings || show_edit_modal || show_edit_stuff,
+      disabled:
+        show_table_settings ||
+        show_edit_modal ||
+        show_edit_stuff ||
+        show_new_position,
     }"
-    @click="show_settings ? close_settings() : null"
+    @click="
+      show_settings ? close_settings() : null;
+      show_sync ? close_sync() : null;
+    "
   >
     <div v-show="show_table_settings" class="table_setings">
       <table-setings
@@ -14,8 +21,11 @@
         @returnData1="getData"
       />
     </div>
-    <div v-show="show_edit_stuff" class="edit_staff">
+    <div v-if="show_edit_stuff" class="edit_staff">
       <edit-stuff></edit-stuff>
+    </div>
+    <div v-if="show_new_position" class="new_position">
+      <new-position :rows="rows.arr" :idxes="rows.idxes" />
     </div>
     <div
       class="header"
@@ -86,7 +96,19 @@
         </div>
         <div class="ref">
           <div class="ref_2_logo"></div>
-          <a class="links">Синхронизировать товары</a>
+          <a class="links" @click.stop="open_close_sync()"
+            >Синхронизировать товары</a
+          >
+          <transition name="modal">
+            <div v-show="show_sync" class="modal_settings modal_sync">
+              <a>
+                <div class="modal_container">AmoCrm -> Склад</div>
+              </a>
+              <a>
+                <div class="modal_container">Склад -> AmoCrm</div>
+              </a>
+            </div>
+          </transition>
         </div>
         <button class="settings_btn" @click.stop="open_close_settings()">
           <transition name="modal">
@@ -136,7 +158,12 @@
           <transition name="btns">
             <div class="buttons" v-show="show_buttons">
               <button class="button button_1 smallBtn">Архивировать</button>
-              <button class="button button_2 smallBtn">Добавить</button>
+              <button
+                class="button button_2 smallBtn"
+                @click="open_close_new_position(true)"
+              >
+                Добавить
+              </button>
               <button class="button button_3 smallBtn">Списать</button>
             </div>
           </transition>
@@ -152,7 +179,11 @@
             />
             <label for="filter">Фильтр</label>
           </div>
-          <button class="button button_4 smallBtn" style="width: 170px">
+          <button
+            class="button button_4 smallBtn"
+            @click="open_close_new_position(true)"
+            :disabled="rows.arr.length > 0"
+          >
             Новая позиция
           </button>
         </div>
@@ -162,6 +193,7 @@
           :data="paginatedData"
           :params="paginatedParams"
           :collval="collumn_value"
+          @apdate_changeValue="apdate_changeValue"
         />
       </div>
     </div>
@@ -172,6 +204,7 @@
 import MainGrid from "@/components/Main_grid.vue";
 import TableSetings from "@/components/Table_setings.vue";
 import EditStuff from "@/components/EditStuff.vue";
+import NewPosition from "@/components/NewPosition.vue";
 import { mapGetters } from "vuex";
 
 export default {
@@ -179,6 +212,7 @@ export default {
     MainGrid,
     TableSetings,
     EditStuff,
+    NewPosition,
   },
   data() {
     return {
@@ -186,6 +220,7 @@ export default {
       paginatedData: [],
       paginatedParams: [],
       collumn_value: [],
+      changeValue: [],
       old_data_length: null,
       catalog_page: "Residue",
     };
@@ -200,8 +235,46 @@ export default {
         this.show_edit_modal ||
         this.show_settings ||
         this.show_table_settings ||
-        this.show_edit_stuff
+        this.show_edit_stuff ||
+        this.show_new_position
       );
+    },
+    rows() {
+      let arr = [];
+      let idxes = [];
+      const title = [
+        "Артикул",
+        "Название",
+        "№ партии",
+        "Тип",
+        "Кол-во",
+        "Себестоимость",
+        "Цена",
+        "НДС",
+        "НДС включен в цену",
+        "Менеджер может менять % НДС",
+        "НДС %",
+      ];
+      this.changeValue.forEach((val, idx) => {
+        if (val) {
+          let arr2 = [];
+          title.forEach((val) => {
+            let item = "";
+            const sel = this.data[idx][this.params.indexOf(val) - 1];
+            item = sel;
+            if (sel == "Да") item = true;
+            if (sel == "Нет") item = false;
+            arr2.push(item);
+            if (val == "№ партии") arr2.push(item);
+          });
+          arr.push(arr2);
+          idxes.push(idx);
+        }
+      });
+      return {
+        arr: arr,
+        idxes: idxes,
+      };
     },
     ...mapGetters(["data"]),
     ...mapGetters(["params"]),
@@ -211,6 +284,8 @@ export default {
     ...mapGetters(["show_buttons"]),
     ...mapGetters(["show_filter"]),
     ...mapGetters(["show_edit_stuff"]),
+    ...mapGetters(["show_sync"]),
+    ...mapGetters(["show_new_position"]),
   },
   watch: {
     data: {
@@ -269,14 +344,28 @@ export default {
     open_table_settings() {
       this.$store.commit("open_table_settings");
     },
+    open_close_new_position(value) {
+      this.$store.commit("open_close_new_position", value);
+    },
     open_close_settings() {
       this.$store.commit("open_close_settings");
     },
     close_settings() {
       this.$store.commit("close_settings");
     },
+    close_sync() {
+      this.$store.commit("close_sync");
+    },
+    open_close_sync() {
+      this.$store.commit("open_close_sync");
+    },
     open_edit_stuff() {
       this.$store.commit("open_close_show_edit_stuff", true);
+    },
+    apdate_changeValue(newValue) {
+      newValue.forEach((val, idx) => {
+        this.changeValue[idx] = val;
+      });
     },
     paginate() {
       this.paginatedData = [];
@@ -430,6 +519,12 @@ export default {
       background-color: transparent;
       @include bg_image("../assets/gear.svg");
     }
+    .modal_sync {
+      position: absolute !important;
+      top: 21px;
+      right: 62px;
+      width: 250px !important;
+    }
     .modal_settings {
       z-index: 99999;
       display: flex;
@@ -455,16 +550,17 @@ export default {
     }
     .modal_settings:last-child {
       a {
-        padding: 0 0 10px 0;
+        padding-bottom: 10px;
       }
     }
     .modal_container {
-      width: 300px;
+      width: 100%;
       display: flex;
       align-items: center;
       text-align: left;
-      height: 50px;
+      height: 30px;
       cursor: pointer;
+      padding: 5px 15px;
       @include font(400, 16px, 22px);
     }
   }
@@ -627,6 +723,13 @@ export default {
 .button_4:hover {
   background: rgb(105, 177, 104);
   box-shadow: 0 0 5px 2px rgb(105 177 104 / 25%);
+}
+.button_4:disabled {
+  cursor: default;
+  background: #4e964dad;
+}
+.button_4:disabled:hover {
+  box-shadow: none;
 }
 .disabled {
   pointer-events: none;

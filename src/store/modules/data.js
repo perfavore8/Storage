@@ -35,7 +35,7 @@ export default {
         "Склад 1",
         "1",
         "2022-07-08",
-        "3",
+        "Да",
         "2022-07-08T21:21",
         "шт",
         "3",
@@ -56,12 +56,12 @@ export default {
         "Склад 1",
         "шт",
         "2Leanne Graham",
-        "3",
+        "Да",
         "3",
         "шт",
         "3",
-        "3",
-        "3",
+        "Да",
+        "Нет",
         "1",
         "Да",
         "Группа 1",
@@ -119,12 +119,12 @@ export default {
         "Склад 2",
         "шт",
         "Ervin Howell",
-        "",
+        "Да",
         "3",
         "шт",
         "3",
-        "3",
-        "3",
+        "Да",
+        "Нет",
         "1",
         "Да",
         "Группа 1",
@@ -140,12 +140,12 @@ export default {
         "Склад 1",
         "",
         "Clementine Bauch",
-        "",
+        "Да",
         "3",
         "шт",
         "3",
-        "3",
-        "3",
+        "Да",
+        "Нет",
         "1",
         "Да",
         "Группа 1",
@@ -751,6 +751,43 @@ export default {
         cancellation_disable_change: true,
       },
     ],
+    binding_fields_deals: [
+      {
+        id: 1,
+        name: "Товары",
+        binding_selected_option: { name: "Не выбрано", value: 1 },
+        binding_selector_options: [{ name: "Не выбрано", value: 1 }],
+        binding_disable_change: false,
+      },
+      {
+        id: 2,
+        name: "Себестоимость",
+        binding_selected_option: { name: "Не выбрано", value: 1 },
+        binding_selector_options: [{ name: "Не выбрано", value: 1 }],
+        binding_disable_change: true,
+      },
+      {
+        id: 3,
+        name: "Прибыль",
+        binding_selected_option: { name: "Не выбрано", value: 1 },
+        binding_selector_options: [{ name: "Не выбрано", value: 1 }],
+        binding_disable_change: true,
+      },
+      {
+        id: 4,
+        name: "Общий бюджет",
+        binding_selected_option: { name: "Не выбрано", value: 1 },
+        binding_selector_options: [{ name: "Не выбрано", value: 1 }],
+        binding_disable_change: true,
+      },
+      {
+        id: 5,
+        name: "НДС сумма",
+        binding_selected_option: { name: "Не выбрано", value: 1 },
+        binding_selector_options: [{ name: "Не выбрано", value: 1 }],
+        binding_disable_change: true,
+      },
+    ],
   },
   getters: {
     data(state) {
@@ -779,6 +816,9 @@ export default {
     },
     items_from_storage(state) {
       return state.items_from_storage;
+    },
+    binding_fields_deals(state) {
+      return state.binding_fields_deals;
     },
   },
   mutations: {
@@ -828,6 +868,9 @@ export default {
     },
     update_items_from_storage(state, items_from_storage) {
       state.items_from_storage = items_from_storage;
+    },
+    update_binding_fields_deals(state, binding_fields_deals) {
+      state.binding_fields_deals = binding_fields_deals;
     },
   },
   actions: {},

@@ -280,6 +280,23 @@
               </template>
             </edit-stuff-list>
           </div>
+          <h6>Привязка полей сделок</h6>
+          <div class="steps">
+            <edit-stuff-list :items="copy_binding_fields_deals">
+              <template #item="{ item: item, idx: idx }">
+                <div class="label_input">
+                  <label> Поле "{{ item.name }}" </label>
+                  <SelectorVue
+                    :options_props="item.binding_selector_options"
+                    @select="option_select_deals"
+                    :selected_option="item.binding_selected_option"
+                    :idx="idx"
+                    :disabled="item.binding_disable_change"
+                  />
+                </div>
+              </template>
+            </edit-stuff-list>
+          </div>
         </div>
         <div class="footer">
           <div class="btns">
@@ -306,9 +323,11 @@ export default {
       copy_fields: [],
       new_fields: [],
       copy_items_from_storage: [],
+      copy_binding_fields_deals: [],
       idx_to_delete: [],
       copy_sync_list_stuff_selected_option: {},
       copy_sync_list_hide_tab_selected_option: {},
+      copy_binding_selected_option: {},
     };
   },
   mounted() {
@@ -329,6 +348,13 @@ export default {
       this.copy_sync_list_hide_tab_selected_option,
       this.sync_list_hide_tab_selected_option
     );
+    this.copy_binding_fields_deals = this.binding_fields_deals.map((b, idx) =>
+      Object.assign({ index: idx }, b)
+    );
+    Object.assign(
+      this.copy_binding_selected_option,
+      this.binding_selected_option
+    );
   },
   computed: {
     ...mapGetters(["types"]),
@@ -338,6 +364,7 @@ export default {
     ...mapGetters(["sync_list_stuff_selected_option"]),
     ...mapGetters(["sync_list_hide_tab_selected_option"]),
     ...mapGetters(["items_from_storage"]),
+    ...mapGetters(["binding_fields_deals"]),
   },
   methods: {
     save() {
@@ -353,6 +380,10 @@ export default {
       this.$store.commit(
         "update_items_from_storage",
         this.copy_items_from_storage
+      );
+      this.$store.commit(
+        "update_binding_fields_deals",
+        this.copy_binding_fields_deals
       );
       this.$store.commit(
         "update_sync_list_stuff_selected_option",
@@ -444,6 +475,9 @@ export default {
     },
     option_select_cancellation(option, idx) {
       this.copy_items_from_storage[idx].cancellation_selected_option = option;
+    },
+    option_select_deals(option, idx) {
+      this.copy_binding_fields_deals[idx].binding_selected_option = option;
     },
     close_edit_stuff() {
       this.$store.commit("open_close_show_edit_stuff", false);

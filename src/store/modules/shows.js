@@ -7,6 +7,8 @@ export default {
     show_table_settings: false,
     show_buttons: false,
     show_edit_stuff: false,
+    show_sync: false,
+    show_new_position: false,
   },
   getters: {
     show_edit_modal(state) {
@@ -30,6 +32,12 @@ export default {
     show_edit_stuff(state) {
       return state.show_edit_stuff;
     },
+    show_sync(state) {
+      return state.show_sync;
+    },
+    show_new_position(state) {
+      return state.show_new_position;
+    },
   },
   mutations: {
     open_edit_modal(state, idx) {
@@ -38,9 +46,6 @@ export default {
     },
     close_edit_modal(state) {
       state.show_edit_modal = false;
-    },
-    open_settings(state) {
-      state.show_settings = true;
     },
     close_settings(state) {
       state.show_settings = false;
@@ -62,6 +67,15 @@ export default {
     },
     open_close_show_edit_stuff(state, value) {
       state.show_edit_stuff = value;
+    },
+    close_sync(state) {
+      state.show_sync = false;
+    },
+    open_close_sync(state) {
+      state.show_sync = !state.show_sync;
+    },
+    open_close_new_position(state, value) {
+      state.show_new_position = value;
     },
   },
   actions: {},

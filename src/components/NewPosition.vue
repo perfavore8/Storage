@@ -13,10 +13,22 @@
           <tbody>
             <tr class="row" v-for="(row, idx) in new_items" :key="row">
               <td class="item">
-                <input type="text" v-model="new_items[idx][0]" class="input" />
+                <input
+                  type="text"
+                  v-model="new_items[idx][0]"
+                  class="input"
+                  :class="{ not_valid: new_items[idx][0] == '' && try_accept }"
+                  :disabled="rows.length > idx"
+                />
               </td>
               <td class="item">
-                <input type="text" v-model="new_items[idx][1]" class="input" />
+                <input
+                  type="text"
+                  v-model="new_items[idx][1]"
+                  class="input"
+                  :class="{ not_valid: new_items[idx][1] == '' && try_accept }"
+                  :disabled="rows.length > idx"
+                />
               </td>
               <td class="item">
                 <div class="select_input">
@@ -30,6 +42,10 @@
                     type="text"
                     v-model="new_items[idx][3]"
                     class="input"
+                    :class="{
+                      not_valid: new_items[idx][3] == '' && try_accept,
+                    }"
+                    :disabled="rows.length > idx"
                   />
                 </div>
               </td>
@@ -39,6 +55,7 @@
                   @select="option_select2"
                   :selected_option="row[4]"
                   :idx="idx"
+                  :disabled="rows.length > idx"
                 />
               </td>
               <td class="item">
@@ -47,6 +64,13 @@
                   v-model="new_items[idx][5]"
                   class="input"
                   :disabled="row[4].value == 2"
+                  min="0"
+                  :class="{
+                    not_valid:
+                      (new_items[idx][5] == '' ||
+                        new_items[idx][5] == undefined) &&
+                      try_accept,
+                  }"
                 />
               </td>
               <td class="item">
@@ -54,6 +78,11 @@
                   type="number"
                   v-model="new_items[idx][6]"
                   class="input"
+                  min="0"
+                  :class="{
+                    not_valid: new_items[idx][6] == '' && try_accept,
+                  }"
+                  :disabled="rows.length > idx"
                 />
               </td>
               <td class="item">
@@ -61,6 +90,10 @@
                   type="number"
                   v-model="new_items[idx][7]"
                   class="input"
+                  min="0"
+                  :class="{
+                    not_valid: new_items[idx][7] == '' && try_accept,
+                  }"
                 />
               </td>
               <td class="item">
@@ -92,6 +125,7 @@
                       class="input"
                       v-model="new_items[idx][11]"
                       placeholder="% НДС"
+                      min="0"
                     />
                   </div>
                 </div>
@@ -112,7 +146,7 @@
       </div>
       <div class="footer">
         <div class="btns">
-          <button class="btn btn1">Назад</button>
+          <button class="btn btn1" @click="close_modal()">Отмена</button>
           <button class="btn btn2" @click="save()">Сохранить</button>
         </div>
       </div>
@@ -122,9 +156,23 @@
 
 <script>
 import SelectorVue from "@/components/SelectorVue";
+import { nextTick } from "@vue/runtime-core";
 export default {
   components: {
     SelectorVue,
+  },
+  props: {
+    rows: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+    idxes: {
+      type: Number,
+      required: false,
+    },
   },
   data() {
     return {
@@ -136,7 +184,7 @@ export default {
         "Кол-во",
         "Себестоимость",
         "Цена",
-        "Ндс",
+        "НДС",
       ],
       new_items: [],
       options1: [{ name: "Новая", value: 1 }],
@@ -144,10 +192,11 @@ export default {
         { name: "Товар", value: 1 },
         { name: "Услуга", value: 2 },
       ],
+      try_accept: false,
     };
   },
   mounted() {
-    this.push_new_item();
+    this.start();
   },
   methods: {
     push_new_item() {
@@ -157,46 +206,94 @@ export default {
         { name: "Новая", value: 1 },
         "",
         { name: "Товар", value: 1 },
-        null,
-        null,
-        null,
+        "",
+        "",
+        "",
         false,
         false,
         false,
-        null,
+        "",
       ]);
+    },
+    push_current_item() {
+      this.rows.forEach((val, idx) => {
+        this.new_items.push([]);
+        val.forEach((value) => {
+          this.new_items[idx].push(value);
+        });
+        this.options1.push({
+          name: this.new_items[idx][2],
+          value: 2,
+        });
+        this.new_items[idx][2] = {
+          name: this.new_items[idx][2],
+          value: 2,
+        };
+        this.new_items[idx][4] = { name: "Товар", value: 1 };
+      });
     },
     del_item(idx) {
       this.new_items.splice(idx, 1);
     },
     save() {
-      this.new_items.forEach((value, index) => {
-        value.forEach((val, idx) => {
-          this.new_items[index][idx] = `${val}`;
-          if (typeof val == "object" && val != null) {
-            this.new_items[index][idx] = val.name;
-          }
-          if (val === true) {
-            this.new_items[index][idx] = "Да";
-          }
-          if (val === false) {
-            this.new_items[index][idx] = "Нет";
-          }
-          if (val === null) {
-            this.new_items[index][idx] = "";
-          }
-        });
-      });
+      this.try_accept = true;
+      let accept = true;
       this.new_items.forEach((val) => {
-        this.$store.commit("add_new_data", val);
+        accept =
+          accept &&
+          val[0] != "" &&
+          val[1] != "" &&
+          val[3] != "" &&
+          val[5] != "" &&
+          val[6] != "" &&
+          val[7] != "" &&
+          val[0] != undefined &&
+          val[1] != undefined &&
+          val[3] != undefined &&
+          val[5] != undefined &&
+          val[6] != undefined &&
+          val[7] != undefined;
       });
-      this.$router.push("/");
+      if (accept) {
+        this.new_items.forEach((value, index) => {
+          value.forEach((val, idx) => {
+            this.new_items[index][idx] = `${val}`;
+            if (typeof val == "object") {
+              this.new_items[index][idx] = val.name;
+            }
+            if (val === true) {
+              this.new_items[index][idx] = "Да";
+            }
+            if (val === false) {
+              this.new_items[index][idx] = "Нет";
+            }
+          });
+        });
+        this.new_items.forEach((val) => {
+          this.$store.commit("add_new_data", val);
+        });
+        this.close_modal();
+      }
+    },
+    close_modal() {
+      this.$store.commit("open_close_new_position", false);
+      this.new_items = [];
+      this.try_accept = false;
     },
     option_select1(option, idx) {
       this.new_items[idx][2] = option;
     },
     option_select2(option, idx) {
       this.new_items[idx][4] = option;
+    },
+    start() {
+      nextTick(() => {
+        if (this.rows.length > 0) {
+          this.push_current_item();
+        } else {
+          this.push_new_item();
+        }
+      });
     },
   },
 };
@@ -227,17 +324,21 @@ export default {
     .header {
       display: flex;
       justify-content: start;
+      padding: 10px 50px;
+      @include font(500, 20px);
+      border-bottom: 1px solid #dee2e6;
     }
     .content {
       @include font(400, 16px);
-      padding: 50px;
+      padding: 15px 50px;
+      border-bottom: 1px solid #dee2e6;
       .table {
         border: 1px solid #c9c9c9;
         border-collapse: collapse;
         width: 100%;
-        .row:first-child {
+        .title {
           .item {
-            padding-bottom: 20px;
+            padding-bottom: 20px !important;
           }
         }
         .row {
@@ -245,6 +346,9 @@ export default {
             padding: 10px;
             border: 1px solid #c9c9c9;
             text-align: left;
+            .nds {
+              text-align: center;
+            }
             .v-select {
               width: calc(100% - 26px) !important;
             }
@@ -291,7 +395,7 @@ export default {
             width: 5%;
           }
           .item:nth-child(7) {
-            width: 5%;
+            width: 7%;
           }
           .item:nth-child(8) {
             width: 5%;
@@ -319,7 +423,7 @@ export default {
       }
       .add_new_button {
         cursor: pointer;
-        margin-top: 8px;
+        margin-top: 15px;
         // position: absolute;
         // right: 13.5%;
         margin-left: 981px;
@@ -335,9 +439,25 @@ export default {
     .footer {
       display: flex;
       justify-content: end;
-      margin-top: 40px;
+      padding: 15px 50px;
     }
   }
+}
+.not_valid {
+  border: 1px solid #ff0000 !important;
+}
+.not_valid:focus {
+  box-shadow: 0 0 0 4px rgb(255 0 0 / 25%) !important;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  display: none;
 }
 .input {
   width: calc(100% - 24px);
@@ -350,6 +470,9 @@ export default {
   border-radius: 4px;
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   @include font(400, 16px, 20px);
+}
+.input:disabled {
+  background-color: #e9ecef !important;
 }
 .input:focus {
   color: #212529;
@@ -391,7 +514,7 @@ export default {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
 }
 .checkbox:not(:disabled):not(:checked) + label:hover::before {
-  // border-color: #b3d7ff;
+  border-color: #b3d7ff;
 }
 .checkbox:not(:disabled):active + label::before {
   background-color: #b3d7ff;

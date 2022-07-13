@@ -204,16 +204,20 @@ export default {
   },
   watch: {
     count() {
-      if (this.count < 0) {
-        this.count = 0;
-      }
       this.startIdx = 0;
       this.feelIdxes();
+      this.page = 1;
     },
     paginatedData: {
       handler: function () {
         this.updateKey += 1;
         this.changeValue = [];
+      },
+      deep: true,
+    },
+    changeValue: {
+      handler: function () {
+        this.$emit("apdate_changeValue", this.changeValue);
       },
       deep: true,
     },
