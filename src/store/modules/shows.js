@@ -9,6 +9,7 @@ export default {
     show_edit_stuff: false,
     show_sync: false,
     show_new_position: false,
+    show_cancel_position: false,
   },
   getters: {
     show_edit_modal(state) {
@@ -37,6 +38,9 @@ export default {
     },
     show_new_position(state) {
       return state.show_new_position;
+    },
+    show_cancel_position(state) {
+      return state.show_cancel_position;
     },
   },
   mutations: {
@@ -76,6 +80,9 @@ export default {
     },
     open_close_new_position(state, value) {
       state.show_new_position = value;
+    },
+    open_close_cancel_position(state, value) {
+      state.show_cancel_position = value;
     },
   },
   actions: {},

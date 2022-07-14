@@ -27,10 +27,20 @@
     <div v-if="show_new_position" class="new_position">
       <new-position :rows="rows.arr" :idxes="rows.idxes" />
     </div>
+    <div v-if="show_cancel_position" class="cancel_position">
+      <cancel-position
+        :rows="rows_to_cancel.arr"
+        :idxes="rows_to_cancel.idxes"
+      />
+    </div>
     <div
       class="header"
       :class="{
-        blur: show_table_settings || show_edit_modal || show_edit_stuff,
+        blur:
+          show_table_settings ||
+          show_edit_modal ||
+          show_edit_stuff ||
+          show_new_position,
       }"
     >
       <div class="header_left">
@@ -96,9 +106,9 @@
         </div>
         <div class="ref">
           <div class="ref_2_logo"></div>
-          <a class="links" @click.stop="open_close_sync()"
-            >Синхронизировать товары</a
-          >
+          <a class="links" @click.stop="open_close_sync()">
+            Синхронизировать товары
+          </a>
           <transition name="modal">
             <div v-show="show_sync" class="modal_settings modal_sync">
               <a>
@@ -138,7 +148,9 @@
     </div>
     <div
       class="wrapper"
-      :class="{ blur: show_table_settings || show_edit_stuff }"
+      :class="{
+        blur: show_table_settings || show_edit_stuff || show_new_position,
+      }"
     >
       <div class="filters" :class="{ blur: show_edit_modal }">
         <div class="filters_left">
@@ -164,7 +176,12 @@
               >
                 Добавить
               </button>
-              <button class="button button_3 smallBtn">Списать</button>
+              <button
+                class="button button_3 smallBtn"
+                @click="open_close_cancel_position(true)"
+              >
+                Списать
+              </button>
             </div>
           </transition>
         </div>
@@ -205,6 +222,7 @@ import MainGrid from "@/components/Main_grid.vue";
 import TableSetings from "@/components/Table_setings.vue";
 import EditStuff from "@/components/EditStuff.vue";
 import NewPosition from "@/components/NewPosition.vue";
+import CancelPosition from "@/components/CancelPosition";
 import { mapGetters } from "vuex";
 
 export default {
@@ -213,6 +231,7 @@ export default {
     TableSetings,
     EditStuff,
     NewPosition,
+    CancelPosition,
   },
   data() {
     return {
@@ -243,10 +262,10 @@ export default {
       let arr = [];
       let idxes = [];
       const title = [
+        "Тип",
         "Артикул",
         "Название",
         "№ партии",
-        "Тип",
         "Кол-во",
         "Себестоимость",
         "Цена",
@@ -276,6 +295,34 @@ export default {
         idxes: idxes,
       };
     },
+    rows_to_cancel() {
+      let arr = [];
+      let idxes = [];
+      const title = [
+        "Артикул",
+        "Название",
+        "№ партии",
+        "На складе",
+        "Причина списания",
+      ];
+      this.changeValue.forEach((val, idx) => {
+        if (val) {
+          let arr2 = [];
+          title.forEach((val) => {
+            let item = "";
+            const sel = this.data[idx][this.params.indexOf(val) - 1];
+            if (sel != undefined) item = sel;
+            arr2.push(item);
+          });
+          arr.push(arr2);
+          idxes.push(idx);
+        }
+      });
+      return {
+        arr: arr,
+        idxes: idxes,
+      };
+    },
     ...mapGetters(["data"]),
     ...mapGetters(["params"]),
     ...mapGetters(["show_edit_modal"]),
@@ -286,6 +333,7 @@ export default {
     ...mapGetters(["show_edit_stuff"]),
     ...mapGetters(["show_sync"]),
     ...mapGetters(["show_new_position"]),
+    ...mapGetters(["show_cancel_position"]),
   },
   watch: {
     data: {
@@ -324,11 +372,10 @@ export default {
       this.$store.commit("update_data", data);
     },
     add2() {
-      // const params = ["", "Компания", "Контакт", "Сделки", ""];
-      // const data = [[11, "2 570 102.00 р.", "2 400 339.00 р."]];
-      // this.$store.commit("update_params", params);
-      // this.$store.commit("update_data", data);
-      this.$router.push("/qwe");
+      const params = ["", "Компания", "Контакт", "Сделки", ""];
+      const data = [[11, "2 570 102.00 р.", "2 400 339.00 р."]];
+      this.$store.commit("update_params", params);
+      this.$store.commit("update_data", data);
     },
     getData(dat, par, check) {
       this.paginatedData = [];
@@ -347,6 +394,9 @@ export default {
     open_close_new_position(value) {
       this.$store.commit("open_close_new_position", value);
     },
+    open_close_cancel_position(value) {
+      this.$store.commit("open_close_cancel_position", value);
+    },
     open_close_settings() {
       this.$store.commit("open_close_settings");
     },
@@ -363,6 +413,7 @@ export default {
       this.$store.commit("open_close_show_edit_stuff", true);
     },
     apdate_changeValue(newValue) {
+      this.changeValue = [];
       newValue.forEach((val, idx) => {
         this.changeValue[idx] = val;
       });
@@ -521,9 +572,10 @@ export default {
     }
     .modal_sync {
       position: absolute !important;
-      top: 21px;
-      right: 62px;
-      width: 250px !important;
+      top: 41px;
+      right: 72px;
+      width: 237px !important;
+      margin: 0 !important;
     }
     .modal_settings {
       z-index: 99999;

@@ -11,135 +11,143 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="row" v-for="(row, idx) in new_items" :key="row">
-              <td class="item">
-                <input
-                  type="text"
-                  v-model="new_items[idx][0]"
-                  class="input"
-                  :class="{ not_valid: new_items[idx][0] == '' && try_accept }"
-                  :disabled="rows.length > idx"
-                />
-              </td>
-              <td class="item">
-                <input
-                  type="text"
-                  v-model="new_items[idx][1]"
-                  class="input"
-                  :class="{ not_valid: new_items[idx][1] == '' && try_accept }"
-                  :disabled="rows.length > idx"
-                />
-              </td>
-              <td class="item">
-                <div class="select_input">
+            <transition-group name="row">
+              <tr class="row" v-for="(row, idx) in new_items" :key="row">
+                <td class="item">
                   <selector-vue
-                    :options_props="options1"
-                    @select="option_select1"
-                    :selected_option="row[2]"
+                    :options_props="options2"
+                    @select="option_select2"
+                    :selected_option="row[0]"
                     :idx="idx"
+                    :disabled="rows.length > idx"
                   />
+                </td>
+                <td class="item">
                   <input
                     type="text"
-                    v-model="new_items[idx][3]"
+                    v-model="new_items[idx][1]"
                     class="input"
                     :class="{
-                      not_valid: new_items[idx][3] == '' && try_accept,
+                      not_valid: new_items[idx][1] == '' && try_accept,
                     }"
                     :disabled="rows.length > idx"
                   />
-                </div>
-              </td>
-              <td class="item">
-                <selector-vue
-                  :options_props="options2"
-                  @select="option_select2"
-                  :selected_option="row[4]"
-                  :idx="idx"
-                  :disabled="rows.length > idx"
-                />
-              </td>
-              <td class="item">
-                <input
-                  type="number"
-                  v-model="new_items[idx][5]"
-                  class="input"
-                  :disabled="row[4].value == 2"
-                  min="0"
-                  :class="{
-                    not_valid:
-                      (new_items[idx][5] == '' ||
-                        new_items[idx][5] == undefined) &&
-                      try_accept,
-                  }"
-                />
-              </td>
-              <td class="item">
-                <input
-                  type="number"
-                  v-model="new_items[idx][6]"
-                  class="input"
-                  min="0"
-                  :class="{
-                    not_valid: new_items[idx][6] == '' && try_accept,
-                  }"
-                  :disabled="rows.length > idx"
-                />
-              </td>
-              <td class="item">
-                <input
-                  type="number"
-                  v-model="new_items[idx][7]"
-                  class="input"
-                  min="0"
-                  :class="{
-                    not_valid: new_items[idx][7] == '' && try_accept,
-                  }"
-                />
-              </td>
-              <td class="item">
-                <div class="nds">
+                </td>
+                <td class="item">
                   <input
-                    type="checkbox"
-                    v-model="new_items[idx][8]"
-                    class="checkbox"
-                    :id="idx + 'nq'"
+                    type="text"
+                    v-model="new_items[idx][2]"
+                    class="input"
+                    :class="{
+                      not_valid: new_items[idx][2] == '' && try_accept,
+                    }"
+                    :disabled="rows.length > idx"
                   />
-                  <label :for="idx + 'nq'"></label>
-                  <div class="hiden" v-if="new_items[idx][8]">
-                    <input
-                      type="checkbox"
-                      v-model="new_items[idx][9]"
-                      class="checkbox"
-                      :id="idx + 'nw'"
+                </td>
+                <td class="item">
+                  <div class="select_input">
+                    <selector-vue
+                      :options_props="options1[idx]"
+                      @select="option_select1"
+                      :selected_option="row[3]"
+                      :idx="idx"
                     />
-                    <label :for="idx + 'nw'">включен в цену</label>
                     <input
-                      type="checkbox"
-                      v-model="new_items[idx][10]"
-                      class="checkbox"
-                      :id="idx + 'ne'"
-                    />
-                    <label :for="idx + 'ne'">менеджер может менять %</label>
-                    <input
-                      type="number"
+                      type="text"
+                      v-model="new_items[idx][4]"
                       class="input"
-                      v-model="new_items[idx][11]"
-                      placeholder="% НДС"
-                      min="0"
+                      :class="{
+                        not_valid: new_items[idx][4] == '' && try_accept,
+                      }"
+                      :disabled="rows.length > idx"
                     />
                   </div>
-                </div>
-              </td>
-              <td class="item">
-                <button
-                  class="del_btn"
-                  v-show="new_items.length > 1"
-                  @click="del_item(idx)"
-                >
-                  X
-                </button>
-              </td>
-            </tr>
+                </td>
+                <td class="item">
+                  <input
+                    type="number"
+                    v-model="new_items[idx][5]"
+                    class="input"
+                    :disabled="row[0].value == 2"
+                    min="0"
+                    :class="{
+                      not_valid:
+                        (new_items[idx][5] == '' ||
+                          new_items[idx][5] == undefined) &&
+                        try_accept,
+                    }"
+                  />
+                </td>
+                <td class="item">
+                  <input
+                    type="number"
+                    v-model="new_items[idx][6]"
+                    class="input"
+                    min="0"
+                    :class="{
+                      not_valid: new_items[idx][6] == '' && try_accept,
+                    }"
+                    :disabled="rows.length > idx"
+                  />
+                </td>
+                <td class="item">
+                  <input
+                    type="number"
+                    v-model="new_items[idx][7]"
+                    class="input"
+                    min="0"
+                    :class="{
+                      not_valid: new_items[idx][7] == '' && try_accept,
+                    }"
+                  />
+                </td>
+                <td class="item">
+                  <div class="nds">
+                    <input
+                      type="checkbox"
+                      v-model="new_items[idx][8]"
+                      class="checkbox"
+                      :id="idx + 'nq'"
+                    />
+                    <label :for="idx + 'nq'"></label>
+                    <div class="hiden" v-if="new_items[idx][8]">
+                      <input
+                        type="checkbox"
+                        v-model="new_items[idx][9]"
+                        class="checkbox"
+                        :id="idx + 'nw'"
+                      />
+                      <label :for="idx + 'nw'">включен в цену</label>
+                      <input
+                        type="checkbox"
+                        v-model="new_items[idx][10]"
+                        class="checkbox"
+                        :id="idx + 'ne'"
+                      />
+                      <label :for="idx + 'ne'">менеджер может менять %</label>
+                      <input
+                        type="number"
+                        class="input"
+                        v-model="new_items[idx][11]"
+                        placeholder="% НДС"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+                </td>
+                <transition name="row">
+                  <td class="item">
+                    <button
+                      class="del_btn"
+                      v-show="new_items.length > 1"
+                      @click="del_item(idx)"
+                    >
+                      X
+                    </button>
+                  </td>
+                </transition>
+              </tr>
+            </transition-group>
           </tbody>
         </table>
         <button class="add_new_button" @click="push_new_item()">+</button>
@@ -177,17 +185,17 @@ export default {
   data() {
     return {
       title: [
+        "Тип",
         "Артикул",
         "Название",
         "№ партии",
-        "Тип",
         "Кол-во",
         "Себестоимость",
         "Цена",
         "НДС",
       ],
       new_items: [],
-      options1: [{ name: "Новая", value: 1 }],
+      options1: [],
       options2: [
         { name: "Товар", value: 1 },
         { name: "Услуга", value: 2 },
@@ -198,14 +206,30 @@ export default {
   mounted() {
     this.start();
   },
+  watch: {
+    new_items: {
+      handler: function () {
+        this.new_items.forEach((val, idx) => {
+          const type_idx = this.title.indexOf("Тип");
+          const count_idx = this.title.indexOf("Кол-во") + 1;
+          if (val[type_idx].value == 2) this.new_items[idx][count_idx] = 0;
+          if (val[5] < 0) this.new_items[idx][5] = 0;
+          if (val[6] < 0) this.new_items[idx][6] = 0;
+          if (val[7] < 0) this.new_items[idx][7] = 0;
+          if (val[11] < 0) this.new_items[idx][11] = 0;
+        });
+      },
+      deep: true,
+    },
+  },
   methods: {
     push_new_item() {
       this.new_items.push([
+        { name: "Товар", value: 1 },
         "",
         "",
         { name: "Новая", value: 1 },
         "",
-        { name: "Товар", value: 1 },
         "",
         "",
         "",
@@ -214,6 +238,7 @@ export default {
         false,
         "",
       ]);
+      this.options1.push([{ name: "Новая", value: 1 }]);
     },
     push_current_item() {
       this.rows.forEach((val, idx) => {
@@ -221,15 +246,17 @@ export default {
         val.forEach((value) => {
           this.new_items[idx].push(value);
         });
-        this.options1.push({
-          name: this.new_items[idx][2],
-          value: 2,
-        });
-        this.new_items[idx][2] = {
-          name: this.new_items[idx][2],
+        this.options1.push([
+          {
+            name: this.new_items[idx][3],
+            value: 2,
+          },
+        ]);
+        this.new_items[idx][3] = {
+          name: this.new_items[idx][3],
           value: 2,
         };
-        this.new_items[idx][4] = { name: "Товар", value: 1 };
+        this.new_items[idx][0] = { name: "Товар", value: 1 };
       });
     },
     del_item(idx) {
@@ -270,21 +297,33 @@ export default {
           });
         });
         this.new_items.forEach((val) => {
-          this.$store.commit("add_new_data", val);
+          let artic = [];
+          this.title.forEach((val) => {
+            if (val === "№ партии") artic.push("");
+            artic.push(val);
+          });
+          artic.push("НДС включен в цену");
+          artic.push("Менеджер может менять % НДС");
+          artic.push("НДС %");
+          const payload = {
+            new_data: val,
+            title: artic,
+          };
+          this.$store.commit("add_new_data", payload);
         });
         this.close_modal();
       }
     },
     close_modal() {
-      this.$store.commit("open_close_new_position", false);
       this.new_items = [];
       this.try_accept = false;
+      this.$store.commit("open_close_new_position", false);
     },
     option_select1(option, idx) {
-      this.new_items[idx][2] = option;
+      this.new_items[idx][3] = option;
     },
     option_select2(option, idx) {
-      this.new_items[idx][4] = option;
+      this.new_items[idx][0] = option;
     },
     start() {
       nextTick(() => {
@@ -326,25 +365,31 @@ export default {
       justify-content: start;
       padding: 10px 50px;
       @include font(500, 20px);
-      border-bottom: 1px solid #dee2e6;
+      border-bottom: 2px solid #dee2e6;
     }
     .content {
       @include font(400, 16px);
       padding: 15px 50px;
-      border-bottom: 1px solid #dee2e6;
+      border-bottom: 2px solid #dee2e6;
       .table {
         border: 1px solid #c9c9c9;
         border-collapse: collapse;
         width: 100%;
         .title {
+          @include font(500, 16px);
+          background-color: rgba(0, 0, 0, 0.15) !important;
           .item {
             padding-bottom: 20px !important;
           }
+        }
+        .row:nth-child(odd) {
+          background-color: rgba(0, 0, 0, 0.05);
         }
         .row {
           .item {
             padding: 10px;
             border: 1px solid #c9c9c9;
+            border-top: 2px solid #c9c9c9;
             text-align: left;
             .nds {
               text-align: center;
@@ -375,18 +420,18 @@ export default {
             }
           }
           .item:nth-child(1) {
-            width: 9%;
+            width: 10%;
           }
           .item:nth-child(2) {
+            width: 9%;
+          }
+          .item:nth-child(3) {
             width: 7%;
             // min-width: 224px;
             // max-width: 224px;
           }
-          .item:nth-child(3) {
-            width: 20%;
-          }
           .item:nth-child(4) {
-            width: 10%;
+            width: 20%;
           }
           .item:nth-child(5) {
             width: 10%;
@@ -395,7 +440,7 @@ export default {
             width: 5%;
           }
           .item:nth-child(7) {
-            width: 7%;
+            width: 9%;
           }
           .item:nth-child(8) {
             width: 5%;
@@ -555,5 +600,13 @@ input[type="number"]::-webkit-inner-spin-button {
     background-color: #0256d4;
     box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
   }
+}
+.row-enter-active,
+.row-leave-active {
+  transition: opacity 0.2s ease-out;
+}
+.row-enter-from,
+.row-leave-to {
+  opacity: 0;
 }
 </style>

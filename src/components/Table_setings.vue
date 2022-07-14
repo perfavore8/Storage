@@ -67,7 +67,6 @@ export default defineComponent({
   watch: {
     data: {
       handler: function () {
-        console.log("123");
         this.getData();
       },
       deep: true,

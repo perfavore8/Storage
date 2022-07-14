@@ -1,10 +1,10 @@
-<template><NewPosition></NewPosition></template>
+<template><CancelPosition></CancelPosition></template>
 
 <script>
-import NewPosition from "@/components/NewPosition.vue";
+import CancelPosition from "@/components/CancelPosition.vue";
 export default {
   components: {
-    NewPosition,
+    CancelPosition,
   },
 };
 </script>

@@ -190,7 +190,7 @@ export default {
   data() {
     return {
       coll: [],
-      count: 3,
+      count: 20,
       page: 1,
       filtersValue: [],
       updateKey: 0,
