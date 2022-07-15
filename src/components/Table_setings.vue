@@ -96,8 +96,6 @@ export default defineComponent({
       const newidx = event.moved.newIndex;
       this.data_list.map((val) => {
         const t = val[oldidx];
-        // val[oldidx] = val[newidx];
-        // val[newidx] = t;
         val.splice(oldidx, 1);
         val.splice(newidx, 0, t);
       });

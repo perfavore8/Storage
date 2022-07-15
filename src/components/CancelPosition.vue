@@ -44,7 +44,6 @@
                     type="number"
                     v-model="items_to_cancel[idx][3]"
                     class="input"
-                    min="1"
                     :class="{
                       not_valid: items_to_cancel[idx][3] == '' && try_accept,
                     }"
@@ -101,6 +100,7 @@ export default {
       items_to_cancel: [],
       options1: [],
       try_accept: false,
+      max_count_to_cancel: [],
     };
   },
   watch: {
@@ -108,6 +108,8 @@ export default {
       handler: function () {
         this.items_to_cancel.forEach((val, idx) => {
           if (val[3] < 0) this.items_to_cancel[idx][3] = 0;
+          if (val[3] > this.max_count_to_cancel[idx])
+            this.items_to_cancel[idx][3] = this.max_count_to_cancel[idx];
         });
       },
       deep: true,
@@ -116,6 +118,10 @@ export default {
   mounted() {
     nextTick(() => {
       this.push_current_item();
+
+      this.items_to_cancel.forEach((val) => {
+        this.max_count_to_cancel.push(val[3]);
+      });
     });
   },
   methods: {

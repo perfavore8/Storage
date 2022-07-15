@@ -128,8 +128,9 @@
             </td>
             <td class="item">
               <div class="edit_icon" @click="open_edit_modal(row, i)"></div>
-            </td></tr
-        ></transition-group>
+            </td>
+          </tr>
+        </transition-group>
       </tbody>
     </tabel>
     <div class="bottom" :class="{ blur: show_edit_modal }">
@@ -217,7 +218,7 @@ export default {
     },
     changeValue: {
       handler: function () {
-        this.$emit("apdate_changeValue", this.changeValue);
+        this.$emit("update_changeValue", this.changeValue);
       },
       deep: true,
     },

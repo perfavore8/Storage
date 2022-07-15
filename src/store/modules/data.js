@@ -788,6 +788,58 @@ export default {
         binding_disable_change: true,
       },
     ],
+    catalog: [
+      {
+        name: "Остатки",
+        value: "home",
+      },
+      {
+        name: "Аналитика",
+        value: "analytics",
+      },
+      {
+        name: "Архив",
+        value: "archive",
+      },
+      {
+        name: "Инструкции",
+        value: "instructions",
+      },
+    ],
+    archive: {
+      titles: [
+        "Название",
+        "Артикул",
+        "№ партии",
+        "На складе",
+        "Цена",
+        "Себестоимость",
+        "Описание",
+      ],
+      items: [
+        [
+          "Товар 9",
+          "9",
+          "123",
+          "129",
+          "Склад 2",
+          "129",
+          "12",
+          "11",
+          "2",
+          "2022-07-18",
+          "Да",
+          "2022-07-18T11:21",
+          "шт",
+          "3",
+          "Нет",
+          "Да",
+          "123",
+          "Да",
+          "Группа 2",
+        ],
+      ],
+    },
   },
   getters: {
     data(state) {
@@ -820,6 +872,16 @@ export default {
     binding_fields_deals(state) {
       return state.binding_fields_deals;
     },
+
+    catalog(state) {
+      return state.catalog;
+    },
+    archive(state) {
+      return state.archive;
+    },
+    coun_archive(state) {
+      return state.archive.items.length;
+    },
   },
   mutations: {
     update_data(state, data) {
@@ -844,7 +906,6 @@ export default {
     },
     cancel_item_in_data(state, payload) {
       const count_idx = state.params.indexOf(payload.name) - 1;
-      console.log(count_idx);
       const old_val = state.data[payload.idx][count_idx];
       state.data[payload.idx][count_idx] = old_val - payload.count;
     },
@@ -854,6 +915,15 @@ export default {
           state.data[index].splice(value, 1);
         });
       });
+    },
+    archive_data(state, idxes) {
+      idxes.forEach((idx) => state.archive.items.push(state.data[idx]));
+      const idxes_reverse = idxes.reverse();
+      idxes_reverse.forEach((idx) => state.data.splice(idx, 1));
+    },
+    unarchive_data(state, idx) {
+      state.data.push(state.archive.items[idx]);
+      state.archive.items.splice(idx, 1);
     },
     update_params(state, params) {
       state.params = params;

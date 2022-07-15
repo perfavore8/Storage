@@ -1,398 +1,777 @@
 <template>
-  <table>
-    <tr class="bar_row">
-      <td class="bar_item" v-for="param in params" :key="param">
-        <div class="bar_item_row">
-          <div>{{ param }}</div>
-          <button v-show="param" class="bar_item_icon"></button>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class="item" v-for="(filter, idx) in params.length" :key="idx">
-        <div class="filter" v-show="idx != params.length - 1">
-          <button @click="changeComparison(idx)">
-            <div
-              class="icon"
-              :class="{
-                tilde: comparisons[idx] == 1,
-                equal: comparisons[idx] == 2,
-                more: comparisons[idx] == 3,
-                more_or_equal: comparisons[idx] == 4,
-              }"
-            ></div>
+  <div
+    class="app"
+    :class="{
+      disabled: disabled_for_modals,
+    }"
+    @click="
+      show_settings ? close_settings() : null;
+      show_sync ? close_sync() : null;
+    "
+  >
+    <div v-show="show_table_settings" class="table_setings">
+      <table-setings
+        :names="paginatedParams"
+        :data="paginatedData"
+        :collval="collumn_value"
+        @returnData1="getData"
+      />
+    </div>
+    <div v-if="show_edit_stuff" class="edit_staff">
+      <edit-stuff></edit-stuff>
+    </div>
+    <div v-if="show_new_position" class="new_position">
+      <new-position :rows="rows.arr" :idxes="rows.idxes" />
+    </div>
+    <div v-if="show_cancel_position" class="cancel_position">
+      <cancel-position
+        :rows="rows_to_cancel.arr"
+        :idxes="rows_to_cancel.idxes"
+      />
+    </div>
+    <div
+      class="header"
+      :class="{
+        blur: disabled_for_modals,
+      }"
+    >
+      <div class="header_left">
+        <div class="btns">
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: $route.name === page.value }"
+            @click="route(page.value)"
+            v-for="page in catalog"
+            :key="page"
+          >
+            {{ page.name }}
           </button>
-          <input v-model="filterValue[idx]" type="text" />
         </div>
-      </td>
-    </tr>
-    <tr v-for="user in users" :key="user">
-      <td v-for="(item, idx) in user" :key="idx" class="item">{{ item }}</td>
-      <td class="item"><div class="edit_icon"></div></td>
-    </tr>
-  </table>
+        <div class="radio_btns">
+          <div class="radio_btn">
+            <input type="radio" name="store1" id="store1" />
+            <label for="store1">Все остатки </label>
+          </div>
+          <div class="radio_btn">
+            <input type="radio" name="store1" id="store2" checked />
+            <label for="store2">Склад 1</label>
+          </div>
+          <div class="radio_btn">
+            <input type="radio" name="store1" id="store3" />
+            <label for="store3">Склад 2</label>
+          </div>
+          <div class="radio_btn">
+            <input type="radio" name="store1" id="store4" />
+            <label for="store4">Услуги</label>
+          </div>
+        </div>
+      </div>
+      <div class="header_right">
+        <div class="ref">
+          <div class="ref_1_logo"></div>
+          <a class="links">Выгрузка в эксель</a>
+        </div>
+        <div class="ref">
+          <div class="ref_2_logo"></div>
+          <a class="links" @click.stop="open_close_sync()">
+            Синхронизировать товары
+          </a>
+          <transition name="modal">
+            <div v-show="show_sync" class="modal_settings modal_sync">
+              <a>
+                <div class="modal_container">AmoCrm -> Склад</div>
+              </a>
+              <a>
+                <div class="modal_container">Склад -> AmoCrm</div>
+              </a>
+            </div>
+          </transition>
+        </div>
+        <button class="settings_btn" @click.stop="open_close_settings()">
+          <transition name="modal">
+            <div v-show="show_settings" class="modal_settings">
+              <a>
+                <div class="modal_container" @click="open_table_settings()">
+                  Настройка таблицы
+                </div>
+              </a>
+              <a>
+                <div class="modal_container" @click="open_edit_stuff()">
+                  Настройка товаров
+                </div>
+              </a>
+              <a>
+                <div class="modal_container">
+                  Синхронизация склада с товарами amoCrm
+                </div>
+              </a>
+              <a>
+                <div class="modal_container">Документы</div>
+              </a>
+            </div>
+          </transition>
+        </button>
+      </div>
+    </div>
+    <div
+      class="wrapper"
+      :class="{
+        blur: show_table_settings || show_edit_stuff || show_new_position,
+      }"
+    >
+      <div class="filters" :class="{ blur: show_edit_modal }">
+        <div class="filters_left">
+          <div class="date">
+            <input
+              type="date"
+              id="start"
+              name="trip-start"
+              value="2018-07-22"
+              min="2018-01-01"
+              max="2032-12-31"
+              aria-required="true"
+              aria-invalid="false"
+            />
+            <p>Найдено: {{ data.length }}</p>
+          </div>
+          <transition name="btns">
+            <div class="buttons" v-show="show_buttons">
+              <button class="button button_1 smallBtn" @click="archive_data()">
+                Архивировать
+              </button>
+              <button
+                class="button button_2 smallBtn"
+                @click="open_close_new_position(true)"
+              >
+                Добавить
+              </button>
+              <button
+                class="button button_3 smallBtn"
+                @click="open_close_cancel_position(true)"
+              >
+                Списать
+              </button>
+            </div>
+          </transition>
+        </div>
+        <div class="filters_right">
+          <div class="filter_group">
+            <input
+              type="checkbox"
+              v-model="filter_value"
+              name="filter"
+              id="filter"
+              class="checkbox"
+            />
+            <label for="filter">Фильтр</label>
+          </div>
+          <button
+            class="button button_4 smallBtn"
+            @click="open_close_new_position(true)"
+            :disabled="rows.arr.length > 0"
+          >
+            Новая позиция
+          </button>
+        </div>
+      </div>
+      <div class="grid">
+        <main-grid
+          :data="paginatedData"
+          :params="paginatedParams"
+          :collval="collumn_value"
+          @update_changeValue="update_changeValue"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import MainGrid from "@/components/Main_grid.vue";
+import TableSetings from "@/components/Table_setings.vue";
+import EditStuff from "@/components/EditStuff.vue";
+import NewPosition from "@/components/NewPosition.vue";
+import CancelPosition from "@/components/CancelPosition";
+import { mapGetters } from "vuex";
+
 export default {
+  components: {
+    MainGrid,
+    TableSetings,
+    EditStuff,
+    NewPosition,
+    CancelPosition,
+  },
   data() {
     return {
-      show_settings: false,
-      show_filter: false,
-      params: [
-        "Название",
-        "Группа",
-        "Артикул",
-        "На складе",
-        "В резерве",
-        "Цена",
-        "Себестоимость",
-        "Описание",
-        "Единицы измерений",
-        "Изменение",
-        "Свободно для резерва",
-        "",
-      ],
-      users: [
-        {
-          id: 1,
-          name: "Leanne Graham",
-          username: "Bret",
-          email: "Sincere@april.biz",
-          phone: "1-770-736-8031 x56442",
-          website: "hildegard.org",
-          a1: "11",
-          a2: "22",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 2,
-          name: "Ervin Howell",
-          username: "Antonette",
-          email: "Shanna@melissa.tv",
-          phone: "010-692-6593 x09125",
-          website: "anastasia.net",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 3,
-          name: "Clementine Bauch",
-          username: "Samantha",
-          email: "Nathan@yesenia.net",
-          phone: "1-463-123-4447",
-          website: "ramiro.info",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 4,
-          name: "Patricia Lebsack",
-          username: "Karianne",
-          email: "Julianne.OConner@kory.org",
-          phone: "493-170-9623 x156",
-          website: "kale.biz",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 5,
-          name: "Chelsey Dietrich",
-          username: "Kamren",
-          email: "Lucio_Hettinger@annie.ca",
-          phone: "(254)954-1289",
-          website: "demarco.info",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 6,
-          name: "Mrs. Dennis Schulist",
-          username: "Leopoldo_Corkery",
-          email: "Karley_Dach@jasper.info",
-          phone: "1-477-935-8478 x6430",
-          website: "ola.org",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 7,
-          name: "Kurtis Weissnat",
-          username: "Elwyn.Skiles",
-          email: "Telly.Hoeger@billy.biz",
-          phone: "210.067.6132",
-          website: "elvis.io",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 8,
-          name: "Nicholas Runolfsdottir V",
-          username: "Maxime_Nienow",
-          email: "Sherwood@rosamond.me",
-          phone: "586.493.6943 x140",
-          website: "jacynthe.com",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 9,
-          name: "Glenna Reichert",
-          username: "Delphine",
-          email: "Chaim_McDermott@dana.io",
-          phone: "(775)976-6794 x41206",
-          website: "conrad.com",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-        {
-          id: 10,
-          name: "Clementina DuBuque",
-          username: "Moriah.Stanton",
-          email: "Rey.Padberg@karina.biz",
-          phone: "024-648-3804",
-          website: "ambrose.net",
-          a1: "1",
-          a2: "2",
-          email1: "Sincere@april.biz",
-          phone2: "1-770-736-8031 x56442",
-          website3: "hildegard.org",
-        },
-      ],
-      coll: [],
-      count: 3,
-      page: 1,
-      filterValue: [],
-      updateKey: 0,
-      comparisons: [],
+      filter_value: false,
+      paginatedData: [],
+      paginatedParams: [],
+      collumn_value: [],
+      changeValue: [],
+      old_data_length: null,
     };
   },
-  watch: {
-    count() {
-      if (this.count < 0) {
-        this.count = 0;
-      }
-    },
-    paginatedData: {
-      handler: function () {
-        this.updateKey += 1;
-      },
-      deep: true,
-    },
-    comparisons: {
-      handler: function () {
-        this.comparisons.forEach((val, i) => {
-          val > 4 ? (this.comparisons[i] = 1) : val;
-        });
-      },
-      deep: true,
-    },
-    data: {
-      handler: function () {
-        this.comparisons = [];
-        this.fillColls();
-        this.filterValue = [];
-        this.page = 1;
-      },
-      deep: true,
-    },
+  created: function () {
+    this.old_data_length = this.data[0].length;
+    this.paginate();
   },
   computed: {
-    paginatedData() {
-      return this.users.slice(
-        this.page * this.count - this.count,
-        this.page * this.count
+    show_modals() {
+      return (
+        this.show_edit_modal ||
+        this.show_settings ||
+        this.show_table_settings ||
+        this.show_edit_stuff ||
+        this.show_new_position
       );
     },
+    disabled_for_modals() {
+      return (
+        this.show_edit_modal ||
+        this.show_table_settings ||
+        this.show_edit_stuff ||
+        this.show_new_position
+      );
+    },
+    rows() {
+      let arr = [];
+      let idxes = [];
+      const title = [
+        "Тип",
+        "Артикул",
+        "Название",
+        "№ партии",
+        "Кол-во",
+        "Себестоимость",
+        "Цена",
+        "НДС",
+        "НДС включен в цену",
+        "Менеджер может менять % НДС",
+        "НДС %",
+      ];
+      this.changeValue.forEach((val, idx) => {
+        if (val) {
+          let arr2 = [];
+          title.forEach((val) => {
+            let item = "";
+            const sel = this.data[idx][this.params.indexOf(val) - 1];
+            item = sel;
+            if (sel == "Да") item = true;
+            if (sel == "Нет") item = false;
+            arr2.push(item);
+            if (val == "№ партии") arr2.push(item);
+          });
+          arr.push(arr2);
+          idxes.push(idx);
+        }
+      });
+      return {
+        arr: arr,
+        idxes: idxes,
+      };
+    },
+    rows_to_cancel() {
+      let arr = [];
+      let idxes = [];
+      const title = [
+        "Артикул",
+        "Название",
+        "№ партии",
+        "На складе",
+        "Причина списания",
+      ];
+      this.changeValue.forEach((val, idx) => {
+        if (val) {
+          let arr2 = [];
+          title.forEach((val) => {
+            let item = "";
+            const sel = this.data[idx][this.params.indexOf(val) - 1];
+            if (sel != undefined) item = sel;
+            arr2.push(item);
+          });
+          arr.push(arr2);
+          idxes.push(idx);
+        }
+      });
+      return {
+        arr: arr,
+        idxes: idxes,
+      };
+    },
+    ...mapGetters(["data"]),
+    ...mapGetters(["params"]),
+    ...mapGetters(["show_edit_modal"]),
+    ...mapGetters(["show_settings"]),
+    ...mapGetters(["show_table_settings"]),
+    ...mapGetters(["show_buttons"]),
+    ...mapGetters(["show_filter"]),
+    ...mapGetters(["show_edit_stuff"]),
+    ...mapGetters(["show_sync"]),
+    ...mapGetters(["show_new_position"]),
+    ...mapGetters(["show_cancel_position"]),
+    ...mapGetters(["catalog"]),
   },
-  mounted() {
-    this.fillColls();
+  watch: {
+    data: {
+      handler: function () {
+        this.paginate();
+      },
+      deep: true,
+    },
+    filter_value() {
+      this.$store.commit("open_close_filter", this.filter_value);
+    },
+    show_modals() {
+      this.show_modals
+        ? (window.scrollBy(-99999, 0),
+          (document.body.style.overflowX = "hidden"))
+        : (document.body.style.overflowX = "auto");
+    },
   },
   methods: {
-    fillColls() {
-      this.coll = Object.keys(this.users[0]);
-      this.coll.forEach(() => {
-        this.comparisons.push(1);
+    archive_data() {
+      let idxes = [];
+      this.changeValue.forEach((val, idx) => {
+        if (val) {
+          idxes.push(idx);
+        }
+      });
+      this.$store.commit("archive_data", idxes);
+      this.changeValue = [];
+    },
+    getData(dat, par, check) {
+      this.paginatedData = [];
+      this.paginatedParams = [];
+      this.collumn_value = [];
+      dat.forEach((val) => this.paginatedData.push(val));
+      par.forEach((val) => this.paginatedParams.push(val));
+      check.forEach((val) => this.collumn_value.push(val));
+      this.paginatedParams.unshift("");
+      this.paginatedParams.push("");
+      this.filter_value = false;
+    },
+    open_table_settings() {
+      this.$store.commit("open_table_settings");
+    },
+    open_close_new_position(value) {
+      this.$store.commit("open_close_new_position", value);
+    },
+    open_close_cancel_position(value) {
+      this.$store.commit("open_close_cancel_position", value);
+    },
+    open_close_settings() {
+      this.$store.commit("open_close_settings");
+    },
+    close_settings() {
+      this.$store.commit("close_settings");
+    },
+    close_sync() {
+      this.$store.commit("close_sync");
+    },
+    open_close_sync() {
+      this.$store.commit("open_close_sync");
+    },
+    open_edit_stuff() {
+      this.$store.commit("open_close_show_edit_stuff", true);
+    },
+    update_changeValue(newValue) {
+      this.changeValue = [];
+      newValue.forEach((val, idx) => {
+        this.changeValue[idx] = val;
       });
     },
-    changeComparison(idx) {
-      this.comparisons[idx] = this.comparisons[idx] + 1;
+    route(page_name) {
+      this.$router.push("/" + page_name);
+    },
+
+    paginate() {
+      this.paginatedData = [];
+      this.paginatedParams = [];
+      this.data.forEach((item) => this.paginatedData.push(item));
+      this.params.forEach((item) => this.paginatedParams.push(item));
+      if (this.data.length) {
+        if (this.old_data_length == this.data[0].length) {
+          this.collumn_value = [];
+          this.paginatedParams.forEach(() => this.collumn_value.push(true));
+          this.collumn_value.pop();
+          this.collumn_value.pop();
+        } else {
+          const len = this.data[0].length - this.old_data_length;
+          if (len > 0) {
+            for (let i = 0; i != len; i++) this.collumn_value.push(false);
+          }
+        }
+      }
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap");
-@mixin font($w, $s, $h) {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: $w;
-  font-size: $s;
-  line-height: $h;
-}
-@mixin bg_image($url, $size: 100% 100%) {
-  background-size: $size;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-image: url($url);
-}
-.edit_icon {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  @include bg_image("../assets/edit.svg");
-}
-.bar_row {
-  height: 66px;
-}
-.bar_item {
-  padding: 10px;
-  display: flex;
-  background: #e5e5e5;
-  outline: 1px solid #c9c9c9;
-  @include font(500, 16px, 19px);
-  color: #000000;
-  vertical-align: middle;
-  cursor: pointer;
-}
-.bar_item_row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-}
-.bar_item_icon {
-  height: 16px;
-  width: 16px;
-  background-color: transparent;
-  @include bg_image("../assets/sort.svg");
-  border: none;
-}
-.item {
-  padding: 10px;
-  outline: 1px solid #c9c9c9;
-  @include font(400, 14px, 17px);
-  color: #3f3f3f;
-  text-align: start;
-  height: 58px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: wrap;
-}
-.filter {
-  display: flex;
-  flex-direction: row;
-  > button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 54px;
-    height: 35px;
-    background: #757575;
-    border-radius: 4px;
-    border: none;
-    z-index: 2;
-    cursor: pointer;
+@import "@/app.scss";
+.app {
+  width: calc(100vw - 60px);
+  height: 100%;
+  padding: 0 30px;
 
-    .icon {
-      width: 35px;
-      height: 35px;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  text-align: center;
+}
+.header {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  &_left {
+    .btns {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      flex-wrap: wrap;
+      .btns_btn {
+        height: 40px;
+        padding: 9px;
+        cursor: pointer;
+        text-align: center;
+        vertical-align: center;
+        box-sizing: border-box;
+        border: 1px solid #1b3546;
+        border-radius: 4px;
+        color: #1b3546;
+        background: white;
+
+        transition: all 0.15s ease-out;
+        @include font(400, 18px, 22px);
+      }
+      .btns_btn:hover {
+        border-color: #396f93;
+        color: #396f93;
+      }
+      .selected_catalog {
+        transition: all 0.15s ease-out;
+        background: #1b3546;
+        color: white;
+      }
+      .selected_catalog:hover {
+        color: hsl(204, 44%, 95%);
+      }
+    }
+    .radio_btns {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      .radio_btn {
+        > input {
+          display: none;
+        }
+        > label {
+          display: inline-block;
+          cursor: pointer;
+          position: relative;
+          padding-left: 25px;
+          margin-right: 0;
+          line-height: 18px;
+          user-select: none;
+          color: #3f3f3f;
+          @include font(400, 18px, 30px);
+        }
+        > label:before {
+          content: "";
+          display: inline-block;
+          width: 19px;
+          height: 19px;
+          position: absolute;
+          left: 0;
+          bottom: 6px;
+          background: #ffffff;
+          border: 1px solid #c9c9c9;
+          border-radius: 50%;
+          @include bg_image("../assets/Ellipse_2.svg", 0 0);
+          transition: background-size 0.15s ease-in-out;
+        }
+        > input:checked + label:before {
+          @include bg_image("../assets/Ellipse_2.svg", 40% 40%);
+        }
+      }
     }
   }
-  > input {
-    width: 100%;
-    height: 35px;
-    background: #ffffff;
-    border: 0.5px solid #c4c4c4;
-    border-radius: 4px;
-    margin-left: -5px;
-    padding-left: 7px;
-    @include font(400, 14px, 17px);
-    outline: none;
+
+  &_right {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    .ref {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      max-height: 18px;
+      gap: 8px;
+      .ref_1_logo {
+        width: 18px;
+        height: 18px;
+        @include bg_image("../assets/export.svg");
+        transform: rotate(180deg);
+      }
+      .ref_2_logo {
+        width: 18px;
+        height: 18px;
+        @include bg_image("../assets/sync.svg");
+      }
+    }
+    .links {
+      cursor: pointer;
+      text-decoration-line: underline;
+      @include font(400, 18px, 30px);
+    }
+    .settings_btn {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      border: none;
+      background-color: transparent;
+      @include bg_image("../assets/gear.svg");
+    }
+    .modal_sync {
+      position: absolute !important;
+      top: 41px;
+      right: 72px;
+      width: 237px !important;
+      margin: 0 !important;
+    }
+    .modal_settings {
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      float: right;
+      margin: 20px 10px 0 0;
+      flex-direction: column;
+      width: 358px;
+      border: 1px solid #c9c9c9;
+      border-radius: 4px;
+      background: white;
+      overflow: hidden;
+      a {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        transition: background-color 0.15s ease-in-out;
+      }
+      a:hover {
+        background-color: #f5f5f5;
+      }
+    }
+    .modal_settings:last-child {
+      a {
+        padding-bottom: 10px;
+      }
+    }
+    .modal_container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      text-align: left;
+      height: 30px;
+      cursor: pointer;
+      padding: 5px 15px;
+      @include font(400, 16px, 22px);
+    }
   }
 }
-.tilde {
-  @include bg_image("../assets/tilde.svg", 40% 40%);
-}
-.equal {
-  @include bg_image("../assets/equal.svg", 30% 30%);
-}
-.more {
-  @include bg_image("../assets/more.svg", 40% 40%);
-}
-.more_or_equal {
-  @include bg_image("../assets/more_or_equal.svg", 60% 60%);
-}
-* {
-  box-sizing: border-box;
-}
+.wrapper {
+  .filters {
+    display: flex;
+    flex-direction: row;
+    margin-top: 60px;
+    justify-content: space-between;
+    &_left {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      .date {
+        display: flex;
+        flex-direction: column;
+        gap: 19px;
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-}
+        input {
+          position: relative;
+          width: 112px;
+          height: 34px;
+          background: #c9c9c9;
+          border-radius: 4px;
+          border: none;
+          color: #3f3f3f;
+          outline: none;
+          @include font(400, 16px, 19px);
+        }
+        input::-webkit-datetime-edit-fields-wrapper {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+        }
+        input::-webkit-calendar-picker-indicator {
+          cursor: pointer;
+          opacity: 0;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          width: 100%;
+          height: 100%;
+          appearance: none;
+        }
+        p {
+          color: #757575;
+          @include font(400, 16px, 19px);
+        }
+      }
+      .buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 18px;
+      }
+    }
+    &_right {
+      display: flex;
+      flex-direction: row;
+      gap: 18px;
 
-body {
-  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    "Helvetica", "Arial", sans-serif;
-}
+      .filter_group {
+        display: flex;
+        flex-direction: row;
+        margin-top: 8px;
+        max-height: 20px;
 
-table {
-  min-width: 98vw;
-  width: auto;
-  flex: 1;
-  display: grid;
-  border-collapse: collapse;
-  margin: 0 auto;
-  grid-template-columns: repeat(12, auto);
-  gap: 1px;
+        .checkbox {
+          position: absolute;
+          z-index: -1;
+          opacity: 0;
+          margin: 10px 0 0 20px;
+        }
+        .checkbox + label {
+          position: relative;
+          padding: 0 0 0 63px;
+          cursor: pointer;
+          color: #3f3f3f;
+          @include font(400, 16px, 19px);
+        }
+        .checkbox + label:before {
+          content: "";
+          position: absolute;
+          top: -4px;
+          left: 0;
+          width: 54px;
+          height: 23px;
+          border-radius: 20px;
+          background: #c4c4c4;
+          transition: 0.15s ease-out;
+        }
+        .checkbox + label:after {
+          content: "";
+          position: absolute;
+          top: -1px;
+          left: 4px;
+          width: 17px;
+          height: 17px;
+          border-radius: 50%;
+          background: #fff;
+          transition: 0.15s ease-out;
+        }
+        .checkbox:checked + label:before {
+          background: #757575;
+        }
+        .checkbox:checked + label:after {
+          left: 33px;
+        }
+      }
+    }
+  }
+  .grid {
+  }
 }
-
-tr {
-  display: contents;
+.button {
+  cursor: pointer;
+  color: #ffffff;
+  border-radius: 4px;
+  border: none;
+  transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  @include font(400, 18px, 22px);
 }
-
-.resize-handle {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background: black;
+.smallBtn {
+  @include font(400, 14px, 18px);
+}
+.button_1 {
+  width: 112px;
+  height: 34px;
+  background: #6c757d;
+}
+.button_1:hover {
+  background: #5f676d;
+  box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
+}
+.button_2 {
+  width: 112px;
+  height: 34px;
+  background: #1b3546f1;
+}
+.button_2:hover {
+  background: #1b3546d9;
+  box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
+}
+.button_3 {
+  width: 112px;
+  height: 34px;
+  background: #ea9197;
+}
+.button_3:hover {
+  background: rgb(226, 101, 109);
+  box-shadow: 0 0 5px 2px rgb(226 101 109 / 25%);
+}
+.button_4 {
+  width: 124px !important;
+  height: 34px;
+  background: #4e964d;
+}
+.button_4:hover {
+  background: rgb(105, 177, 104);
+  box-shadow: 0 0 5px 2px rgb(105 177 104 / 25%);
+}
+.button_4:disabled {
+  cursor: default;
+  background: #4e964dad;
+}
+.button_4:disabled:hover {
+  box-shadow: none;
+}
+.disabled {
+  pointer-events: none;
+}
+.blur {
+  filter: blur(5px);
+}
+.overflow {
+  overflow-x: hidden;
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
   opacity: 0;
-  width: 3px;
-  cursor: col-resize;
 }
-
-th:hover .resize-handle {
-  opacity: 0.3;
+.btns-enter-active,
+.btns-leave-active {
+  transition: opacity 0.15s ease-out;
+}
+.btns-enter-from,
+.btns-leave-to {
+  opacity: 0;
 }
 </style>
