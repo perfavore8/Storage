@@ -15,7 +15,7 @@
       ></div>
     </div>
     <transition name="list">
-      <div class="options" v-if="show_options">
+      <div class="options" v-if="show_options" key="a1">
         <p
           v-for="option in options"
           :key="option.value"
@@ -42,6 +42,9 @@ export default {
     selected_option: {
       type: Object,
       required: true,
+      default() {
+        return {};
+      },
     },
     disabled: {
       type: Boolean,

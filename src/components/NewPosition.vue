@@ -65,18 +65,12 @@
                   </div>
                 </td>
                 <td class="item">
-                  <input
-                    type="number"
-                    v-model="new_items[idx][5]"
-                    class="input"
+                  <selector-vue
+                    :options_props="options[0]"
+                    @select="option_select3"
+                    :selected_option="row[5]"
+                    :idx="idx"
                     :disabled="row[0].value == 2"
-                    min="0"
-                    :class="{
-                      not_valid:
-                        (new_items[idx][5] == '' ||
-                          new_items[idx][5] == undefined) &&
-                        try_accept,
-                    }"
                   />
                 </td>
                 <td class="item">
@@ -84,9 +78,33 @@
                     type="number"
                     v-model="new_items[idx][6]"
                     class="input"
+                    :disabled="row[0].value == 2"
                     min="0"
                     :class="{
-                      not_valid: new_items[idx][6] == '' && try_accept,
+                      not_valid:
+                        (new_items[idx][6] == '' ||
+                          new_items[idx][6] == undefined) &&
+                        try_accept,
+                    }"
+                  />
+                </td>
+                <td class="item">
+                  <selector-vue
+                    :options_props="options[1]"
+                    @select="option_select4"
+                    :selected_option="row[7]"
+                    :idx="idx"
+                    :disabled="row[0].value == 2"
+                  />
+                </td>
+                <td class="item">
+                  <input
+                    type="number"
+                    v-model="new_items[idx][8]"
+                    class="input"
+                    min="0"
+                    :class="{
+                      not_valid: new_items[idx][8] == '' && try_accept,
                     }"
                     :disabled="rows.length > idx"
                   />
@@ -94,11 +112,11 @@
                 <td class="item">
                   <input
                     type="number"
-                    v-model="new_items[idx][7]"
+                    v-model="new_items[idx][9]"
                     class="input"
                     min="0"
                     :class="{
-                      not_valid: new_items[idx][7] == '' && try_accept,
+                      not_valid: new_items[idx][9] == '' && try_accept,
                     }"
                   />
                 </td>
@@ -106,22 +124,22 @@
                   <div class="nds">
                     <input
                       type="checkbox"
-                      v-model="new_items[idx][8]"
+                      v-model="new_items[idx][10]"
                       class="checkbox"
                       :id="idx + 'nq'"
                     />
                     <label :for="idx + 'nq'"></label>
-                    <div class="hiden" v-if="new_items[idx][8]">
+                    <div class="hiden" v-if="new_items[idx][10]">
                       <input
                         type="checkbox"
-                        v-model="new_items[idx][9]"
+                        v-model="new_items[idx][11]"
                         class="checkbox"
                         :id="idx + 'nw'"
                       />
                       <label :for="idx + 'nw'">включен в цену</label>
                       <input
                         type="checkbox"
-                        v-model="new_items[idx][10]"
+                        v-model="new_items[idx][12]"
                         class="checkbox"
                         :id="idx + 'ne'"
                       />
@@ -129,7 +147,7 @@
                       <input
                         type="number"
                         class="input"
-                        v-model="new_items[idx][11]"
+                        v-model="new_items[idx][13]"
                         placeholder="% НДС"
                         min="0"
                       />
@@ -166,6 +184,7 @@
 <script>
 import SelectorVue from "@/components/SelectorVue";
 import { nextTick } from "@vue/runtime-core";
+import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
@@ -190,7 +209,9 @@ export default {
         "Артикул",
         "Название",
         "№ партии",
+        "Склад",
         "Кол-во",
+        "Единицы измерений",
         "Себестоимость",
         "Цена",
         "НДС",
@@ -201,8 +222,12 @@ export default {
         { name: "Товар", value: 1 },
         { name: "Услуга", value: 2 },
       ],
+      options: [],
       try_accept: false,
     };
+  },
+  computed: {
+    ...mapGetters(["options_from_name"]),
   },
   mounted() {
     this.start();
@@ -214,9 +239,28 @@ export default {
           const type_idx = this.title.indexOf("Тип");
           const count_idx = this.title.indexOf("Кол-во") + 1;
           const batchnumber_idx = this.title.indexOf("№ партии");
-          if (val[type_idx].value == 2)
-            (this.new_items[idx][count_idx] = 0),
-              (this.new_items[idx][batchnumber_idx] = { name: "", value: 999 });
+          const storage_idx = this.title.indexOf("Склад") + 1;
+          const ed_idx = this.title.indexOf("Единицы измерений") + 1;
+          const obj = { name: "", value: 999 };
+          const new_sel_option = (objs) => {
+            Object.assign(this.new_items[idx][batchnumber_idx], objs[0]);
+            Object.assign(this.new_items[idx][storage_idx], objs[1]);
+            Object.assign(this.new_items[idx][ed_idx], objs[2]);
+          };
+          if (val[type_idx].value == 2) {
+            this.new_items[idx][count_idx] = 0;
+            new_sel_option([obj, obj, obj]);
+          }
+          if (
+            val[type_idx].value != 2 &&
+            val[batchnumber_idx].value == obj.value
+          ) {
+            new_sel_option([
+              this.options1[idx][0],
+              this.options[0][0],
+              this.options[1][0],
+            ]);
+          }
           if (val[5] < 0) this.new_items[idx][5] = 0;
           if (val[6] < 0) this.new_items[idx][6] = 0;
           if (val[7] < 0) this.new_items[idx][7] = 0;
@@ -234,7 +278,9 @@ export default {
         "",
         { name: "Новая", value: 1 },
         "",
+        {},
         "",
+        {},
         "",
         "",
         false,
@@ -242,11 +288,28 @@ export default {
         false,
         "",
       ]);
+      Object.assign(
+        this.new_items[this.new_items.length - 1][5],
+        this.options[0][0]
+      );
+      Object.assign(
+        this.new_items[this.new_items.length - 1][7],
+        this.options[1][0]
+      );
       this.options1.push([{ name: "Новая", value: 1 }]);
     },
     push_current_item() {
       this.rows.forEach((val, idx) => {
         this.new_items.push([]);
+        const serch_selected_item = (options, name) => {
+          let obj = {};
+          options.forEach((val) => {
+            if (val.name == name) {
+              Object.assign(obj, val);
+            }
+          });
+          return obj;
+        };
         val.forEach((value) => {
           this.new_items[idx].push(value);
         });
@@ -260,6 +323,14 @@ export default {
           name: this.new_items[idx][3],
           value: 2,
         };
+        this.new_items[idx][5] = serch_selected_item(
+          this.options[0],
+          this.new_items[idx][5]
+        );
+        this.new_items[idx][7] = serch_selected_item(
+          this.options[1],
+          this.new_items[idx][7]
+        );
         this.new_items[idx][0] = { name: "Товар", value: 1 };
       });
     },
@@ -272,18 +343,16 @@ export default {
       this.new_items.forEach((val) => {
         accept =
           accept &&
-          val[0] != "" &&
           val[1] != "" &&
-          val[3] != "" &&
-          val[5] != "" &&
+          val[2] != "" &&
           val[6] != "" &&
           val[7] != "" &&
-          val[0] != undefined &&
+          val[8] != "" &&
           val[1] != undefined &&
-          val[3] != undefined &&
-          val[5] != undefined &&
+          val[2] != undefined &&
           val[6] != undefined &&
-          val[7] != undefined;
+          val[7] != undefined &&
+          val[8] != undefined;
       });
       if (accept) {
         this.new_items.forEach((value, index) => {
@@ -303,6 +372,7 @@ export default {
         this.new_items.forEach((val) => {
           let artic = [];
           this.title.forEach((val) => {
+            if (val === "Кол-во") val = "На складе";
             if (val === "№ партии") artic.push("");
             artic.push(val);
           });
@@ -324,13 +394,21 @@ export default {
       this.$store.commit("open_close_new_position", false);
     },
     option_select1(option, idx) {
-      this.new_items[idx][3] = option;
+      Object.assign(this.new_items[idx][3], option);
     },
     option_select2(option, idx) {
-      this.new_items[idx][0] = option;
+      Object.assign(this.new_items[idx][0], option);
+    },
+    option_select3(option, idx) {
+      Object.assign(this.new_items[idx][5], option);
+    },
+    option_select4(option, idx) {
+      Object.assign(this.new_items[idx][7], option);
     },
     start() {
       nextTick(() => {
+        this.options.push(this.options_from_name["Склад"]);
+        this.options.push(this.options_from_name["Единицы измерений"]);
         if (this.rows.length > 0) {
           this.push_current_item();
         } else {
@@ -353,7 +431,7 @@ export default {
   left: 0;
   background: transparent;
   .container {
-    max-width: 1140px;
+    max-width: 1400px;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -391,7 +469,7 @@ export default {
         }
         .row {
           .item {
-            padding: 10px;
+            padding: 10px 5px;
             border: 1px solid #c9c9c9;
             border-top: 2px solid #c9c9c9;
             text-align: left;
@@ -431,25 +509,33 @@ export default {
           }
           .item:nth-child(3) {
             width: 7%;
-            // min-width: 224px;
-            // max-width: 224px;
           }
           .item:nth-child(4) {
-            width: 20%;
+            width: 40%;
           }
           .item:nth-child(5) {
-            width: 10%;
+            width: 1%;
+            min-width: 140px;
+            max-width: 140px;
           }
           .item:nth-child(6) {
-            width: 5%;
+            width: 10%;
           }
           .item:nth-child(7) {
-            width: 9%;
+            width: 1%;
+            min-width: 230px;
+            max-width: 230px;
           }
           .item:nth-child(8) {
             width: 5%;
           }
           .item:nth-child(9) {
+            width: 9%;
+          }
+          .item:nth-child(10) {
+            width: 5%;
+          }
+          .item:nth-child(11) {
             width: 5.3%;
             min-width: 54px;
             max-width: 54px;
@@ -475,7 +561,7 @@ export default {
         margin-top: 15px;
         // position: absolute;
         // right: 13.5%;
-        margin-left: 981px;
+        margin-left: 1228px;
         width: 34px;
         height: 34px;
         color: #fff;

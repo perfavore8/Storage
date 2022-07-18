@@ -1,8 +1,6 @@
 <template>
   <div class="wrapper">
-    <transition name="mdl">
-      <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
-    </transition>
+    <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
     <table class="table" :key="updateKey" :class="{ blur: show_edit_modal }">
       <thead>
         <tr class="bar_row">
@@ -32,8 +30,8 @@
         </tr>
         <tr class="filters">
           <transition-group name="mdl">
-            <transition name="mdl">
-              <th class="item" v-show="show_filter"></th>
+            <transition name="mdl" key="1b">
+              <th class="item" v-show="show_filter" key="b1"></th>
             </transition>
             <th
               class="item"
@@ -75,7 +73,7 @@
                 @change_filter_value="change_filter_value"
               />
             </th>
-            <th class="item" v-show="show_filter" />
+            <th class="item" v-show="show_filter" key="2b" />
           </transition-group>
         </tr>
       </thead>

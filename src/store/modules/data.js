@@ -872,7 +872,6 @@ export default {
     binding_fields_deals(state) {
       return state.binding_fields_deals;
     },
-
     catalog(state) {
       return state.catalog;
     },
@@ -881,6 +880,13 @@ export default {
     },
     coun_archive(state) {
       return state.archive.items.length;
+    },
+    options_from_name: (state) => {
+      const result = {};
+      state.fields.forEach((val) => {
+        result[val.field] = val.selector_options;
+      });
+      return result;
     },
   },
   mutations: {

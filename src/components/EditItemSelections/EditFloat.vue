@@ -12,10 +12,16 @@ export default {
     item: {
       type: String,
       required: true,
+      default() {
+        return "";
+      },
     },
     selected_option: {
       type: String,
       required: true,
+      default() {
+        return "";
+      },
     },
     idx: {
       type: Number,

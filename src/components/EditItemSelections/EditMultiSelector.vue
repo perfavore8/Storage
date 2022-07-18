@@ -20,10 +20,16 @@ export default {
     item: {
       type: Object,
       required: true,
+      default() {
+        return {};
+      },
     },
     selected_options: {
       type: String,
       required: true,
+      default() {
+        return "";
+      },
     },
     idx: {
       type: Number,
