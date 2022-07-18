@@ -1,11 +1,7 @@
 <template>
   <div class="filter">
     <button @click="open_selector()">
-      <div
-        class="arrow"
-        v-if="!disabled"
-        :class="{ rotate_arrow: show_selector }"
-      ></div>
+      <div class="arrow" :class="{ rotate_arrow: show_selector }"></div>
     </button>
     <multi-selector
       class="selector"

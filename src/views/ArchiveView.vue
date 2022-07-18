@@ -23,7 +23,6 @@
 </template>
 
 <script>
-// FIXME поменять условия кнопок навигации на роуты
 import ArchiveGrid from "@/components/ArchiveGrid.vue";
 import { mapGetters } from "vuex";
 export default {

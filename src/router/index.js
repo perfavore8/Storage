@@ -27,6 +27,10 @@ const routes = [
     name: "instructions",
     component: () => import("../views/InstructionsView.vue"),
   },
+  {
+    path: "/*",
+    redirect: "/home",
+  },
 ];
 
 const router = createRouter({

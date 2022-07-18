@@ -3,7 +3,7 @@
     <transition name="mdl">
       <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
     </transition>
-    <tabel class="tabel" :key="updateKey" :class="{ blur: show_edit_modal }">
+    <table class="table" :key="updateKey" :class="{ blur: show_edit_modal }">
       <thead>
         <tr class="bar_row">
           <th
@@ -132,7 +132,7 @@
           </tr>
         </transition-group>
       </tbody>
-    </tabel>
+    </table>
     <div class="bottom" :class="{ blur: show_edit_modal }">
       <button v-if="page > 1" @click="page -= 1">
         {{ "<" }}
@@ -155,8 +155,7 @@
 </template>
 
 <script>
-// ~~~~~~~FIXME 9!!! хз не смог словит этот баг еще раз
-// едут колонки в верху при добавлнеии новых параметров!
+// FIXME 3 <TransitionGroup> children must be keyed.
 import EditItem from "@/components/EditItem.vue";
 import { mapGetters } from "vuex";
 import FilterNumber from "@/components/FiltersSelections/FilterNumber.vue";
@@ -410,7 +409,7 @@ export default {
 }
 .row {
 }
-.tabel {
+.table {
   border-collapse: collapse;
 }
 .bar_row {

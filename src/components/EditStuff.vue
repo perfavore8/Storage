@@ -309,7 +309,6 @@
   </div>
 </template>
 <script>
-// FIXME 9 при удалении и отмене все равно удалаяет
 import SelectorVue from "@/components/SelectorVue";
 import EditStuffList from "@/components/EditStuffList.vue";
 import { mapGetters } from "vuex";

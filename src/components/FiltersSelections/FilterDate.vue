@@ -49,6 +49,7 @@ export default {
   mounted() {
     this.change_value();
   },
+  emits: { change_filter_value: null },
   methods: {
     change_value() {
       nextTick(() => {

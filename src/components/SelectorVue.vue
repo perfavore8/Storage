@@ -29,8 +29,8 @@
 </template>
 
 <script>
+import { onMounted, ref } from "@vue/runtime-core";
 export default {
-  name: "SelectorVue",
   props: {
     options_props: {
       type: Array,
@@ -53,32 +53,42 @@ export default {
       required: false,
     },
   },
-  data() {
-    return {
-      show_options: false,
-      options: [],
+
+  emits: {
+    select: null,
+  },
+  setup(props, { emit }) {
+    const options = ref([]);
+    onMounted(() => {
+      options.value = [];
+      props.options_props.forEach((item) => options.value.push(item));
+    });
+
+    const show_options = ref(false);
+    const hide_select = () => {
+      show_options.value = false;
     };
-  },
-  mounted() {
-    this.options = [];
-    this.options_props.forEach((item) => this.options.push(item));
-  },
-  methods: {
-    select_option(option) {
-      this.$emit("select", option, this.idx);
-      this.hide_select();
-    },
-    hide_select() {
-      this.show_options = false;
-    },
-    open_close_options() {
-      if (!this.disabled) {
-        this.show_options = !this.show_options;
+    const open_close_options = () => {
+      if (!props.disabled) {
+        show_options.value = !show_options.value;
       }
-    },
-    handleFocusOut() {
-      this.hide_select();
-    },
+    };
+    const handleFocusOut = () => {
+      hide_select();
+    };
+
+    const select_option = (option) => {
+      emit("select", option, props.idx);
+      hide_select();
+    };
+
+    return {
+      open_close_options,
+      handleFocusOut,
+      show_options,
+      options,
+      select_option,
+    };
   },
 };
 </script>

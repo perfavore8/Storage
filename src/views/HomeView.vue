@@ -180,15 +180,16 @@
           :params="paginatedParams"
           :collval="collumn_value"
           @update_changeValue="update_changeValue"
-        />
+        ></main-grid>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import MainGrid from "@/components/Main_grid.vue";
-import TableSetings from "@/components/Table_setings.vue";
+// FIXME 4 при списаниие всех всего запаса у одного товара его вс еравно можно выбрать к списанию и таким образом нельзя списать остальные товары
+import MainGrid from "@/components/MainGrid.vue";
+import TableSetings from "@/components/TableSetings.vue";
 import EditStuff from "@/components/EditStuff.vue";
 import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";

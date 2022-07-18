@@ -51,6 +51,7 @@
                       @select="option_select1"
                       :selected_option="row[3]"
                       :idx="idx"
+                      :disabled="row[0].value == 2"
                     />
                     <input
                       type="text"
@@ -59,7 +60,7 @@
                       :class="{
                         not_valid: new_items[idx][4] == '' && try_accept,
                       }"
-                      :disabled="rows.length > idx"
+                      :disabled="rows.length > idx || row[0].value == 2"
                     />
                   </div>
                 </td>
@@ -212,7 +213,10 @@ export default {
         this.new_items.forEach((val, idx) => {
           const type_idx = this.title.indexOf("Тип");
           const count_idx = this.title.indexOf("Кол-во") + 1;
-          if (val[type_idx].value == 2) this.new_items[idx][count_idx] = 0;
+          const batchnumber_idx = this.title.indexOf("№ партии");
+          if (val[type_idx].value == 2)
+            (this.new_items[idx][count_idx] = 0),
+              (this.new_items[idx][batchnumber_idx] = { name: "", value: 999 });
           if (val[5] < 0) this.new_items[idx][5] = 0;
           if (val[6] < 0) this.new_items[idx][6] = 0;
           if (val[7] < 0) this.new_items[idx][7] = 0;
