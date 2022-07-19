@@ -198,7 +198,7 @@ export default {
       },
     },
     idxes: {
-      type: Number,
+      type: Array,
       required: false,
     },
   },
@@ -519,7 +519,7 @@ export default {
             max-width: 140px;
           }
           .item:nth-child(6) {
-            width: 10%;
+            width: 15%;
           }
           .item:nth-child(7) {
             width: 1%;
@@ -530,14 +530,14 @@ export default {
             width: 5%;
           }
           .item:nth-child(9) {
-            width: 9%;
+            width: 15%;
           }
           .item:nth-child(10) {
             width: 5%;
           }
           .item:nth-child(11) {
             width: 5.3%;
-            min-width: 54px;
+            min-width: 34px;
             max-width: 54px;
           }
           .del_btn {
@@ -561,7 +561,7 @@ export default {
         margin-top: 15px;
         // position: absolute;
         // right: 13.5%;
-        margin-left: 1228px;
+        margin-left: 1249px;
         width: 34px;
         height: 34px;
         color: #fff;

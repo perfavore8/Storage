@@ -560,7 +560,7 @@ export default {
 }
 .open_dublitem {
   background-color: rgba(187, 224, 242, 0.267);
-  padding-left: 30px;
+  // padding-left: 30px;
   .dublitem {
   }
 }

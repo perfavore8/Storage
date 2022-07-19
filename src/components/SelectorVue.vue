@@ -149,8 +149,22 @@ export default {
     transform: rotateX(180deg);
   }
   .options {
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .options::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  .options {
     position: absolute;
     top: 34px;
+    max-height: 400px;
+    overflow-y: scroll;
+    scrollbar-width: 0;
+    // overflow-x: hidden;
     background-color: white;
     border: 1px solid #ced4da;
     border-top: 0;

@@ -840,6 +840,22 @@ export default {
         ],
       ],
     },
+    documents: [
+      {
+        name: "Счет",
+        serviceID: "13U76ujSjV_iaY0L2WBVHVw7q07TSEqstuL0kSeX-Sh8",
+        gauge: "редактировать",
+        gouge_type: "xlsx",
+        download_type: "pdf",
+      },
+      {
+        name: "Тест",
+        serviceID: "1SXnFH7iILXuduumj8PNhi8w1xQfchHKK	",
+        gauge: "редактировать",
+        gouge_type: "xlsx",
+        download_type: "Исходный",
+      },
+    ],
   },
   getters: {
     data(state) {
@@ -887,6 +903,9 @@ export default {
         result[val.field] = val.selector_options;
       });
       return result;
+    },
+    documents(state) {
+      return state.documents;
     },
   },
   mutations: {
