@@ -120,30 +120,46 @@
                     }"
                   />
                 </td>
-                <td class="item">
+                <td
+                  class="item"
+                  :class="{
+                    long: new_items[idx][10],
+                  }"
+                >
                   <div class="nds">
-                    <input
-                      type="checkbox"
-                      v-model="new_items[idx][10]"
-                      class="checkbox"
-                      :id="idx + 'nq'"
-                    />
-                    <label :for="idx + 'nq'"></label>
+                    <div v-if="!new_items[idx][10]">
+                      <input
+                        type="checkbox"
+                        v-model="new_items[idx][10]"
+                        class="checkbox"
+                        :id="idx + 'nq'"
+                      />
+                      <label :for="idx + 'nq'"></label>
+                    </div>
                     <div class="hiden" v-if="new_items[idx][10]">
-                      <input
-                        type="checkbox"
-                        v-model="new_items[idx][11]"
-                        class="checkbox"
-                        :id="idx + 'nw'"
-                      />
-                      <label :for="idx + 'nw'">включен в цену</label>
-                      <input
-                        type="checkbox"
-                        v-model="new_items[idx][12]"
-                        class="checkbox"
-                        :id="idx + 'ne'"
-                      />
-                      <label :for="idx + 'ne'">менеджер может менять %</label>
+                      <div class="checkboxes">
+                        <input
+                          type="checkbox"
+                          v-model="new_items[idx][10]"
+                          class="checkbox"
+                          :id="idx + 'nq'"
+                        />
+                        <label :for="idx + 'nq'">НДС</label>
+                        <input
+                          type="checkbox"
+                          v-model="new_items[idx][11]"
+                          class="checkbox"
+                          :id="idx + 'nw'"
+                        />
+                        <label :for="idx + 'nw'">включен в цену</label>
+                        <input
+                          type="checkbox"
+                          v-model="new_items[idx][12]"
+                          class="checkbox"
+                          :id="idx + 'ne'"
+                        />
+                        <label :for="idx + 'ne'">можно менять %</label>
+                      </div>
                       <input
                         type="number"
                         class="input"
@@ -431,7 +447,8 @@ export default {
   left: 0;
   background: transparent;
   .container {
-    max-width: 1400px;
+    width: 90%;
+    min-width: 1400px;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -474,7 +491,24 @@ export default {
             border-top: 2px solid #c9c9c9;
             text-align: left;
             .nds {
+              // text-align: center;
+              display: flex;
+              flex-direction: row;
               text-align: center;
+              justify-content: center;
+              .hiden {
+                display: flex;
+                flex-direction: column;
+                .checkboxes {
+                  display: flex;
+                  flex-direction: row;
+                  gap: 7px;
+                  @include font(500, 14px);
+                  > label {
+                    flex-direction: column;
+                  }
+                }
+              }
             }
             .v-select {
               width: calc(100% - 26px) !important;
@@ -539,6 +573,9 @@ export default {
             width: 5.3%;
             min-width: 34px;
             max-width: 54px;
+          }
+          .long {
+            min-width: 172px;
           }
           .del_btn {
             height: 34px;

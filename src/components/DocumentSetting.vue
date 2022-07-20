@@ -1,5 +1,17 @@
 <template>
-  <div class="app">
+  <document-setting-add-new
+    v-if="showAddNew"
+    :cur_doc="cur_doc"
+    :idx="selected_doc_idx"
+    @close="close_add_new"
+    @save_new_doc="save_new_doc"
+    @save_cur_doc="save_cur_doc"
+  >
+    <template v-slot:title>
+      <span>Добавление шаблона документов</span>
+    </template>
+  </document-setting-add-new>
+  <div class="app" ref="app">
     <div class="container">
       <div class="header">
         <div class="left">
@@ -56,15 +68,19 @@
                   <td class="item">{{ doc.download_type }}</td>
                   <td class="item">
                     <div class="btns">
-                      <button class="btn_edit"><div class="icon"></div></button>
-                      <button class="btn_del"><div class="icon"></div></button>
+                      <button class="btn_edit" @click="open_edit(doc)">
+                        <div class="icon"></div>
+                      </button>
+                      <button class="btn_del" @click="delete_cur_doc(doc)">
+                        <div class="icon"></div>
+                      </button>
                     </div>
                   </td>
                 </tr>
               </tbody>
             </table>
             <div class="add_button_container">
-              <button class="add_new_button" @click="push_new_item()">
+              <button class="add_new_button" @click="open_add_new()">
                 <div class="icon"></div>
               </button>
             </div>
@@ -83,11 +99,13 @@
 
 <script>
 import SelectorVue from "@/components/SelectorVue.vue";
+import DocumentSettingAddNew from "@/components/DocumentSettingAddNew.vue";
 // import { nextTick } from "@vue/runtime-core";
 import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
+    DocumentSettingAddNew,
   },
   data() {
     return {
@@ -105,14 +123,49 @@ export default {
         { name: "Бюджет общий", value: 3 },
       ],
       selected_option: { name: "Не выбрано", value: 1 },
+      showAddNew: false,
+      cur_doc: {},
+      selected_doc_idx: null,
     };
   },
   computed: {
     ...mapGetters(["documents"]),
   },
+  mounted() {
+    this.open_add_new();
+  },
   methods: {
     option_select(option) {
       Object.assign(this.selected_option, option);
+    },
+    open_edit(doc) {
+      Object.assign(this.cur_doc, doc);
+      this.selected_doc_idx = this.documents.indexOf(doc);
+      this.open_add_new();
+    },
+    open_add_new() {
+      this.showAddNew = true;
+      this.$refs.app.style.pointerEvents = "none";
+      this.$refs.app.style.filter = "blur(5px)";
+    },
+    close_add_new() {
+      this.showAddNew = false;
+      this.$refs.app.style.pointerEvents = "all";
+      this.$refs.app.style.filter = "none";
+    },
+    save_new_doc(new_doc) {
+      this.$store.commit("save_new_doc", new_doc);
+    },
+    save_cur_doc(cur_doc, idx) {
+      const payload = {
+        idx: idx,
+        cur_doc: cur_doc,
+      };
+      this.$store.commit("save_cur_doc", payload);
+    },
+    delete_cur_doc(cur_doc) {
+      const idx = this.documents.indexOf(cur_doc);
+      this.$store.commit("delete_cur_doc", idx);
     },
   },
 };
@@ -122,7 +175,7 @@ export default {
 @import "@/app.scss";
 .app {
   pointer-events: all;
-  z-index: 9999999;
+  z-index: 50;
   width: 100%;
   position: absolute;
   top: 0;
@@ -158,12 +211,17 @@ export default {
           button {
             margin-left: 10px;
             @include font(400, 14px);
+            cursor: pointer;
             color: #000;
             background-color: #ffca2c;
             border: none;
             border-radius: 4px;
             height: 30px;
             width: 60px;
+          }
+          button:hover {
+            background-color: rgb(255, 191, 0);
+            box-shadow: 0 0 5px 2px rgb(255 191 0 / 25%);
           }
         }
       }
@@ -243,26 +301,35 @@ export default {
                   display: flex;
                   align-items: center;
                   justify-content: center;
-                  @include font(400, 16px, 20px);
+                  transition: background-color 0.15s ease-in-out,
+                    box-shadow 0.15s ease-in-out;
                   margin: 0;
                 }
                 .btn_edit {
                   background-color: #4e964d;
-                  border-radius: 4px 0 0 4px;
+                  border-radius: 5px 0 0 5px;
                   .icon {
                     width: inherit;
                     height: inherit;
                     @include bg_image("@/assets/pencil.svg", 80% 80%);
                   }
                 }
+                .btn_edit:hover {
+                  background-color: #60ba5e;
+                  box-shadow: 0 0 5px 2px rgb(96 186 94 / 25%);
+                }
                 .btn_del {
                   background: #dc3545;
-                  border-radius: 0 4px 4px 0;
+                  border-radius: 0 5px 5px 0;
                   .icon {
                     width: inherit;
                     height: inherit;
                     @include bg_image("@/assets/cross.svg", 80% 80%);
                   }
+                }
+                .btn_del:hover {
+                  background-color: #f53d50;
+                  box-shadow: 0 0 5px 2px rgb(245 61 80 / 25%);
                 }
               }
             }
@@ -280,14 +347,17 @@ export default {
               color: #fff;
               background: #4e964d;
               border: none;
-              border-radius: 4px;
-              @include font(400, 16px, 20px);
+              border-radius: 5px;
               .icon {
                 width: inherit;
                 height: inherit;
-                margin: -1px 0 0 -5px;
+                margin: -1px 0 0 -6px;
                 @include bg_image("@/assets/plus.svg", 60% 60%);
               }
+            }
+            .add_new_button:hover {
+              background-color: #60ba5e;
+              box-shadow: 0 0 5px 2px rgb(96 186 94 / 25%);
             }
           }
         }

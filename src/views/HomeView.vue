@@ -48,21 +48,15 @@
           </button>
         </div>
         <div class="radio_btns">
-          <div class="radio_btn">
-            <input type="radio" name="store1" id="store1" />
-            <label for="store1">Все остатки </label>
-          </div>
-          <div class="radio_btn">
-            <input type="radio" name="store1" id="store2" checked />
-            <label for="store2">Склад 1</label>
-          </div>
-          <div class="radio_btn">
-            <input type="radio" name="store1" id="store3" />
-            <label for="store3">Склад 2</label>
-          </div>
-          <div class="radio_btn">
-            <input type="radio" name="store1" id="store4" />
-            <label for="store4">Услуги</label>
+          <div class="radio_btn" v-for="page in storage_pages" :key="page">
+            <input
+              type="radio"
+              :value="page.name"
+              :id="page.name"
+              name="selected_storage"
+              v-model="selected_storage"
+            />
+            <label :for="page.name">{{ page.name }}</label>
           </div>
         </div>
       </div>
@@ -156,6 +150,7 @@
         </div>
         <div class="filters_right">
           <div class="filter_group">
+            <button @click="grid = !grid">GRID</button>
             <input
               type="checkbox"
               v-model="filter_value"
@@ -176,11 +171,19 @@
       </div>
       <div class="grid">
         <main-grid
+          v-if="!grid"
           :data="paginatedData"
           :params="paginatedParams"
           :collval="collumn_value"
           @update_changeValue="update_changeValue"
         ></main-grid>
+        <card-grid
+          v-if="grid"
+          :data="paginatedData"
+          :params="paginatedParams"
+          :collval="collumn_value"
+          @update_changeValue="update_changeValue"
+        ></card-grid>
       </div>
     </div>
   </div>
@@ -189,6 +192,7 @@
 <script>
 // FIXME 4 при списаниие всех всего запаса у одного товара его вс еравно можно выбрать к списанию и таким образом нельзя списать остальные товары
 import MainGrid from "@/components/MainGrid.vue";
+import CardGrid from "@/components/CardGrid.vue";
 import TableSetings from "@/components/TableSetings.vue";
 import EditStuff from "@/components/EditStuff.vue";
 import NewPosition from "@/components/NewPosition.vue";
@@ -202,6 +206,7 @@ export default {
     EditStuff,
     NewPosition,
     CancelPosition,
+    CardGrid,
   },
   data() {
     return {
@@ -211,6 +216,14 @@ export default {
       collumn_value: [],
       changeValue: [],
       old_data_length: null,
+      selected_storage: "Все остатки",
+      storage_pages: [
+        { name: "Все остатки" },
+        { name: "Склад 1" },
+        { name: "Склад 2" },
+        { name: "Услуги" },
+      ],
+      grid: false,
     };
   },
   created: function () {
@@ -314,9 +327,17 @@ export default {
     ...mapGetters(["show_new_position"]),
     ...mapGetters(["show_cancel_position"]),
     ...mapGetters(["catalog"]),
+    ...mapGetters(["get_data_storage"]),
+    ...mapGetters(["service"]),
   },
   watch: {
     data: {
+      handler: function () {
+        this.paginate();
+      },
+      deep: true,
+    },
+    service: {
       handler: function () {
         this.paginate();
       },
@@ -330,6 +351,9 @@ export default {
         ? (window.scrollBy(-99999, 0),
           (document.body.style.overflowX = "hidden"))
         : (document.body.style.overflowX = "auto");
+    },
+    selected_storage() {
+      this.paginate();
     },
   },
   methods: {
@@ -391,7 +415,20 @@ export default {
     paginate() {
       this.paginatedData = [];
       this.paginatedParams = [];
-      this.data.forEach((item) => this.paginatedData.push(item));
+      if (this.selected_storage == "Все остатки") {
+        this.data.forEach((item) => this.paginatedData.push(item));
+      }
+      if (
+        this.selected_storage == "Склад 1" ||
+        this.selected_storage == "Склад 2"
+      ) {
+        this.get_data_storage[this.selected_storage].forEach((item) =>
+          this.paginatedData.push(item)
+        );
+      }
+      if (this.selected_storage == "Услуги") {
+        this.service.forEach((item) => this.paginatedData.push(item));
+      }
       this.params.forEach((item) => this.paginatedParams.push(item));
       if (this.data.length) {
         if (this.old_data_length == this.data[0].length) {
@@ -414,7 +451,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: calc(100vw - 60px);
+  width: calc(100vw - 80px);
   height: 100%;
   padding: 0 30px;
 

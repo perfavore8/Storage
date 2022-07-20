@@ -155,7 +155,7 @@ export default {
         "4",
         "117",
         "119",
-        "Склад 2",
+        "Склад 1",
         "119",
         "11",
         "11",
@@ -317,6 +317,71 @@ export default {
         "123",
         "Да",
         "Группа 2",
+      ],
+    ],
+    service: [
+      [
+        "Услуга 1",
+        "1",
+        "1500",
+        "1509",
+        "",
+        "",
+        "",
+        "",
+        "2",
+        "2022-07-18",
+        "Да",
+        "2022-07-18T11:21",
+        "",
+        "3",
+        "Нет",
+        "Да",
+        "123",
+        "Да",
+        "Группа 1",
+      ],
+      [
+        "Услуга 2",
+        "2",
+        "1800",
+        "1809",
+        "",
+        "",
+        "",
+        "",
+        "2",
+        "2022-07-18",
+        "Да",
+        "2022-07-18T11:21",
+        "",
+        "3",
+        "Нет",
+        "Да",
+        "123",
+        "Да",
+        "Группа 1",
+      ],
+      [
+        "Услуга 3",
+        "3",
+        "13",
+        "19",
+        "",
+        "",
+        "",
+        "",
+        "2",
+        "2022-07-18",
+        "Да",
+        "2022-07-18T11:21",
+        "",
+        "3",
+        "Нет",
+        "Да",
+        "123",
+        "Да",
+        "Группа 1",
       ],
     ],
     sync_list_stuff_options: [
@@ -861,6 +926,33 @@ export default {
     data(state) {
       return state.data;
     },
+    get_data_storage(state) {
+      const storage_idx = state.params.indexOf("Склад") - 1;
+      const result = {};
+      let storages = [];
+      let fields_stor_idx = null;
+      state.fields.forEach((val) => {
+        if (val.field == "Склад") {
+          fields_stor_idx = val.id - 1;
+        }
+      });
+      state.fields[fields_stor_idx].selector_options.forEach((val) => {
+        storages.push(val.name);
+      });
+      storages.shift();
+      storages.forEach((val) => {
+        result[val] = [];
+      });
+      storages.forEach((val) => {
+        state.data.forEach((value) => {
+          if (value[storage_idx] == val) result[val].push(value);
+        });
+      });
+      return result;
+    },
+    service(state) {
+      return state.service;
+    },
     params(state) {
       return state.params;
     },
@@ -967,6 +1059,15 @@ export default {
     },
     update_binding_fields_deals(state, binding_fields_deals) {
       state.binding_fields_deals = binding_fields_deals;
+    },
+    save_new_doc(state, new_doc) {
+      state.documents.push(Object.assign(new_doc, { gauge: "редактировать" }));
+    },
+    save_cur_doc(state, payload) {
+      Object.assign(state.documents[payload.idx], payload.cur_doc);
+    },
+    delete_cur_doc(state, idx) {
+      state.documents.splice(idx, 1);
     },
   },
   actions: {},
