@@ -51,7 +51,7 @@ export default {
     },
   },
   watch: {
-    type_value: {
+    option_value: {
       handler() {
         this.emit_value();
       },
@@ -129,6 +129,7 @@ export default {
   }
   .selector {
     position: absolute;
+    z-index: 999;
     margin-top: 30px;
     max-width: 224px;
   }

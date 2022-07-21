@@ -36,7 +36,7 @@ export default {
     },
   },
   watch: {
-    type_value: {
+    date: {
       handler() {
         this.emit_value();
       },

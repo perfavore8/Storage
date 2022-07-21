@@ -36,7 +36,7 @@ export default {
     };
   },
   computed: {
-    type_value() {
+    option_value() {
       return {
         option: this.option,
         value: this.filterValue,

@@ -35,8 +35,15 @@ export default {
       filterValue: 1,
     };
   },
+  computed: {
+    option_value() {
+      return {
+        value: this.filterValue,
+      };
+    },
+  },
   watch: {
-    type_value: {
+    option_value: {
       handler() {
         this.emit_value();
       },
@@ -56,7 +63,7 @@ export default {
       });
     },
     emit_value() {
-      this.$emit("change_filter_value", this.filterValue, this.idx);
+      this.$emit("change_filter_value", this.option_value, this.idx);
     },
     option_select(option) {
       this.filterValue = option.value;

@@ -41,7 +41,7 @@ export default {
     },
   },
   watch: {
-    type_value: {
+    option_value: {
       handler() {
         this.emit_value();
       },

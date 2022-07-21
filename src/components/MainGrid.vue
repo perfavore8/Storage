@@ -35,9 +35,7 @@
             </transition>
             <th
               class="item"
-              v-show="
-                show_filter && (collval[idx - 1] === false ? false : true)
-              "
+              v-show="show_filter && (collval[idx] === false ? false : true)"
               v-for="(filter, idx) in filtersValue"
               :key="idx"
             >
