@@ -126,7 +126,16 @@
               aria-required="true"
               aria-invalid="false"
             />
-            <p>Найдено: {{ data.length }}</p>
+            <div class="bot">
+              <p>Найдено: {{ data.length }}</p>
+              <input
+                type="checkbox"
+                class="checkbox"
+                v-model="grid"
+                id="grid"
+              />
+              <label for="grid"></label>
+            </div>
           </div>
           <transition name="btns">
             <div class="buttons" v-show="show_buttons">
@@ -150,7 +159,6 @@
         </div>
         <div class="filters_right">
           <div class="filter_group">
-            <button @click="grid = !grid">GRID</button>
             <input
               type="checkbox"
               v-model="filter_value"
@@ -666,12 +674,50 @@ export default {
           height: 100%;
           appearance: none;
         }
-        p {
-          color: #757575;
-          @include font(400, 16px, 19px);
+        .bot {
+          display: flex;
+          flex-direction: row;
+          gap: 20px;
+          p {
+            color: #757575;
+            @include font(400, 16px, 19px);
+          }
+          .checkbox {
+            position: absolute;
+            z-index: -1;
+            opacity: 0;
+          }
+          .checkbox + label {
+            display: inline-flex;
+            align-items: center;
+            user-select: none;
+          }
+          .checkbox + label::before {
+            content: "";
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            flex-grow: 0;
+            border-radius: 0.25em;
+            margin-left: 17px;
+            @include bg_image("@/assets/list.svg", 90%);
+            cursor: pointer;
+            transition: background-image 0.15s ease-out;
+          }
+          .checkbox:checked + label::before {
+            background-image: url("@/assets/grid.svg");
+          }
+          .checkbox:not(:checked) + label:hover::before {
+            background-size: 100%;
+          }
+          .checkbox:checked + label:hover::before {
+            background-size: 110% 110%;
+          }
         }
       }
       .buttons {
+        margin-left: -49px;
         display: flex;
         flex-direction: row;
         gap: 18px;

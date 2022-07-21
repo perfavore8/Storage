@@ -8,7 +8,12 @@
     @save_cur_doc="save_cur_doc"
   >
     <template v-slot:title>
-      <span>Добавление шаблона документов</span>
+      <span v-if="selected_doc_idx === null">
+        Добавление шаблона документов
+      </span>
+      <span v-if="selected_doc_idx !== null">
+        Редактирование шаблона документов
+      </span>
     </template>
   </document-setting-add-new>
   <div class="app" ref="app">
