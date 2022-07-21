@@ -183,6 +183,7 @@
           :data="paginatedData"
           :params="paginatedParams"
           :collval="collumn_value"
+          :drop_page="drop_page"
           @update_changeValue="update_changeValue"
         ></main-grid>
         <card-grid
@@ -190,6 +191,7 @@
           :data="paginatedData"
           :params="paginatedParams"
           :collval="collumn_value"
+          :drop_page="drop_page"
           @update_changeValue="update_changeValue"
         ></card-grid>
       </div>
@@ -206,6 +208,7 @@ import EditStuff from "@/components/EditStuff.vue";
 import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";
 import { mapGetters } from "vuex";
+import { nextTick } from "@vue/runtime-core";
 
 export default {
   components: {
@@ -232,6 +235,7 @@ export default {
         { name: "Услуги" },
       ],
       grid: false,
+      drop_page: false,
     };
   },
   created: function () {
@@ -362,6 +366,8 @@ export default {
     },
     selected_storage() {
       this.paginate();
+      this.drop_page = false;
+      nextTick(() => (this.drop_page = true));
     },
   },
   methods: {
@@ -701,18 +707,18 @@ export default {
             flex-grow: 0;
             border-radius: 0.25em;
             margin-left: 17px;
-            @include bg_image("@/assets/list.svg", 90%);
+            @include bg_image("@/assets/grid.svg", 100%);
             cursor: pointer;
             transition: background-image 0.15s ease-out;
           }
           .checkbox:checked + label::before {
-            background-image: url("@/assets/grid.svg");
+            @include bg_image("@/assets/list.svg", 90%);
           }
           .checkbox:not(:checked) + label:hover::before {
-            background-size: 100%;
+            background-size: 110%;
           }
           .checkbox:checked + label:hover::before {
-            background-size: 110% 110%;
+            background-size: 100%;
           }
         }
       }

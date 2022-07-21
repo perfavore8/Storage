@@ -125,7 +125,10 @@
               </div>
             </td>
             <td class="item">
-              <div class="edit_icon" @click="open_edit_modal(row, i)"></div>
+              <div
+                class="edit_icon"
+                @click="open_edit_modal(row, data.indexOf(row))"
+              ></div>
             </td>
           </tr>
         </transition-group>
@@ -184,6 +187,10 @@ export default {
       type: Array,
       required: true,
     },
+    drop_page: {
+      type: Boolean,
+      required: false,
+    },
   },
   data() {
     return {
@@ -231,11 +238,13 @@ export default {
     show_buttons: function () {
       this.$store.commit("open_close_buttons", this.show_buttons);
     },
-    show_edit_modal: function () {
-      this.$emit("show_edit_mod", this.show_edit_modal);
-    },
     countHideRows: function () {
       this.feelIdxes();
+    },
+    drop_page() {
+      if (this.drop_page) {
+        this.page = 1;
+      }
     },
   },
   computed: {

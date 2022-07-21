@@ -1,7 +1,38 @@
 <template>
   <div class="wrapper">
+    <div class="header">
+      <button class="button" @click="show_categoryes = !show_categoryes">
+        <span v-if="show_categoryes">Все</span>
+        <span v-if="!show_categoryes">По категориям</span>
+      </button>
+    </div>
     <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
-    <div class="grid">
+    <div
+      class="grid"
+      v-for="(item, i) in path"
+      :key="item"
+      v-show="sel_idx == i && show_categoryes"
+    >
+      <h2>{{ item }}:</h2>
+      <div
+        class="card"
+        v-for="select in categoryes[item]"
+        :key="select"
+        @click="
+          selected_categoryes.push(select);
+          sel_idx += 1;
+        "
+      >
+        <div class="row">
+          <div class="name"></div>
+          <div class="value">{{ select }}</div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="grid"
+      v-if="!show_categoryes || path.length == selected_categoryes.length"
+    >
       <div class="card" v-for="(row, i) in paginatedData" :key="row">
         <div
           class="row"
@@ -10,12 +41,28 @@
           v-show="collval[idx]"
         >
           <div class="name">{{ params[idx + 1] }} :</div>
-          <div class="vaule">{{ item }}</div>
+          <div class="value">{{ item }}</div>
         </div>
-        <div class="edit_icon" @click="open_edit_modal(row, i)"></div>
+        <div class="card_footer">
+          <input
+            type="checkbox"
+            class="checkbox"
+            :id="i + 'a'"
+            v-model="changeValue[i]"
+          />
+          <label :for="i + 'a'"></label>
+          <div
+            class="edit_icon"
+            @click="open_edit_modal(row, data.indexOf(row))"
+          ></div>
+        </div>
       </div>
     </div>
-    <div class="bottom" :class="{ blur: show_edit_modal }">
+    <div
+      class="bottom"
+      :class="{ blur: show_edit_modal }"
+      v-if="!show_categoryes || path.length == selected_categoryes.length"
+    >
       <button v-if="page > 1" @click="page -= 1">
         {{ "<" }}
       </button>
@@ -33,7 +80,6 @@
 </template>
 
 <script>
-// FIXME 3 <TransitionGroup> children must be keyed.
 import EditItem from "@/components/EditItem.vue";
 import { mapGetters } from "vuex";
 export default {
@@ -54,13 +100,23 @@ export default {
       type: Array,
       required: true,
     },
+    drop_page: {
+      type: Boolean,
+      required: false,
+    },
   },
   data() {
     return {
-      count: 5,
+      count: 20,
       page: 1,
       filtersValue: [],
       edit_data: [],
+      changeValue: [],
+      path: ["№ партии", "Описание", "Группа"],
+      selected_categoryes: [],
+      sel_idx: 0,
+      show_categoryes: false,
+      categoryes: {},
     };
   },
   computed: {
@@ -68,11 +124,38 @@ export default {
       return this.count * (this.page - 1);
     },
     paginatedData() {
-      return this.data.slice(this.countPage, this.count * this.page);
+      if (this.show_categoryes) {
+        let dat = [];
+        dat = dat.concat(this.data);
+        let result = [];
+        dat.forEach((val) => {
+          let a = true;
+          this.path.forEach((title, i) => {
+            const title_idx = this.params.indexOf(title) - 1;
+            a = val[title_idx] == this.selected_categoryes[i] && a;
+          });
+          if (a) result.push(val);
+        });
+        return result.slice(this.countPage, this.count * this.page);
+      } else {
+        return this.data.slice(this.countPage, this.count * this.page);
+      }
+    },
+    show_buttons() {
+      let value = false;
+      this.changeValue.forEach((val) => {
+        if (val != undefined) {
+          value = val || value;
+        }
+      });
+      return value;
     },
     ...mapGetters(["show_edit_modal"]),
     ...mapGetters(["show_filter"]),
     ...mapGetters(["fields"]),
+  },
+  mounted() {
+    this.get_data_categoryes();
   },
   watch: {
     page() {
@@ -80,6 +163,41 @@ export default {
     },
     count() {
       this.page = 1;
+    },
+    paginatedData: {
+      handler: function () {
+        this.changeValue = [];
+      },
+      deep: true,
+    },
+    data: {
+      handler: function () {
+        this.get_data_categoryes();
+      },
+      deep: true,
+    },
+    changeValue: {
+      handler: function () {
+        this.$emit("update_changeValue", this.changeValue);
+      },
+      deep: true,
+    },
+    show_buttons() {
+      this.$store.commit("open_close_buttons", this.show_buttons);
+    },
+    drop_page() {
+      if (this.drop_page) {
+        this.page = 1;
+        this.selected_categoryes = [];
+        this.sel_idx = 0;
+        this.show_categoryes = false;
+      }
+    },
+    show_categoryes() {
+      if (!this.show_categoryes) {
+        this.selected_categoryes = [];
+        this.sel_idx = 0;
+      }
     },
   },
   methods: {
@@ -91,12 +209,59 @@ export default {
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
     },
+    get_data_categoryes() {
+      this.categoryes = {};
+      function unique(arr) {
+        let res = [];
+
+        for (let str of arr) {
+          if (!res.includes(str)) {
+            res.push(str);
+          }
+        }
+        return res;
+      }
+      const result = {};
+      let titles = [];
+      titles = titles.concat(this.params);
+      titles.pop();
+      titles.shift();
+      titles.forEach((title, idx) => {
+        result[title] = [];
+        let arr = [];
+        this.data.forEach((val) => {
+          arr.push(val[idx]);
+        });
+        result[title] = unique(arr);
+      });
+      Object.assign(this.categoryes, result);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+.header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 30px;
+  .button {
+    cursor: pointer;
+    color: #ffffff;
+    border-radius: 4px;
+    border: none;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    @include font(400, 14px);
+    width: 124px;
+    height: 34px;
+    background: #ea9197;
+  }
+  .button:hover {
+    background: rgb(226, 101, 109);
+    box-shadow: 0 0 5px 2px rgb(226 101 109 / 25%);
+  }
+}
 .grid {
   display: flex;
   flex-direction: row;
@@ -115,9 +280,9 @@ export default {
       .name {
         margin-bottom: 5px;
       }
-      .vaule {
+      .value {
       }
-      .vaule:first-child {
+      .value:first-child {
         display: none;
       }
     }
@@ -131,11 +296,18 @@ export default {
     }
   }
 }
-.edit_icon {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  @include bg_image("@/assets/edit.svg");
+.card_footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 10px;
+  .edit_icon {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    @include bg_image("@/assets/edit.svg");
+  }
 }
 .count {
   margin-top: 20px;
@@ -160,6 +332,44 @@ export default {
 }
 .blur {
   filter: blur(5px);
+}
+.checkbox {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+.checkbox + label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+}
+.checkbox + label::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border: 1px solid #adb5bd;
+  border-radius: 0.25em;
+  margin-right: 0.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 50% 50%;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+.checkbox:checked + label::before {
+  border-color: #757575;
+  background-color: #757575;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+}
+.checkbox:not(:disabled):not(:checked) + label:hover::before {
+  border-color: #75757591;
+}
+.checkbox:not(:disabled):active + label::before {
+  background-color: #75757591;
+  border-color: #75757591;
 }
 .mdl-enter-active,
 .mdl-leave-active {
