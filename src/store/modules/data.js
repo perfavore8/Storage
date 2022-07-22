@@ -33,13 +33,13 @@ export default {
         "509",
         "50",
         "51",
-        "21",
-        "2022-07-18",
+        "1",
+        "2022-07-13",
         "Да",
         "2022-07-18T11:21",
         "шт",
         "3",
-        "Нет",
+        "Да",
         "Да",
         "123",
         "Да",
@@ -54,8 +54,8 @@ export default {
         "129",
         "12",
         "11",
-        "2шт",
-        "2022-07-18",
+        "2",
+        "2022-07-13",
         "Да",
         "2022-07-18T11:21",
         "шт",
@@ -76,7 +76,7 @@ export default {
         "30",
         "31",
         "2",
-        "2022-07-18",
+        "2022-07-13",
         "Да",
         "2022-07-18T11:21",
         "шт",
@@ -96,13 +96,13 @@ export default {
         "1509",
         "150",
         "151",
-        "2",
-        "2022-07-18",
+        "3",
+        "2022-07-13",
         "Да",
         "2022-07-18T11:21",
         "шт",
         "3",
-        "Нет",
+        "Да",
         "Да",
         "123",
         "Да",
@@ -117,8 +117,8 @@ export default {
         "1809",
         "180",
         "181",
-        "2",
-        "2022-07-18",
+        "1",
+        "2022-07-14",
         "Да",
         "2022-07-18T11:21",
         "шт",
@@ -159,8 +159,8 @@ export default {
         "119",
         "11",
         "11",
-        "2",
-        "2022-07-18",
+        "3",
+        "2022-07-13",
         "Да",
         "2022-07-18T11:21",
         "шт",
@@ -186,7 +186,7 @@ export default {
         "2022-07-18T11:21",
         "шт",
         "3",
-        "Нет",
+        "Да",
         "Да",
         "123",
         "Да",
@@ -202,7 +202,7 @@ export default {
         "6758",
         "6751",
         "2",
-        "2022-07-18",
+        "2022-07-11",
         "Да",
         "2022-07-18T11:21",
         "шт",
@@ -222,8 +222,8 @@ export default {
         "129",
         "12",
         "11",
-        "2",
-        "2022-07-18",
+        "1",
+        "2022-07-11",
         "Да",
         "2022-07-18T11:21",
         "шт",
@@ -243,7 +243,7 @@ export default {
         "129",
         "12",
         "11",
-        "2",
+        "1",
         "2022-07-18",
         "Да",
         "2022-07-18T11:21",
@@ -265,7 +265,7 @@ export default {
         "12",
         "11",
         "2",
-        "2022-07-18",
+        "2022-07-11",
         "Да",
         "2022-07-18T11:21",
         "шт",
@@ -285,13 +285,13 @@ export default {
         "129",
         "12",
         "11",
-        "2",
-        "2022-07-18",
+        "3",
+        "2022-07-28",
         "Да",
         "2022-07-18T11:21",
         "шт",
         "3",
-        "Нет",
+        "Да",
         "Да",
         "123",
         "Да",
@@ -306,8 +306,8 @@ export default {
         "129",
         "12",
         "11",
-        "2",
-        "2022-07-18",
+        "3",
+        "2022-07-16",
         "Да",
         "2022-07-18T11:21",
         "шт",
@@ -1056,7 +1056,9 @@ export default {
     },
     add_new_data(state, payload) {
       let dat = [];
-      state.data[0].forEach(() => dat.push(""));
+      state.params.forEach(() => dat.push(""));
+      dat.pop();
+      dat.pop();
       payload.title.forEach((val, idx) => {
         const data_idx = state.params.indexOf(val) - 1;
         if (data_idx >= 0) dat[data_idx] = payload.new_data[idx];
@@ -1083,6 +1085,17 @@ export default {
     unarchive_data(state, idx) {
       state.data.push(state.archive.items[idx]);
       state.archive.items.splice(idx, 1);
+    },
+    add_new_service(state, payload) {
+      let dat = [];
+      state.params.forEach(() => dat.push(""));
+      dat.pop();
+      dat.pop();
+      payload.title.forEach((val, idx) => {
+        const data_idx = state.params.indexOf(val) - 1;
+        if (data_idx >= 0) dat[data_idx] = payload.new_data[idx];
+      });
+      state.service.push(dat);
     },
     update_params(state, params) {
       state.params = params;

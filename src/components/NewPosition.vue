@@ -58,7 +58,10 @@
                       v-model="new_items[idx][4]"
                       class="input"
                       :class="{
-                        not_valid: new_items[idx][4] == '' && try_accept,
+                        not_valid:
+                          new_items[idx][4] == '' &&
+                          try_accept &&
+                          row[0].value != 2,
                       }"
                       :disabled="rows.length > idx || row[0].value == 2"
                     />
@@ -84,7 +87,8 @@
                       not_valid:
                         (new_items[idx][6] == '' ||
                           new_items[idx][6] == undefined) &&
-                        try_accept,
+                        try_accept &&
+                        row[0].value != 2,
                     }"
                   />
                 </td>
@@ -240,6 +244,8 @@ export default {
       ],
       options: [],
       try_accept: false,
+      fields_for_validation: [1, 2, 6, 8, 9],
+      fields_for_validation_service: [1, 2, 8, 9],
     };
   },
   computed: {
@@ -255,6 +261,7 @@ export default {
           const type_idx = this.title.indexOf("Тип");
           const count_idx = this.title.indexOf("Кол-во") + 1;
           const batchnumber_idx = this.title.indexOf("№ партии");
+          const batchnumber_value_idx = this.title.indexOf("№ партии") + 1;
           const storage_idx = this.title.indexOf("Склад") + 1;
           const ed_idx = this.title.indexOf("Единицы измерений") + 1;
           const obj = { name: "", value: 999 };
@@ -264,7 +271,8 @@ export default {
             Object.assign(this.new_items[idx][ed_idx], objs[2]);
           };
           if (val[type_idx].value == 2) {
-            this.new_items[idx][count_idx] = 0;
+            this.new_items[idx][count_idx] = "";
+            this.new_items[idx][batchnumber_value_idx] = "";
             new_sel_option([obj, obj, obj]);
           }
           if (
@@ -356,50 +364,44 @@ export default {
     save() {
       this.try_accept = true;
       let accept = true;
+      const validate = (item, arr) => {
+        arr.forEach((val) => {
+          accept = accept && item[val] != "" && item[val] != undefined;
+        });
+      };
       this.new_items.forEach((val) => {
-        accept =
-          accept &&
-          val[1] != "" &&
-          val[2] != "" &&
-          val[6] != "" &&
-          val[7] != "" &&
-          val[8] != "" &&
-          val[1] != undefined &&
-          val[2] != undefined &&
-          val[6] != undefined &&
-          val[7] != undefined &&
-          val[8] != undefined;
+        if (val[0].value == 1) validate(val, this.fields_for_validation);
+        if (val[0].value == 2)
+          validate(val, this.fields_for_validation_service);
       });
       if (accept) {
         this.new_items.forEach((value, index) => {
           value.forEach((val, idx) => {
             this.new_items[index][idx] = `${val}`;
-            if (typeof val == "object") {
-              this.new_items[index][idx] = val.name;
-            }
-            if (val === true) {
-              this.new_items[index][idx] = "Да";
-            }
-            if (val === false) {
-              this.new_items[index][idx] = "Нет";
-            }
+            if (typeof val == "object") this.new_items[index][idx] = val.name;
+            if (val === true) this.new_items[index][idx] = "Да";
+            if (val === false) this.new_items[index][idx] = "Нет";
           });
         });
-        this.new_items.forEach((val) => {
+        this.new_items.forEach((item) => {
           let artic = [];
           this.title.forEach((val) => {
             if (val === "Кол-во") val = "На складе";
             if (val === "№ партии") artic.push("");
             artic.push(val);
           });
-          artic.push("НДС включен в цену");
-          artic.push("Менеджер может менять % НДС");
-          artic.push("НДС %");
+          artic.push(
+            "НДС включен в цену",
+            "Менеджер может менять % НДС",
+            "НДС %"
+          );
           const payload = {
-            new_data: val,
+            new_data: item,
             title: artic,
           };
-          this.$store.commit("add_new_data", payload);
+          if (item[0] == "Товар") this.$store.commit("add_new_data", payload);
+          if (item[0] == "Услуга")
+            this.$store.commit("add_new_service", payload);
         });
         this.close_modal();
       }

@@ -418,9 +418,7 @@ export default {
     },
     update_changeValue(newValue) {
       this.changeValue = [];
-      newValue.forEach((val, idx) => {
-        this.changeValue[idx] = val;
-      });
+      this.changeValue = this.changeValue.concat(newValue);
     },
     route(page_name) {
       this.$router.push("/" + page_name);

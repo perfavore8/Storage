@@ -1,5 +1,6 @@
 <template>
-  <div class="wrapper">
+  <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
+  <div class="wrapper" :class="{ blur: show_edit_modal }">
     <div class="header">
       <transition-group name="mdl">
         <div class="filters" v-if="show_filter">
@@ -46,33 +47,33 @@
           </div>
         </div>
       </transition-group>
-      <div class="btns">
+      <!-- <div class="btns">
         <button class="button" @click="show_categoryes = !show_categoryes">
           <span v-if="show_categoryes">Все</span>
           <span v-if="!show_categoryes">По категориям</span>
         </button>
-      </div>
+      </div> -->
     </div>
-    <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
     <div
-      class="grid"
       v-for="(item, i) in path"
       :key="item"
       v-show="sel_idx == i && show_categoryes"
     >
       <h2>{{ item }}:</h2>
-      <div
-        class="card"
-        v-for="select in categoryes[item]"
-        :key="select"
-        @click="
-          selected_categoryes.push(select);
-          sel_idx += 1;
-        "
-      >
-        <div class="row">
-          <div class="name"></div>
-          <div class="value">{{ select }}</div>
+      <div class="grid">
+        <div
+          class="card"
+          v-for="select in categoryes[item]"
+          :key="select"
+          @click="
+            selected_categoryes.push(select);
+            sel_idx += 1;
+          "
+        >
+          <div class="row">
+            <div class="name"></div>
+            <div class="value">{{ select }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -80,6 +81,9 @@
       class="grid"
       v-if="!show_categoryes || path.length == selected_categoryes.length"
     >
+      <label v-if="paginatedData.length == 0" class="text">
+        Ничего не найдено
+      </label>
       <div class="card" v-for="(row, i) in paginatedData" :key="row">
         <div
           class="row"
@@ -108,7 +112,10 @@
     <div
       class="bottom"
       :class="{ blur: show_edit_modal }"
-      v-if="!show_categoryes || path.length == selected_categoryes.length"
+      v-if="
+        (!show_categoryes || path.length == selected_categoryes.length) &&
+        paginatedData.length != 0
+      "
     >
       <button v-if="page > 1" @click="page -= 1">
         {{ "<" }}
@@ -162,6 +169,7 @@ export default {
       required: false,
     },
   },
+  emits: { update_changeValue: null },
   data() {
     return {
       count: 20,
@@ -169,10 +177,10 @@ export default {
       filtersValue: [],
       edit_data: [],
       changeValue: [],
-      path: ["№ партии", "Описание", "Группа"],
+      path: ["Поступление", "№ партии", "НДС включен в цену"],
       selected_categoryes: [],
       sel_idx: 0,
-      show_categoryes: false,
+      show_categoryes: true,
       categoryes: {},
     };
   },
@@ -250,7 +258,7 @@ export default {
         this.page = 1;
         this.selected_categoryes = [];
         this.sel_idx = 0;
-        this.show_categoryes = false;
+        this.show_categoryes = true;
         this.feelFilters();
       }
     },
@@ -269,7 +277,6 @@ export default {
     },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
-      console.log(this.filtersValue[idx].value);
     },
     get_data_categoryes() {
       this.categoryes = {};
@@ -389,6 +396,10 @@ export default {
   flex-wrap: wrap;
   gap: 30px;
   @include font(400, 14px);
+  .text {
+    margin: 0 auto;
+    @include font(500, 18px);
+  }
   .card {
     width: 300px;
     border: 1px solid #c9c9c9;
@@ -398,8 +409,9 @@ export default {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      border-bottom: 1px dotted #c9c9c9;
+      padding-top: 5px;
       .name {
-        margin-bottom: 5px;
       }
       .value {
       }
@@ -410,7 +422,7 @@ export default {
     .row:first-child {
       justify-content: center;
       @include font(500, 18px);
-      margin: 20px 0;
+      padding: 20px 0;
       .name {
         display: none;
       }
