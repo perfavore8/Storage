@@ -329,7 +329,7 @@ export default {
         "",
         "",
         "",
-        "2",
+        "",
         "2022-07-18",
         "Да",
         "2022-07-18T11:21",
@@ -350,7 +350,7 @@ export default {
         "",
         "",
         "",
-        "2",
+        "",
         "2022-07-18",
         "Да",
         "2022-07-18T11:21",
@@ -371,7 +371,7 @@ export default {
         "",
         "",
         "",
-        "2",
+        "",
         "2022-07-18",
         "Да",
         "2022-07-18T11:21",
@@ -392,7 +392,7 @@ export default {
         "",
         "",
         "",
-        "2",
+        "",
         "2022-07-18",
         "Да",
         "2022-07-18T11:21",
@@ -413,7 +413,7 @@ export default {
         "",
         "",
         "",
-        "2",
+        "",
         "2022-07-18",
         "Да",
         "2022-07-18T11:21",
@@ -473,6 +473,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 2,
@@ -484,6 +485,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 3,
@@ -495,6 +497,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 4,
@@ -506,6 +509,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 5,
@@ -521,6 +525,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: false,
       },
       {
         id: 6,
@@ -532,6 +537,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: false,
       },
       {
         id: 7,
@@ -543,6 +549,7 @@ export default {
         edit: false,
         editing: false,
         delete: true,
+        available_to_services: false,
       },
       {
         id: 8,
@@ -554,6 +561,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: false,
       },
       {
         id: 9,
@@ -565,6 +573,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: false,
       },
       {
         id: 10,
@@ -576,6 +585,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 11,
@@ -587,6 +597,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 12,
@@ -598,6 +609,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 13,
@@ -618,6 +630,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: false,
       },
       {
         id: 14,
@@ -629,6 +642,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 15,
@@ -640,6 +654,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 16,
@@ -651,6 +666,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 17,
@@ -662,6 +678,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
       {
         id: 18,
@@ -673,6 +690,7 @@ export default {
         edit: false,
         editing: false,
         delete: true,
+        available_to_services: true,
       },
       {
         id: 19,
@@ -690,6 +708,7 @@ export default {
         edit: false,
         editing: false,
         delete: false,
+        available_to_services: true,
       },
     ],
     items_from_storage: [
@@ -923,25 +942,26 @@ export default {
         "Себестоимость",
         "Описание",
       ],
+      sourses: [0],
       items: [
         [
           "Товар 9",
           "9",
-          "123",
-          "129",
+          "4",
+          "3",
           "Склад 2",
-          "129",
+          "2",
           "12",
           "11",
-          "2",
-          "2022-07-18",
+          "1",
+          "2022-07-11",
           "Да",
           "2022-07-18T11:21",
           "шт",
           "3",
           "Нет",
           "Да",
-          "123",
+          "5",
           "Да",
           "Группа 2",
         ],
@@ -1077,13 +1097,32 @@ export default {
         });
       });
     },
+    remove_data_idx(state, payload) {
+      state.data.splice(payload.idx, 1);
+    },
+    add_data(state, payload) {
+      state.data.push(payload.data);
+    },
     archive_data(state, idxes) {
       idxes.forEach((idx) => state.archive.items.push(state.data[idx]));
+      state.archive.sourses.push(0);
       const idxes_reverse = idxes.reverse();
       idxes_reverse.forEach((idx) => state.data.splice(idx, 1));
     },
     unarchive_data(state, idx) {
       state.data.push(state.archive.items[idx]);
+      state.archive.sourses.splice(idx, 1);
+      state.archive.items.splice(idx, 1);
+    },
+    archive_service(state, idxes) {
+      idxes.forEach((idx) => state.archive.items.push(state.service[idx]));
+      state.archive.sourses.push(1);
+      const idxes_reverse = idxes.reverse();
+      idxes_reverse.forEach((idx) => state.service.splice(idx, 1));
+    },
+    unarchive_service(state, idx) {
+      state.service.push(state.archive.items[idx]);
+      state.archive.sourses.splice(idx, 1);
       state.archive.items.splice(idx, 1);
     },
     add_new_service(state, payload) {
@@ -1096,6 +1135,15 @@ export default {
         if (data_idx >= 0) dat[data_idx] = payload.new_data[idx];
       });
       state.service.push(dat);
+    },
+    update_service_idx(state, payload) {
+      state.service[payload.idx] = payload.data;
+    },
+    remove_service_idx(state, payload) {
+      state.service.splice(payload.idx, 1);
+    },
+    add_service(state, payload) {
+      state.service.push(payload.data);
     },
     update_params(state, params) {
       state.params = params;

@@ -23,67 +23,72 @@
           :selected_option="selected_option_1"
         />
       </div>
-      <div class="row" v-for="field in fields" :key="field.id">
+      <div
+        class="row"
+        v-for="field in fields"
+        :key="field.id"
+        v-show="field.available_to_services || !isServicePage"
+      >
         <edit-integer
           :item="field.field"
-          :selected_option="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_option="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 1"
         />
         <edit-float
           :item="field.field"
-          :selected_option="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_option="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 2"
         />
         <edit-string
           :item="field.field"
-          :selected_option="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_option="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 3"
         />
         <edit-text
           :item="field.field"
-          :selected_option="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_option="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 4"
         />
         <edit-selector
           :item="field"
-          :selected_option="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_option="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 5"
         />
         <edit-multi-selector
           :item="field"
-          :selected_options="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_options="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 6"
         />
         <edit-date
           :item="field.field"
-          :selected_option="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_option="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 7"
         />
         <edit-date-time
           :item="field.field"
-          :selected_option="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_option="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 8"
         />
         <edit-flag
           :item="field.field"
-          :selected_option="new_edit_data[params.indexOf(field.field) - 1]"
-          :idx="params.indexOf(field.field) - 1"
+          :selected_option="new_edit_data[params_indexOf(field)]"
+          :idx="params_indexOf(field)"
           @change_value="change_value"
           v-if="field.type.value == 9"
         />
@@ -131,8 +136,8 @@ export default {
       required: true,
     },
   },
+  inject: ["isServicePage"],
   computed: {
-    ...mapGetters(["data"]),
     ...mapGetters(["params"]),
     ...mapGetters(["fields"]),
     ...mapGetters(["idx_edit_modal"]),
@@ -144,41 +149,15 @@ export default {
         { name: "Услуга", value: 2 },
       ],
       selected_option_1: { name: "Товар", value: 1 },
-      options_2: [
-        { name: "Не выбрано", value: 1 },
-        { name: "шт", value: 2 },
-        { name: "л (литры)", value: 3 },
-        { name: "м3 (кубические метры)", value: 4 },
-        { name: "кг (килограммы)", value: 5 },
-        { name: "т (тонны)", value: 6 },
-        { name: "комплект", value: 7 },
-        { name: "услуга", value: 8 },
-      ],
-      selected_option_2: { name: "Не выбрано", value: 1 },
-      options_3: [
-        { name: "Не выбрано", value: 1 },
-        { name: "шт", value: 2 },
-        { name: "л (литры)", value: 3 },
-        { name: "м3 (кубические метры)", value: 4 },
-        { name: "кг (килограммы)", value: 5 },
-        { name: "т (тонны)", value: 6 },
-        { name: "комплект", value: 7 },
-        { name: "услуга", value: 8 },
-      ],
-      selected_options_3: [true],
       new_edit_data: [],
     };
   },
   mounted() {
     this.new_edit_data = [];
     this.new_edit_data = this.new_edit_data.concat(this.edit_data);
-    if (this.new_edit_data.a1 != "") {
-      this.options_2.forEach((val) => {
-        if (val.name == this.new_edit_data.a1) {
-          Object.assign(this.selected_option_2, val);
-        }
-      });
-    }
+    this.isServicePage.value
+      ? Object.assign(this.selected_option_1, this.options_1[1])
+      : Object.assign(this.selected_option_1, this.options_1[0]);
   },
   methods: {
     change_value(value, idx) {
@@ -186,12 +165,6 @@ export default {
     },
     option_select_1(option) {
       Object.assign(this.selected_option_1, option);
-    },
-    option_select_2(option) {
-      Object.assign(this.selected_option_2, option);
-    },
-    option_select_multi(options) {
-      this.selected_options_3 = options;
     },
     close_edit_modal() {
       this.$store.commit("close_edit_modal");
@@ -201,7 +174,20 @@ export default {
         idx: this.idx_edit_modal,
         data: this.new_edit_data,
       };
-      this.$store.commit("update_data_idx", payload);
+      const a = this.isServicePage.value;
+      const b = this.selected_option_1.name == "Услуга";
+      if (!a && !b) this.$store.commit("update_data_idx", payload);
+      if (a && b) this.$store.commit("update_service_idx", payload);
+      if (!a && b) {
+        this.fields.forEach((val, idx) => {
+          if (!val.available_to_services) payload.data[idx] = "";
+        });
+        this.$store.commit("remove_data_idx", payload),
+          this.$store.commit("add_service", payload);
+      }
+      if (a && !b)
+        this.$store.commit("remove_service_idx", payload),
+          this.$store.commit("add_data", payload);
       this.close_edit_modal();
     },
     search_selector_options(string) {
@@ -212,6 +198,9 @@ export default {
         }
       });
       return options;
+    },
+    params_indexOf(item) {
+      return this.params.indexOf(item.field) - 1;
     },
   },
 };

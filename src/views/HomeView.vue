@@ -142,18 +142,20 @@
               <button class="button button_1 smallBtn" @click="archive_data()">
                 Архивировать
               </button>
-              <button
-                class="button button_2 smallBtn"
-                @click="open_close_new_position(true)"
-              >
-                Добавить
-              </button>
-              <button
-                class="button button_3 smallBtn"
-                @click="open_close_cancel_position(true)"
-              >
-                Списать
-              </button>
+              <template v-if="!isServicePage">
+                <button
+                  class="button button_2 smallBtn"
+                  @click="open_close_new_position(true)"
+                >
+                  Добавить
+                </button>
+                <button
+                  class="button button_3 smallBtn"
+                  @click="open_close_cancel_position(true)"
+                >
+                  Списать
+                </button>
+              </template>
             </div>
           </transition>
         </div>
@@ -171,7 +173,7 @@
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
-            :disabled="rows.arr.length > 0"
+            :disabled="rows.arr.length > 0 && !isServicePage"
           >
             Новая позиция
           </button>
@@ -209,6 +211,7 @@ import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";
 import { mapGetters } from "vuex";
 import { nextTick } from "@vue/runtime-core";
+import { computed } from "vue";
 
 export default {
   components: {
@@ -218,6 +221,11 @@ export default {
     NewPosition,
     CancelPosition,
     CardGrid,
+  },
+  provide() {
+    return {
+      isServicePage: computed(() => this.isServicePage),
+    };
   },
   data() {
     return {
@@ -327,6 +335,9 @@ export default {
         idxes: idxes,
       };
     },
+    isServicePage() {
+      return this.selected_storage === "Услуги";
+    },
     ...mapGetters(["data"]),
     ...mapGetters(["params"]),
     ...mapGetters(["show_edit_modal"]),
@@ -374,11 +385,11 @@ export default {
     archive_data() {
       let idxes = [];
       this.changeValue.forEach((val, idx) => {
-        if (val) {
-          idxes.push(idx);
-        }
+        if (val) idxes.push(idx);
       });
-      this.$store.commit("archive_data", idxes);
+      this.isServicePage
+        ? this.$store.commit("archive_service", idxes)
+        : this.$store.commit("archive_data", idxes);
       this.changeValue = [];
     },
     getData(dat, par, check) {

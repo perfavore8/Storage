@@ -10,13 +10,8 @@
     </thead>
     <tbody>
       <tr v-for="(items, index) in paginatedItems" :key="items" class="row">
-        <td
-          v-for="(item, idx) in items"
-          :key="item"
-          class="item"
-          v-show="archive.titles.includes(params[idx + 1])"
-        >
-          {{ item }}
+        <td v-for="idx in idxes_to_show" :key="idx" class="item">
+          {{ items[idx] }}
         </td>
         <td class="item">
           <div class="edit_icon" @click="unarchive_data(index)"></div>
@@ -59,6 +54,15 @@ export default {
         this.count * this.page
       );
     },
+    idxes_to_show() {
+      let arr = [];
+      this.archive.titles.forEach((val) => {
+        this.params.forEach((param, idx) => {
+          if (val == param) arr.push(idx - 1);
+        });
+      });
+      return arr;
+    },
   },
   watch: {
     paginatedItems() {
@@ -69,7 +73,11 @@ export default {
   },
   methods: {
     unarchive_data(idx) {
-      this.$store.commit("unarchive_data", idx);
+      if (this.archive.sourses[idx] == 0) {
+        this.$store.commit("unarchive_data", idx);
+      } else if (this.archive.sourses[idx] == 1) {
+        this.$store.commit("unarchive_service", idx);
+      }
     },
   },
 };
