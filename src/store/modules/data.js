@@ -983,6 +983,95 @@ export default {
         download_type: "Исходный",
       },
     ],
+    show_columns: {
+      names: ["Все остатки", "Склад 1", "Склад 2", "Услуги"],
+      values: [
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+        ],
+        [
+          true,
+          true,
+          false,
+          true,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ],
+        [
+          true,
+          true,
+          false,
+          true,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ],
+        [
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+        ],
+      ],
+    },
   },
   getters: {
     data(state) {
@@ -1060,6 +1149,13 @@ export default {
     },
     documents(state) {
       return state.documents;
+    },
+    show_columns(state) {
+      const result = {};
+      state.show_columns.names.forEach((val, idx) => {
+        result[val] = state.show_columns.values[idx];
+      });
+      return result;
     },
   },
   mutations: {
@@ -1144,6 +1240,13 @@ export default {
     },
     add_service(state, payload) {
       state.service.push(payload.data);
+    },
+    update_columns(state, payload) {
+      const idx = state.show_columns.names.indexOf(payload.name);
+      state.show_columns.values[idx] = [];
+      state.show_columns.values[idx] = state.show_columns.values[idx].concat(
+        payload.value
+      );
     },
     update_params(state, params) {
       state.params = params;

@@ -13,7 +13,7 @@
       <table-setings
         :names="paginatedParams"
         :data="paginatedData"
-        :collval="collumn_value"
+        :collval="show_columns[selected_storage]"
         @returnData1="getData"
       />
     </div>
@@ -184,7 +184,7 @@
           v-if="!grid"
           :data="paginatedData"
           :params="paginatedParams"
-          :collval="collumn_value"
+          :collval="show_columns[selected_storage]"
           :drop_page="drop_page"
           @update_changeValue="update_changeValue"
         ></main-grid>
@@ -192,7 +192,7 @@
           v-if="grid"
           :data="paginatedData"
           :params="paginatedParams"
-          :collval="collumn_value"
+          :collval="show_columns[selected_storage]"
           :drop_page="drop_page"
           @update_changeValue="update_changeValue"
         ></card-grid>
@@ -232,7 +232,6 @@ export default {
       filter_value: false,
       paginatedData: [],
       paginatedParams: [],
-      collumn_value: [],
       changeValue: [],
       old_data_length: null,
       selected_storage: "Все остатки",
@@ -352,6 +351,7 @@ export default {
     ...mapGetters(["catalog"]),
     ...mapGetters(["get_data_storage"]),
     ...mapGetters(["service"]),
+    ...mapGetters(["show_columns"]),
   },
   watch: {
     data: {
@@ -395,10 +395,12 @@ export default {
     getData(dat, par, check) {
       this.paginatedData = [];
       this.paginatedParams = [];
-      this.collumn_value = [];
+      this.$store.commit("update_columns", {
+        name: this.selected_storage,
+        value: check,
+      });
       dat.forEach((val) => this.paginatedData.push(val));
       par.forEach((val) => this.paginatedParams.push(val));
-      check.forEach((val) => this.collumn_value.push(val));
       this.paginatedParams.unshift("");
       this.paginatedParams.push("");
       this.filter_value = false;
@@ -453,19 +455,19 @@ export default {
         this.service.forEach((item) => this.paginatedData.push(item));
       }
       this.params.forEach((item) => this.paginatedParams.push(item));
-      if (this.data.length) {
-        if (this.old_data_length == this.data[0].length) {
-          this.collumn_value = [];
-          this.paginatedParams.forEach(() => this.collumn_value.push(true));
-          this.collumn_value.pop();
-          this.collumn_value.pop();
-        } else {
-          const len = this.data[0].length - this.old_data_length;
-          if (len > 0) {
-            for (let i = 0; i != len; i++) this.collumn_value.push(false);
-          }
-        }
-      }
+      // if (this.data.length) {
+      //   if (this.old_data_length == this.data[0].length) {
+      //     this.collumn_value = [];
+      //     this.paginatedParams.forEach(() => this.collumn_value.push(true));
+      //     this.collumn_value.pop();
+      //     this.collumn_value.pop();
+      //   } else {
+      //     const len = this.data[0].length - this.old_data_length;
+      //     if (len > 0) {
+      //       for (let i = 0; i != len; i++) this.collumn_value.push(false);
+      //     }
+      //   }
+      // }
     },
   },
 };
