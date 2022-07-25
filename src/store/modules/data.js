@@ -1077,6 +1077,9 @@ export default {
     data(state) {
       return state.data;
     },
+    data1(state) {
+      return state.data;
+    },
     get_data_storage(state) {
       const storage_idx = state.params.indexOf("Склад") - 1;
       const result = {};

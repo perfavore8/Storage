@@ -310,6 +310,7 @@ export default {
     ...mapGetters(["show_edit_modal"]),
     ...mapGetters(["show_filter"]),
     ...mapGetters(["fields"]),
+    ...mapGetters(["data1"]),
   },
   mounted() {
     this.calcDuplicate();
@@ -366,9 +367,12 @@ export default {
       this.startIdx = 0;
     },
     open_edit_modal(row, idx) {
+      let index = idx;
+      const data_idx = this.data1.indexOf(row);
+      if (data_idx != -1) index = data_idx;
       this.edit_data = [];
       this.edit_data = this.edit_data.concat(row);
-      this.$store.commit("open_edit_modal", idx);
+      this.$store.commit("open_edit_modal", index);
     },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
