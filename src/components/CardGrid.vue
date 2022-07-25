@@ -55,11 +55,25 @@
       </div> -->
     </div>
     <div
+      class="path"
       v-for="(item, i) in path"
       :key="item"
       v-show="sel_idx == i && show_categoryes"
     >
       <h2>{{ item }}:</h2>
+      <div class="links">
+        <div v-for="idx in i" :key="idx">
+          <a
+            href="#"
+            @click="
+              sel_idx = idx - 1;
+              selected_categoryes.splice(idx - 1);
+            "
+            >{{ path[idx - 1] }}
+          </a>
+          <span> /</span>
+        </div>
+      </div>
       <div class="grid">
         <div
           class="card"
@@ -388,6 +402,17 @@ export default {
         @include font(500, 16px, 19px);
       }
     }
+  }
+}
+.links {
+  display: flex;
+  flex-direction: row;
+  a {
+    @include font(400, 16px);
+  }
+  a:hover {
+    text-decoration: none;
+    opacity: 0.8;
   }
 }
 .grid {
