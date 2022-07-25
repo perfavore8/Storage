@@ -416,6 +416,7 @@ export default {
 }
 .table {
   border-collapse: collapse;
+  margin: 0 auto;
 }
 .bar_row {
   height: 66px;

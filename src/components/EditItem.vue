@@ -27,7 +27,7 @@
         class="row"
         v-for="field in fields"
         :key="field.id"
-        v-show="field.available_to_services || !isServicePage"
+        v-show="!isServicePage.value || field.available_to_services"
       >
         <edit-integer
           :item="field.field"
