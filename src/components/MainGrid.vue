@@ -1,7 +1,15 @@
 <template>
   <div class="wrapper">
     <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
-    <table class="table" :key="updateKey" :class="{ blur: show_edit_modal }">
+    <label v-if="paginatedData.length == 0" class="text">
+      Ничего не найдено
+    </label>
+    <table
+      class="table"
+      :key="updateKey"
+      :class="{ blur: show_edit_modal }"
+      v-if="paginatedData.length != 0"
+    >
       <thead>
         <tr class="bar_row">
           <th
@@ -132,7 +140,11 @@
         </transition-group>
       </tbody>
     </table>
-    <div class="bottom" :class="{ blur: show_edit_modal }">
+    <div
+      class="bottom"
+      :class="{ blur: show_edit_modal }"
+      v-if="paginatedData.length != 0"
+    >
       <button v-if="page > 1" @click="page -= 1">
         {{ "<" }}
       </button>
@@ -154,7 +166,6 @@
 </template>
 
 <script>
-// FIXME 3 <TransitionGroup> children must be keyed.
 import EditItem from "@/components/EditItem.vue";
 import { mapGetters } from "vuex";
 import FilterNumber from "@/components/FiltersSelections/FilterNumber.vue";
@@ -256,11 +267,15 @@ export default {
       return value;
     },
     paginatedData() {
-      const dat = this.data.slice(
-        this.idxes[this.page - 1][0],
-        this.idxes[this.page - 1][1]
-      );
-      return dat;
+      if (this.idxes[this.page - 1] != undefined) {
+        const dat = this.data.slice(
+          this.idxes[this.page - 1][0],
+          this.idxes[this.page - 1][1]
+        );
+        return dat;
+      } else {
+        return [];
+      }
     },
     collsCount() {
       let count = 0;
@@ -574,6 +589,10 @@ export default {
 }
 .blur {
   filter: blur(5px);
+}
+.text {
+  margin: 0 auto;
+  @include font(500, 18px);
 }
 .mdl-enter-active,
 .mdl-leave-active {

@@ -1,5 +1,8 @@
 <template>
-  <table class="table">
+  <label v-if="paginatedItems.length == 0" class="text">
+    Ничего не найдено
+  </label>
+  <table class="table" v-if="paginatedItems.length != 0">
     <thead>
       <tr class="row title">
         <td v-for="title in archive.titles" :key="title" class="item">
@@ -19,7 +22,7 @@
       </tr>
     </tbody>
   </table>
-  <div class="bottom">
+  <div class="bottom" v-if="paginatedItems.length != 0">
     <button v-if="page > 1" @click="page -= 1">
       {{ "<" }}
     </button>
@@ -73,6 +76,7 @@ export default {
   },
   methods: {
     unarchive_data(idx) {
+      console.log(this.archive.sourses[idx]);
       if (this.archive.sourses[idx] == 0) {
         this.$store.commit("unarchive_data", idx);
       } else if (this.archive.sourses[idx] == 1) {
@@ -128,5 +132,9 @@ export default {
   margin-bottom: 150px;
   height: 26px;
   width: 100px;
+}
+.text {
+  margin: 0 auto;
+  @include font(500, 18px);
 }
 </style>

@@ -1200,8 +1200,10 @@ export default {
       state.data.push(payload.data);
     },
     archive_data(state, idxes) {
-      idxes.forEach((idx) => state.archive.items.push(state.data[idx]));
-      state.archive.sourses.push(0);
+      idxes.forEach((idx) => {
+        state.archive.items.push(state.data[idx]);
+        state.archive.sourses.push(0);
+      });
       const idxes_reverse = idxes.reverse();
       idxes_reverse.forEach((idx) => state.data.splice(idx, 1));
     },
@@ -1211,8 +1213,10 @@ export default {
       state.archive.items.splice(idx, 1);
     },
     archive_service(state, idxes) {
-      idxes.forEach((idx) => state.archive.items.push(state.service[idx]));
-      state.archive.sourses.push(1);
+      idxes.forEach((idx) => {
+        state.archive.items.push(state.service[idx]);
+        state.archive.sourses.push(1);
+      });
       const idxes_reverse = idxes.reverse();
       idxes_reverse.forEach((idx) => state.service.splice(idx, 1));
     },

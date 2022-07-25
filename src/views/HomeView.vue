@@ -127,7 +127,7 @@
               aria-invalid="false"
             />
             <div class="bot">
-              <p>Найдено: {{ data.length }}</p>
+              <p>Найдено: {{ paginatedData.length }}</p>
               <input
                 type="checkbox"
                 class="checkbox"
@@ -202,7 +202,6 @@
 </template>
 
 <script>
-// FIXME 4 при списаниие всех всего запаса у одного товара его вс еравно можно выбрать к списанию и таким образом нельзя списать остальные товары
 import MainGrid from "@/components/MainGrid.vue";
 import CardGrid from "@/components/CardGrid.vue";
 import TableSetings from "@/components/TableSetings.vue";
@@ -233,7 +232,6 @@ export default {
       paginatedData: [],
       paginatedParams: [],
       changeValue: [],
-      old_data_length: null,
       selected_storage: "Все остатки",
       storage_pages: [
         { name: "Все остатки" },
@@ -246,7 +244,6 @@ export default {
     };
   },
   created: function () {
-    this.old_data_length = this.data[0].length;
     this.paginate();
   },
   computed: {
@@ -385,7 +382,14 @@ export default {
     archive_data() {
       let idxes = [];
       this.changeValue.forEach((val, idx) => {
-        if (val) idxes.push(idx);
+        if (val) {
+          let value = null;
+          const item = this.paginatedData[idx];
+          this.isServicePage
+            ? (value = this.service.indexOf(item))
+            : (value = this.data.indexOf(item));
+          idxes.push(value);
+        }
       });
       this.isServicePage
         ? this.$store.commit("archive_service", idxes)
@@ -455,19 +459,6 @@ export default {
         this.service.forEach((item) => this.paginatedData.push(item));
       }
       this.params.forEach((item) => this.paginatedParams.push(item));
-      // if (this.data.length) {
-      //   if (this.old_data_length == this.data[0].length) {
-      //     this.collumn_value = [];
-      //     this.paginatedParams.forEach(() => this.collumn_value.push(true));
-      //     this.collumn_value.pop();
-      //     this.collumn_value.pop();
-      //   } else {
-      //     const len = this.data[0].length - this.old_data_length;
-      //     if (len > 0) {
-      //       for (let i = 0; i != len; i++) this.collumn_value.push(false);
-      //     }
-      //   }
-      // }
     },
   },
 };
