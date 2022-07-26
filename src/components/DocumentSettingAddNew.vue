@@ -71,6 +71,7 @@ export default {
       },
     },
   },
+  emits: { save_new_doc: null, close: null, save_cur_doc: null },
   data() {
     return {
       options1: [
@@ -91,7 +92,6 @@ export default {
   mounted() {
     nextTick(() => this.add_cur_doc());
   },
-  emits: { save_new_doc: null, close: null, save_cur_doc: null },
   methods: {
     save() {
       this.try_accept = true;
@@ -111,6 +111,8 @@ export default {
       }
     },
     close_modal() {
+      this.name = "";
+      this.serviceID = "";
       this.$emit("close");
     },
     option_select1(option) {

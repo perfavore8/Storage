@@ -16,7 +16,11 @@
       </span>
     </template>
   </document-setting-add-new>
-  <div class="app" ref="app">
+  <document-setting-fields
+    v-if="showFields"
+    @close="close_fields"
+  ></document-setting-fields>
+  <div class="app" ref="app" @click="show_settings ? close_settings() : null">
     <div class="container">
       <div class="header">
         <div class="left">
@@ -27,7 +31,24 @@
           </div>
         </div>
         <div class="right">
-          <button></button>
+          <button
+            class="settings_btn"
+            @click.stop="open_close_settings()"
+          ></button>
+          <transition name="modal">
+            <div v-show="show_settings" class="modal_settings">
+              <a>
+                <div class="modal_container" @click="open_fields()">
+                  Поля шаблонов
+                </div>
+              </a>
+              <a>
+                <div class="modal_container" @click="open_edit_stuff()">
+                  Обновить поля шаблонов
+                </div>
+              </a>
+            </div>
+          </transition>
         </div>
       </div>
       <div class="content">
@@ -60,7 +81,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="row" v-for="doc in documents" :key="doc">
+                <tr class="row" v-for="doc in copy_documents" :key="doc">
                   <td class="item">{{ doc.name }}</td>
                   <td class="item">{{ doc.serviceID }}</td>
                   <td class="item">
@@ -94,7 +115,7 @@
       </div>
       <div class="footer">
         <div class="btns">
-          <button class="btn btn1" @click="close_modal()">Отмена</button>
+          <button class="btn btn1" @click="close()">Отмена</button>
           <button class="btn btn2" @click="save()">Сохранить</button>
         </div>
       </div>
@@ -105,12 +126,14 @@
 <script>
 import SelectorVue from "@/components/SelectorVue.vue";
 import DocumentSettingAddNew from "@/components/DocumentSettingAddNew.vue";
+import DocumentSettingFields from "@/components/DocumentSettingFields.vue";
 // import { nextTick } from "@vue/runtime-core";
 import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
     DocumentSettingAddNew,
+    DocumentSettingFields,
   },
   data() {
     return {
@@ -129,48 +152,80 @@ export default {
       ],
       selected_option: { name: "Не выбрано", value: 1 },
       showAddNew: false,
+      showFields: false,
+      show_settings: false,
       cur_doc: {},
       selected_doc_idx: null,
+      copy_documents: [],
     };
   },
   computed: {
     ...mapGetters(["documents"]),
   },
   mounted() {
-    this.open_add_new();
+    this.copy_documents = [];
+    this.copy_documents = this.copy_documents.concat(this.documents);
   },
   methods: {
+    close() {
+      this.copy_documents = [];
+      this.$emit("close", false);
+    },
+    save() {
+      this.$store.commit("save_docs", this.copy_documents);
+      this.close();
+    },
+    // FIXME 1 сделать копию и отдельную переменну option_select
     option_select(option) {
       Object.assign(this.selected_option, option);
     },
     open_edit(doc) {
       Object.assign(this.cur_doc, doc);
-      this.selected_doc_idx = this.documents.indexOf(doc);
+      this.selected_doc_idx = this.copy_documents.indexOf(doc);
       this.open_add_new();
     },
-    open_add_new() {
-      this.showAddNew = true;
+    open_modal() {
       this.$refs.app.style.pointerEvents = "none";
       this.$refs.app.style.filter = "blur(5px)";
     },
-    close_add_new() {
-      this.showAddNew = false;
+    close_modal() {
       this.$refs.app.style.pointerEvents = "all";
       this.$refs.app.style.filter = "none";
     },
+    open_add_new() {
+      this.showAddNew = true;
+      this.open_modal();
+    },
+    close_add_new() {
+      this.showAddNew = false;
+      this.cur_doc = {};
+      this.close_modal();
+    },
     save_new_doc(new_doc) {
-      this.$store.commit("save_new_doc", new_doc);
+      this.copy_documents.push(
+        Object.assign(new_doc, { gauge: "редактировать" })
+      );
     },
     save_cur_doc(cur_doc, idx) {
-      const payload = {
-        idx: idx,
-        cur_doc: cur_doc,
-      };
-      this.$store.commit("save_cur_doc", payload);
+      Object.assign(this.copy_documents[idx], cur_doc);
     },
     delete_cur_doc(cur_doc) {
-      const idx = this.documents.indexOf(cur_doc);
-      this.$store.commit("delete_cur_doc", idx);
+      const idx = this.copy_documents.indexOf(cur_doc);
+      this.copy_documents.splice(idx, 1);
+    },
+    open_close_settings() {
+      this.show_settings = !this.show_settings;
+    },
+    close_settings() {
+      this.show_settings = false;
+    },
+    open_fields() {
+      this.showFields = true;
+      this.open_modal();
+    },
+    close_fields() {
+      this.showFields = false;
+      this.close_modal();
     },
   },
 };
@@ -231,13 +286,56 @@ export default {
         }
       }
       .right {
-        button {
+        position: relative;
+        display: inline-flex;
+        .settings_btn {
           cursor: pointer;
           width: 20px;
           height: 20px;
           border: none;
           background-color: transparent;
+          transition: transform 0.2s ease-in-out;
           @include bg_image("../assets/gear.svg");
+        }
+        .settings_btn:hover {
+          transform: rotate(180deg);
+        }
+        .modal_settings {
+          z-index: 99999;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          // position: sticky;
+          // float: right;
+          // margin: 20px 10px 0 0;
+          position: absolute;
+          inset: 0px auto auto 0px;
+          margin: 0px;
+          transform: translate(-222px, 25px);
+          width: 240px;
+          border: 1px solid #c9c9c9;
+          border-radius: 4px;
+          background: white;
+          overflow: hidden;
+          a {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            transition: background-color 0.15s ease-in-out;
+            .modal_container {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              text-align: left;
+              height: 30px;
+              cursor: pointer;
+              padding: 5px 15px;
+              @include font(400, 16px, 22px);
+            }
+          }
+          a:hover {
+            background-color: #f5f5f5;
+          }
         }
       }
     }
@@ -281,6 +379,12 @@ export default {
               background-color: #fff !important;
               .item {
                 padding-bottom: 20px !important;
+              }
+            }
+            .title:last-child {
+              .item {
+                max-width: 101px;
+                width: 0.1%;
               }
             }
             .row:nth-child(odd) {
@@ -356,7 +460,7 @@ export default {
               .icon {
                 width: inherit;
                 height: inherit;
-                margin: -1px 0 0 -6px;
+                margin: -1px 0 0 -5px;
                 @include bg_image("@/assets/plus.svg", 60% 60%);
               }
             }
@@ -406,5 +510,13 @@ export default {
       }
     }
   }
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
 }
 </style>

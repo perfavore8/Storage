@@ -29,6 +29,9 @@
         :idxes="rows_to_cancel.idxes"
       />
     </div>
+    <div v-if="show_document_setting" class="document_setting">
+      <document-setting @close="open_close_show_document_setting" />
+    </div>
     <div
       class="header"
       :class="{
@@ -100,7 +103,12 @@
                 </div>
               </a>
               <a>
-                <div class="modal_container">Документы</div>
+                <div
+                  class="modal_container"
+                  @click="open_close_show_document_setting(true)"
+                >
+                  Документы
+                </div>
               </a>
             </div>
           </transition>
@@ -110,7 +118,11 @@
     <div
       class="wrapper"
       :class="{
-        blur: show_table_settings || show_edit_stuff || show_new_position,
+        blur:
+          show_table_settings ||
+          show_edit_stuff ||
+          show_new_position ||
+          show_document_setting,
       }"
     >
       <div class="filters" :class="{ blur: show_edit_modal }">
@@ -208,6 +220,7 @@ import TableSetings from "@/components/TableSetings.vue";
 import EditStuff from "@/components/EditStuff.vue";
 import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";
+import DocumentSetting from "@/components/DocumentSetting.vue";
 import { mapGetters } from "vuex";
 import { nextTick } from "@vue/runtime-core";
 import { computed } from "vue";
@@ -220,6 +233,7 @@ export default {
     NewPosition,
     CancelPosition,
     CardGrid,
+    DocumentSetting,
   },
   provide() {
     return {
@@ -253,7 +267,8 @@ export default {
         this.show_settings ||
         this.show_table_settings ||
         this.show_edit_stuff ||
-        this.show_new_position
+        this.show_new_position ||
+        this.show_document_setting
       );
     },
     disabled_for_modals() {
@@ -261,7 +276,8 @@ export default {
         this.show_edit_modal ||
         this.show_table_settings ||
         this.show_edit_stuff ||
-        this.show_new_position
+        this.show_new_position ||
+        this.show_document_setting
       );
     },
     rows() {
@@ -334,21 +350,24 @@ export default {
     isServicePage() {
       return this.selected_storage === "Услуги";
     },
-    ...mapGetters(["data"]),
-    ...mapGetters(["params"]),
-    ...mapGetters(["show_edit_modal"]),
-    ...mapGetters(["show_settings"]),
-    ...mapGetters(["show_table_settings"]),
-    ...mapGetters(["show_buttons"]),
-    ...mapGetters(["show_filter"]),
-    ...mapGetters(["show_edit_stuff"]),
-    ...mapGetters(["show_sync"]),
-    ...mapGetters(["show_new_position"]),
-    ...mapGetters(["show_cancel_position"]),
-    ...mapGetters(["catalog"]),
-    ...mapGetters(["get_data_storage"]),
-    ...mapGetters(["service"]),
-    ...mapGetters(["show_columns"]),
+    ...mapGetters([
+      "data",
+      "params",
+      "show_edit_modal",
+      "show_settings",
+      "show_table_settings",
+      "show_buttons",
+      "show_filter",
+      "show_edit_stuff",
+      "show_sync",
+      "show_new_position",
+      "show_cancel_position",
+      "catalog",
+      "get_data_storage",
+      "service",
+      "show_columns",
+      "show_document_setting",
+    ]),
   },
   watch: {
     data: {
@@ -432,6 +451,9 @@ export default {
     },
     open_edit_stuff() {
       this.$store.commit("open_close_show_edit_stuff", true);
+    },
+    open_close_show_document_setting(val) {
+      this.$store.commit("open_close_show_document_setting", val);
     },
     update_changeValue(newValue) {
       this.changeValue = [];

@@ -983,6 +983,166 @@ export default {
         download_type: "Исходный",
       },
     ],
+    documents_fields: [
+      {
+        name: "Компания",
+        fields: [
+          {
+            title: "Основное",
+            fields: [],
+          },
+          {
+            title: "Сделки",
+            fields: [],
+          },
+          {
+            title: "Партнер",
+            fields: [
+              {
+                name: "Партнер",
+                value: "${КОМПАНИЯ_ПАРТНЕР}",
+              },
+              {
+                name: "Оказываемые услуги",
+                value: "${КОМПАНИЯ_ОКАЗЫВАЕМЫЕ_УСЛУГИ}",
+              },
+              {
+                name: "Город работы",
+                value: "${КОМПАНИЯ_ГОРОД_РАБОТЫ}",
+              },
+              {
+                name: "Рейтинг",
+                value: "${КОМПАНИЯ_РЕЙТИНГ}",
+              },
+            ],
+          },
+          {
+            title: "Прайс лист",
+            fields: [],
+          },
+          {
+            title: "Покупатели",
+            fields: [],
+          },
+        ],
+      },
+      {
+        name: "Сделка",
+        fields: [
+          {
+            title: "Основное",
+            fields: [],
+          },
+          {
+            title: "Сделки",
+            fields: [],
+          },
+          {
+            title: "Склад",
+            fields: [],
+          },
+          {
+            title: "Товары",
+            fields: [],
+          },
+          {
+            title: "Документы",
+            fields: [],
+          },
+          {
+            title: "Статистика",
+            fields: [],
+          },
+          {
+            title: "Счета/покупки",
+            fields: [],
+          },
+          {
+            title: "Корреспонденция",
+            fields: [],
+          },
+          {
+            title: "Анкета",
+            fields: [],
+          },
+          {
+            title: "Авто",
+            fields: [],
+          },
+          {
+            title: "Финансы",
+            fields: [],
+          },
+          {
+            title: "Документы",
+            fields: [],
+          },
+          {
+            title: "Чек-лист",
+            fields: [],
+          },
+          {
+            title: "DocsSls",
+            fields: [],
+          },
+          {
+            title: "Реквизиты",
+            fields: [],
+          },
+        ],
+      },
+      {
+        name: "Контакт",
+        fields: [
+          {
+            title: "Основное",
+            fields: [],
+          },
+          {
+            title: "Lime",
+            fields: [],
+          },
+          {
+            title: "Сделки",
+            fields: [],
+          },
+          {
+            title: "Анкета",
+            fields: [],
+          },
+          {
+            title: "Товары",
+            fields: [],
+          },
+          {
+            title: "Транзакции",
+            fields: [],
+          },
+          {
+            title: "Покупатели",
+            fields: [],
+          },
+        ],
+      },
+      {
+        name: "Другое",
+        fields: [
+          {
+            title: "",
+            fields: [],
+          },
+        ],
+      },
+      {
+        name: "Для xls-таблицы",
+        fields: [
+          {
+            title: "Поля вставляются в ячейки xls-файла",
+            fields: [],
+          },
+        ],
+      },
+    ],
     show_columns: {
       names: ["Все остатки", "Склад 1", "Склад 2", "Услуги"],
       values: [
@@ -1153,6 +1313,9 @@ export default {
     documents(state) {
       return state.documents;
     },
+    documents_fields(state) {
+      return state.documents_fields;
+    },
     show_columns(state) {
       const result = {};
       state.show_columns.names.forEach((val, idx) => {
@@ -1273,14 +1436,8 @@ export default {
     update_binding_fields_deals(state, binding_fields_deals) {
       state.binding_fields_deals = binding_fields_deals;
     },
-    save_new_doc(state, new_doc) {
-      state.documents.push(Object.assign(new_doc, { gauge: "редактировать" }));
-    },
-    save_cur_doc(state, payload) {
-      Object.assign(state.documents[payload.idx], payload.cur_doc);
-    },
-    delete_cur_doc(state, idx) {
-      state.documents.splice(idx, 1);
+    save_docs(state, payload) {
+      state.documents = payload;
     },
   },
   actions: {},
