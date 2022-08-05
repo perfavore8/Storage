@@ -189,7 +189,9 @@
             </transition-group>
           </tbody>
         </table>
-        <button class="add_new_button" @click="push_new_item()">+</button>
+        <div class="content_footer">
+          <button class="add_new_button" @click="push_new_item()">+</button>
+        </div>
       </div>
       <div class="footer">
         <div class="btns">
@@ -466,12 +468,12 @@ export default {
       justify-content: start;
       padding: 10px 50px;
       @include font(500, 20px);
-      border-bottom: 2px solid #dee2e6;
+      // border-bottom: 2px solid #dee2e6;
     }
     .content {
       @include font(400, 16px);
-      padding: 15px 50px;
-      border-bottom: 2px solid #dee2e6;
+      padding: 15px 50px 0;
+      // border-bottom: 2px solid #dee2e6;
       .table {
         border: 1px solid #c9c9c9;
         border-collapse: collapse;
@@ -481,6 +483,7 @@ export default {
           background-color: rgba(0, 0, 0, 0.15) !important;
           .item {
             padding-bottom: 20px !important;
+            text-align: center !important;
           }
         }
         .row:nth-child(odd) {
@@ -595,19 +598,24 @@ export default {
           }
         }
       }
-      .add_new_button {
-        cursor: pointer;
+      .content_footer {
         margin-top: 15px;
-        // position: absolute;
-        // right: 13.5%;
-        margin-left: 1249px;
-        width: 34px;
-        height: 34px;
-        color: #fff;
-        background: #4e964d;
-        border: none;
-        border-radius: 4px;
-        @include font(400, 16px, 20px);
+        display: flex;
+        justify-content: end;
+        .add_new_button {
+          margin-right: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          width: 34px;
+          height: 20px;
+          color: #fff;
+          background: #4e964d;
+          border: none;
+          border-radius: 4px;
+          @include font(400, 16px, 20px);
+        }
       }
     }
     .footer {

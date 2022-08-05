@@ -54,26 +54,28 @@
         </button>
       </div> -->
     </div>
+    <div class="links">
+      <div
+        class="triangle"
+        :class="{
+          triangle_last: path.length - 1 == idx,
+        }"
+        v-for="(cat, idx) in selected_categoryes"
+        :key="cat"
+        @click="
+          sel_idx = idx;
+          selected_categoryes.splice(idx);
+        "
+      >
+        {{ path[idx] }}
+      </div>
+    </div>
     <div
       class="path"
       v-for="(item, i) in path"
       :key="item"
       v-show="sel_idx == i && show_categoryes"
     >
-      <h2>{{ item }}:</h2>
-      <div class="links">
-        <div v-for="idx in i" :key="idx">
-          <a
-            href="#"
-            @click="
-              sel_idx = idx - 1;
-              selected_categoryes.splice(idx - 1);
-            "
-            >{{ path[idx - 1] }}
-          </a>
-          <span> /</span>
-        </div>
-      </div>
       <div class="grid">
         <div
           class="card"
@@ -370,7 +372,7 @@ export default {
         box-shadow 0.15s ease-in-out;
       @include font(400, 14px);
       width: 124px;
-      height: 34px;
+      height: 35px;
       background: #ea9197;
     }
     .button:hover {
@@ -398,6 +400,7 @@ export default {
       padding: 10px;
       background-color: #fff;
       gap: 10px;
+      max-width: 300px;
       .title {
         @include font(500, 16px, 19px);
       }
@@ -407,12 +410,87 @@ export default {
 .links {
   display: flex;
   flex-direction: row;
-  a {
-    @include font(400, 16px);
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  $step: 12px;
+
+  .triangle {
+    cursor: pointer;
+    padding: 5px 10px 5px 15px;
+    height: 20px;
+    margin: 5px 0;
+    @include font(400, 15px);
+    -webkit-clip-path: polygon(
+      0 0,
+      calc(100% - $step) 0,
+      100% 50%,
+      calc(100% - $step) 100%,
+      0% 100%,
+      $step 50%
+    );
+    clip-path: polygon(
+      0 0,
+      calc(100% - $step) 0,
+      100% 50%,
+      calc(100% - $step) 100%,
+      0% 100%,
+      $step 50%
+    );
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    color: #000;
   }
-  a:hover {
-    text-decoration: none;
-    opacity: 0.8;
+  .triangle:hover {
+    padding: 5px 12px 5px 17px;
+    margin-left: -2px;
+    margin-right: -2px;
+    background: #e6e6e6 !important;
+  }
+  .triangle:first-child:hover {
+    margin-left: 0;
+  }
+  .triangle_last {
+    color: #fff;
+    background: rgba(27, 53, 70, 0.945) !important;
+  }
+  .triangle_last:hover {
+    background: rgba(27, 53, 70, 0.851) !important;
+  }
+  .triangle:active {
+    background: #d6d6d6 !important;
+  }
+
+  .triangle:nth-child(3n + 1) {
+    background: linear-gradient(45deg, hsl(0, 0%, 90%), hsl(0, 0%, 84%));
+  }
+  .triangle:nth-child(3n + 2) {
+    background: linear-gradient(
+      45deg,
+      hsl(0, 0%, 84%),
+      hsl(0, 0%, 83%),
+      hsl(0, 0%, 84%)
+    );
+  }
+  .triangle:nth-child(3n + 3) {
+    background: linear-gradient(45deg, hsl(0, 0%, 84%), hsl(0, 0%, 90%));
+  }
+  .triangle:first-child {
+    padding-left: 5px;
+    -webkit-clip-path: polygon(
+      0 0,
+      calc(100% - $step) 0,
+      100% 50%,
+      calc(100% - $step) 100%,
+      0% 100%
+    );
+    clip-path: polygon(
+      0 0,
+      calc(100% - $step) 0,
+      100% 50%,
+      calc(100% - $step) 100%,
+      0% 100%
+    );
   }
 }
 .grid {
