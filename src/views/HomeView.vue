@@ -193,19 +193,19 @@
       </div>
       <div class="grid">
         <main-grid
+          ref="main"
           v-if="!grid"
           :data="paginatedData"
           :params="paginatedParams"
           :collval="show_columns[selected_storage]"
-          :drop_page="drop_page"
           @update_changeValue="update_changeValue"
         ></main-grid>
         <card-grid
+          ref="card"
           v-if="grid"
           :data="paginatedData"
           :params="paginatedParams"
           :collval="show_columns[selected_storage]"
-          :drop_page="drop_page"
           @update_changeValue="update_changeValue"
         ></card-grid>
       </div>
@@ -222,7 +222,6 @@ import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";
 import DocumentSetting from "@/components/DocumentSetting.vue";
 import { mapGetters } from "vuex";
-import { nextTick } from "@vue/runtime-core";
 import { computed } from "vue";
 
 export default {
@@ -254,7 +253,6 @@ export default {
         { name: "Услуги" },
       ],
       grid: false,
-      drop_page: false,
     };
   },
   created: function () {
@@ -368,6 +366,12 @@ export default {
       "show_columns",
       "show_document_setting",
     ]),
+    ref_main() {
+      return this.$refs.main;
+    },
+    ref_card() {
+      return this.$refs.card;
+    },
   },
   watch: {
     data: {
@@ -393,8 +397,7 @@ export default {
     },
     selected_storage() {
       this.paginate();
-      this.drop_page = false;
-      nextTick(() => (this.drop_page = true));
+      this.grid ? this.ref_card.drop_page() : this.ref_main.drop_page();
     },
   },
   methods: {

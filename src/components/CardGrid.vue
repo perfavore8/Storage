@@ -2,100 +2,23 @@
   <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
   <div class="wrapper" :class="{ blur: show_edit_modal }">
     <div class="header">
-      <transition-group name="mdl">
-        <div class="filters" v-if="show_filter">
-          <div
-            class="item"
-            v-show="show_filter && (collval[idx] === false ? false : true)"
-            v-for="(filter, idx) in filtersValue"
-            :key="idx"
-          >
-            <div class="title">
-              {{ params[idx + 1] }}
-            </div>
-            <filter-number
-              v-if="filter.type == 1 || filter.type == 2"
-              :item="filter"
-              :idx="idx"
-              @change_filter_value="change_filter_value"
-            />
-            <filter-text
-              v-if="filter.type == 3 || filter.type == 4"
-              :item="filter"
-              :idx="idx"
-              @change_filter_value="change_filter_value"
-            />
-            <filter-list
-              v-if="filter.type == 5 || filter.type == 6"
-              :item="filter"
-              :idx="idx"
-              :selector_options="filter.selector_options"
-              @change_filter_value="change_filter_value"
-            />
-            <filter-date
-              v-if="filter.type == 7 || filter.type == 8"
-              :item="filter"
-              :idx="idx"
-              @change_filter_value="change_filter_value"
-            />
-            <filter-flag
-              v-if="filter.type == 9"
-              :item="filter"
-              :idx="idx"
-              @change_filter_value="change_filter_value"
-            />
-          </div>
-        </div>
-      </transition-group>
+      <transition name="mdl">
+        <card-grid-filters ref="filters" :collval="collval" :params="params" />
+      </transition>
       <!-- <div class="btns">
         <button class="button" @click="show_categoryes = !show_categoryes">
           <span v-if="show_categoryes">Все</span>
           <span v-if="!show_categoryes">По категориям</span>
         </button>
       </div> -->
-    </div>
-    <div class="links">
-      <div
-        class="triangle"
-        :class="{
-          triangle_last: path.length - 1 == idx,
-        }"
-        v-for="(cat, idx) in selected_categoryes"
-        :key="cat"
-        @click="
-          sel_idx = idx;
-          selected_categoryes.splice(idx);
-        "
-      >
-        {{ path[idx] }}
-      </div>
-    </div>
-    <div
-      class="path"
-      v-for="(item, i) in path"
-      :key="item"
-      v-show="sel_idx == i && show_categoryes"
-    >
-      <div class="grid">
-        <div
-          class="card"
-          v-for="select in categoryes[item]"
-          :key="select"
-          @click="
-            selected_categoryes.push(select);
-            sel_idx += 1;
-          "
-        >
-          <div class="row">
-            <div class="name"></div>
-            <div class="value">{{ select }}</div>
-          </div>
-        </div>
-      </div>
+      <card-grid-links ref="links" @emit_link="emit_link" />
     </div>
     <div
       class="grid"
-      v-if="!show_categoryes || path.length == selected_categoryes.length"
+      v-if="
+        !link.show_categoryes ||
+        link.path.length == link.selected_categoryes.length
+      "
     >
       <label v-if="paginatedData.length == 0" class="text">
         Ничего не найдено
@@ -129,7 +52,8 @@
       class="bottom"
       :class="{ blur: show_edit_modal }"
       v-if="
-        (!show_categoryes || path.length == selected_categoryes.length) &&
+        (!link.show_categoryes ||
+          link.path.length == link.selected_categoryes.length) &&
         paginatedData.length != 0
       "
     >
@@ -151,21 +75,15 @@
 
 <script>
 import EditItem from "@/components/EditItem.vue";
+import CardGridFilters from "@/components/CardGridFilters.vue";
+import CardGridLinks from "@/components/CardGridLinks.vue";
 import { mapGetters } from "vuex";
-import FilterNumber from "@/components/FiltersSelections/FilterNumber.vue";
-import FilterText from "@/components/FiltersSelections/FilterText.vue";
-import FilterList from "@/components/FiltersSelections/FilterList.vue";
-import FilterDate from "@/components/FiltersSelections/FilterDate.vue";
-import FilterFlag from "@/components/FiltersSelections/FilterFlag.vue";
 export default {
   name: "Main_grid",
   components: {
     EditItem,
-    FilterNumber,
-    FilterText,
-    FilterList,
-    FilterDate,
-    FilterFlag,
+    CardGridFilters,
+    CardGridLinks,
   },
   props: {
     params: {
@@ -180,24 +98,21 @@ export default {
       type: Array,
       required: true,
     },
-    drop_page: {
-      type: Boolean,
-      required: false,
-    },
   },
   emits: { update_changeValue: null },
   data() {
     return {
       count: 20,
       page: 1,
-      filtersValue: [],
       edit_data: [],
       changeValue: [],
-      path: ["Поступление", "№ партии", "НДС включен в цену"],
-      selected_categoryes: [],
-      sel_idx: 0,
-      show_categoryes: true,
-      categoryes: {},
+      link: {
+        path: null,
+        selected_categoryes: null,
+        sel_idx: null,
+        show_categoryes: null,
+        categoryes: null,
+      },
     };
   },
   computed: {
@@ -205,15 +120,15 @@ export default {
       return this.count * (this.page - 1);
     },
     paginatedData() {
-      if (this.show_categoryes) {
+      if (this.link.show_categoryes) {
         let dat = [];
         dat = dat.concat(this.data);
         let result = [];
         dat.forEach((val) => {
           let a = true;
-          this.path.forEach((title, i) => {
+          this.link.path.forEach((title, i) => {
             const title_idx = this.params.indexOf(title) - 1;
-            a = val[title_idx] == this.selected_categoryes[i] && a;
+            a = val[title_idx] == this.link.selected_categoryes[i] && a;
           });
           if (a) result.push(val);
         });
@@ -232,12 +147,6 @@ export default {
       return value;
     },
     ...mapGetters(["show_edit_modal"]),
-    ...mapGetters(["show_filter"]),
-    ...mapGetters(["fields"]),
-  },
-  mounted() {
-    this.get_data_categoryes();
-    this.feelFilters();
   },
   watch: {
     page() {
@@ -254,9 +163,9 @@ export default {
     },
     data: {
       handler: function () {
-        this.get_data_categoryes();
-        this.filtersValue = [];
-        this.feelFilters();
+        this.$refs.links.get_data_categoryes();
+        this.$refs.filters.reset_filtersValue();
+        this.$refs.filters.feelFilters();
       },
       deep: true,
     },
@@ -269,85 +178,21 @@ export default {
     show_buttons() {
       this.$store.commit("open_close_buttons", this.show_buttons);
     },
-    drop_page() {
-      if (this.drop_page) {
-        this.page = 1;
-        this.selected_categoryes = [];
-        this.sel_idx = 0;
-        this.show_categoryes = true;
-        this.feelFilters();
-      }
-    },
-    show_categoryes() {
-      if (!this.show_categoryes) {
-        this.selected_categoryes = [];
-        this.sel_idx = 0;
-      }
-    },
   },
   methods: {
+    drop_page() {
+      this.page = 1;
+      this.$refs.links.reset_sel();
+      this.$refs.links.showcategoryes();
+      this.$refs.filters.feelFilters();
+    },
+    emit_link(obj) {
+      Object.assign(this.link, obj);
+    },
     open_edit_modal(row, idx) {
       this.edit_data = [];
       this.edit_data = this.edit_data.concat(row);
       this.$store.commit("open_edit_modal", idx);
-    },
-    change_filter_value(new_obj, idx) {
-      Object.assign(this.filtersValue[idx], new_obj);
-    },
-    get_data_categoryes() {
-      this.categoryes = {};
-      function unique(arr) {
-        let res = [];
-
-        for (let str of arr) {
-          if (!res.includes(str)) {
-            res.push(str);
-          }
-        }
-        return res;
-      }
-      const result = {};
-      let titles = [];
-      titles = titles.concat(this.params);
-      titles.pop();
-      titles.shift();
-      titles.forEach((title, idx) => {
-        result[title] = [];
-        let arr = [];
-        this.data.forEach((val) => {
-          arr.push(val[idx]);
-        });
-        result[title] = unique(arr);
-      });
-      Object.assign(this.categoryes, result);
-    },
-    feelFilters() {
-      this.params.forEach((val, idx) => {
-        if (idx != 0 && idx != this.params.length - 1) {
-          let type = null;
-          let selector_options = [];
-          this.fields.forEach((value) =>
-            value.field == val
-              ? ((type = value.type.value),
-                (selector_options = value.selector_options))
-              : null
-          );
-          let value = null;
-          if (type == 5 || type == 6) {
-            value = [true];
-          }
-          if (type == 9) {
-            value = 1;
-          }
-          const obj = {
-            type: type,
-            option: 1,
-            selector_options: selector_options,
-            value: value,
-          };
-          this.filtersValue.push(obj);
-        }
-      });
     },
   },
 };
@@ -379,118 +224,6 @@ export default {
       background: rgb(226, 101, 109);
       box-shadow: 0 0 5px 2px rgb(226 101 109 / 25%);
     }
-  }
-  .filters {
-    display: flex;
-    flex-direction: row;
-    // justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 5px;
-    padding: 30px;
-    border: 1px solid #c9c9c9;
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.05);
-    .item {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      flex-grow: 1;
-      border: 1px solid #c9c9c9;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: #fff;
-      gap: 10px;
-      max-width: 300px;
-      .title {
-        @include font(500, 16px, 19px);
-      }
-    }
-  }
-}
-.links {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-  $step: 12px;
-
-  .triangle {
-    cursor: pointer;
-    padding: 5px 10px 5px 15px;
-    height: 20px;
-    margin: 5px 0;
-    @include font(400, 15px);
-    -webkit-clip-path: polygon(
-      0 0,
-      calc(100% - $step) 0,
-      100% 50%,
-      calc(100% - $step) 100%,
-      0% 100%,
-      $step 50%
-    );
-    clip-path: polygon(
-      0 0,
-      calc(100% - $step) 0,
-      100% 50%,
-      calc(100% - $step) 100%,
-      0% 100%,
-      $step 50%
-    );
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    color: #000;
-  }
-  .triangle:hover {
-    padding: 5px 12px 5px 17px;
-    margin-left: -2px;
-    margin-right: -2px;
-    background: #e6e6e6 !important;
-  }
-  .triangle:first-child:hover {
-    margin-left: 0;
-  }
-  .triangle_last {
-    color: #fff;
-    background: rgba(27, 53, 70, 0.945) !important;
-  }
-  .triangle_last:hover {
-    background: rgba(27, 53, 70, 0.851) !important;
-  }
-  .triangle:active {
-    background: #d6d6d6 !important;
-  }
-
-  .triangle:nth-child(3n + 1) {
-    background: linear-gradient(45deg, hsl(0, 0%, 90%), hsl(0, 0%, 84%));
-  }
-  .triangle:nth-child(3n + 2) {
-    background: linear-gradient(
-      45deg,
-      hsl(0, 0%, 84%),
-      hsl(0, 0%, 83%),
-      hsl(0, 0%, 84%)
-    );
-  }
-  .triangle:nth-child(3n + 3) {
-    background: linear-gradient(45deg, hsl(0, 0%, 84%), hsl(0, 0%, 90%));
-  }
-  .triangle:first-child {
-    padding-left: 5px;
-    -webkit-clip-path: polygon(
-      0 0,
-      calc(100% - $step) 0,
-      100% 50%,
-      calc(100% - $step) 100%,
-      0% 100%
-    );
-    clip-path: polygon(
-      0 0,
-      calc(100% - $step) 0,
-      100% 50%,
-      calc(100% - $step) 100%,
-      0% 100%
-    );
   }
 }
 .grid {

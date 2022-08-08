@@ -196,10 +196,6 @@ export default {
       type: Array,
       required: true,
     },
-    drop_page: {
-      type: Boolean,
-      required: false,
-    },
   },
   data() {
     return {
@@ -249,11 +245,6 @@ export default {
     },
     countHideRows: function () {
       this.feelIdxes();
-    },
-    drop_page() {
-      if (this.drop_page) {
-        this.page = 1;
-      }
     },
   },
   computed: {
@@ -319,6 +310,9 @@ export default {
     // this.open_edit_modal(this.data[0], 0);
   },
   methods: {
+    drop_page() {
+      this.page = 1;
+    },
     calcDuplicate() {
       let name = "";
       let artic = "";
