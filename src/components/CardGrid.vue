@@ -5,12 +5,6 @@
       <transition name="mdl">
         <card-grid-filters ref="filters" :collval="collval" :params="params" />
       </transition>
-      <!-- <div class="btns">
-        <button class="button" @click="show_categoryes = !show_categoryes">
-          <span v-if="show_categoryes">Все</span>
-          <span v-if="!show_categoryes">По категориям</span>
-        </button>
-      </div> -->
       <card-grid-links ref="links" @emit_link="emit_link" />
     </div>
     <div

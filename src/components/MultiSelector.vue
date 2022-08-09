@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { reactive } from "@vue/reactivity";
+import { onMounted } from "@vue/runtime-core";
 export default {
   name: "MultiSelector",
   props: {
@@ -31,22 +33,25 @@ export default {
       },
     },
   },
-  data() {
-    return {
-      options_value: [],
+  emits: {
+    select: null,
+  },
+  setup(props, { emit }) {
+    let options_value = reactive([]);
+    onMounted(() =>
+      props.selected_options.forEach((item) => options_value.push(item))
+    );
+    const select = (idx) => {
+      if (idx == 0) options_value = reactive([]);
+      if (options_value[0] == true) options_value[0] = false;
+      options_value[idx] = !options_value[idx];
+      if (!options_value.includes(true)) options_value[0] = true;
+      emit("select", options_value);
     };
-  },
-  mounted() {
-    this.selected_options.forEach((item) => this.options_value.push(item));
-  },
-  methods: {
-    select(idx) {
-      if (idx == 0) this.options_value = [];
-      if (this.options_value[0] == true) this.options_value[0] = false;
-      this.options_value[idx] = !this.options_value[idx];
-      if (!this.options_value.includes(true)) this.options_value[0] = true;
-      this.$emit("select", this.options_value);
-    },
+    return {
+      options_value,
+      select,
+    };
   },
 };
 </script>

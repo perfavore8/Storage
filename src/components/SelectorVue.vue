@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from "@vue/runtime-core";
+import { onMounted, ref, nextTick, watch } from "@vue/runtime-core";
 export default {
   props: {
     options_props: {
@@ -63,9 +63,21 @@ export default {
   setup(props, { emit }) {
     const options = ref([]);
     onMounted(() => {
+      nextTick(() => {
+        set_options();
+      });
+    });
+    const set_options = () => {
       options.value = [];
       props.options_props.forEach((item) => options.value.push(item));
-    });
+    };
+    watch(
+      () => props.options_props,
+      () => {
+        set_options();
+      },
+      { deep: true }
+    );
 
     const show_options = ref(false);
     const hide_select = () => {
