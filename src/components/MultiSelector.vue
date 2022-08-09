@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import { reactive } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { ref } from "@vue/reactivity";
+import { onMounted, watch } from "@vue/runtime-core";
 export default {
   name: "MultiSelector",
   props: {
@@ -37,16 +37,22 @@ export default {
     select: null,
   },
   setup(props, { emit }) {
-    let options_value = reactive([]);
-    onMounted(() =>
-      props.selected_options.forEach((item) => options_value.push(item))
+    const options_value = ref([]);
+    onMounted(() => (options_value.value = [...props.selected_options]));
+    watch(
+      () => props.selected_options,
+      () => {
+        options_value.value = [...props.selected_options];
+        console.log(options_value.value);
+      },
+      { deep: true }
     );
     const select = (idx) => {
-      if (idx == 0) options_value = reactive([]);
-      if (options_value[0] == true) options_value[0] = false;
-      options_value[idx] = !options_value[idx];
-      if (!options_value.includes(true)) options_value[0] = true;
-      emit("select", options_value);
+      if (idx == 0) options_value.value = [];
+      if (options_value.value[0] == true) options_value.value[0] = false;
+      options_value.value[idx] = !options_value.value[idx];
+      if (!options_value.value.includes(true)) options_value.value[0] = true;
+      emit("select", options_value.value);
     };
     return {
       options_value,
