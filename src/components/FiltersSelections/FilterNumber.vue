@@ -107,6 +107,16 @@ export default {
     @include font(400, 14px, 17px);
     outline: none;
   }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+    appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    display: none;
+  }
 }
 .equal {
   @include bg_image("@/assets/equal.svg", 30% 30%);

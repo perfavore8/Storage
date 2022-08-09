@@ -48,33 +48,26 @@
         </div>
       </div>
     </div>
-    <div
-      class="bottom"
-      :class="{ blur: show_edit_modal }"
-      v-if="
+    <grid-bottom
+      :previous="page > 1"
+      :next="page * count < data.length"
+      :page="page"
+      :blur="show_edit_modal"
+      :show="
         (!link.show_categoryes ||
           link.path.length == link.selected_categoryes.length) &&
         paginatedData.length != 0
       "
-    >
-      <button v-if="page > 1" @click="page -= 1">
-        {{ "<" }}
-      </button>
-      <span style="margin: 5px">{{ page }}</span>
-      <button v-if="page * count < data.length" @click="page += 1">
-        {{ ">" }}
-      </button>
-      <select name="count" id="count" class="count" v-model="count">
-        <option>5</option>
-        <option>10</option>
-        <option>20</option>
-      </select>
-    </div>
+      :count="count"
+      @changePage="changePage"
+      @changeCount="changeCount"
+    />
   </div>
 </template>
 
 <script>
 import EditItem from "@/components/EditItem.vue";
+import GridBottom from "@/components/GridBottom.vue";
 import CardGridFilters from "@/components/CardGridFilters.vue";
 import CardGridLinks from "@/components/CardGridLinks.vue";
 import { mapGetters } from "vuex";
@@ -82,6 +75,7 @@ export default {
   name: "Main_grid",
   components: {
     EditItem,
+    GridBottom,
     CardGridFilters,
     CardGridLinks,
   },
@@ -102,7 +96,7 @@ export default {
   emits: { update_changeValue: null },
   data() {
     return {
-      count: 20,
+      count: 5,
       page: 1,
       edit_data: [],
       changeValue: [],
@@ -147,6 +141,12 @@ export default {
       return value;
     },
     ...mapGetters(["show_edit_modal"]),
+    ref_links() {
+      return this.$refs.links;
+    },
+    ref_filters() {
+      return this.$refs.filters;
+    },
   },
   watch: {
     page() {
@@ -163,9 +163,9 @@ export default {
     },
     data: {
       handler: function () {
-        this.$refs.links.get_data_categoryes();
-        this.$refs.filters.reset_filtersValue();
-        this.$refs.filters.feelFilters();
+        this.ref_links.get_data_categoryes();
+        this.ref_filters.reset_filtersValue();
+        this.ref_filters.feelFilters();
       },
       deep: true,
     },
@@ -180,11 +180,17 @@ export default {
     },
   },
   methods: {
+    changeCount(val) {
+      this.count = val;
+    },
+    changePage(val) {
+      this.page = val;
+    },
     drop_page() {
       this.page = 1;
-      this.$refs.links.reset_sel();
-      this.$refs.links.showcategoryes();
-      this.$refs.filters.feelFilters();
+      this.ref_links.reset_sel();
+      this.ref_links.showcategoryes();
+      this.ref_filters.feelFilters();
     },
     emit_link(obj) {
       Object.assign(this.link, obj);
@@ -276,27 +282,6 @@ export default {
     height: 25px;
     cursor: pointer;
     @include bg_image("@/assets/edit.svg");
-  }
-}
-.count {
-  margin-top: 20px;
-  margin-left: 5px;
-  margin-bottom: 150px;
-  height: 26px;
-  width: 100px;
-}
-.bottom {
-  button {
-    @include font(400, 16px, 19px);
-    color: #3f3f3f;
-  }
-  span {
-    @include font(400, 16px, 19px);
-    color: #3f3f3f;
-  }
-  input {
-    @include font(400, 16px, 19px);
-    color: #3f3f3f;
   }
 }
 .blur {

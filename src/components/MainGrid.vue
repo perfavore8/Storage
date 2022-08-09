@@ -11,77 +11,8 @@
       v-if="paginatedData.length != 0"
     >
       <thead>
-        <tr class="bar_row">
-          <th
-            class="bar_item item"
-            v-show="collval[idx - 1] === false ? false : true"
-            :style="{
-              minWidth:
-                idx === 0
-                  ? 17 + 'px'
-                  : idx === params.length - 1
-                  ? 20 + 'px'
-                  : width[idx] != 0
-                  ? width[idx] + 'px'
-                  : (collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) /
-                      collsCount +
-                    '%',
-            }"
-            v-for="(param, idx) in params"
-            :key="param"
-          >
-            <div class="bar_item_group">
-              <div>{{ param }}</div>
-              <button v-show="param" class="bar_item_icon"></button>
-            </div>
-          </th>
-        </tr>
-        <tr class="filters">
-          <transition-group name="mdl">
-            <transition name="mdl" key="1b">
-              <th class="item" v-show="show_filter" key="b1"></th>
-            </transition>
-            <th
-              class="item"
-              v-show="show_filter && (collval[idx] === false ? false : true)"
-              v-for="(filter, idx) in filtersValue"
-              :key="idx"
-            >
-              <filter-number
-                v-if="filter.type == 1 || filter.type == 2"
-                :item="filter"
-                :idx="idx"
-                @change_filter_value="change_filter_value"
-              />
-              <filter-text
-                v-if="filter.type == 3 || filter.type == 4"
-                :item="filter"
-                :idx="idx"
-                @change_filter_value="change_filter_value"
-              />
-              <filter-list
-                v-if="filter.type == 5 || filter.type == 6"
-                :item="filter"
-                :idx="idx"
-                :selector_options="filter.selector_options"
-                @change_filter_value="change_filter_value"
-              />
-              <filter-date
-                v-if="filter.type == 7 || filter.type == 8"
-                :item="filter"
-                :idx="idx"
-                @change_filter_value="change_filter_value"
-              />
-              <filter-flag
-                v-if="filter.type == 9"
-                :item="filter"
-                :idx="idx"
-                @change_filter_value="change_filter_value"
-              />
-            </th>
-            <th class="item" v-show="show_filter" key="2b" />
-          </transition-group>
-        </tr>
+        <main-grid-bar :collval="collval" :params="params" />
+        <main-grid-filters ref="filters" :collval="collval" :params="params" />
       </thead>
       <tbody>
         <transition-group name="rows">
@@ -140,48 +71,32 @@
         </transition-group>
       </tbody>
     </table>
-    <div
-      class="bottom"
-      :class="{ blur: show_edit_modal }"
-      v-if="paginatedData.length != 0"
-    >
-      <button v-if="page > 1" @click="page -= 1">
-        {{ "<" }}
-      </button>
-      <span style="margin: 5px">{{ page }}</span>
-      <button
-        v-if="page * count < data.length - countHideRows"
-        @click="page += 1"
-      >
-        {{ ">" }}
-      </button>
-      <select name="count" id="count" class="count" v-model="count">
-        <option>3</option>
-        <option>5</option>
-        <option>10</option>
-        <option>20</option>
-      </select>
-    </div>
+    <grid-bottom
+      :previous="page > 1"
+      :next="page * count < data.length - countHideRows"
+      :page="page"
+      :blur="show_edit_modal"
+      :show="paginatedData.length != 0"
+      :count="count"
+      @changePage="changePage"
+      @changeCount="changeCount"
+    />
   </div>
 </template>
 
 <script>
 import EditItem from "@/components/EditItem.vue";
+import GridBottom from "@/components/GridBottom.vue";
+import MainGridFilters from "@/components/MainGridFilters.vue";
+import MainGridBar from "@/components/MainGridBar.vue";
 import { mapGetters } from "vuex";
-import FilterNumber from "@/components/FiltersSelections/FilterNumber.vue";
-import FilterText from "@/components/FiltersSelections/FilterText.vue";
-import FilterList from "@/components/FiltersSelections/FilterList.vue";
-import FilterDate from "@/components/FiltersSelections/FilterDate.vue";
-import FilterFlag from "@/components/FiltersSelections/FilterFlag.vue";
 export default {
   name: "Main_grid",
   components: {
     EditItem,
-    FilterNumber,
-    FilterText,
-    FilterList,
-    FilterDate,
-    FilterFlag,
+    GridBottom,
+    MainGridFilters,
+    MainGridBar,
   },
   props: {
     params: {
@@ -200,9 +115,8 @@ export default {
   data() {
     return {
       coll: [],
-      count: 20,
+      count: 5,
       page: 1,
-      filtersValue: [],
       updateKey: 0,
       changeValue: [],
       duplicate: [],
@@ -233,10 +147,9 @@ export default {
     },
     data: {
       handler: function () {
-        this.filtersValue = [];
-        // if (this.edit_idx != null) this.page = 1;
+        this.filters.reset_filtersValue();
         this.calcDuplicate();
-        this.feelFilters();
+        this.filters.feelFilters();
       },
       deep: true,
     },
@@ -248,6 +161,9 @@ export default {
     },
   },
   computed: {
+    filters() {
+      return this.$refs.filters;
+    },
     show_buttons() {
       let value = false;
       this.changeValue.forEach((val) => {
@@ -268,11 +184,6 @@ export default {
         return [];
       }
     },
-    collsCount() {
-      let count = 0;
-      this.collval.forEach((val) => (val ? (count += 1) : null));
-      return count;
-    },
     countPage() {
       return this.count * (this.page - 1);
     },
@@ -284,32 +195,22 @@ export default {
     endidx() {
       return this.endId(this.startIdx);
     },
-    width() {
-      let arr = [];
-      this.params.forEach((value) => {
-        let a = 0;
-        this.fields.forEach((val) => {
-          if (value === val.field) {
-            if (val.type.value == 9) a = 70;
-            if (val.type.value == 7 || val.type.value == 8) a = 130;
-          }
-        });
-        arr.push(a);
-      });
-      return arr;
-    },
     ...mapGetters(["show_edit_modal"]),
-    ...mapGetters(["show_filter"]),
     ...mapGetters(["fields"]),
     ...mapGetters(["data1"]),
   },
   mounted() {
     this.calcDuplicate();
     this.feelIdxes();
-    this.feelFilters();
     // this.open_edit_modal(this.data[0], 0);
   },
   methods: {
+    changeCount(val) {
+      this.count = val;
+    },
+    changePage(val) {
+      this.page = val;
+    },
     drop_page() {
       this.page = 1;
     },
@@ -368,37 +269,6 @@ export default {
       this.edit_data = this.edit_data.concat(row);
       this.$store.commit("open_edit_modal", index);
     },
-    change_filter_value(new_obj, idx) {
-      Object.assign(this.filtersValue[idx], new_obj);
-    },
-    feelFilters() {
-      this.params.forEach((val, idx) => {
-        if (idx != 0 && idx != this.params.length - 1) {
-          let type = null;
-          let selector_options = [];
-          this.fields.forEach((value) =>
-            value.field == val
-              ? ((type = value.type.value),
-                (selector_options = value.selector_options))
-              : null
-          );
-          let value = null;
-          if (type == 5 || type == 6) {
-            value = [true];
-          }
-          if (type == 9) {
-            value = 1;
-          }
-          const obj = {
-            type: type,
-            option: 1,
-            selector_options: selector_options,
-            value: value,
-          };
-          this.filtersValue.push(obj);
-        }
-      });
-    },
   },
 };
 </script>
@@ -420,49 +290,11 @@ export default {
   cursor: pointer;
   @include bg_image("@/assets/edit.svg");
 }
-.filters {
-  .item {
-    padding: 10px !important;
-  }
-}
 .row {
 }
 .table {
   border-collapse: collapse;
   margin: 0 auto;
-}
-.bar_row {
-  height: 66px;
-}
-.bar_item {
-  background: #e5e5e5;
-  @include font(500, 16px, 19px);
-  color: #000000;
-  vertical-align: middle;
-  cursor: pointer;
-}
-.bar_item_group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.bar_item_icon {
-  height: 16px;
-  width: 16px;
-  background-color: transparent;
-  @include bg_image("@/assets/sort.svg");
-  border: none;
-  cursor: pointer;
-}
-.count {
-  margin-top: 20px;
-  margin-left: 5px;
-  margin-bottom: 150px;
-  height: 26px;
-  width: 100px;
 }
 .item:first-child {
   width: 17px !important;
@@ -480,32 +312,6 @@ export default {
   .filter {
     display: none;
   }
-}
-.bar_item:first-child {
-  width: 17px !important;
-}
-.bar_item:last-child {
-  width: 20px !important;
-}
-.tilde {
-  @include bg_image("@/assets/tilde.svg", 40% 40%);
-}
-.equal {
-  @include bg_image("@/assets/equal.svg", 30% 30%);
-}
-.more {
-  @include bg_image("@/assets/more.svg", 30% 30%);
-}
-.more_or_equal {
-  @include bg_image("@/assets/more_or_equal.svg", 60% 60%);
-}
-.less {
-  @include bg_image("@/assets/more.svg", 30% 30%);
-  transform: rotate(180deg);
-}
-.less_or_equal {
-  @include bg_image("@/assets/more_or_equal.svg", 60% 60%);
-  transform: rotate(180deg);
 }
 .checkbox {
   position: absolute;
@@ -545,20 +351,6 @@ export default {
   background-color: #75757591;
   border-color: #75757591;
 }
-.bottom {
-  button {
-    @include font(400, 16px, 19px);
-    color: #3f3f3f;
-  }
-  span {
-    @include font(400, 16px, 19px);
-    color: #3f3f3f;
-  }
-  input {
-    @include font(400, 16px, 19px);
-    color: #3f3f3f;
-  }
-}
 .dublitem {
   display: flex;
   flex-direction: row;
@@ -591,14 +383,6 @@ export default {
 .text {
   margin: 0 auto;
   @include font(500, 18px);
-}
-.mdl-enter-active,
-.mdl-leave-active {
-  transition: opacity 0.15s ease-in-out;
-}
-.mdl-enter-from,
-.mdl-leave-to {
-  opacity: 0;
 }
 .rows-enter-active,
 .rows-leave-active {

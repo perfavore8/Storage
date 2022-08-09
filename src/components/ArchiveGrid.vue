@@ -22,29 +22,27 @@
       </tr>
     </tbody>
   </table>
-  <div class="bottom" v-if="paginatedItems.length != 0">
-    <button v-if="page > 1" @click="page -= 1">
-      {{ "<" }}
-    </button>
-    <span style="margin: 5px">{{ page }}</span>
-    <button v-if="page * count < archive.items.length" @click="page += 1">
-      {{ ">" }}
-    </button>
-    <select name="count" id="count" class="count" v-model="count">
-      <option>3</option>
-      <option>5</option>
-      <option>10</option>
-      <option>20</option>
-    </select>
-  </div>
+  <grid-bottom
+    :previous="page > 1"
+    :next="page * count < archive.items.length"
+    :page="page"
+    :show="paginatedItems.length != 0"
+    :count="count"
+    @changePage="changePage"
+    @changeCount="changeCount"
+  />
 </template>
 
 <script>
+import GridBottom from "@/components/GridBottom.vue";
 import { mapGetters } from "vuex";
 export default {
+  components: {
+    GridBottom,
+  },
   data() {
     return {
-      count: 20,
+      count: 5,
       page: 1,
     };
   },
@@ -75,6 +73,12 @@ export default {
     },
   },
   methods: {
+    changeCount(val) {
+      this.count = val;
+    },
+    changePage(val) {
+      this.page = val;
+    },
     unarchive_data(idx) {
       console.log(this.archive.sourses[idx]);
       if (this.archive.sourses[idx] == 0) {
@@ -120,11 +124,6 @@ export default {
   cursor: pointer;
   @include bg_image("@/assets/export.svg");
   transform: rotate(180deg);
-}
-.bottom {
-  margin-top: 30px;
-  @include font(400, 16px);
-  color: #3f3f3f;
 }
 .count {
   margin-top: 20px;
