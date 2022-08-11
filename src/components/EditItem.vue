@@ -6,11 +6,11 @@
         Редактирование {{ edit_data[params.indexOf("Название") - 1] }}
       </div>
       <div class="header_right">
-        <div class="btns">
-          <button class="btn1" @click="close_edit_modal()">Отмена</button>
-          <button class="btn2" @click="archive_data()">Архивировать</button>
-          <button class="btn3" @click="save_data()">Сохранить</button>
-        </div>
+        <edit-item-btns
+          :idx_edit_modal="idx_edit_modal"
+          :new_edit_data="new_edit_data"
+          :selected_option_1="selected_option_1"
+        />
       </div>
     </div>
     <div class="hr" />
@@ -23,112 +23,32 @@
           :selected_option="selected_option_1"
         />
       </div>
-      <div
-        class="row"
-        v-for="field in fields"
-        :key="field.id"
-        v-show="!isServicePage.value || field.available_to_services"
-      >
-        <edit-integer
-          :item="field.field"
-          :selected_option="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 1"
-        />
-        <edit-float
-          :item="field.field"
-          :selected_option="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 2"
-        />
-        <edit-string
-          :item="field.field"
-          :selected_option="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 3"
-        />
-        <edit-text
-          :item="field.field"
-          :selected_option="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 4"
-        />
-        <edit-selector
-          :item="field"
-          :selected_option="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 5"
-        />
-        <edit-multi-selector
-          :item="field"
-          :selected_options="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 6"
-        />
-        <edit-date
-          :item="field.field"
-          :selected_option="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 7"
-        />
-        <edit-date-time
-          :item="field.field"
-          :selected_option="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 8"
-        />
-        <edit-flag
-          :item="field.field"
-          :selected_option="new_edit_data[params_indexOf(field)]"
-          :idx="params_indexOf(field)"
-          @change_value="change_value"
-          v-if="field.type.value == 9"
-        />
-      </div>
+      <edit-item-fields
+        :new_edit_data="new_edit_data"
+        @change_value="change_value"
+      />
     </div>
     <div class="hr" />
     <div class="footer">
-      <div class="btns">
-        <button class="btn1" @click="close_edit_modal()">Отмена</button>
-        <button class="btn2" @click="archive_data()">Архивировать</button>
-        <button class="btn3" @click="save_data()">Сохранить</button>
-      </div>
+      <edit-item-btns
+        :idx_edit_modal="idx_edit_modal"
+        :new_edit_data="new_edit_data"
+        :selected_option_1="selected_option_1"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import SelectorVue from "@/components/SelectorVue";
-import EditInteger from "@/components/EditItemSelections/EditInteger.vue";
-import EditFloat from "@/components/EditItemSelections/EditFloat.vue";
-import EditString from "@/components/EditItemSelections/EditString.vue";
-import EditText from "@/components/EditItemSelections/EditText.vue";
-import EditSelector from "@/components/EditItemSelections/EditSelector.vue";
-import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector.vue";
-import EditDate from "@/components/EditItemSelections/EditDate.vue";
-import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
-import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
+import EditItemBtns from "@/components/EditItemBtns.vue";
+import EditItemFields from "@/components/EditItemFields.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
-    EditInteger,
-    EditFloat,
-    EditString,
-    EditText,
-    EditSelector,
-    EditMultiSelector,
-    EditDate,
-    EditDateTime,
-    EditFlag,
+    EditItemBtns,
+    EditItemFields,
   },
   props: {
     edit_data: {
@@ -138,9 +58,7 @@ export default {
   },
   inject: ["isServicePage"],
   computed: {
-    ...mapGetters(["params"]),
-    ...mapGetters(["fields"]),
-    ...mapGetters(["idx_edit_modal"]),
+    ...mapGetters(["params", "fields", "idx_edit_modal"]),
   },
   data() {
     return {
@@ -160,53 +78,11 @@ export default {
       : Object.assign(this.selected_option_1, this.options_1[0]);
   },
   methods: {
-    archive_data() {
-      this.isServicePage.value
-        ? this.$store.commit("archive_service", [this.idx_edit_modal])
-        : this.$store.commit("archive_data", [this.idx_edit_modal]);
-      this.close_edit_modal();
-    },
     change_value(value, idx) {
       this.new_edit_data[idx] = value;
     },
     option_select_1(option) {
       Object.assign(this.selected_option_1, option);
-    },
-    close_edit_modal() {
-      this.$store.commit("close_edit_modal");
-    },
-    save_data() {
-      const payload = {
-        idx: this.idx_edit_modal,
-        data: this.new_edit_data,
-      };
-      const a = this.isServicePage.value;
-      const b = this.selected_option_1.name == "Услуга";
-      if (!a && !b) this.$store.commit("update_data_idx", payload);
-      if (a && b) this.$store.commit("update_service_idx", payload);
-      if (!a && b) {
-        this.fields.forEach((val, idx) => {
-          if (!val.available_to_services) payload.data[idx] = "";
-        });
-        this.$store.commit("remove_data_idx", payload),
-          this.$store.commit("add_service", payload);
-      }
-      if (a && !b)
-        this.$store.commit("remove_service_idx", payload),
-          this.$store.commit("add_data", payload);
-      this.close_edit_modal();
-    },
-    search_selector_options(string) {
-      let options = [];
-      this.fields.forEach((val) => {
-        if (val.field == string) {
-          options = val.selector_options;
-        }
-      });
-      return options;
-    },
-    params_indexOf(item) {
-      return this.params.indexOf(item.field) - 1;
     },
   },
 };
@@ -241,49 +117,6 @@ export default {
     }
     &_right {
       display: flex;
-    }
-  }
-  .btns {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    button {
-      cursor: pointer;
-      padding: 6px 12px;
-      height: 36px;
-      width: 130px;
-      border: none;
-      border-radius: 5px;
-      font-weight: 400;
-      line-height: 1.5;
-      font-size: 1rem;
-      transition: background-color 0.15s ease-in-out,
-        box-shadow 0.15s ease-in-out;
-    }
-    .btn1 {
-      color: #fff;
-      background: #1b3546f1;
-    }
-    .btn1:hover {
-      background: #1b3546d9;
-      box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
-    }
-    .btn2 {
-      color: #fff;
-      background-color: #6c757d;
-    }
-    .btn2:hover {
-      background-color: #5f676d;
-      box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-    }
-    .btn3 {
-      color: #fff;
-      background-color: #0d6efd;
-    }
-    .btn3:hover {
-      background-color: #0256d4;
-      box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
     }
   }
   .main {

@@ -43,7 +43,6 @@ export default {
       () => props.selected_options,
       () => {
         options_value.value = [...props.selected_options];
-        console.log(options_value.value);
       },
       { deep: true }
     );
