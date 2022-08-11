@@ -98,7 +98,7 @@
     <div class="footer">
       <div class="btns">
         <button class="btn1" @click="close_edit_modal()">Отмена</button>
-        <button class="btn2">Архивировать</button>
+        <button class="btn2" @click="archive_data()">Архивировать</button>
         <button class="btn3" @click="save_data()">Сохранить</button>
       </div>
     </div>
