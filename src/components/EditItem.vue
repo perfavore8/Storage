@@ -8,7 +8,7 @@
       <div class="header_right">
         <div class="btns">
           <button class="btn1" @click="close_edit_modal()">Отмена</button>
-          <button class="btn2">Архивировать</button>
+          <button class="btn2" @click="archive_data()">Архивировать</button>
           <button class="btn3" @click="save_data()">Сохранить</button>
         </div>
       </div>
@@ -160,6 +160,12 @@ export default {
       : Object.assign(this.selected_option_1, this.options_1[0]);
   },
   methods: {
+    archive_data() {
+      this.isServicePage.value
+        ? this.$store.commit("archive_service", [this.idx_edit_modal])
+        : this.$store.commit("archive_data", [this.idx_edit_modal]);
+      this.close_edit_modal();
+    },
     change_value(value, idx) {
       this.new_edit_data[idx] = value;
     },
