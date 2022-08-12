@@ -17,21 +17,29 @@
         @returnData1="getData"
       />
     </div>
-    <div v-if="show_edit_stuff" class="edit_staff">
-      <edit-stuff></edit-stuff>
-    </div>
-    <div v-if="show_new_position" class="new_position">
-      <new-position :rows="rows.arr" :idxes="rows.idxes" />
-    </div>
-    <div v-if="show_cancel_position" class="cancel_position">
-      <cancel-position
-        :rows="rows_to_cancel.arr"
-        :idxes="rows_to_cancel.idxes"
-      />
-    </div>
-    <div v-if="show_document_setting" class="document_setting">
-      <document-setting @close="open_close_show_document_setting" />
-    </div>
+    <transition name="modal_window">
+      <div v-if="show_edit_stuff" class="edit_staff">
+        <edit-stuff></edit-stuff>
+      </div>
+    </transition>
+    <transition name="modal_window">
+      <div v-if="show_new_position" class="new_position">
+        <new-position :rows="rows.arr" :idxes="rows.idxes" />
+      </div>
+    </transition>
+    <transition name="modal_window">
+      <div v-if="show_cancel_position" class="cancel_position">
+        <cancel-position
+          :rows="rows_to_cancel.arr"
+          :idxes="rows_to_cancel.idxes"
+        />
+      </div>
+    </transition>
+    <transition name="modal_window">
+      <div v-if="show_document_setting" class="document_setting">
+        <document-setting @close="open_close_show_document_setting" />
+      </div>
+    </transition>
     <div
       class="header"
       :class="{
@@ -122,6 +130,7 @@
           show_table_settings ||
           show_edit_stuff ||
           show_new_position ||
+          show_cancel_position ||
           show_document_setting,
       }"
     >
@@ -266,6 +275,7 @@ export default {
         this.show_table_settings ||
         this.show_edit_stuff ||
         this.show_new_position ||
+        this.show_cancel_position ||
         this.show_document_setting
       );
     },
@@ -275,6 +285,7 @@ export default {
         this.show_table_settings ||
         this.show_edit_stuff ||
         this.show_new_position ||
+        this.show_cancel_position ||
         this.show_document_setting
       );
     },
@@ -891,6 +902,15 @@ export default {
 }
 .btns-enter-from,
 .btns-leave-to {
+  opacity: 0;
+}
+.modal_window-enter-active,
+.modal_window-leave-active {
+  transition: opacity 0.2s ease-in-out;
+  z-index: 999;
+}
+.modal_window-enter-from,
+.modal_window-leave-to {
   opacity: 0;
 }
 </style>
