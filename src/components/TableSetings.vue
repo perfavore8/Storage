@@ -25,21 +25,20 @@
         </draggable>
       </div>
       <div class="modal-footer">
-        <button @click="closeComp()" class="unAcceptButton btn">Отмена</button>
-        <button @click="returnData()" class="acceptButton btn">
-          Сохранить
-        </button>
+        <btns-save-close @close="closeComp" @save="returnData" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 export default defineComponent({
   components: {
     draggable: VueDraggableNext,
+    BtnsSaveClose,
   },
   props: {
     names: {

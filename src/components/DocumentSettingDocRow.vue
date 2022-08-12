@@ -1,0 +1,103 @@
+<template>
+  <tr class="row">
+    <td class="item">{{ doc.name }}</td>
+    <td class="item">{{ doc.serviceID }}</td>
+    <td class="item">
+      <a
+        href="https://docs.google.com/spreadsheets/d/13U76ujSjV_iaY0L2WBVHVw7q07TSEqstuL0kSeX-Sh8/edit"
+        >{{ doc.gauge }}</a
+      >
+    </td>
+    <td class="item">{{ doc.gouge_type }}</td>
+    <td class="item">{{ doc.download_type }}</td>
+    <td class="item">
+      <div class="btns">
+        <button class="btn_edit" @click="open_edit(doc)">
+          <div class="icon"></div>
+        </button>
+        <button class="btn_del" @click="delete_cur_doc(doc)">
+          <div class="icon"></div>
+        </button>
+      </div>
+    </td>
+  </tr>
+</template>
+
+<script>
+export default {
+  props: {
+    doc: {
+      type: Object,
+      required: true,
+    },
+  },
+  emits: { open_edit: null, delete_cur_doc: null },
+  methods: {
+    open_edit(doc) {
+      this.$emit("open_edit", doc);
+    },
+    delete_cur_doc(doc) {
+      this.$emit("delete_cur_doc", doc);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+@import "@/app.scss";
+.row:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.row {
+  .item {
+    padding: 10px 5px;
+    border: 1px solid #c9c9c9;
+    text-align: left;
+  }
+  .btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    button {
+      height: 34px;
+      width: 34px !important;
+      margin: 0 auto;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+      margin: 0;
+    }
+    .btn_edit {
+      background-color: #4e964d;
+      border-radius: 5px 0 0 5px;
+      .icon {
+        width: inherit;
+        height: inherit;
+        @include bg_image("@/assets/pencil.svg", 80% 80%);
+      }
+    }
+    .btn_edit:hover {
+      background-color: #60ba5e;
+      box-shadow: 0 0 5px 2px rgb(96 186 94 / 25%);
+    }
+    .btn_del {
+      background: #dc3545;
+      border-radius: 0 5px 5px 0;
+      .icon {
+        width: inherit;
+        height: inherit;
+        @include bg_image("@/assets/cross.svg", 80% 80%);
+      }
+    }
+    .btn_del:hover {
+      background-color: #f53d50;
+      box-shadow: 0 0 5px 2px rgb(245 61 80 / 25%);
+    }
+  }
+}
+</style>

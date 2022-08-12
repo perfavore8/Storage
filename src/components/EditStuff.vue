@@ -5,12 +5,9 @@
         <div class="header">
           <div class="top">
             <label>Настройки товаров</label>
-            <div class="btns">
-              <button class="btn btn1" @click="close_edit_stuff()">
-                Назад
-              </button>
-              <button class="btn btn2" @click="save()">Сохранить</button>
-            </div>
+            <btns-save-close @close="close_edit_stuff" @save="save">
+              <template v-slot:close>Назад</template>
+            </btns-save-close>
           </div>
           <br />
           <div class="bottom">
@@ -299,10 +296,9 @@
           </div>
         </div>
         <div class="footer">
-          <div class="btns">
-            <button class="btn btn1" @click="close_edit_stuff()">Назад</button>
-            <button class="btn btn2" @click="save()">Сохранить</button>
-          </div>
+          <btns-save-close @close="close_edit_stuff" @save="save">
+            <template v-slot:close>Назад</template>
+          </btns-save-close>
         </div>
       </div>
     </div>
@@ -311,11 +307,13 @@
 <script>
 import SelectorVue from "@/components/SelectorVue";
 import EditStuffList from "@/components/EditStuffList.vue";
+import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
     EditStuffList,
+    BtnsSaveClose,
   },
   data() {
     return {

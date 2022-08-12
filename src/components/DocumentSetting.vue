@@ -81,28 +81,13 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="row" v-for="doc in copy_documents" :key="doc">
-                  <td class="item">{{ doc.name }}</td>
-                  <td class="item">{{ doc.serviceID }}</td>
-                  <td class="item">
-                    <a
-                      href="https://docs.google.com/spreadsheets/d/13U76ujSjV_iaY0L2WBVHVw7q07TSEqstuL0kSeX-Sh8/edit"
-                      >{{ doc.gauge }}</a
-                    >
-                  </td>
-                  <td class="item">{{ doc.gouge_type }}</td>
-                  <td class="item">{{ doc.download_type }}</td>
-                  <td class="item">
-                    <div class="btns">
-                      <button class="btn_edit" @click="open_edit(doc)">
-                        <div class="icon"></div>
-                      </button>
-                      <button class="btn_del" @click="delete_cur_doc(doc)">
-                        <div class="icon"></div>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                <document-setting-doc-row
+                  v-for="doc in copy_documents"
+                  :key="doc"
+                  :doc="doc"
+                  @open_edit="open_edit"
+                  @delete_cur_doc="delete_cur_doc"
+                />
               </tbody>
             </table>
             <div class="add_button_container">
@@ -114,10 +99,7 @@
         </div>
       </div>
       <div class="footer">
-        <div class="btns">
-          <button class="btn btn1" @click="close()">Отмена</button>
-          <button class="btn btn2" @click="save()">Сохранить</button>
-        </div>
+        <btns-save-close @close="close" @save="save" />
       </div>
     </div>
   </div>
@@ -127,13 +109,16 @@
 import SelectorVue from "@/components/SelectorVue.vue";
 import DocumentSettingAddNew from "@/components/DocumentSettingAddNew.vue";
 import DocumentSettingFields from "@/components/DocumentSettingFields.vue";
-// import { nextTick } from "@vue/runtime-core";
+import DocumentSettingDocRow from "@/components/DocumentSettingDocRow.vue";
+import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
     DocumentSettingAddNew,
     DocumentSettingFields,
+    DocumentSettingDocRow,
+    BtnsSaveClose,
   },
   data() {
     return {
@@ -378,6 +363,9 @@ export default {
               // background-color: rgba(0, 0, 0, 0.15) !important;
               background-color: #fff !important;
               .item {
+                padding: 10px 5px;
+                border: 1px solid #c9c9c9;
+                text-align: left;
                 padding-bottom: 20px !important;
               }
             }
@@ -385,61 +373,6 @@ export default {
               .item {
                 max-width: 101px;
                 width: 0.1%;
-              }
-            }
-            .row:nth-child(odd) {
-              background-color: rgba(0, 0, 0, 0.05);
-            }
-            .row {
-              .item {
-                padding: 10px 5px;
-                border: 1px solid #c9c9c9;
-                text-align: left;
-              }
-              .btns {
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                button {
-                  height: 34px;
-                  width: 34px !important;
-                  margin: 0 auto;
-                  cursor: pointer;
-                  border: none;
-                  border-radius: 4px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  transition: background-color 0.15s ease-in-out,
-                    box-shadow 0.15s ease-in-out;
-                  margin: 0;
-                }
-                .btn_edit {
-                  background-color: #4e964d;
-                  border-radius: 5px 0 0 5px;
-                  .icon {
-                    width: inherit;
-                    height: inherit;
-                    @include bg_image("@/assets/pencil.svg", 80% 80%);
-                  }
-                }
-                .btn_edit:hover {
-                  background-color: #60ba5e;
-                  box-shadow: 0 0 5px 2px rgb(96 186 94 / 25%);
-                }
-                .btn_del {
-                  background: #dc3545;
-                  border-radius: 0 5px 5px 0;
-                  .icon {
-                    width: inherit;
-                    height: inherit;
-                    @include bg_image("@/assets/cross.svg", 80% 80%);
-                  }
-                }
-                .btn_del:hover {
-                  background-color: #f53d50;
-                  box-shadow: 0 0 5px 2px rgb(245 61 80 / 25%);
-                }
               }
             }
           }
@@ -476,38 +409,6 @@ export default {
       display: flex;
       justify-content: end;
       padding: 15px 50px;
-      .btns {
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-
-        .btn {
-          cursor: pointer;
-          padding: 6px 12px;
-          height: 36px;
-          border: none;
-          @include font(400, 16px);
-          border-radius: 5px;
-          transition: background-color 0.15s ease-in-out,
-            box-shadow 0.15s ease-in-out;
-        }
-        .btn1 {
-          color: #fff;
-          background-color: #6c757d;
-        }
-        .btn1:hover {
-          background-color: #5f676d;
-          box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-        }
-        .btn2 {
-          color: #fff;
-          background-color: #0d6efd;
-        }
-        .btn2:hover {
-          background-color: #0256d4;
-          box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
-        }
-      }
     }
   }
 }

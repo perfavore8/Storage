@@ -194,10 +194,7 @@
         </div>
       </div>
       <div class="footer">
-        <div class="btns">
-          <button class="btn btn1" @click="close_modal()">Отмена</button>
-          <button class="btn btn2" @click="save()">Сохранить</button>
-        </div>
+        <btns-save-close @close="close_modal" @save="save" />
       </div>
     </div>
   </div>
@@ -205,11 +202,13 @@
 
 <script>
 import SelectorVue from "@/components/SelectorVue";
+import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
 import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
+    BtnsSaveClose,
   },
   props: {
     rows: {
