@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkstorage"]=self["webpackChunkstorage"]||[]).push([[578],{8062:function(n,t,e){e.r(t),e.d(t,{default:function(){return f}});var r=e(6252);function u(n,t,e,u,c,o){const s=(0,r.up)("document-setting");return(0,r.wg)(),(0,r.j4)(s)}var c=e(5300),o={components:{DocumentSetting:c.Z}},s=e(3744);const a=(0,s.Z)(o,[["render",u]]);var f=a}}]);
-//# sourceMappingURL=578.2739010a.js.map
