@@ -9,7 +9,7 @@
       show_sync ? close_sync() : null;
     "
   >
-    <div v-show="show_table_settings" class="table_setings">
+    <div v-if="show_table_settings" class="table_setings">
       <table-setings
         :names="paginatedParams"
         :data="paginatedData"
@@ -19,7 +19,12 @@
     </div>
     <transition name="modal_window">
       <div v-if="show_edit_stuff" class="edit_staff">
-        <edit-stuff></edit-stuff>
+        <edit-stuff />
+      </div>
+    </transition>
+    <transition name="modal_window">
+      <div v-if="show_product_category" class="product_category">
+        <product-category />
       </div>
     </transition>
     <transition name="modal_window">
@@ -82,7 +87,7 @@
             Синхронизировать товары
           </a>
           <transition name="modal">
-            <div v-show="show_sync" class="modal_settings modal_sync">
+            <div v-if="show_sync" class="modal_settings modal_sync">
               <a>
                 <div class="modal_container">AmoCrm -> Склад</div>
               </a>
@@ -104,6 +109,14 @@
                 <div class="modal_container" @click="open_edit_stuff()">
                   Настройка товаров
                 </div>
+              </a>
+              <a>
+                <div class="modal_container" @click="open_product_category()">
+                  Категории товаров
+                </div>
+              </a>
+              <a>
+                <div class="modal_container">Свойства товаров</div>
               </a>
               <a>
                 <div class="modal_container">
@@ -131,6 +144,7 @@
           show_edit_stuff ||
           show_new_position ||
           show_cancel_position ||
+          show_product_category ||
           show_document_setting,
       }"
     >
@@ -230,6 +244,7 @@ import EditStuff from "@/components/EditStuff.vue";
 import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";
 import DocumentSetting from "@/components/DocumentSetting.vue";
+import ProductCategory from "@/components/ProductCategory.vue";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
 
@@ -242,6 +257,7 @@ export default {
     CancelPosition,
     CardGrid,
     DocumentSetting,
+    ProductCategory,
   },
   provide() {
     return {
@@ -274,6 +290,7 @@ export default {
         this.show_settings ||
         this.show_table_settings ||
         this.show_edit_stuff ||
+        this.show_product_category ||
         this.show_new_position ||
         this.show_cancel_position ||
         this.show_document_setting
@@ -284,6 +301,7 @@ export default {
         this.show_edit_modal ||
         this.show_table_settings ||
         this.show_edit_stuff ||
+        this.show_product_category ||
         this.show_new_position ||
         this.show_cancel_position ||
         this.show_document_setting
@@ -376,6 +394,7 @@ export default {
       "service",
       "show_columns",
       "show_document_setting",
+      "show_product_category",
     ]),
     ref_main() {
       return this.$refs.main;
@@ -465,6 +484,9 @@ export default {
     },
     open_edit_stuff() {
       this.$store.commit("open_close_show_edit_stuff", true);
+    },
+    open_product_category() {
+      this.$store.commit("open_close_show_product_category", true);
     },
     open_close_show_document_setting(val) {
       this.$store.commit("open_close_show_document_setting", val);
@@ -626,6 +648,7 @@ export default {
       height: 18px;
       border: none;
       background-color: transparent;
+      outline: none;
       @include bg_image("../assets/gear.svg");
     }
     .modal_sync {

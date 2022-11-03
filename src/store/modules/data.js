@@ -711,6 +711,24 @@ export default {
         available_to_services: true,
       },
     ],
+    fields_category: [
+      {
+        name: "base",
+        idxes: [1, 2, 5, 13],
+        sabcategory: [
+          {
+            name: "short",
+            idxes: [3],
+            sabcategory: [],
+          },
+          {
+            name: "full",
+            idxes: [3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19],
+            sabcategory: [],
+          },
+        ],
+      },
+    ],
     items_from_storage: [
       {
         id: 1,
@@ -1276,6 +1294,9 @@ export default {
     fields(state) {
       return state.fields;
     },
+    fields_category(state) {
+      return state.fields_category;
+    },
     sync_list_stuff_options(state) {
       return state.sync_list_stuff_options;
     },
@@ -1438,6 +1459,22 @@ export default {
     },
     save_docs(state, payload) {
       state.documents = payload;
+    },
+    update_fields_category(state, payload) {
+      let a = 0;
+      const foo = (arr, name, idxes) => {
+        arr.map((val) => {
+          if (val.name == name) {
+            val.idxes.push(...idxes);
+            a += 1;
+            if (payload[a]) {
+              foo(val.sabcategory, payload[a].name, payload[a].new_items_idxes);
+            }
+          }
+        });
+      };
+      foo(state.fields_category, payload[a].name, payload[a].new_items_idxes);
+      console.log(state.fields_category);
     },
   },
   actions: {},
