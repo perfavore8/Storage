@@ -1,12 +1,12 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
   {
-    path: "/home",
+    path: "/",
     name: "home",
     component: () => import("../views/HomeView.vue"),
   },
-  { path: "/", redirect: "/home" },
+  // { path: "/", redirect: "/home" },
   {
     path: "/qwe",
     name: "qwe",
@@ -30,7 +30,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  // history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes,
 });
 

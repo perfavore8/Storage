@@ -917,7 +917,7 @@ export default {
     catalog: [
       {
         name: "Остатки",
-        value: "home",
+        value: "",
       },
       {
         name: "Аналитика",
