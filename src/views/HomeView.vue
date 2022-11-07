@@ -28,6 +28,11 @@
       </div>
     </transition>
     <transition name="modal_window">
+      <div v-if="show_product_properties" class="product_properties">
+        <product-properties />
+      </div>
+    </transition>
+    <transition name="modal_window">
       <div v-if="show_new_position" class="new_position">
         <new-position :rows="rows.arr" :idxes="rows.idxes" />
       </div>
@@ -116,7 +121,9 @@
                 </div>
               </a>
               <a>
-                <div class="modal_container">Свойства товаров</div>
+                <div class="modal_container" @click="open_product_properties()">
+                  Свойства товаров
+                </div>
               </a>
               <a>
                 <div class="modal_container">
@@ -145,6 +152,7 @@
           show_new_position ||
           show_cancel_position ||
           show_product_category ||
+          show_product_properties ||
           show_document_setting,
       }"
     >
@@ -245,10 +253,16 @@ import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";
 import DocumentSetting from "@/components/DocumentSetting.vue";
 import ProductCategory from "@/components/ProductCategory.vue";
+import ProductProperties from "@/components/ProductProperties.vue";
+// import { useData } from "@/data";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
 
 export default {
+  // setup() {
+  //   const { getData } = useData();
+  //   getData();
+  // },
   components: {
     MainGrid,
     TableSetings,
@@ -258,6 +272,7 @@ export default {
     CardGrid,
     DocumentSetting,
     ProductCategory,
+    ProductProperties,
   },
   provide() {
     return {
@@ -291,6 +306,7 @@ export default {
         this.show_table_settings ||
         this.show_edit_stuff ||
         this.show_product_category ||
+        this.show_product_properties ||
         this.show_new_position ||
         this.show_cancel_position ||
         this.show_document_setting
@@ -302,6 +318,7 @@ export default {
         this.show_table_settings ||
         this.show_edit_stuff ||
         this.show_product_category ||
+        this.show_product_properties ||
         this.show_new_position ||
         this.show_cancel_position ||
         this.show_document_setting
@@ -395,6 +412,7 @@ export default {
       "show_columns",
       "show_document_setting",
       "show_product_category",
+      "show_product_properties",
     ]),
     ref_main() {
       return this.$refs.main;
@@ -486,7 +504,10 @@ export default {
       this.$store.commit("open_close_show_edit_stuff", true);
     },
     open_product_category() {
-      this.$store.commit("open_close_show_product_category", true);
+      this.$store.commit("open_close_product_category", true);
+    },
+    open_product_properties() {
+      this.$store.commit("open_close_show_product_properties", true);
     },
     open_close_show_document_setting(val) {
       this.$store.commit("open_close_show_document_setting", val);

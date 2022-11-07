@@ -11,7 +11,8 @@ export default {
     show_new_position: false,
     show_cancel_position: false,
     show_document_setting: false,
-    show_product_category: true,
+    show_product_properties: false,
+    show_product_category: false,
   },
   getters: {
     show_edit_modal(state) {
@@ -46,6 +47,9 @@ export default {
     },
     show_document_setting(state) {
       return state.show_document_setting;
+    },
+    show_product_properties(state) {
+      return state.show_product_properties;
     },
     show_product_category(state) {
       return state.show_product_category;
@@ -95,7 +99,10 @@ export default {
     open_close_show_document_setting(state, value) {
       state.show_document_setting = value;
     },
-    open_close_show_product_category(state, value) {
+    open_close_show_product_properties(state, value) {
+      state.show_product_properties = value;
+    },
+    open_close_product_category(state, value) {
       state.show_product_category = value;
     },
   },

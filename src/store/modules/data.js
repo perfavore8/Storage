@@ -711,22 +711,38 @@ export default {
         available_to_services: true,
       },
     ],
-    fields_category: [
+    fields_properties: [
       {
         name: "base",
+        id: 1,
+        parent_id: 0,
         idxes: [1, 2, 5, 13],
-        sabcategory: [
-          {
-            name: "short",
-            idxes: [3],
-            sabcategory: [],
-          },
-          {
-            name: "full",
-            idxes: [3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19],
-            sabcategory: [],
-          },
-        ],
+        level: 1,
+        levels: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      },
+      {
+        name: "short",
+        id: 2,
+        parent_id: 1,
+        idxes: [3],
+        level: 2,
+        levels: [1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+      },
+      {
+        name: "short",
+        id: 4,
+        parent_id: 2,
+        idxes: [3],
+        level: 3,
+        levels: [1, 2, 4, 0, 0, 0, 0, 0, 0, 0],
+      },
+      {
+        name: "full",
+        id: 3,
+        parent_id: 1,
+        idxes: [3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19],
+        level: 2,
+        levels: [1, 3, 0, 0, 0, 0, 0, 0, 0, 0],
       },
     ],
     items_from_storage: [
@@ -1294,8 +1310,8 @@ export default {
     fields(state) {
       return state.fields;
     },
-    fields_category(state) {
-      return state.fields_category;
+    fields_properties(state) {
+      return state.fields_properties;
     },
     sync_list_stuff_options(state) {
       return state.sync_list_stuff_options;
@@ -1460,21 +1476,8 @@ export default {
     save_docs(state, payload) {
       state.documents = payload;
     },
-    update_fields_category(state, payload) {
-      let a = 0;
-      const foo = (arr, name, idxes) => {
-        arr.map((val) => {
-          if (val.name == name) {
-            val.idxes.push(...idxes);
-            a += 1;
-            if (payload[a]) {
-              foo(val.sabcategory, payload[a].name, payload[a].new_items_idxes);
-            }
-          }
-        });
-      };
-      foo(state.fields_category, payload[a].name, payload[a].new_items_idxes);
-      console.log(state.fields_category);
+    update_fields_properties(state, value) {
+      state.fields_properties = value;
     },
   },
   actions: {},
