@@ -10,32 +10,64 @@
             </btns-save-close>
           </div>
           <br />
-          <div>
-            <button
-              v-for="(cat, idx) in selected_fields_properties"
-              :key="cat.name"
-              @click="prev_cat(idx)"
-            >
-              {{ cat.name }}
-            </button>
-          </div>
           <div class="bottom">
-            <SelectorVue
-              :options_props="data_fields_properties.items"
-              @select="option_select_fields_properties"
-              :selected_option="data_fields_properties.selected"
-            />
-            <button style="margin-left: 40px" @click="add_new(fields_cat_name)">
-              +
-            </button>
-            <button @click="remove()">-</button>
-            <button @click="rename(fields_cat_name)">~</button>
             <input type="text" v-model="fields_cat_name" />
-            <button @click="copy_category()">copy</button>
-            <button @click="paste_category()">paste</button>
           </div>
         </div>
-        <div class="content"></div>
+        <div class="content">
+          <draggable
+            class="dragArea"
+            :list="copy_fields_properties"
+            @change="changeData"
+          >
+            <div
+              v-for="(item, idx) in copy_fields_properties"
+              :key="item.id"
+              class="item"
+              v-show="paginate(item.parent_id) || true"
+              :style="{ width: calculate_width(item.level) + '%' }"
+            >
+              <div>
+                <input
+                  type="text"
+                  class="input"
+                  v-model="item.name"
+                  :disabled="item.parent_id === 0"
+                />
+                <button
+                  @click="rename2(item.id)"
+                  v-if="item.parent_id !== 0"
+                  class="rename btns"
+                ></button>
+              </div>
+              <div>
+                <button
+                  @click.stop="remove(item.levels, item.level)"
+                  v-if="
+                    item.parent_id !== 0 &&
+                    (copy_fields_properties[idx + 1]
+                      ? copy_fields_properties[idx + 1]?.level <= item.level
+                      : true)
+                  "
+                  class="remove btns"
+                ></button>
+                <button
+                  @click="add_new(fields_cat_name, item)"
+                  class="add btns"
+                ></button>
+                <!-- <button @click.stop="rename(fields_cat_name, item.id)">~</button> -->
+                <!-- <input type="text" v-model="fields_cat_name" /> -->
+                <!-- <button @click.stop="copy_category(item.id)">copy</button>
+              <button
+                @click="paste_category(item)"
+                v-if="!item.levels.includes(copied_category_id)"
+              >
+                paste
+              </button> -->
+              </div>
+            </div>
+          </draggable>
+        </div>
         <div class="footer">
           <btns-save-close @close="close_product_category" @save="save">
             <template v-slot:close>Назад</template>
@@ -46,13 +78,15 @@
   </div>
 </template>
 <script>
-import SelectorVue from "@/components/SelectorVue";
+// FIXME DnD пофиксить перенос (уровни и отображение)
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import { defineComponent } from "vue";
+import { VueDraggableNext } from "vue-draggable-next";
 import { mapGetters } from "vuex";
-export default {
+export default defineComponent({
   components: {
-    SelectorVue,
     BtnsSaveClose,
+    draggable: VueDraggableNext,
   },
   data() {
     return {
@@ -81,6 +115,23 @@ export default {
     ...mapGetters(["fields_properties"]),
   },
   methods: {
+    changeData(event) {
+      const oldidx = event.moved.oldIndex;
+      const newidx = event.moved.newIndex;
+      const list = this.copy_fields_properties;
+      if (list[newidx + 1].parent_id === 0) {
+        const t = list[newidx];
+        list.splice(newidx, 1);
+        list.splice(oldidx, 0, t);
+      } else {
+        list[newidx].parent_id = list[newidx - 1].id;
+        list[newidx].level = list[newidx - 1].level + 1;
+        list[newidx].levels = [];
+        list[newidx].levels.push(...list[newidx - 1].levels);
+        list[newidx].levels[list[newidx - 1].level] = list[newidx].id;
+      }
+    },
+    // changeData() {},
     save() {
       this.$store.commit(
         "update_fields_properties",
@@ -96,50 +147,66 @@ export default {
       return id + 1;
     },
     // FIXME 2 когда добавляешь до 10 левела ломаются айдишники в levels ???
-    add_new(name) {
-      const parent = this.selected_fields_properties.at(-1);
+    add_new(name, parent) {
       const new_fields_cat = {
         name: name,
         id: this.new_id(),
         parent_id: parent.id,
         idxes: [],
         level: parent.level + 1,
-        levels: parent.levels,
+        levels: [...parent.levels],
       };
       new_fields_cat.levels[parent.level] = new_fields_cat.id;
+      const parent_index = this.copy_fields_properties.indexOf(parent) + 1;
       if (new_fields_cat.level <= 10)
-        this.copy_fields_properties.push(new_fields_cat),
+        this.copy_fields_properties.splice(parent_index, 0, new_fields_cat),
           this.feel_data_fields_properties(new_fields_cat.parent_id),
           this.reset_fields_cat_name();
     },
-    remove() {
-      if (this.selected_fields_properties.at(-1).level != 1) {
+    remove(levels, level) {
+      if (level != 1) {
         this.copy_fields_properties = this.copy_fields_properties.filter(
-          (val) => val.id != this.selected_fields_properties.at(-1).id
+          (val) => {
+            let result = false;
+            val.levels.slice(0, level).forEach((elem, idx) => {
+              if (elem !== levels[idx]) result = true;
+            });
+            return result;
+          }
         );
-        this.prev_cat(this.selected_fields_properties.length - 2);
+        this.prev_cat(this.selected_fields_properties.length - 1);
       }
     },
-    rename(new_name) {
-      const last_item = this.selected_fields_properties.at(-1);
-      if (last_item.level != 1) {
+    rename2(id) {
+      this.copy_fields_properties.map((val) => {
+        const name = () => {
+          let res = "";
+          this.fields_properties.forEach((value) =>
+            value.id === id ? (res = value.name) : null
+          );
+          return res;
+        };
+        if (val.id === id) val.name = name();
+      });
+    },
+    rename(new_name, id) {
+      if (id != 1) {
         this.copy_fields_properties.map((val) =>
-          val.id === last_item.id ? (val.name = new_name) : null
+          val.id === id ? (val.name = new_name) : null
         );
-        last_item.name = new_name;
-        this.feel_data_fields_properties(last_item.id);
+        this.feel_data_fields_properties(id);
         this.reset_fields_cat_name();
       }
     },
     reset_fields_cat_name() {
       this.fields_cat_name = "";
     },
-    copy_category() {
-      this.copied_category_id = this.selected_fields_properties.at(-1).id;
+    copy_category(id) {
+      this.copied_category_id = id;
     },
-    paste_category() {
-      const parent_category = this.selected_fields_properties.at(-1);
-      if (parent_category.parent_id !== 0) {
+    paste_category(parent_category) {
+      // const parent_category = this.selected_fields_properties.at(-1);
+      if (this.copied_category_id !== 0) {
         const copied_category = this.copy_fields_properties.filter(
           (val) => val.id === this.copied_category_id
         )[0];
@@ -173,12 +240,34 @@ export default {
       this.selected_fields_properties.push(value.value);
       this.feel_data_fields_properties(val.value.id);
     },
+    paginate(parent_id) {
+      if (parent_id === 0) return true;
+      let res = false;
+      this.selected_fields_properties.forEach((val) =>
+        val.id === parent_id ? (res = true) : null
+      );
+      return res;
+    },
+    select_category(item) {
+      const seleceted = this.selected_fields_properties;
+      if (item.level > seleceted.at(-1).level) {
+        this.selected_fields_properties.push(item);
+      } else {
+        this.selected_fields_properties.splice(item.level - 1);
+        this.selected_fields_properties.push(item);
+      }
+    },
+    calculate_width(level) {
+      let width = 100;
+      width = width * 0.95 ** (level - 1);
+      return width;
+    },
 
     close_product_category() {
       this.$store.commit("open_close_product_category", false);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
@@ -228,6 +317,68 @@ export default {
       }
       .content {
         @include font(400, 16px);
+        // display: flex;
+        // flex-direction: column;
+        // align-items: end;
+        box-sizing: border-box;
+        .dragArea {
+          display: flex;
+          flex-direction: column;
+          align-items: end;
+          border-radius: 0.25rem;
+          border-collapse: collapse;
+          box-sizing: border-box;
+        }
+        .item {
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 16px;
+          margin-top: -1px;
+          cursor: grab;
+          @include font(400, 1rem, 1.5);
+          color: #212529;
+          border-radius: 0.25rem;
+          text-decoration: none;
+          background-color: #fff;
+          border: 1px solid rgba(0, 0, 0, 0.125);
+          // border-top: transparent;
+
+          .input {
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid #ced4da;
+          }
+          .btns {
+            width: 1rem;
+            height: 1rem;
+            background-color: transparent;
+            border: 3px solid;
+            border-radius: 1rem;
+            padding: 0;
+            margin-left: 4px;
+            cursor: pointer;
+          }
+          .rename {
+            border-color: #5f676d;
+          }
+          .remove {
+            border-color: #dc3545;
+          }
+          .add {
+            border-color: rgb(105, 177, 104);
+          }
+        }
+        .item:first-child {
+          border-top-left-radius: inherit;
+          border-top-right-radius: inherit;
+          border-top: 1px solid rgba(0, 0, 0, 0.125);
+        }
+        .item:last-child {
+          border-bottom-left-radius: inherit;
+          border-bottom-right-radius: inherit;
+        }
       }
       .footer {
         display: flex;
