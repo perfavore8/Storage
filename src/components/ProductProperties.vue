@@ -361,13 +361,9 @@ export default {
     },
     option_select_fields_properties(val) {
       const value = JSON.parse(JSON.stringify(val));
-      // this.selected_fields_properties.push(
-      //   Object.assign(value.value, { new_items_idxes: [] })
-      // );
       this.selected_fields_properties.push(value.value);
       this.feel_data_fields_properties(val.value.id);
     },
-    // FIXME
     delete_new_field(idx) {
       const item = this.selected_fields_properties.at(-1);
       const start = item.idxes.length - this.new_fields.length + idx;
