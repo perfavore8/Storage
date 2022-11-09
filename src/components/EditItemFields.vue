@@ -3,7 +3,10 @@
     class="row"
     v-for="field in fields"
     :key="field.id"
-    v-show="!isServicePage.value || field.available_to_services"
+    v-show="
+      (!isServicePage.value || field.available_to_services) &&
+      items_categories[idx_edit_modal].includes(field.id)
+    "
   >
     <edit-integer
       :item="field.field"
@@ -103,7 +106,7 @@ export default {
   inject: ["isServicePage"],
   emits: { change_value: null },
   computed: {
-    ...mapGetters(["params", "fields"]),
+    ...mapGetters(["params", "fields", "idx_edit_modal", "items_categories"]),
   },
   methods: {
     change_value(value, idx) {
