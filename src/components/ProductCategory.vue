@@ -11,7 +11,13 @@
           </div>
           <br />
           <div class="bottom">
-            <input type="text" v-model="fields_cat_name" />
+            <teleport :to="target" v-if="target !== null">
+              <input
+                type="text"
+                v-model="fields_cat_name"
+                @keyup.enter="add_new(fields_cat_name, item)"
+              />
+            </teleport>
           </div>
         </div>
         <div class="content">
@@ -24,7 +30,6 @@
               v-for="(item, idx) in copy_fields_properties"
               :key="item.id"
               class="item"
-              v-show="paginate(item.parent_id) || true"
               :style="{ width: calculate_width(item.level) + '%' }"
             >
               <div>
@@ -52,18 +57,17 @@
                   class="remove btns"
                 ></button>
                 <button
-                  @click="add_new(fields_cat_name, item)"
+                  :id="item.id"
+                  @click="
+                    // add_new(fields_cat_name, item),
+                    selected_category_id = item.id
+                  "
                   class="add btns"
+                  :ref="
+                    (el) =>
+                      item.id === selected_category_id ? (target = el) : null
+                  "
                 ></button>
-                <!-- <button @click.stop="rename(fields_cat_name, item.id)">~</button> -->
-                <!-- <input type="text" v-model="fields_cat_name" /> -->
-                <!-- <button @click.stop="copy_category(item.id)">copy</button>
-              <button
-                @click="paste_category(item)"
-                v-if="!item.levels.includes(copied_category_id)"
-              >
-                paste
-              </button> -->
               </div>
             </div>
           </draggable>
@@ -97,7 +101,8 @@ export default defineComponent({
         selected: { name: "", value: -1 },
       },
       fields_cat_name: "",
-      copied_category_id: null,
+      selected_category_id: null,
+      target: null,
     };
   },
   mounted() {
@@ -105,11 +110,6 @@ export default defineComponent({
     this.copy_fields_properties = JSON.parse(
       JSON.stringify(this.fields_properties)
     );
-    this.option_select_fields_properties({
-      value: this.copy_fields_properties.filter(
-        (val) => val.parent_id === 0
-      )[0],
-    });
   },
   computed: {
     ...mapGetters(["fields_properties"]),
@@ -119,7 +119,10 @@ export default defineComponent({
       const oldidx = event.moved.oldIndex;
       const newidx = event.moved.newIndex;
       const list = this.copy_fields_properties;
-      if (list[newidx + 1].parent_id === 0) {
+      if (
+        list[newidx + 1]?.parent_id === 0 ||
+        list[newidx - 1].parent_id === list[newidx].id
+      ) {
         const t = list[newidx];
         list.splice(newidx, 1);
         list.splice(oldidx, 0, t);
@@ -147,9 +150,12 @@ export default defineComponent({
       return id + 1;
     },
     // FIXME 2 когда добавляешь до 10 левела ломаются айдишники в levels ???
-    add_new(name, parent) {
+    add_new() {
+      const parent = this.copy_fields_properties.filter(
+        (val) => val.id === this.selected_category_id
+      )[0];
       const new_fields_cat = {
-        name: name,
+        name: this.fields_cat_name,
         id: this.new_id(),
         parent_id: parent.id,
         idxes: [],
@@ -158,6 +164,7 @@ export default defineComponent({
       };
       new_fields_cat.levels[parent.level] = new_fields_cat.id;
       const parent_index = this.copy_fields_properties.indexOf(parent) + 1;
+      this.selected_category_id = null;
       if (new_fields_cat.level <= 10)
         this.copy_fields_properties.splice(parent_index, 0, new_fields_cat),
           this.feel_data_fields_properties(new_fields_cat.parent_id),
@@ -174,7 +181,6 @@ export default defineComponent({
             return result;
           }
         );
-        this.prev_cat(this.selected_fields_properties.length - 1);
       }
     },
     rename2(id) {
@@ -200,29 +206,7 @@ export default defineComponent({
     },
     reset_fields_cat_name() {
       this.fields_cat_name = "";
-    },
-    copy_category(id) {
-      this.copied_category_id = id;
-    },
-    paste_category(parent_category) {
-      // const parent_category = this.selected_fields_properties.at(-1);
-      if (this.copied_category_id !== 0) {
-        const copied_category = this.copy_fields_properties.filter(
-          (val) => val.id === this.copied_category_id
-        )[0];
-        copied_category.parent_id = parent_category.id;
-        copied_category.level = parent_category.level + 1;
-        copied_category.levels = [];
-        copied_category.levels.push(...parent_category.levels);
-        copied_category.levels[parent_category.level] = copied_category.id;
-        this.prev_cat(this.selected_fields_properties.length - 1);
-      }
-    },
-    prev_cat(idx) {
-      this.selected_fields_properties.splice(idx + 1);
-      this.feel_data_fields_properties(
-        this.selected_fields_properties.at(-1).id
-      );
+      this.target = null;
     },
     feel_data_fields_properties(id) {
       this.data_fields_properties.items = this.preparing_fields_properties(id);
@@ -234,28 +218,6 @@ export default defineComponent({
       );
       arr.forEach((val) => new_arr.push({ name: val.name, value: val }));
       return new_arr;
-    },
-    option_select_fields_properties(val) {
-      const value = JSON.parse(JSON.stringify(val));
-      this.selected_fields_properties.push(value.value);
-      this.feel_data_fields_properties(val.value.id);
-    },
-    paginate(parent_id) {
-      if (parent_id === 0) return true;
-      let res = false;
-      this.selected_fields_properties.forEach((val) =>
-        val.id === parent_id ? (res = true) : null
-      );
-      return res;
-    },
-    select_category(item) {
-      const seleceted = this.selected_fields_properties;
-      if (item.level > seleceted.at(-1).level) {
-        this.selected_fields_properties.push(item);
-      } else {
-        this.selected_fields_properties.splice(item.level - 1);
-        this.selected_fields_properties.push(item);
-      }
     },
     calculate_width(level) {
       let width = 100;
