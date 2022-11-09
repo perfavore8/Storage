@@ -44,7 +44,10 @@
                 />
                 <button
                   @click="rename2(item.id)"
-                  v-if="!all_old_names.includes(item.name)"
+                  v-if="
+                    !all_old.name.includes(item.name) &&
+                    all_old.id.includes(item.id)
+                  "
                   class="btns"
                 >
                   <div class="rename btn"></div>
@@ -120,9 +123,18 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters(["fields_properties"]),
-    all_old_names() {
-      const list = [];
-      this.fields_properties.forEach((val) => list.push(val.name));
+    all_old() {
+      const list = {
+        name: [],
+        id: [],
+        parent_id: [],
+        idxes: [],
+        level: [],
+        levels: [],
+      };
+      this.fields_properties.forEach((val) =>
+        Object.entries(val).forEach((value) => list[value[0]].push(value[1]))
+      );
       return list;
     },
   },
