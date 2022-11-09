@@ -105,7 +105,6 @@ export default defineComponent({
   data() {
     return {
       copy_fields_properties: [],
-      selected_fields_properties: [],
       data_fields_properties: {
         items: null,
         selected: { name: "", value: -1 },
@@ -116,7 +115,6 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.selected_fields_properties = [];
     this.copy_fields_properties = JSON.parse(
       JSON.stringify(this.fields_properties)
     );
