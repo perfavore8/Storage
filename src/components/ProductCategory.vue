@@ -14,8 +14,11 @@
             <teleport :to="target" v-if="target !== null">
               <input
                 type="text"
+                class="input_teleport"
                 v-model="fields_cat_name"
+                ref="input"
                 @keyup.enter="add_new(fields_cat_name, item)"
+                @keyup.esc="reset_fields_cat_name()"
               />
             </teleport>
           </div>
@@ -41,9 +44,11 @@
                 />
                 <button
                   @click="rename2(item.id)"
-                  v-if="item.parent_id !== 0"
-                  class="rename btns"
-                ></button>
+                  v-if="!all_old_names.includes(item.name)"
+                  class="btns"
+                >
+                  <div class="rename btn"></div>
+                </button>
               </div>
               <div>
                 <button
@@ -54,20 +59,21 @@
                       ? copy_fields_properties[idx + 1]?.level <= item.level
                       : true)
                   "
-                  class="remove btns"
-                ></button>
+                  class="btns"
+                >
+                  <div class="remove btn"></div>
+                </button>
                 <button
                   :id="item.id"
-                  @click="
-                    // add_new(fields_cat_name, item),
-                    selected_category_id = item.id
-                  "
-                  class="add btns"
+                  @click="selected_category_id = item.id"
+                  class="btns"
                   :ref="
                     (el) =>
                       item.id === selected_category_id ? (target = el) : null
                   "
-                ></button>
+                >
+                  <div class="add btn"></div>
+                </button>
               </div>
             </div>
           </draggable>
@@ -84,6 +90,7 @@
 <script>
 // FIXME DnD пофиксить перенос (уровни и отображение)
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import { nextTick } from "process";
 import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { mapGetters } from "vuex";
@@ -113,6 +120,21 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters(["fields_properties"]),
+    all_old_names() {
+      const list = [];
+      this.fields_properties.forEach((val) => list.push(val.name));
+      return list;
+    },
+  },
+  watch: {
+    target: {
+      handler: function () {
+        nextTick(() => {
+          if (this.target !== null) this.$refs.input.focus();
+        });
+      },
+      deep: true,
+    },
   },
   methods: {
     changeData(event) {
@@ -121,7 +143,7 @@ export default defineComponent({
       const list = this.copy_fields_properties;
       if (
         list[newidx + 1]?.parent_id === 0 ||
-        list[newidx - 1].parent_id === list[newidx].id
+        list[newidx - 1].levels.includes(list[newidx].id)
       ) {
         const t = list[newidx];
         list.splice(newidx, 1);
@@ -164,7 +186,6 @@ export default defineComponent({
       };
       new_fields_cat.levels[parent.level] = new_fields_cat.id;
       const parent_index = this.copy_fields_properties.indexOf(parent) + 1;
-      this.selected_category_id = null;
       if (new_fields_cat.level <= 10)
         this.copy_fields_properties.splice(parent_index, 0, new_fields_cat),
           this.feel_data_fields_properties(new_fields_cat.parent_id),
@@ -205,6 +226,7 @@ export default defineComponent({
       }
     },
     reset_fields_cat_name() {
+      this.selected_category_id = null;
       this.fields_cat_name = "";
       this.target = null;
     },
@@ -271,11 +293,6 @@ export default defineComponent({
             @include font(500, 28px);
           }
         }
-        .bottom {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-        }
       }
       .content {
         @include font(400, 16px);
@@ -306,24 +323,57 @@ export default defineComponent({
           background-color: #fff;
           border: 1px solid rgba(0, 0, 0, 0.125);
           // border-top: transparent;
-
-          .input {
-            border: none;
-            border-radius: 0;
-            border-bottom: 1px solid #ced4da;
-          }
           .btns {
+            padding: 0.25rem;
+            margin-left: 4px;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            position: relative;
+            cursor: pointer;
+            .input_teleport {
+              box-sizing: border-box;
+              position: absolute;
+              top: 90%;
+              left: -59px;
+              width: 100px;
+              border-radius: 0.25rem;
+              padding: 4px 8px;
+              background-color: white;
+              border: 1px solid #ced4da;
+              outline: none;
+              appearance: none;
+              transition: all 0.2s ease-in-out;
+              @include font(400, 16px, 20px);
+            }
+            .input_teleport:focus {
+              color: #212529;
+              background-color: white;
+              border-color: #86b7fe;
+              box-shadow: 0 0 0 1px rgb(13 110 253 / 25%);
+            }
+          }
+          .btn {
+            padding: 0;
+            border-radius: 1rem;
+            box-sizing: border-box;
             width: 1rem;
             height: 1rem;
             background-color: transparent;
             border: 3px solid;
-            border-radius: 1rem;
-            padding: 0;
-            margin-left: 4px;
-            cursor: pointer;
           }
           .rename {
-            border-color: #5f676d;
+            // border-color: #5f676d;
+            position: relative;
+            top: 1px;
+            transform: scale(1.17);
+            align-self: center;
+            border: none;
+            @include bg_image("@/assets/circular_arrow.svg");
+            transition: all 0.2s ease-out;
+          }
+          .rename:active {
+            transform: rotate(-90deg);
           }
           .remove {
             border-color: #dc3545;
@@ -354,9 +404,9 @@ export default defineComponent({
   height: 20px;
   padding: 6px 12px;
   background-color: white;
-  border: 1px solid #ced4da;
+  border: none;
+  border-bottom: 1px solid #ced4da;
   appearance: none;
-  border-radius: 4px;
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   @include font(400, 16px, 20px);
 }
@@ -365,6 +415,6 @@ export default defineComponent({
   background-color: white;
   border-color: #86b7fe;
   outline: 0;
-  box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
+  // box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
 }
 </style>
