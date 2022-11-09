@@ -11,8 +11,8 @@ export default {
     show_new_position: false,
     show_cancel_position: false,
     show_document_setting: false,
-    show_product_properties: true,
-    show_product_category: false,
+    show_product_properties: false,
+    show_product_category: true,
   },
   getters: {
     show_edit_modal(state) {

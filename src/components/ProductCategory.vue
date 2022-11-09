@@ -150,7 +150,10 @@ export default defineComponent({
     changeData(event) {
       const oldidx = event.moved.oldIndex;
       const newidx = event.moved.newIndex;
+      const direction = oldidx < newidx;
       const list = this.copy_fields_properties;
+      const old_level = list[newidx].level;
+
       if (
         list[newidx + 1]?.parent_id === 0 ||
         list[newidx - 1].levels.includes(list[newidx].id)
@@ -165,8 +168,20 @@ export default defineComponent({
         list[newidx].levels.push(...list[newidx - 1].levels);
         list[newidx].levels[list[newidx - 1].level] = list[newidx].id;
       }
+      const arr = [];
+      let stop = false;
+      list
+        .slice(!direction ? oldidx + 1 : oldidx)
+        .forEach((val) =>
+          val.level > old_level && !stop ? arr.push(val) : (stop = true)
+        );
+      const shift_level = old_level - (list[newidx - 1].level + 1);
+      const t = list.splice(!direction ? oldidx + 1 : oldidx, arr.length);
+      t.map((val) => {
+        val.level -= shift_level;
+      });
+      list.splice(!direction ? newidx + 1 : newidx - t.length + 1, 0, ...t);
     },
-    // changeData() {},
     save() {
       this.$store.commit(
         "update_fields_properties",
