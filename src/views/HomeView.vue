@@ -838,7 +838,7 @@ export default {
         .checkbox + label:before {
           content: "";
           position: absolute;
-          top: -4px;
+          top: -5px;
           left: 0;
           width: 54px;
           height: 23px;
@@ -861,7 +861,7 @@ export default {
           background: #757575;
         }
         .checkbox:checked + label:after {
-          left: 33px;
+          left: 35px;
         }
       }
     }
