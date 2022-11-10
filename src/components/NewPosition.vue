@@ -174,6 +174,15 @@
                     </div>
                   </div>
                 </td>
+                <td class="item">
+                  <selector-vue
+                    :options_props="options[1]"
+                    @select="option_select4"
+                    :selected_option="row[14]"
+                    :idx="idx"
+                    :disabled="row[0].value == 2"
+                  />
+                </td>
                 <transition name="row">
                   <td class="item">
                     <button
@@ -236,6 +245,7 @@ export default {
         "Себестоимость",
         "Цена",
         "НДС",
+        "Категория",
       ],
       new_items: [],
       options1: [],
@@ -243,6 +253,7 @@ export default {
         { name: "Товар", value: 1 },
         { name: "Услуга", value: 2 },
       ],
+      options3: [],
       options: [],
       try_accept: false,
       fields_for_validation: [1, 2, 6, 8, 9],
@@ -312,6 +323,7 @@ export default {
         false,
         false,
         "",
+        { name: "Базовая", value: 1 },
       ]);
       Object.assign(
         this.new_items[this.new_items.length - 1][5],
@@ -450,7 +462,7 @@ export default {
   left: 0;
   background: transparent;
   .container {
-    width: 90%;
+    width: calc(100% - 60px);
     min-width: 1400px;
     background-color: #fff;
     background-clip: padding-box;
@@ -574,6 +586,10 @@ export default {
             width: 5%;
           }
           .item:nth-child(11) {
+            width: 15%;
+            min-width: 140px;
+          }
+          .item:nth-child(12) {
             width: 5.3%;
             min-width: 34px;
             max-width: 54px;
