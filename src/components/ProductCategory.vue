@@ -96,7 +96,7 @@ import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "process";
 import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 export default defineComponent({
   components: {
     BtnsSaveClose,
@@ -114,23 +114,35 @@ export default defineComponent({
       target: null,
     };
   },
-  mounted() {
+  created() {
+    // this.$store.dispatch("update_fields_properties");
+  },
+  async mounted() {
     this.copy_fields_properties = JSON.parse(
-      JSON.stringify(this.fields_properties)
+      JSON.stringify(this.$store.state.data.fields_properties)
     );
+
+    // this.$store.dispatch("update_fields_properties").then(() => {
+    //   nextTick(() => {
+    //     this.$store.state.data.fields_properties.length
+    //       ? (this.copy_fields_properties = JSON.parse(
+    //           JSON.stringify(this.$store.state.data.fields_properties)
+    //         ))
+    //       : null;
+    //   });
+    // });
   },
   computed: {
-    ...mapGetters(["fields_properties"]),
     all_old() {
       const list = {
         name: [],
         id: [],
         parent_id: [],
-        idxes: [],
+        fields_id: [],
         level: [],
         levels: [],
       };
-      this.fields_properties.forEach((val) =>
+      this.$store.state.data.fields_properties.forEach((val) =>
         Object.entries(val).forEach((value) => list[value[0]].push(value[1]))
       );
       return list;
@@ -205,16 +217,21 @@ export default defineComponent({
         name: this.fields_cat_name,
         id: this.new_id(),
         parent_id: parent.id,
-        idxes: [],
+        fields_id: [],
         level: parent.level + 1,
         levels: [...parent.levels],
       };
       new_fields_cat.levels[parent.level] = new_fields_cat.id;
-      const parent_index = this.copy_fields_properties.indexOf(parent) + 1;
-      if (new_fields_cat.level <= 10)
-        this.copy_fields_properties.splice(parent_index, 0, new_fields_cat),
-          this.feel_data_fields_properties(new_fields_cat.parent_id),
-          this.reset_fields_cat_name();
+      if (new_fields_cat.level <= 10) {
+        this.$store.dispatch("add_fields_properties", {
+          name: this.fields_cat_name,
+          parent_id: parent.id,
+        });
+        const parent_index = this.copy_fields_properties.indexOf(parent) + 1;
+        this.copy_fields_properties.splice(parent_index, 0, new_fields_cat);
+        this.feel_data_fields_properties(new_fields_cat.parent_id);
+        this.reset_fields_cat_name();
+      }
     },
     remove(levels, level) {
       if (level != 1) {

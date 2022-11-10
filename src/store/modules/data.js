@@ -717,7 +717,7 @@ export default {
         name: "base",
         id: 1,
         parent_id: 0,
-        idxes: [1, 2, 5, 13],
+        fields_id: [1, 2, 5, 13],
         level: 1,
         levels: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       },
@@ -725,7 +725,7 @@ export default {
         name: "short",
         id: 2,
         parent_id: 1,
-        idxes: [3],
+        fields_id: [3],
         level: 2,
         levels: [1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
       },
@@ -733,7 +733,7 @@ export default {
         name: "a",
         id: 4,
         parent_id: 2,
-        idxes: [3],
+        fields_id: [3],
         level: 3,
         levels: [1, 2, 4, 0, 0, 0, 0, 0, 0, 0],
       },
@@ -741,7 +741,7 @@ export default {
         name: "e",
         id: 8,
         parent_id: 4,
-        idxes: [3],
+        fields_id: [3],
         level: 4,
         levels: [1, 2, 4, 8, 0, 0, 0, 0, 0, 0],
       },
@@ -749,7 +749,7 @@ export default {
         name: "b",
         id: 5,
         parent_id: 2,
-        idxes: [3],
+        fields_id: [3],
         level: 3,
         levels: [1, 2, 5, 0, 0, 0, 0, 0, 0, 0],
       },
@@ -757,7 +757,7 @@ export default {
         name: "full",
         id: 3,
         parent_id: 1,
-        idxes: [3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19],
+        fields_id: [3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19],
         level: 2,
         levels: [1, 3, 0, 0, 0, 0, 0, 0, 0, 0],
       },
@@ -765,7 +765,7 @@ export default {
         name: "c",
         id: 6,
         parent_id: 3,
-        idxes: [3],
+        fields_id: [3],
         level: 3,
         levels: [1, 3, 6, 0, 0, 0, 0, 0, 0, 0],
       },
@@ -773,11 +773,12 @@ export default {
         name: "d",
         id: 7,
         parent_id: 3,
-        idxes: [3],
+        fields_id: [3],
         level: 3,
         levels: [1, 3, 7, 0, 0, 0, 0, 0, 0, 0],
       },
     ],
+    // fields_properties: [],
     items_from_storage: [
       {
         id: 1,
@@ -1345,20 +1346,20 @@ export default {
     },
     items_categories(state) {
       const result = [];
-      let idxes = [];
+      let fields_id = [];
       const search = (id) =>
         state.fields_properties.filter((value) => value.id == id)[0];
       const add = (id) => {
         const item = search(id);
         let levels = item.levels;
         levels.forEach((val) =>
-          val != 0 ? idxes.push(...search(val).idxes) : null
+          val != 0 ? fields_id.push(...search(val).fields_id) : null
         );
       };
       state.items_categories.forEach((val) => {
         add(val);
-        result.push(idxes);
-        idxes = [];
+        result.push(fields_id);
+        fields_id = [];
       });
       return result;
     },
@@ -1529,8 +1530,38 @@ export default {
       state.documents = payload;
     },
     update_fields_properties(state, value) {
-      state.fields_properties = value;
+      state.fields_properties = [...value];
+    },
+    add_fields_properties(state, new_item) {
+      state.fields_properties.push(new_item);
     },
   },
-  actions: {},
+  actions: {
+    async update_fields_properties(context) {
+      const url = "http://api.gosklad.ru/v1/category/list";
+      const res = await fetch(url);
+      const json = await res.json();
+      context.commit("update_fields_properties", json.data);
+    },
+    async add_fields_properties(context, params) {
+      const url = "https://api.gosklad.ru/v1/category/add";
+      console.log(
+        url + "?name=" + params.name + "&parent_id=" + params.parent_id
+      );
+      const res = await fetch(
+        url + "?name=" + params.name + "&parent_id=" + params.parent_id,
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            Authorization:
+              "Bearer $2y$10$WkIXz7NScRYJ7y216/Mh1.N0DF.g7eBQi32.B2hjwGPEM/2KrbONW",
+          },
+        }
+      );
+      console.log(res.status);
+      const json = await res.json();
+      context.commit("add_fields_properties", json.data);
+    },
+  },
 };
