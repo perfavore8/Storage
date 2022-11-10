@@ -1537,31 +1537,39 @@ export default {
     },
   },
   actions: {
-    async update_fields_properties(context) {
+    async get_fields_properties(context) {
       const url = "http://api.gosklad.ru/v1/category/list";
       const res = await fetch(url);
       const json = await res.json();
-      context.commit("update_fields_properties", json.data);
+      context.commit("update_fields_properties", json);
     },
     async add_fields_properties(context, params) {
-      const url = "https://api.gosklad.ru/v1/category/add";
-      console.log(
-        url + "?name=" + params.name + "&parent_id=" + params.parent_id
-      );
-      const res = await fetch(
+      const url = "http://api.gosklad.ru/v1/category/add";
+      await fetch(
         url + "?name=" + params.name + "&parent_id=" + params.parent_id,
-        {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            Authorization:
-              "Bearer $2y$10$WkIXz7NScRYJ7y216/Mh1.N0DF.g7eBQi32.B2hjwGPEM/2KrbONW",
-          },
-        }
+        { method: "POST" }
       );
-      console.log(res.status);
-      const json = await res.json();
-      context.commit("add_fields_properties", json.data);
+      context.dispatch("get_fields_properties");
+    },
+    async update_fields_properties(context, params) {
+      const url = "http://api.gosklad.ru/v1/category/update";
+      await fetch(
+        url +
+          "?id=" +
+          params.id +
+          "&parent_id=" +
+          params.parent_id +
+          "&name=" +
+          params.name,
+        { method: "POST" }
+      );
+      context.dispatch("get_fields_properties");
+    },
+    async delete_fields_properties(context, params) {
+      const url = "http://api.gosklad.ru/v1/category/delete";
+      const res = await fetch(url + "?id=" + params.id, { method: "POST" });
+      context.dispatch("get_fields_properties");
+      console.log(res);
     },
   },
 };

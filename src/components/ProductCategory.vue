@@ -5,7 +5,11 @@
         <div class="header">
           <div class="top">
             <label>Свойства товаров</label>
-            <btns-save-close @close="close_product_category" @save="save">
+            <btns-save-close
+              @close="close_product_category"
+              @save="save"
+              :show_save="false"
+            >
               <template v-slot:close>Назад</template>
             </btns-save-close>
           </div>
@@ -39,14 +43,15 @@
                 <input
                   type="text"
                   class="input"
+                  @keyup.enter="rename(item.id)"
                   v-model="item.name"
                   :disabled="item.parent_id === 0"
                 />
                 <button
                   @click="rename2(item.id)"
                   v-if="
-                    !all_old.name.includes(item.name) &&
-                    all_old.id.includes(item.id)
+                    !all_old?.name?.includes(item.name) &&
+                    all_old?.id?.includes(item.id)
                   "
                   class="btns"
                 >
@@ -55,7 +60,7 @@
               </div>
               <div>
                 <button
-                  @click.stop="remove(item.levels, item.level)"
+                  @click.stop="remove(item.id, item.level)"
                   v-if="
                     item.parent_id !== 0 &&
                     (copy_fields_properties[idx + 1]
@@ -82,7 +87,11 @@
           </draggable>
         </div>
         <div class="footer">
-          <btns-save-close @close="close_product_category" @save="save">
+          <btns-save-close
+            @close="close_product_category"
+            @save="save"
+            :show_save="false"
+          >
             <template v-slot:close>Назад</template>
           </btns-save-close>
         </div>
@@ -91,12 +100,10 @@
   </div>
 </template>
 <script>
-// FIXME DnD пофиксить перенос (уровни и отображение)
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "process";
 import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
-// import { mapGetters } from "vuex";
 export default defineComponent({
   components: {
     BtnsSaveClose,
@@ -104,48 +111,20 @@ export default defineComponent({
   },
   data() {
     return {
-      copy_fields_properties: [],
-      data_fields_properties: {
-        items: null,
-        selected: { name: "", value: -1 },
-      },
       fields_cat_name: "",
       selected_category_id: null,
       target: null,
+      all_old: {},
     };
   },
-  created() {
-    // this.$store.dispatch("update_fields_properties");
-  },
   async mounted() {
-    this.copy_fields_properties = JSON.parse(
-      JSON.stringify(this.$store.state.data.fields_properties)
-    );
-
-    // this.$store.dispatch("update_fields_properties").then(() => {
-    //   nextTick(() => {
-    //     this.$store.state.data.fields_properties.length
-    //       ? (this.copy_fields_properties = JSON.parse(
-    //           JSON.stringify(this.$store.state.data.fields_properties)
-    //         ))
-    //       : null;
-    //   });
-    // });
+    this.$store
+      .dispatch("get_fields_properties")
+      .then(() => this.get_all_old());
   },
   computed: {
-    all_old() {
-      const list = {
-        name: [],
-        id: [],
-        parent_id: [],
-        fields_id: [],
-        level: [],
-        levels: [],
-      };
-      this.$store.state.data.fields_properties.forEach((val) =>
-        Object.entries(val).forEach((value) => list[value[0]].push(value[1]))
-      );
-      return list;
+    copy_fields_properties() {
+      return this.$store.state.data.fields_properties;
     },
   },
   watch: {
@@ -160,128 +139,74 @@ export default defineComponent({
   },
   methods: {
     changeData(event) {
-      const oldidx = event.moved.oldIndex;
       const newidx = event.moved.newIndex;
-      const direction = oldidx < newidx;
-      const list = this.copy_fields_properties;
-      const old_level = list[newidx].level;
-
-      if (
-        list[newidx + 1]?.parent_id === 0 ||
-        list[newidx - 1].levels.includes(list[newidx].id)
-      ) {
-        const t = list[newidx];
-        list.splice(newidx, 1);
-        list.splice(oldidx, 0, t);
-      } else {
-        list[newidx].parent_id = list[newidx - 1].id;
-        list[newidx].level = list[newidx - 1].level + 1;
-        list[newidx].levels = [];
-        list[newidx].levels.push(...list[newidx - 1].levels);
-        list[newidx].levels[list[newidx - 1].level] = list[newidx].id;
-      }
-      const arr = [];
-      let stop = false;
-      list
-        .slice(!direction ? oldidx + 1 : oldidx)
-        .forEach((val) =>
-          val.level > old_level && !stop ? arr.push(val) : (stop = true)
-        );
-      const shift_level = old_level - (list[newidx - 1].level + 1);
-      const t = list.splice(!direction ? oldidx + 1 : oldidx, arr.length);
-      t.map((val) => {
-        val.level -= shift_level;
-      });
-      list.splice(!direction ? newidx + 1 : newidx - t.length + 1, 0, ...t);
+      const list = [...this.copy_fields_properties];
+      const params = {
+        id: list[newidx].id,
+        parent_id: list[newidx - 1].id,
+        name: "",
+      };
+      this.$store.dispatch("update_fields_properties", params);
     },
-    save() {
-      this.$store.commit(
-        "update_fields_properties",
-        this.copy_fields_properties
+    get_all_old() {
+      const list = {
+        name: [],
+        id: [],
+        parent_id: [],
+        fields_id: [],
+        level: [],
+        levels: [],
+      };
+      this.$store.state.data.fields_properties.forEach((val) =>
+        Object.entries(val).forEach((value) => list[value[0]].push(value[1]))
       );
-      this.close_product_category();
+      Object.assign(this.all_old, list);
     },
-    new_id() {
-      let id = 0;
-      this.copy_fields_properties.forEach((val) =>
-        val.id > id ? (id = val.id) : null
-      );
-      return id + 1;
-    },
-    // FIXME 2 когда добавляешь до 10 левела ломаются айдишники в levels ???
     add_new() {
       const parent = this.copy_fields_properties.filter(
         (val) => val.id === this.selected_category_id
       )[0];
-      const new_fields_cat = {
-        name: this.fields_cat_name,
-        id: this.new_id(),
-        parent_id: parent.id,
-        fields_id: [],
-        level: parent.level + 1,
-        levels: [...parent.levels],
-      };
-      new_fields_cat.levels[parent.level] = new_fields_cat.id;
-      if (new_fields_cat.level <= 10) {
+      if (parent.level + 1 <= 10) {
         this.$store.dispatch("add_fields_properties", {
           name: this.fields_cat_name,
           parent_id: parent.id,
         });
-        const parent_index = this.copy_fields_properties.indexOf(parent) + 1;
-        this.copy_fields_properties.splice(parent_index, 0, new_fields_cat);
-        this.feel_data_fields_properties(new_fields_cat.parent_id);
         this.reset_fields_cat_name();
       }
     },
-    remove(levels, level) {
+    remove(id, level) {
       if (level != 1) {
-        this.copy_fields_properties = this.copy_fields_properties.filter(
-          (val) => {
-            let result = false;
-            val.levels.slice(0, level).forEach((elem, idx) => {
-              if (elem !== levels[idx]) result = true;
-            });
-            return result;
-          }
-        );
+        console.log("123");
+        this.$store.dispatch("delete_fields_properties", { id: id });
       }
     },
+    rename(id) {
+      const item = [...this.copy_fields_properties].filter(
+        (val) => val.id === id
+      )[0];
+      const params = {
+        id: item.id,
+        parent_id: "",
+        name: item.name,
+      };
+      this.$store.dispatch("update_fields_properties", params);
+    },
     rename2(id) {
-      this.copy_fields_properties.map((val) => {
+      this.$store.state.data.fields_properties.map((val) => {
         const name = () => {
           let res = "";
-          this.fields_properties.forEach((value) =>
-            value.id === id ? (res = value.name) : null
+          this.all_old.id.forEach((value, idx) =>
+            value === id ? (res = this.all_old.name[idx]) : null
           );
           return res;
         };
-        if (val.id === id) val.name = name();
+        if (val.id === id) (val.name = name()), this.rename(id);
       });
-    },
-    rename(new_name, id) {
-      if (id != 1) {
-        this.copy_fields_properties.map((val) =>
-          val.id === id ? (val.name = new_name) : null
-        );
-        this.feel_data_fields_properties(id);
-        this.reset_fields_cat_name();
-      }
     },
     reset_fields_cat_name() {
       this.selected_category_id = null;
       this.fields_cat_name = "";
       this.target = null;
-    },
-    feel_data_fields_properties(id) {
-      this.data_fields_properties.items = this.preparing_fields_properties(id);
-    },
-    preparing_fields_properties(id) {
-      const new_arr = [];
-      const arr = this.copy_fields_properties.filter(
-        (val) => val.parent_id == id
-      );
-      arr.forEach((val) => new_arr.push({ name: val.name, value: val }));
-      return new_arr;
     },
     calculate_width(level) {
       let width = 100;

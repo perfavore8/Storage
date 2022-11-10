@@ -1,9 +1,9 @@
 <template>
   <div class="btns">
-    <button class="btn btn1" @click="close()">
+    <button class="btn btn1" @click="close()" v-if="show_close">
       <slot name="close">Отмена</slot>
     </button>
-    <button class="btn btn2" @click="save()">
+    <button class="btn btn2" @click="save()" v-if="show_save">
       <slot name="save">Сохранить</slot>
     </button>
   </div>
@@ -11,6 +11,22 @@
 
 <script>
 export default {
+  props: {
+    show_close: {
+      type: Boolean,
+      required: false,
+      default() {
+        return true;
+      },
+    },
+    show_save: {
+      type: Boolean,
+      required: false,
+      default() {
+        return true;
+      },
+    },
+  },
   emits: { close: null, save: null },
   methods: {
     close() {
