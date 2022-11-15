@@ -48,7 +48,7 @@
                   :disabled="item.parent_id === 0"
                 />
                 <button
-                  @click="rename2(item.id)"
+                  @click="prevname(item.id)"
                   v-if="
                     !all_old?.name?.includes(item.name) &&
                     all_old?.id?.includes(item.id)
@@ -191,7 +191,7 @@ export default defineComponent({
       };
       this.$store.dispatch("update_fields_properties", params);
     },
-    rename2(id) {
+    prevname(id) {
       this.$store.state.data.fields_properties.map((val) => {
         const name = () => {
           let res = "";

@@ -5,7 +5,10 @@
         <div class="header">
           <div class="top">
             <label>Свойства товаров</label>
-            <btns-save-close @close="close_product_properties" @save="save">
+            <btns-save-close
+              @close="close_product_properties"
+              :show_save="false"
+            >
               <template v-slot:close>Назад</template>
             </btns-save-close>
           </div>
@@ -43,45 +46,39 @@
             </tr>
             <tr
               class="row"
+              :class="{ load: is_loading }"
               v-for="(row, idx) in copy_fields"
               :key="row.id"
-              v-show="selected_fields_properties.at(-1)?.idxes.includes(row.id)"
+              v-show="selected_fields_properties.at(-1)?.id === row.category_id"
             >
-              <td class="item">{{ row.field }}</td>
+              <td class="item">{{ row.name }}</td>
               <td class="item selectors">
                 <SelectorVue
                   :options_props="types"
                   @select="option_select_type"
-                  :selected_option="copy_fields[idx].type"
-                  :disabled="copy_fields[idx].disable_change_type"
+                  :selected_option="search_type(row.type)"
+                  :disabled="row.is_system"
                   :idx="idx"
                 />
                 <div
                   class="type_selector_options"
-                  v-if="
-                    copy_fields[idx].type.value == 5 ||
-                    copy_fields[idx].type.value == 6
-                  "
+                  v-if="row.type == 5 || row.type == 6"
                 >
                   <div
                     class="type_selector_option"
-                    v-for="(option, i) in copy_fields[idx].selector_options"
+                    v-for="(option, i) in row.data"
                     :key="i"
                   >
-                    <input
-                      type="text"
-                      class="input"
-                      v-model="copy_fields[idx].selector_options[i].name"
-                    />
+                    <input type="text" class="input" v-model="row.data[i]" />
                     <button
                       class="del_button"
                       @click="remove_selector_option(idx, i)"
                       v-if="
-                        copy_fields[idx].type.value == 6
+                        row.type == 6
                           ? i == 0
                             ? false
                             : true
-                          : copy_fields[idx].selector_options.length > 1
+                          : row.data.length > 1
                           ? true
                           : false
                       "
@@ -115,18 +112,20 @@
               <td class="item">
                 <button
                   class="del_btn"
-                  v-show="copy_fields[idx].delete"
+                  v-show="!row.is_system"
                   @click="delete_field(idx)"
                 >
                   X
                 </button>
               </td>
             </tr>
-            <tr
+            <!-- <tr
               class="row"
               v-for="(row, idx) in new_fields"
               :key="row.id"
-              v-show="selected_fields_properties.at(-1)?.idxes.includes(row.id)"
+              v-show="
+                selected_fields_properties.at(-1)?.fields_id?.includes(row.id)
+              "
             >
               <td class="item">
                 <input
@@ -210,12 +209,12 @@
                   X
                 </button>
               </td>
-            </tr>
+            </tr> -->
           </table>
           <button @click="add_new_field()" class="add_new_button">+</button>
         </div>
         <div class="footer">
-          <btns-save-close @close="close_product_properties" @save="save">
+          <btns-save-close @close="close_product_properties" :show_save="false">
             <template v-slot:close>Назад</template>
           </btns-save-close>
         </div>
@@ -226,7 +225,6 @@
 <script>
 import SelectorVue from "@/components/SelectorVue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
-import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
@@ -237,7 +235,6 @@ export default {
       copy_fields: [],
       new_fields: [],
       new_fields_cat: [],
-      copy_items_from_storage: [],
       idx_to_delete: [],
       copy_fields_properties: [],
       selected_fields_properties: [],
@@ -245,48 +242,53 @@ export default {
         items: null,
         selected: { name: "", value: -1 },
       },
+      old_fields_id: [], // ????
+      is_loading: false,
     };
   },
-  mounted() {
-    this.copy_fields = [];
-    this.idx_to_delete = [];
-    this.new_fields = [];
-    this.new_fields_cat = [];
-
-    this.selected_fields_properties = [];
-    this.copy_fields_properties = JSON.parse(
-      JSON.stringify(this.fields_properties)
-    );
-    this.option_select_fields_properties({
-      value: this.copy_fields_properties.filter(
-        (val) => val.parent_id === 0
-      )[0],
-    });
-
-    this.copy_fields = this.fields.map((b, idx) =>
-      Object.assign({ index: idx }, b)
-    );
-    this.copy_items_from_storage = [];
-    this.copy_items_from_storage = this.items_from_storage.map((b, idx) =>
-      Object.assign({ index: idx }, b)
-    );
+  async mounted() {
+    this.is_loading = true;
+    this.$store.dispatch("get_types");
+    this.$store
+      .dispatch("get_fields_properties")
+      .then(
+        () =>
+          (this.copy_fields_properties = [
+            ...this.$store.state.data.fields_properties,
+          ])
+      )
+      .then(() => {
+        this.option_select_fields_properties({
+          value: this.copy_fields_properties.filter(
+            (val) => val.parent_id === 0
+          )[0],
+        });
+      })
+      .then(() =>
+        this.copy_fields_properties.forEach(
+          (val) => this.old_fields_id.push(val.fields_id) // ???????
+        )
+      )
+      .then(() => {
+        this.get_fields();
+        this.is_loading = false;
+      });
   },
   computed: {
-    ...mapGetters([
-      "types",
-      "fields_properties",
-      "fields",
-      "items_from_storage",
-    ]),
+    types() {
+      const arr = [];
+      Object.entries(this.$store.state.fields.types).forEach((val) => {
+        arr.push({ name: val[1], value: val[0] });
+      });
+      return arr;
+    },
   },
   methods: {
     save() {
       this.copy_fields.forEach((value) => {
-        let a = 1;
-        value.selector_options.forEach((val) => {
-          Object.assign(val, { value: a });
-          a += 1;
-        });
+        value.selector_options.forEach((val, idx) =>
+          Object.assign(val, { value: idx + 1 })
+        );
       });
       this.new_fields.forEach((val) => this.copy_fields.push(val));
       this.$store.commit(
@@ -294,29 +296,14 @@ export default {
         this.copy_fields_properties
       );
       this.$store.commit("update_fields", this.copy_fields);
-      this.$store.commit(
-        "update_items_from_storage",
-        this.copy_items_from_storage
-      );
       this.$store.commit("delete_data_idx", this.idx_to_delete);
       this.new_fields_push();
-      const arr = [];
-      this.fields.forEach((val) => arr.push(val.field));
-      arr.unshift("");
-      arr.push("");
-      this.$store.commit("update_params", arr);
-      this.new_fields = [];
+      // this.$store.commit("update_params", ["", ...this.fields, ""]); // хз как лучше \/
+      this.$store.commit("update_params", ["", ...this.copy_fields, ""]);
       this.close_product_properties();
     },
     new_fields_push() {
-      let today = new Date();
-      const dd = String(today.getDate()).padStart(2, "0");
-      const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      const yyyy = today.getFullYear();
-      const hour = today.getHours();
-      const min = today.getMinutes();
-      const date = yyyy + "-" + mm + "-" + dd;
-      const datetime = yyyy + "-" + mm + "-" + dd + "T" + hour + ":" + min;
+      const { date, datetime } = this.get_date();
       this.new_fields.forEach((val) => {
         let new_field = "";
         if (val.type.value == 1 || val.type.value == 2) new_field = "0";
@@ -326,6 +313,17 @@ export default {
         if (val.type.value == 9) new_field = "Нет";
         this.$store.commit("update_all_data", new_field);
       });
+    },
+    get_date() {
+      let today = new Date();
+      const dd = String(today.getDate()).padStart(2, "0");
+      const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      const yyyy = today.getFullYear();
+      const hour = today.getHours();
+      const min = today.getMinutes();
+      const date = yyyy + "-" + mm + "-" + dd;
+      const datetime = yyyy + "-" + mm + "-" + dd + "T" + hour + ":" + min;
+      return { date, datetime };
     },
     add_new_field() {
       const id = this.copy_fields.length + 1 + this.new_fields.length;
@@ -342,9 +340,9 @@ export default {
       });
       const item = this.selected_fields_properties.at(-1);
       this.copy_fields_properties.map((val) =>
-        val.id === item.id ? val.idxes.push(id) : null
+        val.id === item.id ? val.fields_id.push(id) : null
       );
-      item.idxes.push(id);
+      item.fields_id.push(id);
     },
     prev_cat(idx) {
       this.selected_fields_properties.splice(idx + 1);
@@ -368,14 +366,24 @@ export default {
       this.selected_fields_properties.push(value.value);
       this.feel_data_fields_properties(val.value.id);
     },
+    async get_fields() {
+      this.$store
+        .dispatch("get_fields", this.selected_fields_properties.at(-1).id)
+        .then(() => {
+          this.copy_fields = [...this.$store.state.fields.fields];
+        });
+    },
+    search_type(id) {
+      return this.types.filter((val) => val.value == id)[0];
+    },
     delete_new_field(idx) {
       const item = this.selected_fields_properties.at(-1);
-      const start = item.idxes.length - this.new_fields.length + idx;
+      const start = item.fields_id.length - this.new_fields.length + idx;
       this.new_fields.splice(idx, 1);
       this.copy_fields_properties.map((val) =>
-        val.id === item.id ? val.idxes.splice(start, 1) : null
+        val.id === item.id ? val.fields_id.splice(start, 1) : null
       );
-      item.idxes.splice(start, 1);
+      item.fields_id.splice(start, 1);
     },
     delete_field(idx) {
       this.copy_fields.splice(idx, 1);
@@ -388,20 +396,16 @@ export default {
       this.new_fields[idx].type = option;
     },
     add_selector_option(idx) {
-      this.copy_fields[idx].selector_options.push({
-        name: "",
-      });
+      this.copy_fields[idx].data.push("");
     },
     remove_selector_option(idx, i) {
-      this.copy_fields[idx].selector_options.splice(i, 1);
+      this.copy_fields[idx].data.splice(i, 1);
     },
     add_new_fields_selector_option(idx) {
-      this.new_fields[idx].selector_options.push({
-        name: "",
-      });
+      this.new_fields[idx].data.push("");
     },
     remove_new_fields_selector_option(idx, i) {
-      this.new_fields[idx].selector_options.splice(i, 1);
+      this.new_fields[idx].data.splice(i, 1);
     },
     close_product_properties() {
       this.$store.commit("open_close_show_product_properties", false);
@@ -470,6 +474,9 @@ export default {
             .item {
               padding-bottom: 20px;
             }
+          }
+          .load {
+            filter: blur(5px);
           }
           .row {
             .item {
@@ -686,37 +693,6 @@ export default {
   background-color: #e9ecef;
   border-color: #b3d7ff;
   cursor: default;
-}
-.btns {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-
-  .btn {
-    cursor: pointer;
-    padding: 6px 12px;
-    height: 36px;
-    border: none;
-    @include font(400, 16px);
-    border-radius: 5px;
-    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  }
-  .btn1 {
-    color: #fff;
-    background-color: #6c757d;
-  }
-  .btn1:hover {
-    background-color: #5f676d;
-    box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-  }
-  .btn2 {
-    color: #fff;
-    background-color: #0d6efd;
-  }
-  .btn2:hover {
-    background-color: #0256d4;
-    box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
-  }
 }
 .links {
   display: flex;

@@ -69,7 +69,7 @@ export default {
     });
     const set_options = () => {
       options.value = [];
-      props.options_props.forEach((item) => options.value.push(item));
+      props.options_props?.forEach((item) => options.value.push(item));
     };
     watch(
       () => props.options_props,

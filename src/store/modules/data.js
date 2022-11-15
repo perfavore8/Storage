@@ -1,3 +1,5 @@
+import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
+const { preparation_params } = usePreparationQueryParams();
 export default {
   state: {
     params: [
@@ -1351,7 +1353,7 @@ export default {
         state.fields_properties.filter((value) => value.id == id)[0];
       const add = (id) => {
         const item = search(id);
-        let levels = item.levels;
+        let levels = [...item.levels];
         levels.forEach((val) =>
           val != 0 ? fields_id.push(...search(val).fields_id) : null
         );
@@ -1545,29 +1547,19 @@ export default {
     },
     async add_fields_properties(context, params) {
       const url = "http://api.gosklad.ru/v1/category/add";
-      await fetch(
-        url + "?name=" + params.name + "&parent_id=" + params.parent_id,
-        { method: "POST" }
-      );
+      await fetch(url + preparation_params(params), { method: "POST" });
       context.dispatch("get_fields_properties");
     },
     async update_fields_properties(context, params) {
       const url = "http://api.gosklad.ru/v1/category/update";
-      await fetch(
-        url +
-          "?id=" +
-          params.id +
-          "&parent_id=" +
-          params.parent_id +
-          "&name=" +
-          params.name,
-        { method: "POST" }
-      );
+      await fetch(url + preparation_params(params), { method: "POST" });
       context.dispatch("get_fields_properties");
     },
     async delete_fields_properties(context, params) {
       const url = "http://api.gosklad.ru/v1/category/delete";
-      const res = await fetch(url + "?id=" + params.id, { method: "POST" });
+      const res = await fetch(url + preparation_params(params), {
+        method: "POST",
+      });
       context.dispatch("get_fields_properties");
       console.log(res);
     },
