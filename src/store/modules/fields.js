@@ -268,13 +268,13 @@ export default {
   },
   actions: {
     async get_types(context) {
-      const url = "http://api.gosklad.ru/v1/field/types";
+      const url = "//api.gosklad.ru/v1/field/types";
       const res = await fetch(url);
       const json = await res.json();
       context.commit("update_types", json.data);
     },
     async get_fields(context, category_id) {
-      const url = "http://api.gosklad.ru/v1/field/list";
+      const url = "//api.gosklad.ru/v1/field/list";
       const res = await fetch(
         url + "?category_id=" + category_id + "&with_parents=0"
       );
@@ -282,13 +282,13 @@ export default {
       context.commit("update_fields", json.data);
     },
     async get_fields_not_save(context, category_id) {
-      const url = "http://api.gosklad.ru/v1/field/list";
+      const url = "//api.gosklad.ru/v1/field/list";
       const res = await fetch(url + "?category_id=" + category_id);
       const json = await res.json();
       return json.data;
     },
     async get_all_fields(context, category_id) {
-      const url = "http://api.gosklad.ru/v1/field/list";
+      const url = "//api.gosklad.ru/v1/field/list";
       const res = await fetch(
         url + "?category_id=" + category_id + "&with_parents=1"
       );
@@ -297,13 +297,13 @@ export default {
       context.commit("update_all_fields", json.data);
     },
     async delete_field(context, id) {
-      const url = "http://api.gosklad.ru/v1/field/delete";
+      const url = "//api.gosklad.ru/v1/field/delete";
       const res = await fetch(url + "?id=" + id, { method: "POST" });
       // context.dispatch("get_fields");
       console.log(res);
     },
     async add_field(context, params) {
-      const url = "http://api.gosklad.ru/v1/field/add";
+      const url = "//api.gosklad.ru/v1/field/add";
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -321,7 +321,7 @@ export default {
       return json;
     },
     async update_fields(context, params) {
-      const url = "http://api.gosklad.ru/v1/field/update";
+      const url = "//api.gosklad.ru/v1/field/update";
       const res = await fetch(url, {
         method: "POST",
         headers: {
