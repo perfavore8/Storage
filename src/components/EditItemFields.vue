@@ -1,75 +1,68 @@
 <template>
-  <div
-    class="row"
-    v-for="field in fields"
-    :key="field.id"
-    v-show="
-      (!isServicePage.value || field.available_to_services) &&
-      items_categories[idx_edit_modal].includes(field.id)
-    "
-  >
+  {{ all_fields }}
+  <div class="row" v-for="field in all_fields" :key="field.id">
     <edit-integer
-      :item="field.field"
+      :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 1"
+      v-if="field.type == 1"
     />
     <edit-float
-      :item="field.field"
+      :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 2"
+      v-if="field.type == 2"
     />
     <edit-string
-      :item="field.field"
+      :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 3"
+      v-if="field.type == 3"
     />
     <edit-text
-      :item="field.field"
+      :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 4"
+      v-if="field.type == 4"
     />
     <edit-selector
       :item="field"
       :selected_option="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 5"
+      v-if="field.type == 5"
     />
     <edit-multi-selector
       :item="field"
       :selected_options="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 6"
+      v-if="field.type == 6"
     />
     <edit-date
-      :item="field.field"
+      :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 7"
+      v-if="field.type == 7"
     />
     <edit-date-time
-      :item="field.field"
+      :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 8"
+      v-if="field.type == 8"
     />
     <edit-flag
-      :item="field.field"
+      :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
       :idx="params_indexOf(field)"
       @change_value="change_value"
-      v-if="field.type.value == 9"
+      v-if="field.type == 9"
     />
   </div>
 </template>
@@ -105,6 +98,27 @@ export default {
   },
   inject: ["isServicePage"],
   emits: { change_value: null },
+  data() {
+    return {
+      // all_fields: [],
+    };
+  },
+  async mounted() {
+    await this.$store.dispatch("get_fields_properties");
+    const item = await this.$store.state.data.fields_properties.filter(
+      (val) =>
+        val.id === this.$store.state.data.items_categories[this.idx_edit_modal]
+    )[0];
+    const res = item.levels.slice(0, item.level);
+    // console.log(
+    //   await this.$store.state.data.items_categories[this.idx_edit_modal],
+    //   item,
+    //   res
+    // );
+    await this.$store.dispatch("get_all_fields", res);
+    console.log(this.$store.state.fields.all_fields);
+    // console.log(this.all_fields);
+  },
   computed: {
     ...mapGetters(["params", "fields", "idx_edit_modal", "items_categories"]),
   },
@@ -113,7 +127,7 @@ export default {
       this.$emit("change_value", value, idx);
     },
     params_indexOf(item) {
-      return this.params.indexOf(item.field) - 1;
+      return this.params.indexOf(item.name) - 1;
     },
   },
 };

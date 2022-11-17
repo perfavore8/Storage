@@ -129,13 +129,14 @@ export default {
 .v-select {
   position: relative;
   width: 250px;
+  box-sizing: border-box;
   @include font(400, 16px, 20px);
   p {
     margin: 0;
   }
   .title {
     height: 20px;
-    width: 100%;
+    width: calc(100% - 24px);
     padding: 6px 12px;
     display: flex;
     align-items: center;
@@ -181,7 +182,7 @@ export default {
     border: 1px solid #ced4da;
     border-top: 0;
     border-radius: 0 0 4px 4px;
-    width: calc(100% + 24px);
+    width: 100%;
     z-index: 5;
     p {
       cursor: pointer;

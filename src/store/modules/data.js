@@ -713,7 +713,7 @@ export default {
         available_to_services: true,
       },
     ],
-    items_categories: [1, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+    items_categories: [1, 1, 1, 1, 534, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     fields_properties: [
       {
         name: "base",
@@ -1353,10 +1353,12 @@ export default {
         state.fields_properties.filter((value) => value.id == id)[0];
       const add = (id) => {
         const item = search(id);
-        let levels = [...item.levels];
-        levels.forEach((val) =>
-          val != 0 ? fields_id.push(...search(val).fields_id) : null
-        );
+        if (item != undefined) {
+          let levels = [...item.levels];
+          levels.forEach((val) =>
+            val != 0 ? fields_id.push(...search(val).fields_id) : null
+          );
+        }
       };
       state.items_categories.forEach((val) => {
         add(val);

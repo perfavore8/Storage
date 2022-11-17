@@ -38,7 +38,19 @@
           <h6>Поля товаров в сделке</h6>
           <table class="rows">
             <tr class="row">
-              <th class="item">Поле</th>
+              <th class="item">
+                <div class="copy_fields">
+                  <span>Поле</span>
+                  <SelectorVue
+                    :options_props="properties_for_selector"
+                    @select="option_select_copy_fields"
+                    :selected_option="{
+                      name: 'Выбор категории для переноса полей',
+                      value: 1,
+                    }"
+                  />
+                </div>
+              </th>
               <th class="item">Тип</th>
               <th class="item">Видимость</th>
               <th class="item">Редактирование</th>
@@ -51,13 +63,22 @@
               :key="row.id"
               v-show="selected_fields_properties.at(-1)?.id === row.category_id"
             >
-              <td class="item">{{ row.name }}</td>
+              <td class="item">
+                <span v-if="row.is_system">{{ row.name }}</span>
+                <input
+                  v-else
+                  type="text"
+                  class="input new_item_input"
+                  v-model="row.name"
+                  @keyup.enter="update_field(idx, ['name'])"
+                />
+              </td>
               <td class="item selectors">
                 <SelectorVue
                   :options_props="types"
                   @select="option_select_type"
                   :selected_option="search_type(row.type)"
-                  :disabled="row.is_system"
+                  :disabled="true"
                   :idx="idx"
                 />
                 <div
@@ -69,18 +90,17 @@
                     v-for="(option, i) in row.data"
                     :key="i"
                   >
-                    <input type="text" class="input" v-model="row.data[i]" />
+                    <input
+                      type="text"
+                      class="input"
+                      v-model="row.data[i]"
+                      @keyup.enter="update_field(idx, ['data'])"
+                    />
                     <button
                       class="del_button"
-                      @click="remove_selector_option(idx, i)"
-                      v-if="
-                        row.type == 6
-                          ? i == 0
-                            ? false
-                            : true
-                          : row.data.length > 1
-                          ? true
-                          : false
+                      @click="
+                        remove_selector_option(idx, i),
+                          update_field(idx, ['data'])
                       "
                     >
                       x
@@ -113,63 +133,41 @@
                 <button
                   class="del_btn"
                   v-show="!row.is_system"
-                  @click="delete_field(idx)"
+                  @click="delete_field(row.id)"
                 >
                   X
                 </button>
               </td>
             </tr>
-            <!-- <tr
-              class="row"
-              v-for="(row, idx) in new_fields"
-              :key="row.id"
-              v-show="
-                selected_fields_properties.at(-1)?.fields_id?.includes(row.id)
-              "
-            >
+            <tr class="row" v-for="(row, idx) in new_fields" :key="row.id">
               <td class="item">
                 <input
                   type="text"
                   class="input new_item_input"
-                  v-model="new_fields[idx].field"
+                  v-model="row.name"
+                  @keyup.enter="add_new(row)"
                 />
               </td>
               <td class="item selectors">
                 <SelectorVue
                   :options_props="types"
                   @select="option_select_new_field_type"
-                  :selected_option="new_fields[idx].type"
+                  :selected_option="search_type(row.type)"
                   :idx="idx"
                 />
                 <div
                   class="type_selector_options"
-                  v-if="
-                    new_fields[idx].type.value == 5 ||
-                    new_fields[idx].type.value == 6
-                  "
+                  v-if="new_fields[idx].type == 5 || new_fields[idx].type == 6"
                 >
                   <div
                     class="type_selector_option"
-                    v-for="(option, i) in new_fields[idx].selector_options"
+                    v-for="(option, i) in row.data"
                     :key="i"
                   >
-                    <input
-                      type="text"
-                      class="input"
-                      v-model="new_fields[idx].selector_options[i].name"
-                    />
+                    <input type="text" class="input" v-model="row.data[i]" />
                     <button
                       class="del_button"
                       @click="remove_new_fields_selector_option(idx, i)"
-                      v-if="
-                        new_fields[idx].type.value == 6
-                          ? i == 0
-                            ? false
-                            : true
-                          : new_fields[idx].selector_options.length > 1
-                          ? true
-                          : false
-                      "
                     >
                       x
                     </button>
@@ -209,7 +207,7 @@
                   X
                 </button>
               </td>
-            </tr> -->
+            </tr>
           </table>
           <button @click="add_new_field()" class="add_new_button">+</button>
         </div>
@@ -240,9 +238,8 @@ export default {
       selected_fields_properties: [],
       data_fields_properties: {
         items: null,
-        selected: { name: "", value: -1 },
+        selected: { name: "Выбор подкатегории", value: -1 },
       },
-      old_fields_id: [], // ????
       is_loading: false,
     };
   },
@@ -264,11 +261,6 @@ export default {
           )[0],
         });
       })
-      .then(() =>
-        this.copy_fields_properties.forEach(
-          (val) => this.old_fields_id.push(val.fields_id) // ???????
-        )
-      )
       .then(() => {
         this.get_fields();
         this.is_loading = false;
@@ -280,6 +272,13 @@ export default {
       Object.entries(this.$store.state.fields.types).forEach((val) => {
         arr.push({ name: val[1], value: val[0] });
       });
+      return arr;
+    },
+    properties_for_selector() {
+      const arr = [];
+      this.copy_fields_properties.forEach((val) =>
+        arr.push({ name: val.name, value: val.id })
+      );
       return arr;
     },
   },
@@ -326,23 +325,52 @@ export default {
       return { date, datetime };
     },
     add_new_field() {
-      const id = this.copy_fields.length + 1 + this.new_fields.length;
-      this.new_fields.push({
+      // this.new_fields.push({
+      //   id: id,
+      //   field: "",
+      //   type: { name: "Строка", value: 3 },
+      //   selector_options: [{ name: "Не выбрано" }],
+      //   disable_change_type: false,
+      //   visibility: false,
+      //   edit: false,
+      //   editing: false,
+      //   delete: true,
+      // });
+      // const item = this.selected_fields_properties.at(-1);
+      // this.copy_fields_properties.map((val) =>
+      //   val.id === item.id ? val.fields_id.push(id) : null
+      // );
+      // item.fields_id.push(id);
+      const id = this.copy_fields.length + 1;
+      const category_id = this.selected_fields_properties.at(-1).id;
+      const type = 3;
+      const is_system = false;
+      const name = "";
+      const item = {
         id: id,
-        field: "",
-        type: { name: "Строка", value: 3 },
-        selector_options: [{ name: "Не выбрано" }],
-        disable_change_type: false,
-        visibility: false,
-        edit: false,
-        editing: false,
-        delete: true,
-      });
-      const item = this.selected_fields_properties.at(-1);
-      this.copy_fields_properties.map((val) =>
-        val.id === item.id ? val.fields_id.push(id) : null
-      );
-      item.fields_id.push(id);
+        category_id: category_id,
+        type: type,
+        is_system: is_system,
+        name: name,
+        data: [],
+      };
+      this.new_fields.push(item);
+    },
+    async add_new(item) {
+      const params = {
+        type: item.type,
+        name: item.name,
+        category_id: item.category_id,
+        // data: JSON.stringify(item.data),
+        data: item.data,
+      };
+      const error =
+        "error" in (await this.$store.dispatch("add_field", params));
+      // console.log(error, this.new_fields.indexOf(item));
+      if (!error) {
+        this.new_fields.splice(this.new_fields.indexOf(item), 1);
+        this.get_fields();
+      }
     },
     prev_cat(idx) {
       this.selected_fields_properties.splice(idx + 1);
@@ -352,6 +380,7 @@ export default {
     },
     feel_data_fields_properties(id) {
       this.data_fields_properties.items = this.preparing_fields_properties(id);
+      this.get_fields();
     },
     preparing_fields_properties(id) {
       const new_arr = [];
@@ -366,12 +395,26 @@ export default {
       this.selected_fields_properties.push(value.value);
       this.feel_data_fields_properties(val.value.id);
     },
+    async update_field(idx, params_names) {
+      const params = {};
+      params["id"] = this.copy_fields[idx]["id"];
+      params_names.forEach((val) => {
+        params[val] = this.copy_fields[idx][val];
+      });
+      // console.log(params);
+      const error =
+        "error" in (await this.$store.dispatch("update_fields", params));
+      // console.log(error);
+      if (!error) {
+        this.get_fields();
+      }
+    },
     async get_fields() {
-      this.$store
-        .dispatch("get_fields", this.selected_fields_properties.at(-1).id)
-        .then(() => {
-          this.copy_fields = [...this.$store.state.fields.fields];
-        });
+      await this.$store.dispatch(
+        "get_fields",
+        this.selected_fields_properties.at(-1).id
+      );
+      this.copy_fields = [...this.$store.state.fields.fields];
     },
     search_type(id) {
       return this.types.filter((val) => val.value == id)[0];
@@ -385,17 +428,33 @@ export default {
       );
       item.fields_id.splice(start, 1);
     },
-    delete_field(idx) {
-      this.copy_fields.splice(idx, 1);
-      this.idx_to_delete.push(idx);
+    delete_field(id) {
+      this.$store.dispatch("delete_field", id);
+      this.get_fields();
     },
     option_select_type(option, idx) {
       this.copy_fields[idx].type = option;
     },
     option_select_new_field_type(option, idx) {
-      this.new_fields[idx].type = option;
+      this.new_fields[idx].type = option.value;
+    },
+    async option_select_copy_fields(option) {
+      const res = await this.$store.dispatch(
+        "get_fields_not_save",
+        option.value
+      );
+      const sorted_res = res.filter((val) => !val.is_system);
+      sorted_res.forEach((val) => {
+        const params = {
+          id: val.id,
+          category_id: this.selected_fields_properties.at(-1).id,
+        };
+        this.$store.dispatch("update_fields", params);
+      });
+      this.get_fields();
     },
     add_selector_option(idx) {
+      if (this.copy_fields[idx].data == null) this.copy_fields[idx].data = [];
       this.copy_fields[idx].data.push("");
     },
     remove_selector_option(idx, i) {
@@ -483,6 +542,18 @@ export default {
               padding: 10px;
               border: 1px solid #c9c9c9;
               text-align: center;
+              .copy_fields {
+                display: flex;
+                gap: 10px;
+                .v-select {
+                  :deep(.title) {
+                    height: 28px !important;
+                  }
+                  :deep(.options) {
+                    margin-top: 8px;
+                  }
+                }
+              }
             }
             .item:nth-child(1) {
               width: 30%;

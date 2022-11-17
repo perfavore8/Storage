@@ -252,6 +252,7 @@ export default {
         available_to_services: true,
       },
     ],
+    all_fields: [],
   },
   getters: {},
   mutations: {
@@ -260,6 +261,9 @@ export default {
     },
     update_fields(state, value) {
       state.fields = [...value];
+    },
+    update_all_fields(state, value) {
+      state.all_fields = value;
     },
   },
   actions: {
@@ -271,7 +275,9 @@ export default {
     },
     async get_fields(context, category_id) {
       const url = "http://api.gosklad.ru/v1/field/list";
-      const res = await fetch(url + "?category_id=" + category_id);
+      const res = await fetch(
+        url + "?category_id=" + category_id + "&with_parents=0"
+      );
       const json = await res.json();
       context.commit("update_fields", json.data);
     },
@@ -281,27 +287,50 @@ export default {
       const json = await res.json();
       return json.data;
     },
+    async get_all_fields(context, idxes) {
+      const arr = [];
+      idxes.forEach(async (val) => {
+        const res = await context.dispatch("get_fields_not_save", val);
+        arr.push(...res);
+      });
+      context.commit("update_all_fields", arr);
+    },
     async delete_field(context, id) {
       const url = "http://api.gosklad.ru/v1/field/delete";
       const res = await fetch(url + "?id=" + id, { method: "POST" });
-      context.dispatch("get_fields");
+      // context.dispatch("get_fields");
       console.log(res);
     },
     async add_field(context, params) {
       const url = "http://api.gosklad.ru/v1/field/add";
-      const res = await fetch(url + preparation_params(params), {
+      const res = await fetch(url, {
         method: "POST",
+        // mode: "cors",
+        // credentials: "include",
+        headers: {
+          // "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Methods": "POST",
+          // "Access-Control-Allow-Headers": "Content-Type",
+          // Accept: "application/json, text/plain, */*",
+          // "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
       });
-      context.dispatch("get_fields");
-      console.log(res);
+      const json = await res.json();
+      // context.dispatch("get_fields");
+      console.log("add_field", json);
+      return json;
     },
     async update_fields(context, params) {
-      const url = "http://api.gosklad.ru/v1/field/add";
+      const url = "http://api.gosklad.ru/v1/field/update";
       const res = await fetch(url + preparation_params(params), {
         method: "POST",
       });
-      context.dispatch("get_fields");
-      console.log(res);
+      // context.dispatch("get_fields");
+      const json = await res.json();
+      // context.dispatch("get_fields");
+      console.log("update_fields", json);
+      return json;
     },
   },
 };
