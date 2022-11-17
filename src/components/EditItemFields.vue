@@ -1,6 +1,5 @@
 <template>
-  {{ all_fields }}
-  <div class="row" v-for="field in all_fields" :key="field.id">
+  <div class="row" v-for="field in copy_all_fields" :key="field.id">
     <edit-integer
       :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
@@ -100,24 +99,17 @@ export default {
   emits: { change_value: null },
   data() {
     return {
-      // all_fields: [],
+      copy_all_fields: [],
     };
   },
   async mounted() {
-    await this.$store.dispatch("get_fields_properties");
-    const item = await this.$store.state.data.fields_properties.filter(
-      (val) =>
-        val.id === this.$store.state.data.items_categories[this.idx_edit_modal]
-    )[0];
-    const res = item.levels.slice(0, item.level);
-    // console.log(
-    //   await this.$store.state.data.items_categories[this.idx_edit_modal],
-    //   item,
-    //   res
-    // );
-    await this.$store.dispatch("get_all_fields", res);
-    console.log(this.$store.state.fields.all_fields);
-    // console.log(this.all_fields);
+    const category_id =
+      this.$store.state.data.items_categories[this.idx_edit_modal];
+    await this.$store
+      .dispatch("get_all_fields", category_id)
+      .then(
+        () => (this.copy_all_fields = [...this.$store.state.fields.all_fields])
+      );
   },
   computed: {
     ...mapGetters(["params", "fields", "idx_edit_modal", "items_categories"]),

@@ -1,10 +1,10 @@
 <template>
   <div class="row">
-    <label>{{ item.field }}:</label>
+    <label>{{ item.name }}:</label>
     <SelectorVue
-      :options_props="item.selector_options"
+      :options_props="preparing_field_data(item.data)"
       @select="option_select"
-      :selected_option="copy_selected_option"
+      :selected_option="{ name: copy_selected_option, value: -1 }"
     />
   </div>
 </template>
@@ -51,15 +51,16 @@ export default {
   },
   methods: {
     change_value() {
-      let a = {};
       nextTick(() => {
-        this.item.selector_options.forEach((val) => {
-          if (val.name == this.selected_option) {
-            a = val;
-          }
+        this.item.data.forEach((val) => {
+          if (val == this.selected_option) this.copy_selected_option = val;
         });
-        Object.assign(this.copy_selected_option, a);
       });
+    },
+    preparing_field_data(arr) {
+      const result = [];
+      arr.forEach((val, idx) => result.push({ name: val, value: idx }));
+      return result;
     },
     option_select(value) {
       this.$emit("change_value", value.name, this.idx);

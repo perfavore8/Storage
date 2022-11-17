@@ -536,6 +536,7 @@ export default {
           }
           .load {
             filter: blur(5px);
+            user-select: none;
           }
           .row {
             .item {

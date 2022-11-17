@@ -1,6 +1,5 @@
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-// import axios from "axios";
-const { preparation_params } = usePreparationQueryParams();
+// import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
+// const { preparation_params } = usePreparationQueryParams();
 export default {
   state: {
     types: {},
@@ -264,35 +263,11 @@ export default {
       state.fields = [...value];
     },
     update_all_fields(state, value) {
-      state.all_fields = value;
+      state.all_fields = [...value];
     },
   },
   actions: {
     async get_types(context) {
-      // axios({
-      //   method: "post",
-      //   url: "/v1/field/add",
-      //   baseURL: "http://api.gosklad.ru",
-      //   data: {
-      //     category_id: 1,
-      //     data: [],
-      //     name: "1236",
-      //     type: 3,
-      //   },
-      //   headers: {
-      //     "Access-Control-Allow-Origin": "*",
-      //     "Access-Control-Allow-Methods": "POST",
-      //     "Access-Control-Allow-Headers": "Content-Type",
-      //     // Accept: "application/json, text/plain, */*",
-      //     // "Content-Type": "application/json",
-      //   },
-      // }).then(function (response) {
-      //   console.log("123", response.data);
-      // });
-      // axios
-      //   .get("https://jsonplaceholder.typicode.com/todos/1")
-      //   .then((response) => console.log("response", response.data));
-
       const url = "http://api.gosklad.ru/v1/field/types";
       const res = await fetch(url);
       const json = await res.json();
@@ -312,13 +287,14 @@ export default {
       const json = await res.json();
       return json.data;
     },
-    async get_all_fields(context, idxes) {
-      const arr = [];
-      idxes.forEach(async (val) => {
-        const res = await context.dispatch("get_fields_not_save", val);
-        arr.push(...res);
-      });
-      context.commit("update_all_fields", arr);
+    async get_all_fields(context, category_id) {
+      const url = "http://api.gosklad.ru/v1/field/list";
+      const res = await fetch(
+        url + "?category_id=" + category_id + "&with_parents=1"
+      );
+      const json = await res.json();
+      // console.log(json.data);
+      context.commit("update_all_fields", json.data);
     },
     async delete_field(context, id) {
       const url = "http://api.gosklad.ru/v1/field/delete";
@@ -330,8 +306,6 @@ export default {
       const url = "http://api.gosklad.ru/v1/field/add";
       const res = await fetch(url, {
         method: "POST",
-        // mode: "cors",
-        // credentials: "include",
         headers: {
           // "Access-Control-Allow-Origin": "*",
           // "Access-Control-Allow-Methods": "POST",
@@ -348,8 +322,16 @@ export default {
     },
     async update_fields(context, params) {
       const url = "http://api.gosklad.ru/v1/field/update";
-      const res = await fetch(url + preparation_params(params), {
+      const res = await fetch(url, {
         method: "POST",
+        headers: {
+          // "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Methods": "POST",
+          // "Access-Control-Allow-Headers": "Content-Type",
+          // Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
       });
       // context.dispatch("get_fields");
       const json = await res.json();
