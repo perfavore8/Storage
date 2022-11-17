@@ -1,4 +1,5 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
+// import axios from "axios";
 const { preparation_params } = usePreparationQueryParams();
 export default {
   state: {
@@ -268,6 +269,30 @@ export default {
   },
   actions: {
     async get_types(context) {
+      // axios({
+      //   method: "post",
+      //   url: "/v1/field/add",
+      //   baseURL: "http://api.gosklad.ru",
+      //   data: {
+      //     category_id: 1,
+      //     data: [],
+      //     name: "1236",
+      //     type: 3,
+      //   },
+      //   headers: {
+      //     "Access-Control-Allow-Origin": "*",
+      //     "Access-Control-Allow-Methods": "POST",
+      //     "Access-Control-Allow-Headers": "Content-Type",
+      //     // Accept: "application/json, text/plain, */*",
+      //     // "Content-Type": "application/json",
+      //   },
+      // }).then(function (response) {
+      //   console.log("123", response.data);
+      // });
+      // axios
+      //   .get("https://jsonplaceholder.typicode.com/todos/1")
+      //   .then((response) => console.log("response", response.data));
+
       const url = "http://api.gosklad.ru/v1/field/types";
       const res = await fetch(url);
       const json = await res.json();
@@ -312,7 +337,7 @@ export default {
           // "Access-Control-Allow-Methods": "POST",
           // "Access-Control-Allow-Headers": "Content-Type",
           // Accept: "application/json, text/plain, */*",
-          // "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
       });
