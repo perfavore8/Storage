@@ -1,8 +1,8 @@
 <template>
   <div class="row">
-    <label>{{ item.field }}:</label>
+    <label>{{ item.name }}:</label>
     <multi-selector
-      :options_props="item.selector_options"
+      :options_props="preparing_field_data(item.data)"
       @select="option_select"
       :selected_options="copy_selected_options"
     />
@@ -54,19 +54,22 @@ export default {
       let a = [];
       nextTick(() => {
         const split_selected_options = this.selected_options.split(", ");
-        this.item.selector_options.forEach((val) => {
-          split_selected_options.includes(val.name)
-            ? a.push(true)
-            : a.push(false);
+        this.item.data.forEach((val) => {
+          split_selected_options.includes(val) ? a.push(true) : a.push(false);
         });
         this.copy_selected_options = [];
-        this.copy_selected_options = this.copy_selected_options.concat(a);
+        this.copy_selected_options = [...a];
       });
+    },
+    preparing_field_data(arr) {
+      const result = [];
+      arr.forEach((val, idx) => result.push({ name: val, value: idx }));
+      return result;
     },
     option_select(value) {
       let a = [];
       value.forEach((val, index) => {
-        val ? a.push(this.item.selector_options[index].name) : null;
+        val ? a.push(this.item.data[index]) : null;
       });
       a = a.join(", ");
       this.$emit("change_value", a, this.idx);
