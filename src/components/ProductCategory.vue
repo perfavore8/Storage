@@ -124,7 +124,7 @@ export default defineComponent({
   },
   computed: {
     copy_fields_properties() {
-      return this.$store.state.data.fields_properties;
+      return this.$store.state.categories.fields_properties;
     },
   },
   watch: {
@@ -157,7 +157,7 @@ export default defineComponent({
         level: [],
         levels: [],
       };
-      this.$store.state.data.fields_properties.forEach((val) =>
+      this.$store.state.categories.fields_properties.forEach((val) =>
         Object.entries(val).forEach((value) => list[value[0]].push(value[1]))
       );
       Object.assign(this.all_old, list);
@@ -192,7 +192,7 @@ export default defineComponent({
       this.$store.dispatch("update_fields_properties", params);
     },
     prevname(id) {
-      this.$store.state.data.fields_properties.map((val) => {
+      this.$store.state.categories.fields_properties.map((val) => {
         const name = () => {
           let res = "";
           this.all_old.id.forEach((value, idx) =>

@@ -251,7 +251,7 @@ export default {
       .then(
         () =>
           (this.copy_fields_properties = [
-            ...this.$store.state.data.fields_properties,
+            ...this.$store.state.categories.fields_properties,
           ])
       )
       .then(() => {
