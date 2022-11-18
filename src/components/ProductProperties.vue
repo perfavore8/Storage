@@ -451,7 +451,7 @@ export default {
         };
         this.$store.dispatch("update_fields", params);
       });
-      this.get_fields();
+      this.get_fields(); // FixMe 5 срабатывает раньше чем /\
     },
     add_selector_option(idx) {
       if (this.copy_fields[idx].data == null) this.copy_fields[idx].data = [];

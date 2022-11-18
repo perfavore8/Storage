@@ -35,7 +35,9 @@ export default {
     },
     async get_fields_not_save(context, category_id) {
       const url = "http://api.gosklad.ru/v1/field/list/";
-      const res = await fetch(url + "?category_id=" + category_id);
+      const res = await fetch(
+        url + "?category_id=" + category_id + "&with_parents=0"
+      );
       const json = await res.json();
       return json.data;
     },
