@@ -3,14 +3,15 @@
   <div class="app_edit_modal">
     <div class="header">
       <div class="header_left">
-        Редактирование {{ edit_data[params.indexOf("Название") - 1] }}
+        Редактирование {{ edit_data.fields["name"] }}
       </div>
       <div class="header_right">
-        <edit-item-btns
-          :idx_edit_modal="idx_edit_modal"
-          :new_edit_data="new_edit_data"
-          :selected_option_1="selected_option_1"
-        />
+        <BtnsSaveClose @close="close" @save="save">
+          <template v-slot:close>Отмена</template>
+          <template v-slot:other_btns>
+            <button class="btn btn3" @click="archive()">Архивировать</button>
+          </template>
+        </BtnsSaveClose>
       </div>
     </div>
     <div class="hr" />
@@ -30,36 +31,34 @@
     </div>
     <div class="hr" />
     <div class="footer">
-      <edit-item-btns
-        :idx_edit_modal="idx_edit_modal"
-        :new_edit_data="new_edit_data"
-        :selected_option_1="selected_option_1"
-      />
+      <BtnsSaveClose @close="close" @save="save">
+        <template v-slot:close>Отмена</template>
+        <template v-slot:other_btns>
+          <button class="btn btn3" @click="archive()">Архивировать</button>
+        </template>
+      </BtnsSaveClose>
     </div>
   </div>
 </template>
 
 <script>
 import SelectorVue from "@/components/SelectorVue";
-import EditItemBtns from "@/components/EditItemBtns.vue";
+import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditItemFields from "@/components/EditItemFields.vue";
-import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
-    EditItemBtns,
+    BtnsSaveClose,
     EditItemFields,
   },
   props: {
     edit_data: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
   inject: ["isServicePage"],
-  computed: {
-    ...mapGetters(["params", "fields", "idx_edit_modal"]),
-  },
+  computed: {},
   data() {
     return {
       options_1: [
@@ -67,22 +66,32 @@ export default {
         { name: "Услуга", value: 2 },
       ],
       selected_option_1: { name: "Товар", value: 1 },
-      new_edit_data: [],
+      new_edit_data: {},
     };
   },
   mounted() {
-    this.new_edit_data = [];
-    this.new_edit_data = this.new_edit_data.concat(this.edit_data);
+    this.new_edit_data = { ...this.edit_data };
     this.isServicePage.value
-      ? Object.assign(this.selected_option_1, this.options_1[1])
-      : Object.assign(this.selected_option_1, this.options_1[0]);
+      ? (this.selected_option_1 = { ...this.options_1[1] })
+      : (this.selected_option_1 = { ...this.options_1[0] });
   },
   methods: {
-    change_value(value, idx) {
-      this.new_edit_data[idx] = value;
+    change_value(value, code) {
+      this.new_edit_data.fields[code] = value;
     },
     option_select_1(option) {
-      Object.assign(this.selected_option_1, option);
+      this.selected_option_1 = { ...option };
+    },
+    archive() {
+      this.new_edit_data.is_archive = 1;
+      this.save();
+    },
+    close() {
+      this.$store.commit("close_edit_modal");
+    },
+    save() {
+      this.$store.dispatch("update_product", this.new_edit_data);
+      this.close();
     },
   },
 };
@@ -117,6 +126,7 @@ export default {
     }
     &_right {
       display: flex;
+      justify-content: end;
     }
   }
   .main {
@@ -185,7 +195,6 @@ export default {
   }
   .footer {
     width: 80%;
-    height: 20px;
     margin: 20px auto 40px;
     display: flex;
     justify-content: end;
@@ -242,5 +251,13 @@ export default {
     border-color: #b3d7ff;
     cursor: default;
   }
+}
+.btn3 {
+  color: #fff;
+  background: #1b3546f1;
+}
+.btn3:hover {
+  background: #1b3546d9;
+  box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
 }
 </style>

@@ -2,64 +2,64 @@
   <div class="row" v-for="field in copy_fields_with_parents" :key="field.id">
     <edit-integer
       :item="field.name"
-      :selected_option="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 1"
     />
     <edit-float
       :item="field.name"
-      :selected_option="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 2"
     />
     <edit-string
       :item="field.name"
-      :selected_option="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 3"
     />
     <edit-text
       :item="field.name"
-      :selected_option="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 4"
     />
     <edit-selector
       :item="field"
-      :selected_option="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 5"
     />
     <edit-multi-selector
       :item="field"
-      :selected_options="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_options="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 6"
     />
     <edit-date
       :item="field.name"
-      :selected_option="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 7"
     />
     <edit-date-time
       :item="field.name"
-      :selected_option="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 8"
     />
     <edit-flag
       :item="field.name"
-      :selected_option="new_edit_data[params_indexOf(field)]"
-      :idx="params_indexOf(field)"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
       @change_value="change_value"
       v-if="field.type == 9"
     />
@@ -67,6 +67,7 @@
 </template>
 
 <script>
+// FIXME в компонентах idx поменять (типы)
 import EditInteger from "@/components/EditItemSelections/EditInteger.vue";
 import EditFloat from "@/components/EditItemSelections/EditFloat.vue";
 import EditString from "@/components/EditItemSelections/EditString.vue";
@@ -76,7 +77,6 @@ import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector
 import EditDate from "@/components/EditItemSelections/EditDate.vue";
 import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
-import { mapGetters } from "vuex";
 export default {
   components: {
     EditInteger,
@@ -91,11 +91,10 @@ export default {
   },
   props: {
     new_edit_data: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
-  inject: ["isServicePage"],
   emits: { change_value: null },
   data() {
     return {
@@ -103,8 +102,8 @@ export default {
     };
   },
   async mounted() {
-    const category_id =
-      this.$store.state.data.items_categories[this.idx_edit_modal];
+    // const category_id = this.new_edit_data.category_id;
+    const category_id = 1;
     await this.$store
       .dispatch("get_fields_with_parents", category_id)
       .then(
@@ -114,15 +113,10 @@ export default {
           ])
       );
   },
-  computed: {
-    ...mapGetters(["params", "fields", "idx_edit_modal", "items_categories"]),
-  },
+  computed: {},
   methods: {
-    change_value(value, idx) {
-      this.$emit("change_value", value, idx);
-    },
-    params_indexOf(item) {
-      return this.params.indexOf(item.name) - 1;
+    change_value(value, code) {
+      this.$emit("change_value", value, code);
     },
   },
 };

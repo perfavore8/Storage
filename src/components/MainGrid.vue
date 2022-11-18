@@ -57,6 +57,7 @@ import GridBottom from "@/components/GridBottom.vue";
 import MainGridFilters from "@/components/MainGridFilters.vue";
 import MainGridBar from "@/components/MainGridBar.vue";
 import { mapGetters } from "vuex";
+import { nextTick } from "process";
 export default {
   name: "Main_grid",
   components: {
@@ -73,13 +74,11 @@ export default {
       page: 1,
       updateKey: 0,
       changeValue: [],
-      edit_data: [],
+      edit_data: {},
     };
   },
 
   mounted() {
-    this.calcDuplicate();
-    this.feelIdxes();
     this.$store.dispatch("get_all_fields");
     this.$store.dispatch("get_products");
   },
@@ -112,8 +111,10 @@ export default {
       handler: function () {
         this.updateKey += 1;
         this.changeValue = [];
-        this.filters.reset_filtersValue();
-        this.filters.feelFilters();
+        nextTick(() => {
+          this.filters.reset_filtersValue();
+          this.filters.feelFilters();
+        });
       },
       deep: true,
     },
@@ -139,7 +140,7 @@ export default {
       this.page = 1;
     },
     open_edit_modal(row) {
-      this.edit_data = [...row];
+      this.edit_data = { ...row };
       this.$store.commit("open_edit_modal", row.id);
     },
   },

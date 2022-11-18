@@ -3,6 +3,7 @@
     <button class="btn btn1" @click="close()" v-if="show_close">
       <slot name="close">Отмена</slot>
     </button>
+    <slot name="other_btns"></slot>
     <button class="btn btn2" @click="save()" v-if="show_save">
       <slot name="save">Сохранить</slot>
     </button>

@@ -7,56 +7,16 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 export default {
-  props: {
-    idx_edit_modal: {
-      type: Number,
-      required: true,
-    },
-    new_edit_data: {
-      type: Array,
-      required: true,
-    },
-    selected_option_1: {
-      type: Object,
-      required: true,
-    },
-  },
-  inject: ["isServicePage"],
-  computed: {
-    ...mapGetters(["fields"]),
-  },
   methods: {
     archive_data() {
-      this.isServicePage.value
-        ? this.$store.commit("archive_service", [this.idx_edit_modal])
-        : this.$store.commit("archive_data", [this.idx_edit_modal]);
-      this.close_edit_modal();
+      this.$emit("archive");
     },
     close_edit_modal() {
-      this.$store.commit("close_edit_modal");
+      this.$emit("close");
     },
     save_data() {
-      const payload = {
-        idx: this.idx_edit_modal,
-        data: this.new_edit_data,
-      };
-      const a = this.isServicePage.value;
-      const b = this.selected_option_1.name == "Услуга";
-      if (!a && !b) this.$store.commit("update_data_idx", payload);
-      if (a && b) this.$store.commit("update_service_idx", payload);
-      if (!a && b) {
-        this.fields.forEach((val, idx) => {
-          if (!val.available_to_services) payload.data[idx] = "";
-        });
-        this.$store.commit("remove_data_idx", payload),
-          this.$store.commit("add_service", payload);
-      }
-      if (a && !b)
-        this.$store.commit("remove_service_idx", payload),
-          this.$store.commit("add_data", payload);
-      this.close_edit_modal();
+      this.$emit("save");
     },
   },
 };
