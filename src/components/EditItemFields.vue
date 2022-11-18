@@ -1,5 +1,5 @@
 <template>
-  <div class="row" v-for="field in copy_all_fields" :key="field.id">
+  <div class="row" v-for="field in copy_fields_with_parents" :key="field.id">
     <edit-integer
       :item="field.name"
       :selected_option="new_edit_data[params_indexOf(field)]"
@@ -99,16 +99,19 @@ export default {
   emits: { change_value: null },
   data() {
     return {
-      copy_all_fields: [],
+      copy_fields_with_parents: [],
     };
   },
   async mounted() {
     const category_id =
       this.$store.state.data.items_categories[this.idx_edit_modal];
     await this.$store
-      .dispatch("get_all_fields", category_id)
+      .dispatch("get_fields_with_parents", category_id)
       .then(
-        () => (this.copy_all_fields = [...this.$store.state.fields.all_fields])
+        () =>
+          (this.copy_fields_with_parents = [
+            ...this.$store.state.fields.fields_with_parents,
+          ])
       );
   },
   computed: {
