@@ -1,5 +1,4 @@
-// import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-// const { preparation_params } = usePreparationQueryParams();
+import { BaseURL } from "@/composables/BaseURL";
 export default {
   state: {
     types: {},
@@ -20,13 +19,13 @@ export default {
   },
   actions: {
     async get_types(context) {
-      const url = "http://api.gosklad.ru/v1/field/types";
+      const url = BaseURL + "field/types";
       const res = await fetch(url);
       const json = await res.json();
       context.commit("update_types", json.data);
     },
     async get_fields(context, category_id) {
-      const url = "http://api.gosklad.ru/v1/field/list/";
+      const url = BaseURL + "field/list";
       const res = await fetch(
         url + "?category_id=" + category_id + "&with_parents=0"
       );
@@ -34,7 +33,7 @@ export default {
       context.commit("update_fields", json.data);
     },
     async get_fields_not_save(context, category_id) {
-      const url = "http://api.gosklad.ru/v1/field/list/";
+      const url = BaseURL + "field/list";
       const res = await fetch(
         url + "?category_id=" + category_id + "&with_parents=0"
       );
@@ -42,7 +41,7 @@ export default {
       return json.data;
     },
     async get_fields_with_parents(context, category_id) {
-      const url = "http://api.gosklad.ru/v1/field/list/";
+      const url = BaseURL + "field/list";
       const res = await fetch(
         url + "?category_id=" + category_id + "&with_parents=1"
       );
@@ -51,13 +50,13 @@ export default {
       context.commit("update_fields_with_parents", json.data);
     },
     async delete_field(context, id) {
-      const url = "http://api.gosklad.ru/v1/field/delete";
+      const url = BaseURL + "field/delete";
       const res = await fetch(url + "?id=" + id, { method: "POST" });
       // context.dispatch("get_fields");
       console.log(res);
     },
     async add_field(context, params) {
-      const url = "http://api.gosklad.ru/v1/field/add";
+      const url = BaseURL + "field/add";
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -75,7 +74,7 @@ export default {
       return json;
     },
     async update_fields(context, params) {
-      const url = "http://api.gosklad.ru/v1/field/update";
+      const url = BaseURL + "field/update";
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -87,9 +86,7 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      // context.dispatch("get_fields");
       const json = await res.json();
-      // context.dispatch("get_fields");
       console.log("update_fields", json);
       return json;
     },
