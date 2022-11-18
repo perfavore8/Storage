@@ -164,8 +164,6 @@ export default {
   cursor: pointer;
   @include bg_image("@/assets/edit.svg");
 }
-.row {
-}
 .table {
   border-collapse: collapse;
   margin: 0 auto;
@@ -224,32 +222,6 @@ export default {
 .checkbox:not(:disabled):active + label::before {
   background-color: #75757591;
   border-color: #75757591;
-}
-.dublitem {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  .btn {
-    margin-top: -1px;
-    width: 25px;
-    height: 25px;
-    border: none;
-    outline: none;
-    background-color: transparent;
-  }
-  .buttonDuwn {
-    @include bg_image("@/assets/arrow.svg", 100% 60%);
-  }
-  .buttonUp {
-    @include bg_image("@/assets/arrow.svg", 100% 60%);
-    transform: rotate(180deg);
-  }
-}
-.open_dublitem {
-  background-color: rgba(187, 224, 242, 0.267);
-  // padding-left: 30px;
-  .dublitem {
-  }
 }
 .blur {
   filter: blur(5px);
