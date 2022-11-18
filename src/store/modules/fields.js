@@ -4,6 +4,7 @@ export default {
     types: {},
     fields: [],
     fields_with_parents: [],
+    all_fields: [],
   },
   getters: {},
   mutations: {
@@ -12,6 +13,9 @@ export default {
     },
     update_fields(state, value) {
       state.fields = [...value];
+    },
+    update_all_fields(state, value) {
+      state.all_fields = [...value];
     },
     update_fields_with_parents(state, value) {
       state.fields_with_parents = [...value];
@@ -31,6 +35,12 @@ export default {
       );
       const json = await res.json();
       context.commit("update_fields", json.data);
+    },
+    async get_all_fields(context) {
+      const url = BaseURL + "field/list";
+      const res = await fetch(url);
+      const json = await res.json();
+      context.commit("update_all_fields", json.data);
     },
     async get_fields_not_save(context, category_id) {
       const url = BaseURL + "field/list";
