@@ -15,19 +15,19 @@ export default {
   },
   actions: {
     async get_products(context) {
-      const url = BaseURL + "/product/list";
+      const url = BaseURL + "product/list";
       const res = await fetch(url);
       const json = await res.json();
-      context.commit("update_products", json);
+      context.commit("update_products", json.data);
     },
     async get_product(context, id) {
-      const url = BaseURL + "/product/get";
+      const url = BaseURL + "product/get";
       const res = await fetch(url + "?id=" + id);
       const json = await res.json();
       context.commit("update_products", json);
     },
     async update_product(context, params) {
-      const url = BaseURL + "/product/update";
+      const url = BaseURL + "product/update";
       const res = await fetch(url, {
         method: "POST",
         headers: {

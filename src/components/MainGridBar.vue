@@ -1,27 +1,25 @@
 <template>
   <tr class="bar_row">
+    <th class="bar_item item" style="min-width: 17px"></th>
     <th
       class="bar_item item"
-      v-show="collval[idx - 1] === false ? false : true"
       :style="{
         minWidth:
-          idx === 0
-            ? 17 + 'px'
-            : idx === params.length - 1
-            ? 20 + 'px'
-            : width[idx] != 0
+          width[idx] != 0
             ? width[idx] + 'px'
             : (collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) / collsCount +
               '%',
       }"
-      v-for="(param, idx) in params"
-      :key="param"
+      v-for="(field, idx) in fields"
+      v-show="field.table_config.visible"
+      :key="field.id"
     >
       <div class="bar_item_group">
-        <div>{{ param }}</div>
-        <button v-show="param" class="bar_item_icon"></button>
+        <div>{{ field.name }}</div>
+        <button class="bar_item_icon"></button>
       </div>
     </th>
+    <th class="bar_item item" style="min-width: 20px"></th>
   </tr>
 </template>
 
@@ -29,14 +27,7 @@
 import { mapGetters } from "vuex";
 export default {
   props: {
-    collval: {
-      type: Array,
-      required: true,
-      default() {
-        return [];
-      },
-    },
-    params: {
+    fields: {
       type: Array,
       required: true,
       default() {
@@ -47,22 +38,17 @@ export default {
   computed: {
     ...mapGetters(["fields"]),
     collsCount() {
-      let count = 0;
-      this.collval.forEach((val) => (val ? (count += 1) : null));
-      return count;
+      return this.fields.filter((val) => val.table_config.visible).length;
     },
     width() {
       let arr = [];
-      this.params.forEach((value) => {
+      this.fields.forEach((field) => {
         let a = 0;
-        this.fields.forEach((val) => {
-          if (value === val.field) {
-            if (val.type.value == 9) a = 70;
-            if (val.type.value == 7 || val.type.value == 8) a = 130;
-          }
-        });
+        if (field.type == 9) a = 70;
+        if (field.type == 7 || field.type == 8) a = 130;
         arr.push(a);
       });
+
       return arr;
     },
   },

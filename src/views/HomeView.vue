@@ -866,8 +866,6 @@ export default {
       }
     }
   }
-  .grid {
-  }
 }
 .button {
   cursor: pointer;

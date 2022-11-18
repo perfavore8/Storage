@@ -1,12 +1,12 @@
 <template>
-  <tr class="filters">
+  <tr class="filters" v-show="show_filter">
     <transition-group name="mdl">
       <transition name="mdl" key="1b">
-        <th class="item" v-show="show_filter" key="b1"></th>
+        <th class="item" key="b1"></th>
       </transition>
       <th
         class="item"
-        v-show="show_filter && (collval[idx] === false ? false : true)"
+        v-show="fields[idx].table_config.visible"
         v-for="(filter, idx) in filtersValue"
         :key="idx"
       >
@@ -42,7 +42,7 @@
           @change_filter_value="change_filter_value"
         />
       </th>
-      <th class="item" v-show="show_filter" key="2b" />
+      <th class="item" key="2b" />
     </transition-group>
   </tr>
 </template>
@@ -56,14 +56,7 @@ import FilterFlag from "@/components/FiltersSelections/FilterFlag.vue";
 import { mapGetters } from "vuex";
 export default {
   props: {
-    collval: {
-      type: Array,
-      required: true,
-      default() {
-        return [];
-      },
-    },
-    params: {
+    fields: {
       type: Array,
       required: true,
       default() {
@@ -84,7 +77,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["fields", "show_filter"]),
+    ...mapGetters(["show_filter"]),
   },
   mounted() {
     this.feelFilters();
@@ -97,31 +90,27 @@ export default {
       Object.assign(this.filtersValue[idx], new_obj);
     },
     feelFilters() {
-      this.params.forEach((val, idx) => {
-        if (idx != 0 && idx != this.params.length - 1) {
-          let type = null;
-          let selector_options = [];
-          this.fields.forEach((value) =>
-            value.field == val
-              ? ((type = value.type.value),
-                (selector_options = value.selector_options))
-              : null
-          );
-          let value = null;
-          if (type == 5 || type == 6) {
-            value = [true];
-          }
-          if (type == 9) {
-            value = 1;
-          }
-          const obj = {
-            type: type,
-            option: 1,
-            selector_options: selector_options,
-            value: value,
-          };
-          this.filtersValue.push(obj);
+      this.fields.forEach((val) => {
+        const preparation_data = (arr) => {
+          const result = [];
+          if (arr != null)
+            arr.forEach((val, idx) => result.push({ name: val, value: idx }));
+          return arr;
+        };
+        let value = null;
+        if (val.type == 5 || val.type == 6) {
+          value = [];
         }
+        if (val.type == 9) {
+          value = 1;
+        }
+        const obj = {
+          type: val.type,
+          option: 1,
+          selector_options: preparation_data(val.data),
+          value: value,
+        };
+        this.filtersValue.push(obj);
       });
     },
   },

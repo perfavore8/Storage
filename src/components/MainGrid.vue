@@ -8,64 +8,31 @@
       class="table"
       :key="updateKey"
       :class="{ blur: show_edit_modal }"
-      v-if="paginatedData.length != 0"
+      v-else
     >
       <thead>
-        <main-grid-bar :collval="collval" :params="params" />
-        <main-grid-filters ref="filters" :collval="collval" :params="params" />
+        <main-grid-bar :fields="all_fields" />
+        <main-grid-filters ref="filters" :fields="all_fields" />
       </thead>
       <tbody>
         <transition-group name="rows">
-          <tr
-            class="row"
-            v-for="(row, i) in paginatedData"
-            :key="row"
-            v-show="!showduplicate[i + idxes[page - 1][0]]"
-          >
+          <tr class="row" v-for="row in paginatedData" :key="row.id">
             <td class="item">
-              <input
-                type="checkbox"
-                class="checkbox"
-                :id="i + 'a'"
-                v-model="changeValue[data.indexOf(row)]"
-              />
-              <label :for="i + 'a'"></label>
+              <input type="checkbox" class="checkbox" :id="row.id" />
+              <label :for="row.id"></label>
             </td>
             <td
-              :class="{ open_dublitem: duplicate[i + idxes[page - 1][0]] }"
               class="item"
-              v-for="(item, idx) in Object.entries(row)"
-              v-show="collval[idx] === false ? false : true"
+              v-for="item in all_fields"
+              v-show="item.table_config.visible"
               :key="item"
             >
               <div class="dublitem">
-                {{ item[1] }}
-                <button
-                  v-if="
-                    idx == params.indexOf('Название') - 1 &&
-                    showduplicate[i + idxes[page - 1][0] + 1] &&
-                    !duplicate[i + idxes[page - 1][0]]
-                  "
-                  @click="showduble(i + idxes[page - 1][0])"
-                  class="buttonDuwn btn"
-                ></button>
-                <button
-                  v-if="
-                    idx == params.indexOf('Название') - 1 &&
-                    !showduplicate[i + idxes[page - 1][0] + 1] &&
-                    !duplicate[i + idxes[page - 1][0]] &&
-                    duplicate[i + idxes[page - 1][0] + 1]
-                  "
-                  @click="hideduble(i + idxes[page - 1][0])"
-                  class="buttonUp btn"
-                ></button>
+                {{ row.fields[item.code] }}
               </div>
             </td>
             <td class="item">
-              <div
-                class="edit_icon"
-                @click="open_edit_modal(row, data.indexOf(row))"
-              ></div>
+              <div class="edit_icon" @click="open_edit_modal(row)"></div>
             </td>
           </tr>
         </transition-group>
@@ -73,7 +40,7 @@
     </table>
     <grid-bottom
       :previous="page > 1"
-      :next="page * count < data.length - countHideRows"
+      :next="page * count < 1"
       :page="page"
       :blur="show_edit_modal"
       :show="paginatedData.length != 0"
@@ -98,44 +65,26 @@ export default {
     MainGridFilters,
     MainGridBar,
   },
-  props: {
-    params: {
-      type: Array,
-      required: true,
-    },
-    data: {
-      type: Array,
-      required: true,
-    },
-    collval: {
-      type: Array,
-      required: true,
-    },
-  },
+  props: {},
   data() {
     return {
-      coll: [],
       count: 5,
       page: 1,
       updateKey: 0,
       changeValue: [],
-      duplicate: [],
-      showduplicate: [],
-      startIdx: 0,
-      idxes: [[0, 6]],
       edit_data: [],
     };
   },
   watch: {
     count() {
-      this.startIdx = 0;
-      this.feelIdxes();
       this.page = 1;
     },
     paginatedData: {
       handler: function () {
         this.updateKey += 1;
         this.changeValue = [];
+        this.filters.reset_filtersValue();
+        this.filters.feelFilters();
       },
       deep: true,
     },
@@ -145,64 +94,34 @@ export default {
       },
       deep: true,
     },
-    data: {
-      handler: function () {
-        this.filters.reset_filtersValue();
-        this.calcDuplicate();
-        this.filters.feelFilters();
-      },
-      deep: true,
-    },
-    show_buttons: function () {
+    show_buttons() {
       this.$store.commit("open_close_buttons", this.show_buttons);
-    },
-    countHideRows: function () {
-      this.feelIdxes();
     },
   },
   computed: {
+    all_fields() {
+      return this.$store.state.fields.all_fields;
+    },
     filters() {
       return this.$refs.filters;
     },
     show_buttons() {
-      let value = false;
-      this.changeValue.forEach((val) => {
-        if (val != undefined) {
-          value = val || value;
-        }
-      });
+      const value = this.changeValue.filter((val) => val).length > 0;
       return value;
     },
     paginatedData() {
-      if (this.idxes[this.page - 1] != undefined) {
-        const dat = this.data.slice(
-          this.idxes[this.page - 1][0],
-          this.idxes[this.page - 1][1]
-        );
-        return dat;
-      } else {
-        return [];
-      }
+      return this.$store.state.products.products;
     },
     countPage() {
       return this.count * (this.page - 1);
     },
-    countHideRows() {
-      let a = 0;
-      this.duplicate.forEach((val) => (val ? (a += 1) : null));
-      return a;
-    },
-    endidx() {
-      return this.endId(this.startIdx);
-    },
     ...mapGetters(["show_edit_modal"]),
-    ...mapGetters(["fields"]),
-    ...mapGetters(["data1"]),
   },
   mounted() {
     this.calcDuplicate();
     this.feelIdxes();
-    // this.open_edit_modal(this.data[0], 0);
+    this.$store.dispatch("get_all_fields");
+    this.$store.dispatch("get_products");
   },
   methods: {
     changeCount(val) {
@@ -214,60 +133,9 @@ export default {
     drop_page() {
       this.page = 1;
     },
-    calcDuplicate() {
-      let name = "";
-      let artic = "";
-      this.duplicate = [];
-      this.showduplicate = [];
-      const name_idx = this.params.indexOf("Название") - 1;
-      const artic_idx = this.params.indexOf("Артикул") - 1;
-      this.data.forEach((val) => {
-        if (val[name_idx] == name && val[artic_idx] == artic) {
-          this.duplicate.push(true);
-        } else {
-          this.duplicate.push(false);
-        }
-        name = val[name_idx];
-        artic = val[artic_idx];
-      });
-      this.duplicate.forEach((val) => this.showduplicate.push(val));
-    },
-    showduble(idx) {
-      while (this.duplicate[idx + 1]) {
-        this.showduplicate[idx + 1] = false;
-        idx += 1;
-      }
-    },
-    hideduble(idx) {
-      while (this.duplicate[idx + 1]) {
-        this.showduplicate[idx + 1] = true;
-        idx += 1;
-      }
-    },
-    endId(idx) {
-      let a = 0;
-      while (a != this.count) {
-        if (!this.duplicate[idx]) a += 1;
-        idx += 1;
-      }
-      while (this.duplicate[idx]) idx += 1;
-      return idx;
-    },
-    feelIdxes() {
-      this.idxes = [];
-      while (this.startIdx < this.data.length) {
-        this.idxes.push([this.startIdx, this.endId(this.startIdx)]);
-        this.startIdx = this.endId(this.startIdx);
-      }
-      this.startIdx = 0;
-    },
-    open_edit_modal(row, idx) {
-      let index = idx;
-      const data_idx = this.data1.indexOf(row);
-      if (data_idx != -1) index = data_idx;
-      this.edit_data = [];
-      this.edit_data = this.edit_data.concat(row);
-      this.$store.commit("open_edit_modal", index);
+    open_edit_modal(row) {
+      this.edit_data = [...row];
+      this.$store.commit("open_edit_modal", row.id);
     },
   },
 };
