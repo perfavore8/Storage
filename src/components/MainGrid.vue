@@ -66,6 +66,7 @@ export default {
     MainGridBar,
   },
   props: {},
+
   data() {
     return {
       count: 5,
@@ -75,6 +76,34 @@ export default {
       edit_data: [],
     };
   },
+
+  mounted() {
+    this.calcDuplicate();
+    this.feelIdxes();
+    this.$store.dispatch("get_all_fields");
+    this.$store.dispatch("get_products");
+  },
+
+  computed: {
+    all_fields() {
+      return this.$store.state.fields.all_fields;
+    },
+    filters() {
+      return this.$refs.filters;
+    },
+    show_buttons() {
+      const value = this.changeValue.filter((val) => val).length > 0;
+      return value;
+    },
+    paginatedData() {
+      return this.$store.state.products.products;
+    },
+    countPage() {
+      return this.count * (this.page - 1);
+    },
+    ...mapGetters(["show_edit_modal"]),
+  },
+
   watch: {
     count() {
       this.page = 1;
@@ -98,31 +127,7 @@ export default {
       this.$store.commit("open_close_buttons", this.show_buttons);
     },
   },
-  computed: {
-    all_fields() {
-      return this.$store.state.fields.all_fields;
-    },
-    filters() {
-      return this.$refs.filters;
-    },
-    show_buttons() {
-      const value = this.changeValue.filter((val) => val).length > 0;
-      return value;
-    },
-    paginatedData() {
-      return this.$store.state.products.products;
-    },
-    countPage() {
-      return this.count * (this.page - 1);
-    },
-    ...mapGetters(["show_edit_modal"]),
-  },
-  mounted() {
-    this.calcDuplicate();
-    this.feelIdxes();
-    this.$store.dispatch("get_all_fields");
-    this.$store.dispatch("get_products");
-  },
+
   methods: {
     changeCount(val) {
       this.count = val;
