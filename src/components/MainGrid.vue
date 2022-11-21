@@ -81,9 +81,13 @@ export default {
   mounted() {
     this.$store.dispatch("get_all_fields");
     this.$store.dispatch("get_products");
+    this.$store.dispatch("get_meta");
   },
 
   computed: {
+    meta() {
+      return this.$store.state.products.meta;
+    },
     all_fields() {
       return this.$store.state.fields.all_fields;
     },

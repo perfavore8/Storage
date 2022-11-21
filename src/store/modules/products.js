@@ -3,6 +3,10 @@ export default {
   state: {
     products: [],
     editing_product: {},
+    meta: {
+      links: {},
+      meta: {},
+    },
   },
   getters: {},
   mutations: {
@@ -11,6 +15,9 @@ export default {
     },
     update_editing_product(state, value) {
       state.editing_product = { ...value };
+    },
+    update_meta(state, value) {
+      state.meta = { ...value };
     },
   },
   actions: {
@@ -38,6 +45,18 @@ export default {
       const json = await res.json();
       console.log("update_product", json);
       return json;
+    },
+    async get_meta(context, params) {
+      const url = BaseURL + "product/list";
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      console.log(json);
+      context.commit("update_meta", { links: json.links, meta: json.meta });
     },
   },
 };
