@@ -170,7 +170,7 @@ export default {
   border-collapse: collapse;
   margin: 0 auto;
   overflow-x: scroll;
-  width: calc(100% + 31px);
+  width: calc(100% + 42px);
   display: block;
 }
 .item:first-child {
