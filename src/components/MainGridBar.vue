@@ -25,6 +25,7 @@
               order.code === field.code && order.prev_order === 'asc',
           }"
           @click="sort(field.code)"
+          v-if="field.table_config.sortable"
         ></button>
       </div>
     </th>
