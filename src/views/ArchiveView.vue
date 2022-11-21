@@ -32,7 +32,9 @@ export default {
   },
   computed: {
     ...mapGetters(["catalog"]),
-    ...mapGetters(["coun_archive"]),
+    coun_archive() {
+      return this.$store.state.products.products.length;
+    },
   },
   methods: {
     route(page_name) {

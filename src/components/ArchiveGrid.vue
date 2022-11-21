@@ -1,33 +1,43 @@
 <template>
-  <label v-if="paginatedItems.length == 0" class="text">
+  <label v-if="archive_list.length == 0" class="text">
     Ничего не найдено
   </label>
-  <table class="table" v-if="paginatedItems.length != 0">
+  <table class="table" v-else>
     <thead>
       <tr class="row title">
-        <td v-for="title in archive.titles" :key="title" class="item">
-          {{ title }}
+        <td
+          v-for="item in all_fields"
+          :key="item.id"
+          v-show="item?.table_config.visible"
+          class="item"
+        >
+          {{ item.name }}
         </td>
         <td class="item"></td>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(items, index) in paginatedItems" :key="items" class="row">
-        <td v-for="idx in idxes_to_show" :key="idx" class="item">
-          {{ items[idx] }}
+      <tr v-for="item in archive_list" :key="item.id" class="row">
+        <td
+          v-for="field in all_fields"
+          v-show="field?.table_config.visible"
+          :key="field"
+          class="item"
+        >
+          {{ item.fields[field.code] }}
         </td>
         <td class="item">
-          <div class="edit_icon" @click="unarchive_data(index)"></div>
+          <div class="edit_icon" @click="unarchive_data(item)"></div>
         </td>
       </tr>
     </tbody>
   </table>
   <grid-bottom
-    :previous="page > 1"
-    :next="page * count < archive.items.length"
-    :page="page"
-    :show="paginatedItems.length != 0"
-    :count="count"
+    :previous="meta.links.prev != null"
+    :next="meta.links.next != null"
+    :page="meta.meta.current_page"
+    :show="archive_list.length != 0"
+    :count="meta.meta.per_page"
     @changePage="changePage"
     @changeCount="changeCount"
   />
@@ -35,43 +45,29 @@
 
 <script>
 import GridBottom from "@/components/GridBottom.vue";
-import { mapGetters } from "vuex";
 export default {
   components: {
     GridBottom,
   },
   data() {
-    return {
-      count: 5,
-      page: 1,
-    };
+    return {};
+  },
+  mounted() {
+    this.$store.dispatch("get_all_fields");
+    this.$store.dispatch("get_products", { is_archive: 1 });
   },
   computed: {
-    ...mapGetters(["archive"]),
-    ...mapGetters(["params"]),
-    paginatedItems() {
-      return this.archive.items.slice(
-        this.count * (this.page - 1),
-        this.count * this.page
-      );
+    meta() {
+      return this.$store.state.products.meta;
     },
-    idxes_to_show() {
-      let arr = [];
-      this.archive.titles.forEach((val) => {
-        this.params.forEach((param, idx) => {
-          if (val == param) arr.push(idx - 1);
-        });
-      });
-      return arr;
+    all_fields() {
+      return this.$store.state.fields.all_fields;
+    },
+    archive_list() {
+      return this.$store.state.products.products;
     },
   },
-  watch: {
-    paginatedItems() {
-      if (!this.paginatedItems.length) {
-        if (this.page > 1) this.page -= 1;
-      }
-    },
-  },
+  watch: {},
   methods: {
     changeCount(val) {
       this.count = val;
@@ -79,13 +75,14 @@ export default {
     changePage(val) {
       this.page = val;
     },
-    unarchive_data(idx) {
-      console.log(this.archive.sourses[idx]);
-      if (this.archive.sourses[idx] == 0) {
-        this.$store.commit("unarchive_data", idx);
-      } else if (this.archive.sourses[idx] == 1) {
-        this.$store.commit("unarchive_service", idx);
-      }
+    unarchive_data(item) {
+      const res = {
+        id: item.id,
+        fields: item.fields,
+        is_archive: 0,
+      };
+      this.$store.dispatch("update_product", res);
+      this.$store.dispatch("get_products", { is_archive: 1 });
     },
   },
 };
