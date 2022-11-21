@@ -21,10 +21,16 @@ export default {
     },
   },
   actions: {
-    async get_products(context) {
+    async get_products(context, params) {
       const url = BaseURL + "product/list";
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
       const json = await res.json();
+      context.commit("update_meta", { links: json.links, meta: json.meta });
       context.commit("update_products", json.data);
     },
     async get_product(context, id) {
@@ -45,18 +51,6 @@ export default {
       const json = await res.json();
       console.log("update_product", json);
       return json;
-    },
-    async get_meta(context, params) {
-      const url = BaseURL + "product/list";
-      const res = await fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
-      });
-      const json = await res.json();
-      console.log(json);
-      context.commit("update_meta", { links: json.links, meta: json.meta });
     },
   },
 };
