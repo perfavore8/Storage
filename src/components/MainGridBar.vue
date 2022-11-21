@@ -16,7 +16,16 @@
     >
       <div class="bar_item_group">
         <div>{{ field.name }}</div>
-        <button class="bar_item_icon" @click="sort(field.code)"></button>
+        <button
+          class="bar_item_icon"
+          :class="{
+            bar_item_icon_up:
+              order.code === field.code && order.prev_order === 'desc',
+            bar_item_icon_down:
+              order.code === field.code && order.prev_order === 'asc',
+          }"
+          @click="sort(field.code)"
+        ></button>
       </div>
     </th>
     <th class="bar_item item" style="min-width: 20px"></th>
@@ -109,6 +118,12 @@ export default {
         @include bg_image("@/assets/sort.svg");
         border: none;
         cursor: pointer;
+        &_up {
+          @include bg_image("@/assets/sort_up.svg");
+        }
+        &_down {
+          @include bg_image("@/assets/sort_down.svg");
+        }
       }
     }
   }
