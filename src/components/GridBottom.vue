@@ -55,8 +55,8 @@ export default {
       count_values: [
         { name: "3", value: 1 },
         { name: "5", value: 2 },
-        { name: "10", value: 3 },
-        { name: "20", value: 4 },
+        { name: "15", value: 3 },
+        { name: "40", value: 4 },
       ],
     };
   },
@@ -122,7 +122,7 @@ export default {
   }
   .count {
     margin-left: 7px;
-    width: 50px;
+    width: 70px;
   }
 }
 </style>

@@ -39,12 +39,12 @@
       </tbody>
     </table>
     <grid-bottom
-      :previous="page > 1"
-      :next="page * count < 1"
-      :page="page"
+      :previous="meta.links.prev != null"
+      :next="meta.links.next != null"
+      :page="meta.meta.current_page"
       :blur="show_edit_modal"
       :show="paginatedData.length != 0"
-      :count="count"
+      :count="meta.meta.per_page"
       @changePage="changePage"
       @changeCount="changeCount"
     />
