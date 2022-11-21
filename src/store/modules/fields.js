@@ -15,7 +15,13 @@ export default {
       state.fields = [...value];
     },
     update_all_fields(state, value) {
-      state.all_fields = [...value];
+      state.all_fields = [
+        ...value.sort((a, b) => {
+          if (a.table_config.sort > b.table_config.sort) return 1;
+          if (a.table_config.sort == b.table_config.sort) return 0;
+          if (a.table_config.sort < b.table_config.sort) return -1;
+        }),
+      ];
     },
     update_fields_with_parents(state, value) {
       state.fields_with_parents = [...value];
@@ -70,10 +76,6 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          // "Access-Control-Allow-Origin": "*",
-          // "Access-Control-Allow-Methods": "POST",
-          // "Access-Control-Allow-Headers": "Content-Type",
-          // Accept: "application/json, text/plain, */*",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -88,16 +90,26 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          // "Access-Control-Allow-Origin": "*",
-          // "Access-Control-Allow-Methods": "POST",
-          // "Access-Control-Allow-Headers": "Content-Type",
-          // Accept: "application/json, text/plain, */*",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
       });
       const json = await res.json();
       console.log("update_fields", json);
+      return json;
+    },
+    async update_config_table(context, params) {
+      const url = BaseURL + "field/update-config-table";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      console.log("update_config_table", json);
+      context.dispatch("get_all_fields");
       return json;
     },
   },

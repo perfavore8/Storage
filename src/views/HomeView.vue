@@ -10,7 +10,7 @@
     "
   >
     <div v-if="show_table_settings" class="table_setings">
-      <table-setings
+      <table-settings
         :names="paginatedParams"
         :data="paginatedData"
         :collval="show_columns[selected_storage]"
@@ -247,7 +247,7 @@
 <script>
 import MainGrid from "@/components/MainGrid.vue";
 import CardGrid from "@/components/CardGrid.vue";
-import TableSetings from "@/components/TableSetings.vue";
+import TableSettings from "@/components/TableSettings.vue";
 import EditStuff from "@/components/EditStuff.vue";
 import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";
@@ -265,7 +265,7 @@ export default {
   // },
   components: {
     MainGrid,
-    TableSetings,
+    TableSettings,
     EditStuff,
     NewPosition,
     CancelPosition,

@@ -11,21 +11,24 @@
           >
         </div>
         <draggable class="dragArea" :list="list" @change="changeData">
-          <div class="item" v-for="(element, i) in list" :key="element">
+          <div class="item" v-for="item in list" :key="item.id">
             <input
               type="checkbox"
-              v-model="checkbox_value[i]"
-              :id="i"
+              v-model="item.table_config.visible"
+              :id="item.id"
               class="checkbox"
-              :disabled="element == 'Название'"
+              :disabled="
+                item.table_config.visible === 2 ||
+                item.table_config.visible === -1
+              "
             />
-            <label :for="i"></label>
-            {{ element }}
+            <label :for="item.id"></label>
+            {{ item.name }}
           </div>
         </draggable>
       </div>
       <div class="modal-footer">
-        <btns-save-close @close="closeComp" @save="returnData" />
+        <btns-save-close @close="close" @save="save" />
       </div>
     </div>
   </div>
@@ -40,99 +43,41 @@ export default defineComponent({
     draggable: VueDraggableNext,
     BtnsSaveClose,
   },
-  props: {
-    names: {
-      type: Array,
-      required: true,
-    },
-    data: {
-      type: Array,
-      required: true,
-    },
-    collval: {
-      type: Array,
-      required: true,
-    },
-  },
-  emits: {
-    returnData1: (data_list, list, checkbox_value) => {
-      const isEmpty = data_list != [] && list != [] && checkbox_value != [];
-      const isArray =
-        Array.isArray(data_list) &&
-        Array.isArray(list) &&
-        Array.isArray(checkbox_value);
-      if (isArray && isEmpty) {
-        return true;
-      } else {
-        console.warn("Некорректные данные для генерации события returnData1!");
-        return false;
-      }
-    },
-  },
+  props: {},
+  emits: {},
   data() {
     return {
       list: [],
-      data_list: [],
-      checkbox_value: [],
-      enabled: true,
-      dragging: true,
     };
   },
   mounted() {
-    this.getData();
-  },
-  watch: {
-    data: {
-      handler: function () {
-        this.getData();
-      },
-      deep: true,
-    },
+    this.list = JSON.parse(JSON.stringify(this.$store.state.fields.all_fields));
+    this.list.map((item) => {
+      if (item.table_config.visible === 1) item.table_config.visible = true;
+      if (item.table_config.visible === 0) item.table_config.visible = false;
+    });
   },
   methods: {
-    changeData(event) {
-      const oldidx = event.moved.oldIndex;
-      const newidx = event.moved.newIndex;
-      this.data_list.map((val) => {
-        const t = val[oldidx];
-        val.splice(oldidx, 1);
-        val.splice(newidx, 0, t);
+    save() {
+      this.list.map((val, idx) => (val.table_config.sort = idx + 1));
+      const arr = [];
+      this.list.forEach((val) => {
+        const res = {};
+        let visible = val.table_config.visible;
+        if (visible === false) visible = 0;
+        if (visible === true) visible = 1;
+        res[val.id] = {
+          sort: val.table_config.sort,
+          visible: visible,
+        };
+        arr.push(res);
       });
-
-      this.change_value_checkbox(oldidx, newidx);
-    },
-    change_value_checkbox(oldidx, newidx) {
-      const t = this.checkbox_value[oldidx];
-      // this.checkbox_value[oldidx] = this.checkbox_value[newidx];
-      // this.checkbox_value[newidx] = t;
-      this.checkbox_value.splice(oldidx, 1);
-      this.checkbox_value.splice(newidx, 0, t);
-    },
-    returnData() {
-      this.$emit("returnData1", this.data_list, this.list, this.checkbox_value);
+      console.log(arr);
+      this.$store.dispatch("update_config_table", arr);
       this.$store.commit("close_table_settings");
     },
-    closeComp() {
+    close() {
       this.$store.commit("close_table_settings");
-      this.getData();
-    },
-    getData() {
-      this.list = [];
-      this.data_list = [];
-      this.checkbox_value = [];
-      this.names.forEach((item) => this.list.push(item));
-      this.data.forEach(() => this.data_list.push([]));
-      this.data.forEach((vali, i) => {
-        vali.forEach((valj) => {
-          this.data_list[i].push(valj);
-        });
-      });
-      // this.data_list = [...this.data];
-      // this.data_list = this.data_list.concat(this.data);
-      // this.data.forEach((item) => this.data_list.push(item));
-      this.list.pop();
-      this.list.shift();
-      this.collval.forEach((item, idx) => (this.checkbox_value[idx] = item));
     },
   },
 });
