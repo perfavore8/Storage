@@ -16,7 +16,7 @@
     >
       <div class="bar_item_group">
         <div>{{ field.name }}</div>
-        <button class="bar_item_icon"></button>
+        <button class="bar_item_icon" @click="sort(field.code)"></button>
       </div>
     </th>
     <th class="bar_item item" style="min-width: 20px"></th>
@@ -35,6 +35,14 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      order: {
+        code: "",
+        prev_order: "",
+      },
+    };
+  },
   computed: {
     ...mapGetters(["fields"]),
     collsCount() {
@@ -50,6 +58,17 @@ export default {
       });
 
       return arr;
+    },
+  },
+  methods: {
+    sort(code) {
+      const order_values = ["asc", "desc"];
+      let new_order = "";
+      this.order.code === code && this.order.prev_order == order_values[0]
+        ? (new_order = order_values[1])
+        : (new_order = order_values[0]);
+      this.order = { code: code, prev_order: new_order };
+      this.$emit("sort", code, new_order);
     },
   },
 };

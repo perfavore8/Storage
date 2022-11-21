@@ -4,38 +4,31 @@
     <label v-if="paginatedData.length == 0" class="text">
       Ничего не найдено
     </label>
-    <table
-      class="table"
-      :key="updateKey"
-      :class="{ blur: show_edit_modal }"
-      v-else
-    >
+    <table class="table" :class="{ blur: show_edit_modal }" v-else>
       <thead>
-        <main-grid-bar :fields="all_fields" />
+        <main-grid-bar :fields="all_fields" @sort="sort" />
         <main-grid-filters ref="filters" :fields="all_fields" />
       </thead>
       <tbody>
-        <transition-group name="rows">
-          <tr class="row" v-for="row in paginatedData" :key="row.id">
-            <td class="item">
-              <input type="checkbox" class="checkbox" :id="row.id" />
-              <label :for="row.id"></label>
-            </td>
-            <td
-              class="item"
-              v-for="item in all_fields"
-              v-show="item.table_config.visible"
-              :key="item"
-            >
-              <div class="dublitem">
-                {{ row.fields[item.code] }}
-              </div>
-            </td>
-            <td class="item">
-              <div class="edit_icon" @click="open_edit_modal(row)"></div>
-            </td>
-          </tr>
-        </transition-group>
+        <tr class="row" v-for="row in paginatedData" :key="row.id">
+          <td class="item">
+            <input type="checkbox" class="checkbox" :id="row.id" />
+            <label :for="row.id"></label>
+          </td>
+          <td
+            class="item"
+            v-for="item in all_fields"
+            v-show="item.table_config.visible"
+            :key="item"
+          >
+            <div class="dublitem">
+              {{ row.fields[item.code] }}
+            </div>
+          </td>
+          <td class="item">
+            <div class="edit_icon" @click="open_edit_modal(row)"></div>
+          </td>
+        </tr>
       </tbody>
     </table>
     <grid-bottom
@@ -141,6 +134,16 @@ export default {
     open_edit_modal(row) {
       this.edit_data = { ...row };
       this.$store.commit("open_edit_modal", row.id);
+    },
+    sort(code, order) {
+      const params = {
+        page: this.meta.current_page,
+        sort: {
+          by: code,
+          order: order,
+        },
+      };
+      this.get_products(params);
     },
   },
 };
