@@ -70,8 +70,6 @@ export default {
 
   data() {
     return {
-      count: 5,
-      page: 1,
       updateKey: 0,
       changeValue: [],
       edit_data: {},
@@ -100,16 +98,10 @@ export default {
     paginatedData() {
       return this.$store.state.products.products;
     },
-    countPage() {
-      return this.count * (this.page - 1);
-    },
     ...mapGetters(["show_edit_modal"]),
   },
 
   watch: {
-    count() {
-      this.page = 1;
-    },
     paginatedData: {
       handler: function () {
         this.updateKey += 1;
@@ -137,10 +129,14 @@ export default {
       this.count = val;
     },
     changePage(val) {
-      this.page = val;
+      const params = { page: val };
+      this.get_products(params);
+    },
+    get_products(params) {
+      this.$store.dispatch("get_products", params);
     },
     drop_page() {
-      this.page = 1;
+      this.changePage(1);
     },
     open_edit_modal(row) {
       this.edit_data = { ...row };

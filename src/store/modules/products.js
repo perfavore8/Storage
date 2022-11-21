@@ -24,6 +24,7 @@ export default {
     async get_products(context, params) {
       const url = BaseURL + "product/list";
       const res = await fetch(url, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
