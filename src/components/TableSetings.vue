@@ -54,26 +54,6 @@ export default defineComponent({
       required: true,
     },
   },
-  data() {
-    return {
-      list: [],
-      data_list: [],
-      checkbox_value: [],
-      enabled: true,
-      dragging: true,
-    };
-  },
-  watch: {
-    data: {
-      handler: function () {
-        this.getData();
-      },
-      deep: true,
-    },
-  },
-  mounted() {
-    this.getData();
-  },
   emits: {
     returnData1: (data_list, list, checkbox_value) => {
       const isEmpty = data_list != [] && list != [] && checkbox_value != [];
@@ -87,6 +67,26 @@ export default defineComponent({
         console.warn("Некорректные данные для генерации события returnData1!");
         return false;
       }
+    },
+  },
+  data() {
+    return {
+      list: [],
+      data_list: [],
+      checkbox_value: [],
+      enabled: true,
+      dragging: true,
+    };
+  },
+  mounted() {
+    this.getData();
+  },
+  watch: {
+    data: {
+      handler: function () {
+        this.getData();
+      },
+      deep: true,
     },
   },
   methods: {
