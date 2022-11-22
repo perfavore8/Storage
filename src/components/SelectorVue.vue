@@ -137,6 +137,8 @@ export default {
   @include font(400, 16px, 20px);
   .optgroup {
     @include font(500, 16px, 20px);
+    background-color: #ffffff !important;
+    cursor: default !important;
   }
   p {
     margin: 0;

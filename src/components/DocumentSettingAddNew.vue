@@ -93,6 +93,8 @@ export default {
       type: { name: "docx", value: 1 },
       export_type_options: [],
       export_type: { name: "Исходный", value: 1 },
+      lead_fields_options: [],
+      pipelines_options: [],
       try_accept: false,
       name: "",
       file: "",
