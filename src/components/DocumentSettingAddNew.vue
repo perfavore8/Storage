@@ -25,15 +25,15 @@
           <label class="label">Этап авто-генерации:</label>
           <selector-vue
             :options_props="pipelines_options"
-            @select="option_select2"
+            @select="select_pipelines_option"
             :selected_option="status_id"
           />
         </div>
         <div class="label_input">
           <label class="label">Url последнего документа:</label>
           <selector-vue
-            :options_props="export_type_options"
-            @select="option_select2"
+            :options_props="lead_fields_options"
+            @select="select_lead_fields_options"
             :selected_option="url_field"
           />
         </div>
@@ -78,7 +78,7 @@ export default {
         return {};
       },
     },
-    idx: {
+    id: {
       type: Number,
       required: false,
       default() {
@@ -98,12 +98,11 @@ export default {
       try_accept: false,
       name: "",
       file: "",
-      status_id: {},
-      url_field: {},
+      status_id: { name: "Не выбрано", value: 1 },
+      url_field: { name: "Не выбрано", value: 1 },
     };
   },
   mounted() {
-    nextTick(() => this.add_cur_doc());
     this.$store.state.documents.config.types.forEach((val, idx) =>
       this.type_options.push({ name: val, value: idx })
     );
@@ -111,6 +110,8 @@ export default {
       this.export_type_options.push({ name: val, value: idx })
     );
     this.set_pipelines_options();
+    this.set_lead_fields_options();
+    nextTick(() => this.add_cur_doc());
   },
   methods: {
     save() {
@@ -121,11 +122,11 @@ export default {
           file: this.file,
           type: this.type.name,
           export_type: this.export_type.name,
-          status_id: this.status_id,
-          url_field: this.url_field,
+          status_id: this.status_id.value,
+          url_field: this.url_field.value,
         };
         if (Object.keys(this.cur_doc).length > 0) {
-          this.$store.dispatch("update_template", { ...new_doc, id: this.idx });
+          this.$store.dispatch("update_template", { ...new_doc, id: this.id });
         } else {
           this.$store.dispatch("add_template", new_doc);
         }
@@ -141,23 +142,44 @@ export default {
     option_select2(option) {
       Object.assign(this.export_type, option);
     },
+    select_pipelines_option(option) {
+      Object.assign(this.status_id, option);
+    },
+    select_lead_fields_options(option) {
+      Object.assign(this.url_field, option);
+    },
     add_cur_doc() {
       if (Object.keys(this.cur_doc).length > 0) {
         this.name = this.cur_doc.name;
         this.file = this.cur_doc.file;
-        const serch_selected_item = (options, name) => {
+        const serch_selected_item = (options, name, value) => {
           let obj = {};
           options.forEach((val) => {
-            if (val.name == name) {
+            if (val[value] == name) {
               Object.assign(obj, val);
             }
           });
           return obj;
         };
-        this.type = serch_selected_item(this.type_options, this.cur_doc.type);
+        this.type = serch_selected_item(
+          this.type_options,
+          this.cur_doc.type,
+          "name"
+        );
+        this.status_id = serch_selected_item(
+          this.pipelines_options,
+          this.cur_doc.status_id,
+          "value"
+        );
+        this.url_field = serch_selected_item(
+          this.lead_fields_options,
+          this.cur_doc.url_field,
+          "value"
+        );
         this.export_type = serch_selected_item(
           this.export_type_options,
-          this.cur_doc.export_type
+          this.cur_doc.export_type,
+          "name"
         );
       }
     },
@@ -174,6 +196,23 @@ export default {
           this.pipelines_options.push({
             name: pip[1],
             value: idx + "_" + pip[0],
+            optgroup: true,
+          })
+        );
+      });
+    },
+    set_lead_fields_options() {
+      const pipelines = Object.entries(
+        this.$store.state.documents.config.lead_fields
+      );
+      pipelines.forEach((val) => {
+        const optgroup = val[0];
+        this.lead_fields_options.push({ name: optgroup, value: "optgroup" });
+        const list = Object.entries(val[1]);
+        list.forEach((pip) =>
+          this.lead_fields_options.push({
+            name: pip[1],
+            value: pip[0],
             optgroup: true,
           })
         );

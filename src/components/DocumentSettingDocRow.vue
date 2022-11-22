@@ -15,7 +15,7 @@
         <button class="btn_edit" @click="open_edit(doc)">
           <div class="icon"></div>
         </button>
-        <button class="btn_del" @click="delete_cur_doc(doc)">
+        <button class="btn_del" @click="delete_cur_doc(doc.id)">
           <div class="icon"></div>
         </button>
       </div>
@@ -36,8 +36,8 @@ export default {
     open_edit(doc) {
       this.$emit("open_edit", doc);
     },
-    delete_cur_doc(doc) {
-      this.$emit("delete_cur_doc", doc);
+    delete_cur_doc(id) {
+      this.$store.dispatch("delete_template", { id: id });
     },
   },
 };
