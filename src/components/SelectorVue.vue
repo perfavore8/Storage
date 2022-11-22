@@ -19,9 +19,13 @@
         <p
           v-for="option in options"
           :key="option.value"
+          :class="{ optgroup: option.value === 'optgroup' }"
           @click="select_option(option)"
         >
-          {{ option.name }}
+          <template v-if="option.optgroup">
+            &nbsp;&nbsp;&nbsp;&nbsp;{{ option.name }}
+          </template>
+          <template v-else>{{ option.name }}</template>
         </p>
       </div>
     </transition>
@@ -131,6 +135,9 @@ export default {
   width: 250px;
   box-sizing: border-box;
   @include font(400, 16px, 20px);
+  .optgroup {
+    @include font(500, 16px, 20px);
+  }
   p {
     margin: 0;
   }
