@@ -527,7 +527,8 @@ export default {
               }
             }
             .v-select {
-              width: calc(100% - 26px) !important;
+              // width: calc(100% - 26px) !important;
+              width: 100%;
             }
             .select_input {
               display: flex;
