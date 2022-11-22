@@ -97,8 +97,10 @@ export default {
     };
 
     const select_option = (option) => {
-      emit("select", option, props.idx);
-      hide_select();
+      if (option.value != "optgroup") {
+        emit("select", option, props.idx);
+        hide_select();
+      }
     };
 
     return {
