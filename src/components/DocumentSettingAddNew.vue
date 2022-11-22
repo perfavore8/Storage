@@ -16,25 +16,41 @@
           <label class="label">Google ID файла:</label>
           <input
             type="text"
-            v-model="serviceID"
+            v-model="file"
             class="input"
-            :class="{ not_valid: try_accept && serviceID == '' }"
+            :class="{ not_valid: try_accept && file == '' }"
+          />
+        </div>
+        <div class="label_input">
+          <label class="label">Этап авто-генерации:</label>
+          <selector-vue
+            :options_props="export_type_options"
+            @select="option_select2"
+            :selected_option="status_id"
+          />
+        </div>
+        <div class="label_input">
+          <label class="label">Url последнего документа:</label>
+          <selector-vue
+            :options_props="export_type_options"
+            @select="option_select2"
+            :selected_option="url_field"
           />
         </div>
         <div class="label_input">
           <label class="label">Тип шаблона:</label>
           <selector-vue
-            :options_props="options1"
+            :options_props="type_options"
             @select="option_select1"
-            :selected_option="gouge_type"
+            :selected_option="type"
           />
         </div>
         <div class="label_input">
           <label class="label">Тип для скачивания:</label>
           <selector-vue
-            :options_props="options2"
+            :options_props="export_type_options"
             @select="option_select2"
-            :selected_option="download_type"
+            :selected_option="export_type"
           />
         </div>
       </div>
@@ -70,60 +86,62 @@ export default {
       },
     },
   },
-  emits: { save_new_doc: null, close: null, save_cur_doc: null },
+  emits: { close: null },
   data() {
     return {
-      options1: [
-        { name: "docx", value: 1 },
-        { name: "xlsx", value: 2 },
-      ],
-      gouge_type: { name: "docx", value: 1 },
-      options2: [
-        { name: "Исходный", value: 1 },
-        { name: "pdf", value: 2 },
-      ],
-      download_type: { name: "Исходный", value: 1 },
+      type_options: [],
+      type: { name: "docx", value: 1 },
+      export_type_options: [],
+      export_type: { name: "Исходный", value: 1 },
       try_accept: false,
       name: "",
-      serviceID: "",
+      file: "",
+      status_id: {},
+      url_field: {},
     };
   },
   mounted() {
     nextTick(() => this.add_cur_doc());
+    this.$store.state.documents.config.types.forEach((val, idx) =>
+      this.type_options.push({ name: val, value: idx })
+    );
+    this.$store.state.documents.config.export_type.forEach((val, idx) =>
+      this.export_type_options.push({ name: val, value: idx })
+    );
   },
   methods: {
     save() {
       this.try_accept = true;
-      if (this.name != "" && this.serviceID != "") {
+      if (this.name != "" && this.file != "") {
         const new_doc = {
           name: this.name,
-          serviceID: this.serviceID,
-          gouge_type: this.gouge_type.name,
-          download_type: this.download_type.name,
+          file: this.file,
+          type: this.type.name,
+          export_type: this.export_type.name,
+          status_id: this.status_id,
+          url_field: this.url_field,
         };
         if (Object.keys(this.cur_doc).length > 0) {
-          this.$emit("save_cur_doc", new_doc, this.idx);
+          this.$store.dispatch("update_template", { ...new_doc, id: this.idx });
         } else {
-          this.$emit("save_new_doc", new_doc);
+          this.$store.dispatch("add_template", new_doc);
         }
         this.close_modal();
       }
     },
     close_modal() {
-      this.name = "";
-      this.serviceID = "";
       this.$emit("close");
     },
     option_select1(option) {
-      Object.assign(this.gouge_type, option);
+      Object.assign(this.type, option);
     },
     option_select2(option) {
-      Object.assign(this.download_type, option);
+      Object.assign(this.export_type, option);
     },
     add_cur_doc() {
       if (Object.keys(this.cur_doc).length > 0) {
         this.name = this.cur_doc.name;
-        this.serviceID = this.cur_doc.serviceID;
+        this.file = this.cur_doc.file;
         const serch_selected_item = (options, name) => {
           let obj = {};
           options.forEach((val) => {
@@ -133,13 +151,10 @@ export default {
           });
           return obj;
         };
-        this.gouge_type = serch_selected_item(
-          this.options1,
-          this.cur_doc.gouge_type
-        );
-        this.download_type = serch_selected_item(
-          this.options2,
-          this.cur_doc.download_type
+        this.type = serch_selected_item(this.type_options, this.cur_doc.type);
+        this.export_type = serch_selected_item(
+          this.export_type_options,
+          this.cur_doc.export_type
         );
       }
     },

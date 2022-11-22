@@ -1,15 +1,15 @@
 <template>
   <tr class="row">
     <td class="item">{{ doc.name }}</td>
-    <td class="item">{{ doc.serviceID }}</td>
+    <td class="item">{{ doc.file }}</td>
     <td class="item">
       <a
         href="https://docs.google.com/spreadsheets/d/13U76ujSjV_iaY0L2WBVHVw7q07TSEqstuL0kSeX-Sh8/edit"
-        >{{ doc.gauge }}</a
+        >Шаблон</a
       >
     </td>
-    <td class="item">{{ doc.gouge_type }}</td>
-    <td class="item">{{ doc.download_type }}</td>
+    <td class="item">{{ doc.type }}</td>
+    <td class="item">{{ doc.export_type }}</td>
     <td class="item">
       <div class="btns">
         <button class="btn_edit" @click="open_edit(doc)">

@@ -4,7 +4,8 @@ import shows from "./modules/shows";
 import fields from "./modules/fields";
 import categories from "./modules/categories";
 import products from "./modules/products";
+import documents from "./modules/documents";
 
 export default createStore({
-  modules: { data, shows, fields, categories, products },
+  modules: { data, shows, fields, categories, products, documents },
 });

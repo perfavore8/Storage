@@ -2,16 +2,16 @@
   <document-setting-add-new
     v-if="showAddNew"
     :cur_doc="cur_doc"
-    :idx="selected_doc_idx"
+    :idx="selected_doc_id"
     @close="close_add_new"
     @save_new_doc="save_new_doc"
     @save_cur_doc="save_cur_doc"
   >
     <template v-slot:title>
-      <span v-if="selected_doc_idx === null">
+      <span v-if="selected_doc_id === null">
         Добавление шаблона документов
       </span>
-      <span v-if="selected_doc_idx !== null">
+      <span v-if="selected_doc_id !== null">
         Редактирование шаблона документов
       </span>
     </template>
@@ -66,9 +66,13 @@
         <div class="patterns">
           <div class="header">
             <div>Шаблоны документов</div>
-            <div class="small">
-              Файлы шаблонов должны быть доступны для чтения по ссылке
-            </div>
+            <p class="small">
+              Файлы шаблонов должны быть доступны для чтения по ссылке. Google
+              ID файла это часть ссылки на файл Пример ссылки:
+              https://docs.google.com/spreadsheets/d/1XdXdEMtUFa8V__UK234432Dpx5-CeI/edit#gid=0,
+              где Google ID файла: 1XdXdEMtUFa8V__UK234432Dpx5-CeI Вместо Google
+              ID файла допускается ввод полного адреса
+            </p>
           </div>
           <div class="main">
             <table class="table">
@@ -82,8 +86,8 @@
               </thead>
               <tbody>
                 <document-setting-doc-row
-                  v-for="doc in copy_documents"
-                  :key="doc"
+                  v-for="doc in documents_templates"
+                  :key="doc.id"
                   :doc="doc"
                   @open_edit="open_edit"
                   @delete_cur_doc="delete_cur_doc"
@@ -99,7 +103,9 @@
         </div>
       </div>
       <div class="footer">
-        <btns-save-close @close="close" @save="save" />
+        <btns-save-close @close="close" :show_save="false">
+          <template v-slot:close>Назад</template>
+        </btns-save-close>
       </div>
     </div>
   </div>
@@ -111,7 +117,6 @@ import DocumentSettingAddNew from "@/components/DocumentSettingAddNew.vue";
 import DocumentSettingFields from "@/components/DocumentSettingFields.vue";
 import DocumentSettingDocRow from "@/components/DocumentSettingDocRow.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
-import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
@@ -140,33 +145,28 @@ export default {
       showFields: false,
       show_settings: false,
       cur_doc: {},
-      selected_doc_idx: null,
+      selected_doc_id: null,
       copy_documents: [],
     };
   },
   computed: {
-    ...mapGetters(["documents"]),
+    documents_templates() {
+      return this.$store.state.documents.templates;
+    },
   },
   mounted() {
-    this.copy_documents = [];
-    this.copy_documents = this.copy_documents.concat(this.documents);
+    this.$store.dispatch("get_documents");
   },
   methods: {
     close() {
-      this.copy_documents = [];
       this.$emit("close", false);
     },
-    save() {
-      this.$store.commit("save_docs", this.copy_documents);
-      this.close();
-    },
-    // FIXME 1 сделать копию и отдельную переменну option_select
     option_select(option) {
       Object.assign(this.selected_option, option);
     },
     open_edit(doc) {
-      Object.assign(this.cur_doc, doc);
-      this.selected_doc_idx = this.copy_documents.indexOf(doc);
+      this.cur_doc = { ...doc };
+      this.selected_doc_id = doc.id;
       this.open_add_new();
     },
     open_modal() {
@@ -185,18 +185,6 @@ export default {
       this.showAddNew = false;
       this.cur_doc = {};
       this.close_modal();
-    },
-    save_new_doc(new_doc) {
-      this.copy_documents.push(
-        Object.assign(new_doc, { gauge: "редактировать" })
-      );
-    },
-    save_cur_doc(cur_doc, idx) {
-      Object.assign(this.copy_documents[idx], cur_doc);
-    },
-    delete_cur_doc(cur_doc) {
-      const idx = this.copy_documents.indexOf(cur_doc);
-      this.copy_documents.splice(idx, 1);
     },
     open_close_settings() {
       this.show_settings = !this.show_settings;

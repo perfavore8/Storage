@@ -24,17 +24,17 @@ export default {
       context.commit("update_config", json.config);
     },
     async delete_template(context, params) {
-      const url = BaseURL + "category/update";
+      const url = BaseURL + "document/delete";
       await fetch(url + preparation_params(params), { method: "POST" });
       context.dispatch("get_documents");
     },
     async update_template(context, params) {
-      const url = BaseURL + "category/update";
+      const url = BaseURL + "document/update";
       await fetch(url + preparation_params(params), { method: "POST" });
       context.dispatch("get_documents");
     },
     async add_template(context, params) {
-      const url = BaseURL + "category/update";
+      const url = BaseURL + "document/add";
       await fetch(url + preparation_params(params), { method: "POST" });
       context.dispatch("get_documents");
     },
