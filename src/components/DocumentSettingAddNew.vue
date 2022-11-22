@@ -24,7 +24,7 @@
         <div class="label_input">
           <label class="label">Этап авто-генерации:</label>
           <selector-vue
-            :options_props="export_type_options"
+            :options_props="pipelines_options"
             @select="option_select2"
             :selected_option="status_id"
           />
@@ -110,6 +110,7 @@ export default {
     this.$store.state.documents.config.export_type.forEach((val, idx) =>
       this.export_type_options.push({ name: val, value: idx })
     );
+    this.set_pipelines_options();
   },
   methods: {
     save() {
@@ -159,6 +160,24 @@ export default {
           this.cur_doc.export_type
         );
       }
+    },
+    set_pipelines_options() {
+      const pipelines = Object.entries(
+        this.$store.state.documents.config.pipelines
+      );
+      pipelines.forEach((val) => {
+        const idx = val[0];
+        const optgroup = val[1].name;
+        this.pipelines_options.push({ name: optgroup, value: "optgroup" });
+        const list = Object.entries(val[1].statuses);
+        list.forEach((pip) =>
+          this.pipelines_options.push({
+            name: pip[1],
+            value: idx + "_" + pip[0],
+            optgroup: true,
+          })
+        );
+      });
     },
   },
 };
