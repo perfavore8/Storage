@@ -10,7 +10,7 @@ export default {
     show_sync: false,
     show_new_position: false,
     show_cancel_position: false,
-    show_document_setting: false,
+    show_document_setting: true,
     show_product_properties: false,
     show_product_category: false,
   },
