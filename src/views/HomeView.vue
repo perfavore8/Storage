@@ -208,7 +208,7 @@
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
-            :disabled="!isServicePage"
+            :disabled="isServicePage"
           >
             Новая позиция
           </button>
@@ -296,6 +296,7 @@ export default {
       return this.selected_storage === "Услуги";
     },
     ...mapGetters([
+      "catalog",
       "show_edit_modal",
       "show_settings",
       "show_table_settings",
@@ -305,7 +306,6 @@ export default {
       "show_sync",
       "show_new_position",
       "show_cancel_position",
-      "get_data_storage",
       "show_document_setting",
       "show_product_category",
       "show_product_properties",

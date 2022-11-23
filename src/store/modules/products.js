@@ -53,5 +53,17 @@ export default {
       console.log("update_product", json);
       return json;
     },
+    async autocomplete_article(context, query) {
+      const url = BaseURL + "product/autocomplete/article";
+      const res = await fetch(url + "?query=" + query);
+      const json = await res.json();
+      return json.data;
+    },
+    async autocomplete_name(context, query) {
+      const url = BaseURL + "product/autocomplete/name";
+      const res = await fetch(url + "?query=" + query);
+      const json = await res.json();
+      return json.data;
+    },
   },
 };

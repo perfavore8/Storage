@@ -15,150 +15,159 @@
               <tr class="row" v-for="(row, idx) in new_items" :key="row">
                 <td class="item">
                   <selector-vue
-                    :options_props="options2"
-                    @select="option_select2"
-                    :selected_option="row[0]"
+                    :options_props="options_type"
+                    @select="option_select_type"
+                    :selected_option="row.type"
                     :idx="idx"
-                    :disabled="rows.length > idx"
+                    :disabled="current_items.length > idx"
                   />
                 </td>
                 <td class="item">
                   <input
                     type="text"
-                    v-model="new_items[idx][1]"
+                    v-model="row.article"
+                    @focusin="
+                      set_selected_field_autocomplete('article', row.article)
+                    "
+                    @focusout="set_selected_field_autocomplete('', '')"
+                    @input="
+                      set_selected_field_autocomplete('article', row.article)
+                    "
                     class="input"
                     :class="{
-                      not_valid: new_items[idx][1] == '' && try_accept,
+                      not_valid: row.article == '' && try_accept,
                     }"
-                    :disabled="rows.length > idx"
+                    :disabled="current_items.length > idx"
                   />
                 </td>
                 <td class="item">
                   <input
                     type="text"
-                    v-model="new_items[idx][2]"
+                    v-model="row.name"
+                    @focusin="set_selected_field_autocomplete('name', row.name)"
+                    @focusout="set_selected_field_autocomplete('', '')"
+                    @input="set_selected_field_autocomplete('name', row.name)"
                     class="input"
                     :class="{
-                      not_valid: new_items[idx][2] == '' && try_accept,
+                      not_valid: row.name == '' && try_accept,
                     }"
-                    :disabled="rows.length > idx"
+                    :disabled="current_items.length > idx"
                   />
                 </td>
                 <td class="item">
                   <div class="select_input">
                     <selector-vue
-                      :options_props="options1[idx]"
-                      @select="option_select1"
-                      :selected_option="row[3]"
+                      :options_props="batch_category_options"
+                      @select="option_select_batch_category"
+                      :selected_option="row.batch_category"
                       :idx="idx"
-                      :disabled="row[0].value == 2"
+                      :disabled="row.type.value == 2"
                     />
                     <input
                       type="text"
-                      v-model="new_items[idx][4]"
+                      v-model="row.batch"
                       class="input"
                       :class="{
                         not_valid:
-                          new_items[idx][4] == '' &&
-                          try_accept &&
-                          row[0].value != 2,
+                          row.batch == '' && try_accept && row.type.value != 2,
                       }"
-                      :disabled="rows.length > idx || row[0].value == 2"
+                      :disabled="
+                        current_items.length > idx || row.type.value == 2
+                      "
                     />
                   </div>
                 </td>
                 <td class="item">
                   <selector-vue
-                    :options_props="options[0]"
-                    @select="option_select3"
-                    :selected_option="row[5]"
+                    :options_props="wh_options"
+                    @select="option_select_wh"
+                    :selected_option="row.wh"
                     :idx="idx"
-                    :disabled="row[0].value == 2"
+                    :disabled="row.type.value == 2"
                   />
                 </td>
                 <td class="item">
                   <input
                     type="number"
-                    v-model="new_items[idx][6]"
+                    v-model="row.count"
                     class="input"
-                    :disabled="row[0].value == 2"
+                    :disabled="row.type.value == 2"
                     min="0"
                     :class="{
                       not_valid:
-                        (new_items[idx][6] == '' ||
-                          new_items[idx][6] == undefined) &&
+                        (row.count == '' || row.count == undefined) &&
                         try_accept &&
-                        row[0].value != 2,
+                        row.type != 2,
                     }"
                   />
                 </td>
                 <td class="item">
                   <selector-vue
-                    :options_props="options[1]"
-                    @select="option_select4"
-                    :selected_option="row[7]"
+                    :options_props="units_options"
+                    @select="option_select_units"
+                    :selected_option="row.units"
                     :idx="idx"
-                    :disabled="row[0].value == 2"
+                    :disabled="row.type.value == 2"
                   />
                 </td>
                 <td class="item">
                   <input
                     type="number"
-                    v-model="new_items[idx][8]"
+                    v-model="row.cost_price"
                     class="input"
                     min="0"
                     :class="{
-                      not_valid: new_items[idx][8] == '' && try_accept,
+                      not_valid: row.cost_price == '' && try_accept,
                     }"
-                    :disabled="rows.length > idx"
+                    :disabled="current_items.length > idx"
                   />
                 </td>
                 <td class="item">
                   <input
                     type="number"
-                    v-model="new_items[idx][9]"
+                    v-model="row.price.value"
                     class="input"
                     min="0"
                     :class="{
-                      not_valid: new_items[idx][9] == '' && try_accept,
+                      not_valid: row.price.value == '' && try_accept,
                     }"
                   />
                 </td>
                 <td
                   class="item"
                   :class="{
-                    long: new_items[idx][10],
+                    long: row.price.nds,
                   }"
                 >
                   <div class="nds">
-                    <div v-if="!new_items[idx][10]">
+                    <div v-if="!row.price.nds">
                       <input
                         type="checkbox"
-                        v-model="new_items[idx][10]"
+                        v-model="row.price.nds"
                         class="checkbox"
                         :id="idx + 'nq'"
                       />
                       <label :for="idx + 'nq'"></label>
                     </div>
-                    <div class="hiden" v-if="new_items[idx][10]">
+                    <div class="hiden" v-else>
                       <div class="checkboxes">
                         <input
                           type="checkbox"
-                          v-model="new_items[idx][10]"
+                          v-model="row.price.nds"
                           class="checkbox"
                           :id="idx + 'nq'"
                         />
                         <label :for="idx + 'nq'">НДС</label>
                         <input
                           type="checkbox"
-                          v-model="new_items[idx][11]"
+                          v-model="row.price.nds_include"
                           class="checkbox"
                           :id="idx + 'nw'"
                         />
                         <label :for="idx + 'nw'">включен в цену</label>
                         <input
                           type="checkbox"
-                          v-model="new_items[idx][12]"
+                          v-model="row.price.nds_change"
                           class="checkbox"
                           :id="idx + 'ne'"
                         />
@@ -167,7 +176,7 @@
                       <input
                         type="number"
                         class="input"
-                        v-model="new_items[idx][13]"
+                        v-model="row.price.nds_percent"
                         placeholder="% НДС"
                         min="0"
                       />
@@ -176,11 +185,11 @@
                 </td>
                 <td class="item">
                   <selector-vue
-                    :options_props="options[1]"
-                    @select="option_select4"
-                    :selected_option="row[14]"
+                    :options_props="categories_options"
+                    @select="option_select_category"
+                    :selected_option="row.category"
                     :idx="idx"
-                    :disabled="row[0].value == 2"
+                    :disabled="row.type.value == 2"
                   />
                 </td>
                 <transition name="row">
@@ -203,7 +212,7 @@
         </div>
       </div>
       <div class="footer">
-        <btns-save-close @close="close_modal" @save="save" />
+        <btns-save-close @close="close" @save="save" />
       </div>
     </div>
   </div>
@@ -212,24 +221,18 @@
 <script>
 import SelectorVue from "@/components/SelectorVue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
-import { nextTick } from "@vue/runtime-core";
-import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
     BtnsSaveClose,
   },
   props: {
-    rows: {
+    current_items: {
       type: Array,
       required: false,
       default() {
         return [];
       },
-    },
-    idxes: {
-      type: Array,
-      required: false,
     },
   },
   data() {
@@ -248,204 +251,135 @@ export default {
         "Категория",
       ],
       new_items: [],
-      options1: [],
-      options2: [
+      options_type: [
         { name: "Товар", value: 1 },
         { name: "Услуга", value: 2 },
       ],
-      options3: [],
-      options: [],
+      batch_category_options: [],
+      wh_options: [],
+      units_options: [],
+      categories_options: [],
+      selected_field_autocomplete: {
+        field: "",
+        value: "",
+      },
+      selected_field_autocomplete_list: [],
       try_accept: false,
       fields_for_validation: [1, 2, 6, 8, 9],
       fields_for_validation_service: [1, 2, 8, 9],
     };
   },
   computed: {
-    ...mapGetters(["options_from_name"]),
+    fields() {
+      return this.$store.state.fields.all_fields;
+    },
   },
-  mounted() {
-    this.start();
+  async mounted() {
+    await this.$store.dispatch("get_fields_properties");
+    await this.$store.dispatch("get_all_fields");
+    this.get_batch_category_options();
+    this.get_wh_options();
+    this.get_units_options();
+    this.get_categories_options();
+    this.push_new_item();
   },
   watch: {
-    new_items: {
-      handler: function () {
-        this.new_items.forEach((val, idx) => {
-          const type_idx = this.title.indexOf("Тип");
-          const count_idx = this.title.indexOf("Кол-во") + 1;
-          const batchnumber_idx = this.title.indexOf("№ партии");
-          const batchnumber_value_idx = this.title.indexOf("№ партии") + 1;
-          const storage_idx = this.title.indexOf("Склад") + 1;
-          const ed_idx = this.title.indexOf("Единицы измерений") + 1;
-          const obj = { name: "", value: 999 };
-          const new_sel_option = (objs) => {
-            Object.assign(this.new_items[idx][batchnumber_idx], objs[0]);
-            Object.assign(this.new_items[idx][storage_idx], objs[1]);
-            Object.assign(this.new_items[idx][ed_idx], objs[2]);
-          };
-          if (val[type_idx].value == 2) {
-            this.new_items[idx][count_idx] = "";
-            this.new_items[idx][batchnumber_value_idx] = "";
-            new_sel_option([obj, obj, obj]);
-          }
-          if (
-            val[type_idx].value != 2 &&
-            val[batchnumber_idx].value == obj.value
-          ) {
-            new_sel_option([
-              this.options1[idx][0],
-              this.options[0][0],
-              this.options[1][0],
-            ]);
-          }
-          if (val[5] < 0) this.new_items[idx][5] = 0;
-          if (val[6] < 0) this.new_items[idx][6] = 0;
-          if (val[7] < 0) this.new_items[idx][7] = 0;
-          if (val[11] < 0) this.new_items[idx][11] = 0;
-        });
+    selected_field_autocomplete: {
+      async handler() {
+        const complete = this.selected_field_autocomplete;
+        if (complete.field == "article" && complete.value.length > 2) {
+          const list = await this.$store.dispatch(
+            "autocomplete_article",
+            complete.value
+          );
+          this.selected_field_autocomplete_list = [...list];
+        }
+        if (complete.field == "name" && complete.value.length > 2) {
+          const list = await this.$store.dispatch(
+            "autocomplete_name",
+            complete.value
+          );
+          this.selected_field_autocomplete_list = [...list];
+        }
+        if (complete.field == "") this.selected_field_autocomplete_list = [];
       },
       deep: true,
     },
   },
   methods: {
     push_new_item() {
-      this.new_items.push([
-        { name: "Товар", value: 1 },
-        "",
-        "",
-        { name: "Новая", value: 1 },
-        "",
-        {},
-        "",
-        {},
-        "",
-        "",
-        false,
-        false,
-        false,
-        "",
-        { name: "Базовая", value: 1 },
-      ]);
-      Object.assign(
-        this.new_items[this.new_items.length - 1][5],
-        this.options[0][0]
-      );
-      Object.assign(
-        this.new_items[this.new_items.length - 1][7],
-        this.options[1][0]
-      );
-      this.options1.push([{ name: "Новая", value: 1 }]);
-    },
-    push_current_item() {
-      this.rows.forEach((val, idx) => {
-        this.new_items.push([]);
-        const serch_selected_item = (options, name) => {
-          let obj = {};
-          options.forEach((val) => {
-            if (val.name == name) {
-              Object.assign(obj, val);
-            }
-          });
-          return obj;
-        };
-        val.forEach((value) => {
-          this.new_items[idx].push(value);
-        });
-        this.options1.push([
-          {
-            name: this.new_items[idx][3],
-            value: 2,
-          },
-        ]);
-        this.new_items[idx][3] = {
-          name: this.new_items[idx][3],
-          value: 2,
-        };
-        this.new_items[idx][5] = serch_selected_item(
-          this.options[0],
-          this.new_items[idx][5]
-        );
-        this.new_items[idx][7] = serch_selected_item(
-          this.options[1],
-          this.new_items[idx][7]
-        );
-        this.new_items[idx][0] = { name: "Товар", value: 1 };
-      });
-    },
-    del_item(idx) {
-      this.new_items.splice(idx, 1);
-    },
-    save() {
-      this.try_accept = true;
-      let accept = true;
-      const validate = (item, arr) => {
-        arr.forEach((val) => {
-          accept = accept && item[val] != "" && item[val] != undefined;
-        });
+      const item = {
+        new: true,
+        type: { name: "Товар", value: 1 },
+        article: "",
+        name: "",
+        batch_category: { name: "Новая", value: -1 },
+        batch: "",
+        wh: { name: "Не выбрано", value: -1 },
+        count: 0,
+        units: { name: "Не выбрано", value: -1 },
+        cost_price: 0,
+        price: {
+          value: 0,
+          nds: false,
+          nds_percent: 0,
+          nds_change: false,
+          nds_include: false,
+        },
       };
-      this.new_items.forEach((val) => {
-        if (val[0].value == 1) validate(val, this.fields_for_validation);
-        if (val[0].value == 2)
-          validate(val, this.fields_for_validation_service);
-      });
-      if (accept) {
-        this.new_items.forEach((value, index) => {
-          value.forEach((val, idx) => {
-            this.new_items[index][idx] = `${val}`;
-            if (typeof val == "object") this.new_items[index][idx] = val.name;
-            if (val === true) this.new_items[index][idx] = "Да";
-            if (val === false) this.new_items[index][idx] = "Нет";
-          });
-        });
-        this.new_items.forEach((item) => {
-          let artic = [];
-          this.title.forEach((val) => {
-            if (val === "Кол-во") val = "На складе";
-            if (val === "№ партии") artic.push("");
-            artic.push(val);
-          });
-          artic.push(
-            "НДС включен в цену",
-            "Менеджер может менять % НДС",
-            "НДС %"
-          );
-          const payload = {
-            new_data: item,
-            title: artic,
-          };
-          if (item[0] == "Товар") this.$store.commit("add_new_data", payload);
-          if (item[0] == "Услуга")
-            this.$store.commit("add_new_service", payload);
-        });
-        this.close_modal();
-      }
+      this.new_items.push(item);
     },
-    close_modal() {
-      this.new_items = [];
-      this.try_accept = false;
+    set_selected_field_autocomplete(field, value) {
+      this.selected_field_autocomplete.field = field;
+      this.selected_field_autocomplete.value = value;
+    },
+    get_batch_category_options() {
+      this.batch_category_options.push({ name: "Новая", value: -1 });
+      this.search_type_options(this.fields, "batch").forEach((val, idx) =>
+        this.batch_category_options.push({ name: val, value: idx })
+      );
+    },
+    get_wh_options() {
+      this.wh_options.push({ name: "Не выбрано", value: -1 });
+      this.search_type_options(this.fields, "wh").forEach((val, idx) =>
+        this.wh_options.push({ name: val, value: idx })
+      );
+    },
+    get_units_options() {
+      this.units_options.push({ name: "Не выбрано", value: -1 });
+      this.search_type_options(this.fields, "units").forEach((val, idx) =>
+        this.units_options.push({ name: val, value: idx })
+      );
+    },
+    get_categories_options() {
+      this.$store.state.categories.fields_properties.forEach((val) =>
+        this.categories_options.push({ name: val.name, value: val.id })
+      );
+    },
+    search_type_options(arr, code) {
+      let res = [];
+      arr.forEach((val) => {
+        if (val.code == code && val.data) res = val.data;
+      });
+      return res;
+    },
+    option_select_type(option, idx) {
+      this.new_items[idx].type = { ...option };
+    },
+    option_select_batch_category(option, idx) {
+      this.new_items[idx].batch_category = { ...option };
+    },
+    option_select_wh(option, idx) {
+      this.new_items[idx].wh = { ...option };
+    },
+    option_select_units(option, idx) {
+      this.new_items[idx].units = { ...option };
+    },
+    option_select_category(option, idx) {
+      this.new_items[idx].category = { ...option };
+    },
+    close() {
       this.$store.commit("open_close_new_position", false);
-    },
-    option_select1(option, idx) {
-      Object.assign(this.new_items[idx][3], option);
-    },
-    option_select2(option, idx) {
-      Object.assign(this.new_items[idx][0], option);
-    },
-    option_select3(option, idx) {
-      Object.assign(this.new_items[idx][5], option);
-    },
-    option_select4(option, idx) {
-      Object.assign(this.new_items[idx][7], option);
-    },
-    start() {
-      nextTick(() => {
-        this.options.push(this.options_from_name["Склад"]);
-        this.options.push(this.options_from_name["Единицы измерений"]);
-        if (this.rows.length > 0) {
-          this.push_current_item();
-        } else {
-          this.push_new_item();
-        }
-      });
     },
   },
 };
