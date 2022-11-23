@@ -43,7 +43,7 @@
                 </div>
               </a>
               <a>
-                <div class="modal_container" @click="open_edit_stuff()">
+                <div class="modal_container" @click="refresh_fields()">
                   Обновить поля шаблонов
                 </div>
               </a>
@@ -195,6 +195,9 @@ export default {
         (val, idx) =>
           this.contact_name_types_options.push({ name: val, value: idx })
       );
+    },
+    refresh_fields() {
+      this.$store.dispatch("refresh_fields");
     },
     close() {
       this.$emit("close", false);
