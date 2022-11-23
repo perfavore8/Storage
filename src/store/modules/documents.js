@@ -38,5 +38,10 @@ export default {
       await fetch(url + preparation_params(params), { method: "POST" });
       context.dispatch("get_documents");
     },
+    async refresh_fields(context) {
+      const url = BaseURL + "document/refresh-fields";
+      await fetch(url);
+      context.dispatch("get_documents");
+    },
   },
 };
