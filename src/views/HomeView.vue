@@ -29,15 +29,12 @@
     </transition>
     <transition name="modal_window">
       <div v-if="show_new_position" class="new_position">
-        <new-position :rows="rows.arr" :idxes="rows.idxes" />
+        <new-position />
       </div>
     </transition>
     <transition name="modal_window">
       <div v-if="show_cancel_position" class="cancel_position">
-        <cancel-position
-          :rows="rows_to_cancel.arr"
-          :idxes="rows_to_cancel.idxes"
-        />
+        <cancel-position />
       </div>
     </transition>
     <transition name="modal_window">
@@ -211,7 +208,7 @@
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
-            :disabled="rows.arr.length > 0 && !isServicePage"
+            :disabled="!isServicePage"
           >
             Новая позиция
           </button>
@@ -243,15 +240,10 @@ import CancelPosition from "@/components/CancelPosition";
 import DocumentSetting from "@/components/DocumentSetting.vue";
 import ProductCategory from "@/components/ProductCategory.vue";
 import ProductProperties from "@/components/ProductProperties.vue";
-// import { useData } from "@/data";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
 
 export default {
-  // setup() {
-  //   const { getData } = useData();
-  //   getData();
-  // },
   components: {
     MainGrid,
     TableSettings,
@@ -284,22 +276,9 @@ export default {
       grid: false,
     };
   },
-  created: function () {
-    this.paginate();
-  },
   computed: {
     show_modals() {
-      return (
-        this.show_edit_modal ||
-        this.show_settings ||
-        this.show_table_settings ||
-        this.show_edit_stuff ||
-        this.show_product_category ||
-        this.show_product_properties ||
-        this.show_new_position ||
-        this.show_cancel_position ||
-        this.show_document_setting
-      );
+      return this.show_settings || this.disabled_for_modals;
     },
     disabled_for_modals() {
       return (
@@ -312,73 +291,6 @@ export default {
         this.show_cancel_position ||
         this.show_document_setting
       );
-    },
-    rows() {
-      let arr = [];
-      let idxes = [];
-      const title = [
-        "Тип",
-        "Артикул",
-        "Название",
-        "№ партии",
-        "Склад",
-        "На складе",
-        "Единицы измерений",
-        "Себестоимость",
-        "Цена",
-        "НДС",
-        "НДС включен в цену",
-        "Менеджер может менять % НДС",
-        "НДС %",
-      ];
-      this.changeValue.forEach((val, idx) => {
-        if (val) {
-          let arr2 = [];
-          title.forEach((val) => {
-            let item = "";
-            const sel = this.data[idx][this.params.indexOf(val) - 1];
-            item = sel;
-            if (sel == "Да") item = true;
-            if (sel == "Нет") item = false;
-            arr2.push(item);
-            if (val == "№ партии") arr2.push(item);
-          });
-          arr.push(arr2);
-          idxes.push(idx);
-        }
-      });
-      return {
-        arr: arr,
-        idxes: idxes,
-      };
-    },
-    rows_to_cancel() {
-      let arr = [];
-      let idxes = [];
-      const title = [
-        "Артикул",
-        "Название",
-        "№ партии",
-        "На складе",
-        "Причина списания",
-      ];
-      this.changeValue.forEach((val, idx) => {
-        if (val) {
-          let arr2 = [];
-          title.forEach((val) => {
-            let item = "";
-            const sel = this.data[idx][this.params.indexOf(val) - 1];
-            if (sel != undefined) item = sel;
-            arr2.push(item);
-          });
-          arr.push(arr2);
-          idxes.push(idx);
-        }
-      });
-      return {
-        arr: arr,
-        idxes: idxes,
-      };
     },
     isServicePage() {
       return this.selected_storage === "Услуги";
@@ -406,18 +318,6 @@ export default {
     },
   },
   watch: {
-    data: {
-      handler: function () {
-        this.paginate();
-      },
-      deep: true,
-    },
-    service: {
-      handler: function () {
-        this.paginate();
-      },
-      deep: true,
-    },
     filter_value() {
       this.$store.commit("open_close_filter", this.filter_value);
     },
@@ -428,41 +328,10 @@ export default {
         : (document.body.style.overflowX = "auto");
     },
     selected_storage() {
-      this.paginate();
       this.grid ? this.ref_card.drop_page() : this.ref_main.drop_page();
     },
   },
   methods: {
-    archive_data() {
-      let idxes = [];
-      this.changeValue.forEach((val, idx) => {
-        if (val) {
-          let value = null;
-          const item = this.paginatedData[idx];
-          this.isServicePage
-            ? (value = this.service.indexOf(item))
-            : (value = this.data.indexOf(item));
-          idxes.push(value);
-        }
-      });
-      this.isServicePage
-        ? this.$store.commit("archive_service", idxes)
-        : this.$store.commit("archive_data", idxes);
-      this.changeValue = [];
-    },
-    getData(dat, par, check) {
-      this.paginatedData = [];
-      this.paginatedParams = [];
-      this.$store.commit("update_columns", {
-        name: this.selected_storage,
-        value: check,
-      });
-      dat.forEach((val) => this.paginatedData.push(val));
-      par.forEach((val) => this.paginatedParams.push(val));
-      this.paginatedParams.unshift("");
-      this.paginatedParams.push("");
-      this.filter_value = false;
-    },
     open_table_settings() {
       this.$store.commit("open_table_settings");
     },
@@ -502,26 +371,6 @@ export default {
     },
     route(page_name) {
       this.$router.push("/" + page_name);
-    },
-
-    paginate() {
-      this.paginatedData = [];
-      this.paginatedParams = [];
-      if (this.selected_storage == "Все остатки") {
-        this.data.forEach((item) => this.paginatedData.push(item));
-      }
-      if (
-        this.selected_storage == "Склад 1" ||
-        this.selected_storage == "Склад 2"
-      ) {
-        this.get_data_storage[this.selected_storage].forEach((item) =>
-          this.paginatedData.push(item)
-        );
-      }
-      if (this.selected_storage == "Услуги") {
-        this.service.forEach((item) => this.paginatedData.push(item));
-      }
-      this.params.forEach((item) => this.paginatedParams.push(item));
     },
   },
 };
