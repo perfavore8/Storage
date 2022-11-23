@@ -124,6 +124,7 @@ export default {
           url_field: this.url_field.value,
         };
         if (Object.keys(this.cur_doc).length > 0) {
+          console.log(this.id);
           this.$store.dispatch("update_template", { ...new_doc, id: this.id });
         } else {
           this.$store.dispatch("add_template", new_doc);

@@ -2,7 +2,7 @@
   <document-setting-add-new
     v-if="showAddNew"
     :cur_doc="cur_doc"
-    :idx="selected_doc_id"
+    :id="selected_doc_id"
     @close="close_add_new"
     @save_new_doc="save_new_doc"
     @save_cur_doc="save_cur_doc"
