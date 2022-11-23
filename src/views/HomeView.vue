@@ -384,8 +384,6 @@ export default {
       return this.selected_storage === "Услуги";
     },
     ...mapGetters([
-      "data",
-      "params",
       "show_edit_modal",
       "show_settings",
       "show_table_settings",
@@ -395,9 +393,7 @@ export default {
       "show_sync",
       "show_new_position",
       "show_cancel_position",
-      "catalog",
       "get_data_storage",
-      "service",
       "show_document_setting",
       "show_product_category",
       "show_product_properties",
