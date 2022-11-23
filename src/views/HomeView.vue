@@ -10,12 +10,7 @@
     "
   >
     <div v-if="show_table_settings" class="table_setings">
-      <table-settings
-        :names="paginatedParams"
-        :data="paginatedData"
-        :collval="show_columns[selected_storage]"
-        @returnData1="getData"
-      />
+      <table-settings />
     </div>
     <transition name="modal_window">
       <div v-if="show_edit_stuff" class="edit_staff">
@@ -226,17 +221,11 @@
         <main-grid
           ref="main"
           v-if="!grid"
-          :data="paginatedData"
-          :params="paginatedParams"
-          :collval="show_columns[selected_storage]"
           @update_changeValue="update_changeValue"
         ></main-grid>
         <card-grid
           ref="card"
           v-if="grid"
-          :data="paginatedData"
-          :params="paginatedParams"
-          :collval="show_columns[selected_storage]"
           @update_changeValue="update_changeValue"
         ></card-grid>
       </div>
@@ -409,7 +398,6 @@ export default {
       "catalog",
       "get_data_storage",
       "service",
-      "show_columns",
       "show_document_setting",
       "show_product_category",
       "show_product_properties",

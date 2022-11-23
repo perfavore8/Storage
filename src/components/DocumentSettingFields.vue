@@ -14,7 +14,7 @@
       <div class="content">
         <div class="top">
           <div
-            v-for="field in documents_fields"
+            v-for="field in tpl_fields"
             :key="field"
             @click="select_catalog(field)"
             class="title"
@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import DocumentSettingFiledsList from "@/components/DocumentSettingFiledsList.vue";
 export default {
   emits: { close: null },
@@ -46,14 +45,26 @@ export default {
     return {
       selected_catalog: "",
       list: [],
+      tpl_fields: [],
     };
   },
-  computed: {
-    ...mapGetters(["documents_fields"]),
-  },
   mounted() {
-    if (this.documents_fields[0].name)
-      this.select_catalog(this.documents_fields[0]);
+    const tpl_fields = Object.entries(
+      this.$store.state.documents.config.tpl_fields
+    );
+    tpl_fields.forEach((val) => {
+      const field1 = { name: val[0], fields: [] };
+      Object.entries(val[1]).forEach((value) => {
+        const field2 = { title: value[0], fields: [] };
+        Object.entries(value[1]).forEach((value1) => {
+          const field3 = { name: value1[1], value: value1[0] };
+          field2.fields.push(field3);
+        });
+        field1.fields.push(field2);
+      });
+      this.tpl_fields.push(field1);
+    });
+    if (this.tpl_fields[0].name) this.select_catalog(this.tpl_fields[0]);
   },
   methods: {
     select_catalog(field) {
