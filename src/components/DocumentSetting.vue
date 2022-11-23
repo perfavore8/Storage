@@ -55,12 +55,22 @@
         <div class="binding">
           <div class="header">Привязка полей документов</div>
           <div class="main">
-            <label>Поле "Документы"</label>
-            <SelectorVue
-              :options_props="options"
-              @select="option_select"
-              :selected_option="selected_option"
-            />
+            <div class="label_select">
+              <label>Поле "Документы"</label>
+              <SelectorVue
+                :options_props="lead_fields_options"
+                @select="lead_fields_select"
+                :selected_option="lead_fields"
+              />
+            </div>
+            <div class="label_select">
+              <label>Поряд имен контактов</label>
+              <SelectorVue
+                :options_props="contact_name_types_options"
+                @select="contact_name_types_select"
+                :selected_option="contact_name_types"
+              />
+            </div>
           </div>
         </div>
         <div class="patterns">
@@ -135,12 +145,10 @@ export default {
         "Тип шаблона",
         "Тип для скачивания",
       ],
-      options: [
-        { name: "Не выбрано", value: 1 },
-        { name: "Прибыль", value: 2 },
-        { name: "Бюджет общий", value: 3 },
-      ],
-      selected_option: { name: "Не выбрано", value: 1 },
+      lead_fields_options: [],
+      lead_fields: { name: "Не выбрано", value: 1 },
+      contact_name_types_options: [],
+      contact_name_types: { name: "Не выбрано", value: 1 },
       showAddNew: false,
       showFields: false,
       show_settings: false,
@@ -154,15 +162,48 @@ export default {
       return this.$store.state.documents.templates;
     },
   },
-  mounted() {
-    this.$store.dispatch("get_documents");
+  async mounted() {
+    await this.$store.dispatch("get_documents");
+    this.set_lead_fields_options();
+    this.set_contact_name_types_options();
   },
   methods: {
+    set_lead_fields_options() {
+      const fields = Object.entries(
+        this.$store.state.documents.config.lead_fields
+      );
+      fields.forEach((val) => {
+        const optgroup = val[0];
+        this.lead_fields_options.push({ name: optgroup, value: "optgroup" });
+        const list = Object.entries(val[1]);
+        list.forEach((pip) =>
+          this.lead_fields_options.push({
+            name: pip[1],
+            value: pip[0],
+            optgroup: true,
+          })
+        );
+      });
+      this.lead_fields_options.forEach((val) =>
+        val.value == this.$store.state.documents.config.field_docs
+          ? (this.lead_fields = val)
+          : null
+      );
+    },
+    set_contact_name_types_options() {
+      this.$store.state.documents.config.contact_name_types.forEach(
+        (val, idx) =>
+          this.contact_name_types_options.push({ name: val, value: idx })
+      );
+    },
     close() {
       this.$emit("close", false);
     },
-    option_select(option) {
-      Object.assign(this.selected_option, option);
+    lead_fields_select(option) {
+      Object.assign(this.lead_fields, option);
+    },
+    contact_name_types_select(option) {
+      Object.assign(this.contact_name_types, option);
     },
     open_edit(doc) {
       this.cur_doc = { ...doc };
@@ -323,11 +364,15 @@ export default {
         }
         .main {
           display: flex;
-          flex-direction: row;
-          gap: 30%;
+          flex-direction: column;
+          justify-content: start;
           background-color: #fff;
           border: 1px solid #c9c9c9;
-          padding: 20px;
+          .label_select {
+            display: grid;
+            grid-template-columns: 3fr 4fr;
+            padding: 20px;
+          }
         }
       }
       .patterns {

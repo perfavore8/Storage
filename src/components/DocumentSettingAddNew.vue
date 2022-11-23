@@ -32,8 +32,8 @@
         <div class="label_input">
           <label class="label">Url последнего документа:</label>
           <selector-vue
-            :options_props="lead_fields_options"
-            @select="select_lead_fields_options"
+            :options_props="pipelines_options"
+            @select="select_url_field"
             :selected_option="url_field"
           />
         </div>
@@ -93,7 +93,6 @@ export default {
       type: { name: "docx", value: 1 },
       export_type_options: [],
       export_type: { name: "Исходный", value: 1 },
-      lead_fields_options: [],
       pipelines_options: [],
       try_accept: false,
       name: "",
@@ -110,7 +109,6 @@ export default {
       this.export_type_options.push({ name: val, value: idx })
     );
     this.set_pipelines_options();
-    this.set_lead_fields_options();
     nextTick(() => this.add_cur_doc());
   },
   methods: {
@@ -145,7 +143,7 @@ export default {
     select_pipelines_option(option) {
       Object.assign(this.status_id, option);
     },
-    select_lead_fields_options(option) {
+    select_url_field(option) {
       Object.assign(this.url_field, option);
     },
     add_cur_doc() {
@@ -172,7 +170,7 @@ export default {
           "value"
         );
         this.url_field = serch_selected_item(
-          this.lead_fields_options,
+          this.pipelines_options,
           this.cur_doc.url_field,
           "value"
         );
@@ -196,23 +194,6 @@ export default {
           this.pipelines_options.push({
             name: pip[1],
             value: idx + "_" + pip[0],
-            optgroup: true,
-          })
-        );
-      });
-    },
-    set_lead_fields_options() {
-      const pipelines = Object.entries(
-        this.$store.state.documents.config.lead_fields
-      );
-      pipelines.forEach((val) => {
-        const optgroup = val[0];
-        this.lead_fields_options.push({ name: optgroup, value: "optgroup" });
-        const list = Object.entries(val[1]);
-        list.forEach((pip) =>
-          this.lead_fields_options.push({
-            name: pip[1],
-            value: pip[0],
             optgroup: true,
           })
         );
