@@ -1,1 +1,1 @@
-export const BaseURL = "http://api.gosklad.ru/v1/";
+export const BaseURL = "https://api.gosklad.ru/v1/";

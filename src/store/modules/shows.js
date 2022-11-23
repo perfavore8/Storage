@@ -8,7 +8,7 @@ export default {
     show_buttons: false,
     show_edit_stuff: false,
     show_sync: false,
-    show_new_position: true,
+    show_new_position: false,
     show_cancel_position: false,
     show_document_setting: false,
     show_product_properties: false,
