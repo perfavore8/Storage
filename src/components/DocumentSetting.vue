@@ -38,7 +38,11 @@
           <transition name="modal">
             <div v-show="show_settings" class="modal_settings">
               <a>
-                <div class="modal_container" @click="open_fields()">
+                <div
+                  class="modal_container"
+                  @click="open_fields()"
+                  :class="{ disable: disable_fields_templates }"
+                >
                   Поля шаблонов
                 </div>
               </a>
@@ -55,21 +59,26 @@
         <div class="binding">
           <div class="header">Привязка полей документов</div>
           <div class="main">
-            <div class="label_select">
-              <label>Поле "Документы"</label>
-              <SelectorVue
-                :options_props="lead_fields_options"
-                @select="lead_fields_select"
-                :selected_option="lead_fields"
-              />
+            <div class="column">
+              <div class="label_select">
+                <label>Поле "Документы"</label>
+                <SelectorVue
+                  :options_props="lead_fields_options"
+                  @select="lead_fields_select"
+                  :selected_option="lead_fields"
+                />
+              </div>
+              <div class="label_select">
+                <label>Поряд имен контактов</label>
+                <SelectorVue
+                  :options_props="contact_name_types_options"
+                  @select="contact_name_types_select"
+                  :selected_option="contact_name_types"
+                />
+              </div>
             </div>
-            <div class="label_select">
-              <label>Поряд имен контактов</label>
-              <SelectorVue
-                :options_props="contact_name_types_options"
-                @select="contact_name_types_select"
-                :selected_option="contact_name_types"
-              />
+            <div class="save">
+              <btns-save-close @save="save" :show_close="false" />
             </div>
           </div>
         </div>
@@ -155,6 +164,7 @@ export default {
       cur_doc: {},
       selected_doc_id: null,
       copy_documents: [],
+      disable_fields_templates: false,
     };
   },
   computed: {
@@ -168,6 +178,11 @@ export default {
     this.set_contact_name_types_options();
   },
   methods: {
+    save() {
+      this.$store.dispatch("update_account", {
+        field_docs: this.lead_fields.value,
+      });
+    },
     set_lead_fields_options() {
       const fields = Object.entries(
         this.$store.state.documents.config.lead_fields
@@ -196,8 +211,10 @@ export default {
           this.contact_name_types_options.push({ name: val, value: idx })
       );
     },
-    refresh_fields() {
-      this.$store.dispatch("refresh_fields");
+    async refresh_fields() {
+      this.disable_fields_templates = true;
+      await this.$store.dispatch("refresh_fields");
+      this.disable_fields_templates = false;
     },
     close() {
       this.$emit("close", false);
@@ -339,6 +356,11 @@ export default {
             justify-content: center;
             width: 100%;
             transition: background-color 0.15s ease-in-out;
+            .disable {
+              user-select: none;
+              background-color: #cdcdcd;
+              cursor: default !important;
+            }
             .modal_container {
               width: 100%;
               display: flex;
@@ -366,15 +388,22 @@ export default {
           @include font(500, 16px);
         }
         .main {
-          display: flex;
-          flex-direction: column;
-          justify-content: start;
+          display: grid;
+          grid-template-columns: 7fr 1fr;
           background-color: #fff;
           border: 1px solid #c9c9c9;
-          .label_select {
-            display: grid;
-            grid-template-columns: 3fr 4fr;
+          .save {
             padding: 20px;
+          }
+          .column {
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            .label_select {
+              display: grid;
+              grid-template-columns: 3fr 4fr;
+              padding: 20px;
+            }
           }
         }
       }
