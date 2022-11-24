@@ -10,7 +10,7 @@
     <selector-vue
       class="count"
       :options_props="count_values"
-      :selected_option="{ name: count, value: Math.random() }"
+      :selected_option="{ name: count, value: -1 }"
       @select="change_count"
     />
   </div>
@@ -52,22 +52,23 @@ export default {
   emits: { changePage: null, changeCount: null },
   data() {
     return {
-      count_values: [
-        { name: "3", value: 1 },
-        { name: "5", value: 2 },
-        { name: "15", value: 3 },
-        { name: "40", value: 4 },
-      ],
+      count_values: [],
     };
   },
-  mounted() {
+  async mounted() {
+    await this.$store.dispatch("get_account");
     this.change_count({ name: this.count });
+    this.count_values = [
+      ...this.$store.state.account.user.config.per_pages,
+    ].map((val, idx) => (val = { name: val, value: idx }));
   },
+  computed: {},
   methods: {
     changePage(val) {
       this.$emit("changePage", val);
     },
     change_count(option) {
+      console.log(option);
       this.$emit("changeCount", option.name);
     },
   },

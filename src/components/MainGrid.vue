@@ -37,7 +37,7 @@
       :page="meta.meta.current_page"
       :blur="show_edit_modal"
       :show="paginatedData.length != 0"
-      :count="meta.meta.per_page"
+      :count="count"
       @changePage="changePage"
       @changeCount="changeCount"
     />
@@ -75,6 +75,9 @@ export default {
   },
 
   computed: {
+    count() {
+      return this.$store.state.account.user.config?.per_page;
+    },
     meta() {
       return this.$store.state.products.meta;
     },
@@ -118,8 +121,9 @@ export default {
   },
 
   methods: {
-    changeCount(val) {
-      this.count = val;
+    async changeCount(count) {
+      await this.$store.dispatch("update_user", { per_page: count });
+      this.changePage(this.meta.current_page);
     },
     changePage(val) {
       const params = { page: val };

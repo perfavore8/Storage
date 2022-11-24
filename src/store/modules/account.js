@@ -55,6 +55,7 @@ export default {
       });
       const json = await res.json();
       console.log("update_user", json);
+      context.dispatch("get_account");
       return json;
     },
   },
