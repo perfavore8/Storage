@@ -25,8 +25,34 @@ export default {
       const url = BaseURL + "product/list";
       const res = await fetch(url, {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
+          // Origin: "http://localhost:8080",
+          // // "Access-Control-Allow-Origin": "*",
+          // // "access-control-allow-credentials": "true",
+          // // "Access-Control-Allow-Headers": "*",
+          // // "access-control-allow-methods": "*",
+          // Host: "api.gosklad.ru",
+          // "Access-Control-Allow-Credentials": "true",
+          // "Access-Control-Allow-Headers": "*",
+          // "Access-Control-Allow-Methods": "*",
+          // "Access-Control-Allow-Origin": "*",
+          // Connection: " keep-alive",
+          // "Content-Length": " 0",
+          // // "Content-Type": " application/json",
+          // // Host: " api.gosklad.ru",
+          // // Origin: " http://localhost:8080",
+          // Referer: " http://localhost:8080/",
+          // "sec-ch-ua":
+          //   'Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"',
+          // "sec-ch-ua-mobile": " ?0",
+          // "sec-ch-ua-platform": "Windows",
+          // "Sec-Fetch-Dest": " empty",
+          // "Sec-Fetch-Mode": " cors",
+          // "Sec-Fetch-Site": " cross-site",
+          // // Access-Control-Allow-Origin: http://localhost:8080
+          // // "Content-Type": application/json
         },
         body: JSON.stringify(params),
       });

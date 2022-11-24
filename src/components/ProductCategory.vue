@@ -1,10 +1,13 @@
 <template>
-  <div class="wrapper">
+  <div
+    class="wrapper"
+    :class="{ opened_close_remove_modal: del_modal_config.show }"
+  >
     <div class="bgc">
       <div class="container">
         <div class="header">
           <div class="top">
-            <label>Свойства товаров</label>
+            <label>Категории товаров</label>
             <btns-save-close
               @close="close_product_category"
               @save="save"
@@ -15,6 +18,12 @@
           </div>
           <br />
           <div class="bottom">
+            <teleport to="body" v-if="del_modal_config.show">
+              <ProductsCategoryRemoveModal
+                @remove="remove"
+                @close="closeRemoveModal"
+              />
+            </teleport>
             <teleport :to="target" v-if="target !== null">
               <input
                 type="text"
@@ -23,6 +32,7 @@
                 ref="input"
                 @keyup.enter="add_new(fields_cat_name, item)"
                 @keyup.esc="reset_fields_cat_name()"
+                @focusout="reset_fields_cat_name()"
               />
             </teleport>
           </div>
@@ -60,7 +70,7 @@
               </div>
               <div>
                 <button
-                  @click.stop="remove(item.id, item.level)"
+                  @click.stop="setRemoveModalConfig(item.id, item.level)"
                   v-if="
                     item.parent_id !== 0 &&
                     (copy_fields_properties[idx + 1]
@@ -101,12 +111,13 @@
 </template>
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import ProductsCategoryRemoveModal from "@/components/ProductsCategoryRemoveModal.vue";
 import { nextTick } from "process";
-import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
-export default defineComponent({
+export default {
   components: {
     BtnsSaveClose,
+    ProductsCategoryRemoveModal,
     draggable: VueDraggableNext,
   },
   data() {
@@ -115,6 +126,11 @@ export default defineComponent({
       selected_category_id: null,
       target: null,
       all_old: {},
+      del_modal_config: {
+        show: false,
+        id: null,
+        level: null,
+      },
     };
   },
   async mounted() {
@@ -174,12 +190,6 @@ export default defineComponent({
         this.reset_fields_cat_name();
       }
     },
-    remove(id, level) {
-      if (level != 1) {
-        console.log("123");
-        this.$store.dispatch("delete_fields_properties", { id: id });
-      }
-    },
     rename(id) {
       const item = [...this.copy_fields_properties].filter(
         (val) => val.id === id
@@ -213,19 +223,34 @@ export default defineComponent({
       width = width * 0.95 ** (level - 1);
       return width;
     },
-
+    setRemoveModalConfig(id, level) {
+      this.del_modal_config.level = level;
+      this.del_modal_config.id = id;
+      this.del_modal_config.show = true;
+    },
+    remove() {
+      if (this.del_modal_config.level != 1) {
+        this.$store.dispatch("delete_fields_properties", {
+          id: this.del_modal_config.id,
+        });
+      }
+      this.closeRemoveModal();
+    },
+    closeRemoveModal() {
+      this.del_modal_config.show = false;
+    },
     close_product_category() {
       this.$store.commit("open_close_product_category", false);
     },
   },
-});
+};
 </script>
 
 <style lang="scss" scoped>
 @import "@/app.scss";
 .wrapper {
   pointer-events: all;
-  z-index: 9999999;
+  z-index: 1000;
   width: 100%;
   position: absolute;
   top: 0;
@@ -299,6 +324,7 @@ export default defineComponent({
             position: relative;
             cursor: pointer;
             .input_teleport {
+              z-index: 2;
               box-sizing: border-box;
               position: absolute;
               top: 90%;
@@ -322,15 +348,18 @@ export default defineComponent({
           }
           .btn {
             padding: 0;
-            border-radius: 1rem;
+            border-radius: 2rem;
             box-sizing: border-box;
-            width: 1rem;
-            height: 1rem;
+            width: 2rem;
+            height: 2rem;
             background-color: transparent;
             border: 3px solid;
           }
           .rename {
             // border-color: #5f676d;
+            border-radius: 1rem;
+            width: 1rem;
+            height: 1rem;
             position: relative;
             top: 1px;
             transform: scale(1.17);
@@ -343,10 +372,10 @@ export default defineComponent({
             transform: rotate(-90deg);
           }
           .remove {
-            border-color: #dc3545;
+            @include bg_image("@/assets/delete_circle.svg", 94%);
           }
           .add {
-            border-color: rgb(105, 177, 104);
+            @include bg_image("@/assets/add_circle.svg");
           }
         }
         .item:first-child {
@@ -383,5 +412,9 @@ export default defineComponent({
   border-color: #86b7fe;
   outline: 0;
   // box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
+}
+.opened_close_remove_modal {
+  pointer-events: none;
+  filter: blur(1px);
 }
 </style>
