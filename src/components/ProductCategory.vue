@@ -174,7 +174,7 @@ export default {
         levels: [],
       };
       this.$store.state.categories.fields_properties.forEach((val) =>
-        Object.entries(val).forEach((value) => list[value[0]].push(value[1]))
+        Object.entries(val).forEach((value) => list[value[0]]?.push(value[1]))
       );
       Object.assign(this.all_old, list);
     },
