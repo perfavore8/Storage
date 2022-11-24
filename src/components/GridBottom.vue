@@ -57,7 +57,6 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("get_account");
-    this.change_count({ name: this.count });
     this.count_values = [
       ...this.$store.state.account.user.config.per_pages,
     ].map((val, idx) => (val = { name: val, value: idx }));
