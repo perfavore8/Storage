@@ -380,6 +380,7 @@ export default {
       }
     },
     async get_fields() {
+      this.is_loading = true;
       await this.$store.dispatch(
         "get_fields",
         this.selected_fields_properties.at(-1).id
@@ -397,6 +398,7 @@ export default {
           value: value2 > 0,
         };
       });
+      this.is_loading = false;
     },
     search_type(id) {
       return this.types.filter((val) => val.value == id)[0];
