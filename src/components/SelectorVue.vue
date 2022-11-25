@@ -201,6 +201,7 @@ export default {
       width: calc(100% - 24px);
       padding: 6px 12px;
       transition: background-color 0.15s ease-out;
+      white-space: pre;
     }
     p:hover {
       background-color: rgb(13 110 253 / 25%);

@@ -45,7 +45,7 @@
                     :options_props="properties_for_selector"
                     @select="option_select_copy_fields"
                     :selected_option="{
-                      name: 'Выбор категории для переноса полей',
+                      name: 'Категория',
                       value: 1,
                     }"
                   />
@@ -276,9 +276,11 @@ export default {
     },
     properties_for_selector() {
       const arr = [];
-      this.copy_fields_properties.forEach((val) =>
-        arr.push({ name: val.name, value: val.id })
-      );
+      this.copy_fields_properties.forEach((val) => {
+        let spaces = "";
+        for (let i = 1; i < val.level; i++) spaces = spaces + "    ";
+        arr.push({ name: spaces + val.name, value: val.id });
+      });
       return arr;
     },
   },
@@ -325,22 +327,6 @@ export default {
       return { date, datetime };
     },
     add_new_field() {
-      // this.new_fields.push({
-      //   id: id,
-      //   field: "",
-      //   type: { name: "Строка", value: 3 },
-      //   selector_options: [{ name: "Не выбрано" }],
-      //   disable_change_type: false,
-      //   visibility: false,
-      //   edit: false,
-      //   editing: false,
-      //   delete: true,
-      // });
-      // const item = this.selected_fields_properties.at(-1);
-      // this.copy_fields_properties.map((val) =>
-      //   val.id === item.id ? val.fields_id.push(id) : null
-      // );
-      // item.fields_id.push(id);
       const id = this.copy_fields.length + 1;
       const category_id = this.selected_fields_properties.at(-1).id;
       const type = 3;
@@ -361,7 +347,6 @@ export default {
         type: item.type,
         name: item.name,
         category_id: item.category_id,
-        // data: JSON.stringify(item.data),
         data: item.data,
       };
       const error =
