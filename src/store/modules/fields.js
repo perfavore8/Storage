@@ -59,7 +59,11 @@ export default {
     async get_fields_with_parents(context, category_id) {
       const url = BaseURL + "field/list";
       const res = await fetch(
-        url + "?category_id=" + category_id + "&with_parents=1"
+        url +
+          "?category_id=" +
+          category_id +
+          "&with_parents=1" +
+          "&sort=created"
       );
       const json = await res.json();
       // console.log(json.data);
