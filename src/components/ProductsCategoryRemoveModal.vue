@@ -52,8 +52,6 @@ export default {
     display: flex;
     flex-direction: column;
 
-    .header {
-    }
     .buttons {
       margin-top: 10px;
       display: flex;

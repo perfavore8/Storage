@@ -24,7 +24,11 @@
                 @close="closeRemoveModal"
               />
             </teleport>
-            <teleport :to="target" v-if="target !== null">
+            <teleport
+              :to="target"
+              v-if="target !== null"
+              @focusout="reset_fields_cat_name()"
+            >
               <input
                 type="text"
                 class="input_teleport"
@@ -32,8 +36,21 @@
                 ref="input"
                 @keyup.enter="add_new(fields_cat_name, item)"
                 @keyup.esc="reset_fields_cat_name()"
-                @focusout="reset_fields_cat_name()"
               />
+              <button
+                class="button_teleport"
+                @click="add_new(fields_cat_name, item)"
+              >
+                ок
+              </button>
+            </teleport>
+            <teleport
+              :to="target_hovered_category"
+              v-if="target_hovered_category !== null"
+            >
+              <p class="tooltip_teleport">
+                {{ hovered_category_text[hovered_category?.type] }}
+              </p>
             </teleport>
           </div>
         </div>
@@ -48,15 +65,31 @@
               :key="item.id"
               class="item"
               :style="{ width: calculate_width(item.level) + '%' }"
+              @dragstart="isDragged = idx"
+              @dragend="isDragged = null"
+              :class="{ darag: isDragged == idx }"
             >
-              <div>
-                <input
-                  type="text"
-                  class="input"
-                  @keyup.enter="rename(item.id)"
-                  v-model="item.name"
-                  :disabled="item.parent_id === 0"
-                />
+              <div class="input_name">
+                <div
+                  @mouseenter="hovered_category = { id: item.id, type: 'name' }"
+                  @mouseleave="target_hovered_category = null"
+                  :ref="
+                    (el) =>
+                      item.id === hovered_category?.id &&
+                      hovered_category.type == 'name'
+                        ? (target_hovered_category = el)
+                        : null
+                  "
+                  class="text_block"
+                >
+                  <input
+                    type="text"
+                    class="input"
+                    @keyup.enter="rename(item.id)"
+                    v-model="item.name"
+                    :disabled="item.parent_id === 0"
+                  />
+                </div>
                 <button
                   @click="prevname(item.id)"
                   v-if="
@@ -64,6 +97,17 @@
                     all_old?.id?.includes(item.id)
                   "
                   class="btns"
+                  @mouseenter="
+                    hovered_category = { id: item.id, type: 'prevname' }
+                  "
+                  @mouseleave="target_hovered_category = null"
+                  :ref="
+                    (el) =>
+                      item.id === hovered_category?.id &&
+                      hovered_category.type == 'prevname'
+                        ? (target_hovered_category = el)
+                        : null
+                  "
                 >
                   <div class="rename btn"></div>
                 </button>
@@ -78,6 +122,17 @@
                       : true)
                   "
                   class="btns"
+                  @mouseenter="
+                    hovered_category = { id: item.id, type: 'delete' }
+                  "
+                  @mouseleave="target_hovered_category = null"
+                  :ref="
+                    (el) =>
+                      item.id === hovered_category?.id &&
+                      hovered_category.type == 'delete'
+                        ? (target_hovered_category = el)
+                        : null
+                  "
                 >
                   <div class="remove btn"></div>
                 </button>
@@ -87,8 +142,15 @@
                   class="btns"
                   :ref="
                     (el) =>
-                      item.id === selected_category_id ? (target = el) : null
+                      item.id === selected_category_id
+                        ? (target = el)
+                        : item.id === hovered_category?.id &&
+                          hovered_category.type == 'add'
+                        ? (target_hovered_category = el)
+                        : null
                   "
+                  @mouseenter="hovered_category = { id: item.id, type: 'add' }"
+                  @mouseleave="target_hovered_category = null"
                 >
                   <div class="add btn"></div>
                 </button>
@@ -124,12 +186,21 @@ export default {
     return {
       fields_cat_name: "",
       selected_category_id: null,
+      hovered_category: null,
       target: null,
+      target_hovered_category: null,
       all_old: {},
+      isDragged: null,
       del_modal_config: {
         show: false,
         id: null,
         level: null,
+      },
+      hovered_category_text: {
+        name: "Для изменеия названия категории нажмите Enter",
+        prevname: "Возвращает изначальное название",
+        delete: "Удаление категории",
+        add: "Добавлние новой подкатегории",
       },
     };
   },
@@ -151,6 +222,9 @@ export default {
         });
       },
       deep: true,
+    },
+    target_hovered_category() {
+      // console.log(this.hovered_category, this.target_hovered_category);
     },
   },
   methods: {
@@ -214,9 +288,11 @@ export default {
       });
     },
     reset_fields_cat_name() {
-      this.selected_category_id = null;
-      this.fields_cat_name = "";
-      this.target = null;
+      nextTick(() => {
+        this.selected_category_id = null;
+        this.fields_cat_name = "";
+        this.target = null;
+      });
     },
     calculate_width(level) {
       let width = 100;
@@ -314,7 +390,13 @@ export default {
           text-decoration: none;
           background-color: #fff;
           border: 1px solid rgba(0, 0, 0, 0.125);
-          // border-top: transparent;
+          .input_name {
+            display: flex;
+            flex-direction: row;
+            .text_block {
+              position: relative;
+            }
+          }
           .btns {
             padding: 0.25rem;
             margin-left: 4px;
@@ -345,8 +427,37 @@ export default {
               border-color: #86b7fe;
               box-shadow: 0 0 0 1px rgb(13 110 253 / 25%);
             }
+            .button_teleport {
+              z-index: 2;
+              cursor: pointer;
+              position: absolute;
+              top: calc(90% + 5px);
+              right: 4px;
+              outline: none;
+              width: 30px;
+              height: 20px;
+              padding: 0;
+              padding-bottom: 2px;
+              border: none;
+              background-color: transparent;
+              border-radius: 7px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              @include font(400, 16px);
+            }
+            .button_teleport:hover {
+              border: 1px solid rgba(0, 0, 0, 0.125);
+            }
+            .button_teleport:focus {
+              border: 1px solid rgba(0, 0, 0, 0.125);
+            }
+            .button_teleport:active {
+              background-color: rgba(0, 0, 0, 0.125);
+            }
           }
           .btn {
+            position: relative;
             padding: 0;
             border-radius: 2rem;
             box-sizing: border-box;
@@ -416,5 +527,23 @@ export default {
 .opened_close_remove_modal {
   pointer-events: none;
   filter: blur(1px);
+}
+.darag {
+  border-color: #86b7fe !important;
+}
+.tooltip_teleport {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  top: 60%;
+  left: 0;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  background-color: #f8fcff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  @include font(400, 16px, 20px);
 }
 </style>
