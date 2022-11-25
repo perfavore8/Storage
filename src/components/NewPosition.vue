@@ -16,20 +16,35 @@
                 <td class="item">
                   <selector-vue
                     :options_props="options_type"
-                    @select="option_select_type"
+                    @select="
+                      (option, idx) => option_select(option, idx, 'type')
+                    "
                     :selected_option="row.type"
                     :idx="idx"
                     :disabled="current_items.length > idx"
                   />
                 </td>
-                <td class="item">
+                <td
+                  class="item"
+                  :ref="
+                    (el) =>
+                      selected_field_autocomplete.idx == idx &&
+                      selected_field_autocomplete.field == 'article'
+                        ? (targetAutocomplete = el)
+                        : null
+                  "
+                >
                   <input
                     type="text"
                     v-model="row.article"
                     @focusin="
-                      set_selected_field_autocomplete('article', row.article)
+                      set_selected_field_autocomplete(
+                        'article',
+                        row.article,
+                        idx
+                      )
                     "
-                    @focusout="set_selected_field_autocomplete('', '')"
+                    @focusout="set_selected_field_autocomplete('', '', idx)"
                     @input="
                       set_selected_field_autocomplete('article', row.article)
                     "
@@ -40,12 +55,23 @@
                     :disabled="current_items.length > idx"
                   />
                 </td>
-                <td class="item">
+                <td
+                  class="item"
+                  :ref="
+                    (el) =>
+                      selected_field_autocomplete.idx == idx &&
+                      selected_field_autocomplete.field == 'name'
+                        ? (targetAutocomplete = el)
+                        : null
+                  "
+                >
                   <input
                     type="text"
                     v-model="row.name"
-                    @focusin="set_selected_field_autocomplete('name', row.name)"
-                    @focusout="set_selected_field_autocomplete('', '')"
+                    @focusin="
+                      set_selected_field_autocomplete('name', row.name, idx)
+                    "
+                    @focusout="set_selected_field_autocomplete('', '', idx)"
                     @input="set_selected_field_autocomplete('name', row.name)"
                     class="input"
                     :class="{
@@ -58,7 +84,10 @@
                   <div class="select_input">
                     <selector-vue
                       :options_props="batch_category_options"
-                      @select="option_select_batch_category"
+                      @select="
+                        (option, idx) =>
+                          option_select(option, idx, 'batch_category')
+                      "
                       :selected_option="row.batch_category"
                       :idx="idx"
                       :disabled="row.type.value == 2"
@@ -80,7 +109,7 @@
                 <td class="item">
                   <selector-vue
                     :options_props="wh_options"
-                    @select="option_select_wh"
+                    @select="(option, idx) => option_select(option, idx, 'wh')"
                     :selected_option="row.wh"
                     :idx="idx"
                     :disabled="row.type.value == 2"
@@ -104,7 +133,9 @@
                 <td class="item">
                   <selector-vue
                     :options_props="units_options"
-                    @select="option_select_units"
+                    @select="
+                      (option, idx) => option_select(option, idx, 'units')
+                    "
                     :selected_option="row.units"
                     :idx="idx"
                     :disabled="row.type.value == 2"
@@ -186,7 +217,9 @@
                 <td class="item">
                   <selector-vue
                     :options_props="categories_options"
-                    @select="option_select_category"
+                    @select="
+                      (option, idx) => option_select(option, idx, 'category')
+                    "
                     :selected_option="row.category"
                     :idx="idx"
                     :disabled="row.type.value == 2"
@@ -211,6 +244,22 @@
           <button class="add_new_button" @click="push_new_item()">+</button>
         </div>
       </div>
+      <teleport
+        :to="targetAutocomplete"
+        v-if="selected_field_autocomplete_list.length"
+      >
+        <ul class="autocomplete_teleport">
+          <li
+            v-for="item in selected_field_autocomplete_list"
+            :key="item.id"
+            @click="
+              select_current_product(item.fields.name, item.fields.article)
+            "
+          >
+            {{ item.fields.name }}
+          </li>
+        </ul>
+      </teleport>
       <div class="footer">
         <btns-save-close @close="close" @save="save" />
       </div>
@@ -260,13 +309,13 @@ export default {
       units_options: [],
       categories_options: [],
       selected_field_autocomplete: {
+        idx: null,
         field: "",
         value: "",
       },
       selected_field_autocomplete_list: [],
-      try_accept: false,
-      fields_for_validation: [1, 2, 6, 8, 9],
-      fields_for_validation_service: [1, 2, 8, 9],
+      timer: 0,
+      targetAutocomplete: null,
     };
   },
   computed: {
@@ -277,31 +326,34 @@ export default {
   async mounted() {
     await this.$store.dispatch("get_fields_properties");
     await this.$store.dispatch("get_all_fields");
-    this.get_batch_category_options();
-    this.get_wh_options();
-    this.get_units_options();
     this.get_categories_options();
+    this.get_options("batch", this.batch_category_options, "Новая");
+    this.get_options("wh", this.wh_options, "Не выбрано");
+    this.get_options("units", this.units_options, "Не выбрано");
     this.push_new_item();
   },
   watch: {
     selected_field_autocomplete: {
       async handler() {
-        const complete = this.selected_field_autocomplete;
-        if (complete.field == "article" && complete.value.length > 2) {
-          const list = await this.$store.dispatch(
-            "autocomplete_article",
-            complete.value
-          );
-          this.selected_field_autocomplete_list = [...list];
-        }
-        if (complete.field == "name" && complete.value.length > 2) {
-          const list = await this.$store.dispatch(
-            "autocomplete_name",
-            complete.value
-          );
-          this.selected_field_autocomplete_list = [...list];
-        }
-        if (complete.field == "") this.selected_field_autocomplete_list = [];
+        clearTimeout(this.timer);
+        this.timer = setTimeout(async () => {
+          const complete = this.selected_field_autocomplete;
+          if (complete.field == "article" && complete.value.length > 2) {
+            const list = await this.$store.dispatch(
+              "autocomplete_article",
+              complete.value
+            );
+            this.selected_field_autocomplete_list = [...list];
+          }
+          if (complete.field == "name" && complete.value.length > 2) {
+            const list = await this.$store.dispatch(
+              "autocomplete_name",
+              complete.value
+            );
+            this.selected_field_autocomplete_list = [...list];
+          }
+          if (complete.field == "") this.selected_field_autocomplete_list = [];
+        }, 500);
       },
       deep: true,
     },
@@ -329,32 +381,34 @@ export default {
       };
       this.new_items.push(item);
     },
-    set_selected_field_autocomplete(field, value) {
-      this.selected_field_autocomplete.field = field;
-      this.selected_field_autocomplete.value = value;
+    set_selected_field_autocomplete(field, value, idx) {
+      if (field == "") this.targetAutocomplete = null;
+      this.selected_field_autocomplete = {
+        field: field,
+        value: value,
+        idx: idx,
+      };
     },
-    get_batch_category_options() {
-      this.batch_category_options.push({ name: "Новая", value: -1 });
-      this.search_type_options(this.fields, "batch").forEach((val, idx) =>
-        this.batch_category_options.push({ name: val, value: idx })
-      );
+    select_current_product(name, article) {
+      this.new_items[this.selected_field_autocomplete.idx].name = name;
+      this.new_items[this.selected_field_autocomplete.idx].article = article;
+      this.set_selected_field_autocomplete("", "", null);
     },
-    get_wh_options() {
-      this.wh_options.push({ name: "Не выбрано", value: -1 });
-      this.search_type_options(this.fields, "wh").forEach((val, idx) =>
-        this.wh_options.push({ name: val, value: idx })
-      );
-    },
-    get_units_options() {
-      this.units_options.push({ name: "Не выбрано", value: -1 });
-      this.search_type_options(this.fields, "units").forEach((val, idx) =>
-        this.units_options.push({ name: val, value: idx })
+    get_options(cat, catArr, name) {
+      catArr.push({ name: name, value: -1 });
+      this.search_type_options(this.fields, cat).forEach((val, idx) =>
+        catArr.push({ name: val, value: idx })
       );
     },
     get_categories_options() {
-      this.$store.state.categories.fields_properties.forEach((val) =>
-        this.categories_options.push({ name: val.name, value: val.id })
-      );
+      this.$store.state.categories.fields_properties.forEach((val) => {
+        let spaces = "";
+        for (let i = 1; i < val.level; i++) spaces = spaces + "    ";
+        this.categories_options.push({
+          name: spaces + val.name,
+          value: val.id,
+        });
+      });
     },
     search_type_options(arr, code) {
       let res = [];
@@ -363,20 +417,9 @@ export default {
       });
       return res;
     },
-    option_select_type(option, idx) {
-      this.new_items[idx].type = { ...option };
-    },
-    option_select_batch_category(option, idx) {
-      this.new_items[idx].batch_category = { ...option };
-    },
-    option_select_wh(option, idx) {
-      this.new_items[idx].wh = { ...option };
-    },
-    option_select_units(option, idx) {
-      this.new_items[idx].units = { ...option };
-    },
-    option_select_category(option, idx) {
-      this.new_items[idx].category = { ...option };
+    option_select(option, idx, cat) {
+      console.log(option, idx, cat);
+      this.new_items[idx][cat] = { ...option };
     },
     close() {
       this.$store.commit("open_close_new_position", false);
@@ -436,6 +479,7 @@ export default {
         }
         .row {
           .item {
+            position: relative;
             padding: 10px 5px;
             border: 1px solid #c9c9c9;
             border-top: 2px solid #c9c9c9;
@@ -686,6 +730,52 @@ input[type="number"]::-webkit-inner-spin-button {
   .btn2:hover {
     background-color: #0256d4;
     box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
+  }
+}
+.autocomplete_teleport {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  border-radius: 4px;
+  list-style: none;
+  max-height: 400px;
+  min-height: 40px;
+  width: 300%;
+  overflow-y: scroll;
+  scrollbar-width: 0;
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: 0;
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  z-index: 5;
+
+  box-sizing: border-box;
+  li {
+    // margin: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 40px;
+    width: 100%;
+    padding: 6px 12px;
+    transition: background-color 0.15s ease-out;
+    white-space: pre;
+  }
+  li:hover {
+    background-color: rgb(13 110 253 / 25%);
+  }
+  li:last-child {
+    border-radius: 0 0 4px 4px;
+  }
+  li:first-child {
+    border-radius: 4px 4px 0 0;
+  }
+  li:active {
+    background-color: #3261a7;
   }
 }
 .row-enter-active,
