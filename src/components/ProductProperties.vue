@@ -52,8 +52,8 @@
                 </div>
               </th>
               <th class="item">Тип</th>
-              <th class="item">Видимость</th>
-              <th class="item">Редактирование</th>
+              <th class="item">Видимость в сделке</th>
+              <th class="item">Редактирование в сделке</th>
               <th class="item"></th>
             </tr>
             <tr
@@ -115,19 +115,21 @@
                 <input
                   type="checkbox"
                   class="checkbox"
-                  :id="idx + 'b'"
-                  v-model="copy_fields[idx].visibility"
+                  :id="idx + 'nb'"
+                  :disabled="row.lead_config.visible.disabled"
+                  v-model="row.lead_config.visible.value"
                 />
-                <label :for="idx + 'b'"></label>
+                <label :for="idx + 'nb'"></label>
               </td>
               <td class="box item">
                 <input
                   type="checkbox"
                   class="checkbox"
-                  :id="idx + 'c'"
-                  v-model="copy_fields[idx].editing"
+                  :id="idx + 'n'"
+                  :disabled="row.lead_config.editable.disabled"
+                  v-model="row.lead_config.editable.value"
                 />
-                <label :for="idx + 'c'"></label>
+                <label :for="idx + 'n'"></label>
               </td>
               <td class="item">
                 <button
@@ -184,19 +186,21 @@
                 <input
                   type="checkbox"
                   class="checkbox"
-                  :id="idx + 'nb'"
-                  v-model="new_fields[idx].visibility"
+                  :id="idx + 'nb1'"
+                  :disabled="new_fields[idx].disabled?.visible.value"
+                  v-model="new_fields[idx].lead_config.visible.value"
                 />
-                <label :for="idx + 'nb'"></label>
+                <label :for="idx + 'nb1'"></label>
               </td>
               <td class="box item">
                 <input
                   type="checkbox"
                   class="checkbox"
-                  :id="idx + 'n'"
-                  v-model="new_fields[idx].editing"
+                  :id="idx + 'n1'"
+                  :disabled="new_fields[idx].disabled?.editable.value"
+                  v-model="new_fields[idx].lead_config.editable.value"
                 />
-                <label :for="idx + 'n'"></label>
+                <label :for="idx + 'n1'"></label>
               </td>
               <td class="item">
                 <button
@@ -285,68 +289,49 @@ export default {
     },
   },
   methods: {
-    save() {
-      this.copy_fields.forEach((value) => {
-        value.selector_options.forEach((val, idx) =>
-          Object.assign(val, { value: idx + 1 })
-        );
-      });
-      this.new_fields.forEach((val) => this.copy_fields.push(val));
-      this.$store.commit(
-        "update_fields_properties",
-        this.copy_fields_properties
-      );
-      this.$store.commit("update_fields", this.copy_fields);
-      this.$store.commit("delete_data_idx", this.idx_to_delete);
-      this.new_fields_push();
-      // this.$store.commit("update_params", ["", ...this.fields, ""]); // хз как лучше \/
-      this.$store.commit("update_params", ["", ...this.copy_fields, ""]);
-      this.close_product_properties();
-    },
-    new_fields_push() {
-      const { date, datetime } = this.get_date();
-      this.new_fields.forEach((val) => {
-        let new_field = "";
-        if (val.type.value == 1 || val.type.value == 2) new_field = "0";
-        if (val.type.value == 6) new_field = "Не выбрано";
-        if (val.type.value == 7) new_field = date;
-        if (val.type.value == 8) new_field = datetime;
-        if (val.type.value == 9) new_field = "Нет";
-        this.$store.commit("update_all_data", new_field);
-      });
-    },
-    get_date() {
-      let today = new Date();
-      const dd = String(today.getDate()).padStart(2, "0");
-      const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      const yyyy = today.getFullYear();
-      const hour = today.getHours();
-      const min = today.getMinutes();
-      const date = yyyy + "-" + mm + "-" + dd;
-      const datetime = yyyy + "-" + mm + "-" + dd + "T" + hour + ":" + min;
-      return { date, datetime };
-    },
     add_new_field() {
       const id = this.copy_fields.length + 1;
       const category_id = this.selected_fields_properties.at(-1).id;
       const type = 3;
-      const is_system = false;
       const name = "";
+      const lead_config = {
+        visible: { disabled: false, value: false },
+        editable: { disabled: false, value: false },
+      };
       const item = {
         id: id,
         category_id: category_id,
         type: type,
-        is_system: is_system,
         name: name,
         data: [],
+        lead_config: lead_config,
       };
       this.new_fields.push(item);
     },
     async add_new(item) {
+      const preparing = (val, dis) => {
+        let res = 0;
+        if (val && dis) res = 2;
+        if (val && !dis) res = 1;
+        if (!val && !dis) res = 0;
+        if (!val && dis) res = -1;
+        return res;
+      };
+      const lead_config = {
+        visible: preparing(
+          item.lead_config.visible.value,
+          item.lead_config.visible.disabled
+        ),
+        editable: preparing(
+          item.lead_config.editable.value,
+          item.lead_config.editable.disabled
+        ),
+      };
       const params = {
         type: item.type,
         name: item.name,
         category_id: item.category_id,
+        lead_config: lead_config,
         data: item.data,
       };
       const error =
@@ -400,6 +385,18 @@ export default {
         this.selected_fields_properties.at(-1).id
       );
       this.copy_fields = [...this.$store.state.fields.fields];
+      this.copy_fields.map((val) => {
+        const value = val.lead_config.visible;
+        val.lead_config.visible = {
+          disabled: value == -1 || value == 2,
+          value: value > 0,
+        };
+        const value2 = val.lead_config.editable;
+        val.lead_config.editable = {
+          disabled: value2 == -1 || value2 == 2,
+          value: value2 > 0,
+        };
+      });
     },
     search_type(id) {
       return this.types.filter((val) => val.value == id)[0];
