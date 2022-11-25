@@ -24,25 +24,23 @@
                 @close="closeRemoveModal"
               />
             </teleport>
-            <teleport
-              :to="target"
-              v-if="target !== null"
-              @focusout="reset_fields_cat_name()"
-            >
-              <input
-                type="text"
-                class="input_teleport"
-                v-model="fields_cat_name"
-                ref="input"
-                @keyup.enter="add_new(fields_cat_name, item)"
-                @keyup.esc="reset_fields_cat_name()"
-              />
-              <button
-                class="button_teleport"
-                @click="add_new(fields_cat_name, item)"
-              >
-                ок
-              </button>
+            <teleport :to="target" v-if="target !== null">
+              <div @focusout="reset_fields_cat_name()">
+                <input
+                  type="text"
+                  class="input_teleport"
+                  v-model="fields_cat_name"
+                  ref="input"
+                  @keyup.enter="add_new(fields_cat_name, item)"
+                  @keyup.esc="reset_fields_cat_name()"
+                />
+                <button
+                  class="button_teleport"
+                  @click="add_new(fields_cat_name, item)"
+                >
+                  ок
+                </button>
+              </div>
             </teleport>
             <teleport
               :to="target_hovered_category"
@@ -256,7 +254,7 @@ export default {
       const parent = this.copy_fields_properties.filter(
         (val) => val.id === this.selected_category_id
       )[0];
-      if (parent.level + 1 <= 10) {
+      if (parent.level + 1 <= 10 && this.fields_cat_name != "") {
         this.$store.dispatch("add_fields_properties", {
           name: this.fields_cat_name,
           parent_id: parent.id,
@@ -288,11 +286,11 @@ export default {
       });
     },
     reset_fields_cat_name() {
-      nextTick(() => {
+      setTimeout(() => {
         this.selected_category_id = null;
         this.fields_cat_name = "";
         this.target = null;
-      });
+      }, 100);
     },
     calculate_width(level) {
       let width = 100;
@@ -414,6 +412,7 @@ export default {
               width: 100px;
               border-radius: 0.25rem;
               padding: 4px 8px;
+              padding-right: 34px;
               background-color: white;
               border: 1px solid #ced4da;
               outline: none;
@@ -431,26 +430,20 @@ export default {
               z-index: 2;
               cursor: pointer;
               position: absolute;
-              top: calc(90% + 5px);
-              right: 4px;
+              top: calc(90% + 1px);
+              right: 0;
+              border: none;
+              border-left: 1px solid rgba(0, 0, 0, 0.125);
+              border-radius: 0 0.25rem 0.25rem 0;
               outline: none;
               width: 30px;
-              height: 20px;
+              height: 28px;
               padding: 0;
-              padding-bottom: 2px;
-              border: none;
               background-color: transparent;
-              border-radius: 7px;
               display: flex;
               justify-content: center;
               align-items: center;
               @include font(400, 16px);
-            }
-            .button_teleport:hover {
-              border: 1px solid rgba(0, 0, 0, 0.125);
-            }
-            .button_teleport:focus {
-              border: 1px solid rgba(0, 0, 0, 0.125);
             }
             .button_teleport:active {
               background-color: rgba(0, 0, 0, 0.125);
