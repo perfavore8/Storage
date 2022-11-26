@@ -369,8 +369,7 @@ export default {
       this.$store.commit("open_close_show_document_setting", val);
     },
     update_changeValue(newValue) {
-      this.changeValue = [];
-      this.changeValue = this.changeValue.concat(newValue);
+      this.changeValue = [...newValue];
     },
     route(page_name) {
       this.$router.push("/" + page_name);
