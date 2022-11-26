@@ -71,9 +71,9 @@
               <div class="label_select">
                 <label>Поряд имен контактов</label>
                 <SelectorVue
-                  :options_props="contact_name_types_options"
-                  @select="contact_name_types_select"
-                  :selected_option="contact_name_types"
+                  :options_props="contact_name_type_options"
+                  @select="contact_name_type_select"
+                  :selected_option="contact_name_type"
                 />
               </div>
             </div>
@@ -156,8 +156,8 @@ export default {
       ],
       lead_fields_options: [],
       lead_fields: { name: "Не выбрано", value: 1 },
-      contact_name_types_options: [],
-      contact_name_types: { name: "Не выбрано", value: 1 },
+      contact_name_type_options: [],
+      contact_name_type: { name: "Не выбрано", value: 1 },
       showAddNew: false,
       showFields: false,
       show_settings: false,
@@ -175,12 +175,13 @@ export default {
   async mounted() {
     await this.$store.dispatch("get_documents");
     this.set_lead_fields_options();
-    this.set_contact_name_types_options();
+    this.set_contact_name_type_options();
   },
   methods: {
     save() {
       this.$store.dispatch("update_account", {
         field_docs: this.lead_fields.value,
+        contact_name_type: this.contact_name_type.value,
       });
     },
     set_lead_fields_options() {
@@ -205,10 +206,15 @@ export default {
           : null
       );
     },
-    set_contact_name_types_options() {
+    set_contact_name_type_options() {
       this.$store.state.documents.config.contact_name_types.forEach(
         (val, idx) =>
-          this.contact_name_types_options.push({ name: val, value: idx })
+          this.contact_name_type_options.push({ name: val, value: idx })
+      );
+      this.contact_name_type_options.forEach((val) =>
+        val.value == this.$store.state.account.account.config.contact_name_type
+          ? (this.contact_name_type = val)
+          : null
       );
     },
     async refresh_fields() {
@@ -222,8 +228,8 @@ export default {
     lead_fields_select(option) {
       Object.assign(this.lead_fields, option);
     },
-    contact_name_types_select(option) {
-      Object.assign(this.contact_name_types, option);
+    contact_name_type_select(option) {
+      Object.assign(this.contact_name_type, option);
     },
     open_edit(doc) {
       this.cur_doc = { ...doc };
@@ -254,8 +260,10 @@ export default {
       this.show_settings = false;
     },
     open_fields() {
-      this.showFields = true;
-      this.open_modal();
+      if (!this.disable_fields_templates) {
+        this.showFields = true;
+        this.open_modal();
+      }
     },
     close_fields() {
       this.showFields = false;
