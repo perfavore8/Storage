@@ -46,7 +46,11 @@
                     "
                     @focusout="set_selected_field_autocomplete('', '', idx)"
                     @input="
-                      set_selected_field_autocomplete('article', row.article)
+                      set_selected_field_autocomplete(
+                        'article',
+                        row.article,
+                        idx
+                      )
                     "
                     class="input"
                     :class="{
@@ -72,7 +76,9 @@
                       set_selected_field_autocomplete('name', row.name, idx)
                     "
                     @focusout="set_selected_field_autocomplete('', '', idx)"
-                    @input="set_selected_field_autocomplete('name', row.name)"
+                    @input="
+                      set_selected_field_autocomplete('name', row.name, idx)
+                    "
                     class="input"
                     :class="{
                       not_valid: row.name == '' && try_accept,
@@ -338,6 +344,7 @@ export default {
         clearTimeout(this.timer);
         this.timer = setTimeout(async () => {
           const complete = this.selected_field_autocomplete;
+          this.selected_field_autocomplete_list = [];
           if (complete.field == "article" && complete.value.length > 2) {
             const list = await this.$store.dispatch(
               "autocomplete_article",
