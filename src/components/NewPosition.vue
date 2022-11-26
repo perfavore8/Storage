@@ -740,7 +740,7 @@ input[type="number"]::-webkit-inner-spin-button {
   list-style: none;
   max-height: 400px;
   min-height: 40px;
-  width: 300%;
+  // width: 300%;
   overflow-y: scroll;
   scrollbar-width: 0;
   overflow: auto;
