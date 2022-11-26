@@ -215,16 +215,8 @@
         </div>
       </div>
       <div class="grid">
-        <main-grid
-          ref="main"
-          v-if="!grid"
-          @update_changeValue="update_changeValue"
-        ></main-grid>
-        <card-grid
-          ref="card"
-          v-if="grid"
-          @update_changeValue="update_changeValue"
-        ></card-grid>
+        <main-grid ref="main" v-if="!grid"></main-grid>
+        <card-grid ref="card" v-if="grid"></card-grid>
       </div>
     </div>
   </div>
@@ -265,7 +257,6 @@ export default {
       filter_value: false,
       paginatedData: [],
       paginatedParams: [],
-      changeValue: [],
       selected_storage: "Все остатки",
       storage_pages: [
         { name: "Все остатки" },
@@ -367,9 +358,6 @@ export default {
     },
     open_close_show_document_setting(val) {
       this.$store.commit("open_close_show_document_setting", val);
-    },
-    update_changeValue(newValue) {
-      this.changeValue = [...newValue];
     },
     route(page_name) {
       this.$router.push("/" + page_name);
