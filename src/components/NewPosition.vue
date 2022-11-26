@@ -345,21 +345,19 @@ export default {
         this.timer = setTimeout(async () => {
           const complete = this.selected_field_autocomplete;
           this.selected_field_autocomplete_list = [];
-          if (complete.field == "article" && complete.value.length > 2) {
+          if (
+            complete.field !== "" &&
+            complete.value.length > 2 &&
+            complete.value.split("").at(-1) != " " &&
+            complete.value.split("")[0] != " "
+          ) {
             const list = await this.$store.dispatch(
-              "autocomplete_article",
+              "autocomplete_" + complete.field,
               complete.value
             );
-            this.selected_field_autocomplete_list = [...list];
+            if (list != undefined)
+              this.selected_field_autocomplete_list = [...list];
           }
-          if (complete.field == "name" && complete.value.length > 2) {
-            const list = await this.$store.dispatch(
-              "autocomplete_name",
-              complete.value
-            );
-            this.selected_field_autocomplete_list = [...list];
-          }
-          if (complete.field == "") this.selected_field_autocomplete_list = [];
         }, 500);
       },
       deep: true,
