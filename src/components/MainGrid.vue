@@ -1,18 +1,23 @@
 <template>
   <div class="wrapper">
     <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
-    <label v-if="paginatedData.length == 0" class="text">
-      Ничего не найдено
-    </label>
+    <label v-if="products.length == 0" class="text"> Ничего не найдено </label>
     <table class="table" :class="{ blur: show_edit_modal }" v-else>
       <thead>
         <main-grid-bar :fields="all_fields" @sort="sort" />
         <main-grid-filters ref="filters" :fields="all_fields" />
       </thead>
       <tbody>
-        <tr class="row" v-for="row in paginatedData" :key="row.id">
+        <tr class="row" v-for="(row, idx) in products" :key="row.id">
           <td class="item">
-            <input type="checkbox" class="checkbox" :id="row.id" />
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="row.id"
+              v-if="selectedProducts[idx] != undefined"
+              v-model="selectedProducts[idx].value"
+              @change="selectedProducts[idx].item = row"
+            />
             <label :for="row.id"></label>
           </td>
           <td
@@ -36,7 +41,7 @@
       :next="meta.links.next != null"
       :page="meta.meta.current_page"
       :blur="show_edit_modal"
-      :show="paginatedData.length != 0"
+      :show="products.length != 0"
       :count="count"
       @changePage="changePage"
       @changeCount="changeCount"
@@ -64,14 +69,15 @@ export default {
   data() {
     return {
       updateKey: 0,
-      changeValue: [],
+      selectedProducts: [],
       edit_data: {},
     };
   },
 
-  mounted() {
+  async mounted() {
     this.$store.dispatch("get_all_fields");
-    this.$store.dispatch("get_products");
+    await this.$store.dispatch("get_products");
+    this.setSelectedProducts();
   },
 
   computed: {
@@ -88,30 +94,24 @@ export default {
       return this.$refs.filters;
     },
     show_buttons() {
-      const value = this.changeValue.filter((val) => val).length > 0;
+      const value = this.selectedProducts.filter((val) => val.value).length > 0;
       return value;
     },
-    paginatedData() {
+    products() {
       return this.$store.state.products.products;
     },
     ...mapGetters(["show_edit_modal"]),
   },
 
   watch: {
-    paginatedData: {
+    products: {
       handler: function () {
         this.updateKey += 1;
-        this.changeValue = [];
+        this.selectedProducts = [];
         nextTick(() => {
           this.filters.reset_filtersValue();
           this.filters.feelFilters();
         });
-      },
-      deep: true,
-    },
-    changeValue: {
-      handler: function () {
-        this.$emit("update_changeValue", this.changeValue);
       },
       deep: true,
     },
@@ -129,8 +129,14 @@ export default {
       const params = { page: val };
       this.get_products(params);
     },
-    get_products(params) {
-      this.$store.dispatch("get_products", params);
+    setSelectedProducts() {
+      this.selectedProducts = [];
+      for (let i = 0; i < this.count; i++)
+        this.selectedProducts.push({ value: false, item: {} });
+    },
+    async get_products(params) {
+      await this.$store.dispatch("get_products", params);
+      this.setSelectedProducts();
     },
     drop_page() {
       this.changePage(1);

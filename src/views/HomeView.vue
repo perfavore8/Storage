@@ -326,6 +326,17 @@ export default {
     },
   },
   methods: {
+    archive_data() {
+      this.ref_main?.selectedProducts
+        .filter((val) => val.value)
+        ?.forEach((val) => {
+          val.item.is_archive = 1;
+          this.$store.dispatch("update_product", val.item);
+        });
+      this.ref_main?.changePage(
+        this.$store.state.products.meta.meta.current_page
+      );
+    },
     open_table_settings() {
       this.$store.commit("open_table_settings");
     },
