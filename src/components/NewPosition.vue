@@ -21,7 +21,7 @@
                     "
                     :selected_option="row.type"
                     :idx="idx"
-                    :disabled="current_items.length > idx"
+                    :disabled="!row.new"
                   />
                 </td>
                 <td
@@ -56,7 +56,7 @@
                     :class="{
                       not_valid: row.article == '' && try_accept,
                     }"
-                    :disabled="current_items.length > idx"
+                    :disabled="!row.new"
                   />
                 </td>
                 <td
@@ -83,7 +83,7 @@
                     :class="{
                       not_valid: row.name == '' && try_accept,
                     }"
-                    :disabled="current_items.length > idx"
+                    :disabled="!row.new"
                   />
                 </td>
                 <td class="item">
@@ -96,7 +96,7 @@
                       "
                       :selected_option="row.batch_category"
                       :idx="idx"
-                      :disabled="row.type.value == 2"
+                      :disabled="!row.new || row.type.value == 2"
                     />
                     <input
                       type="text"
@@ -106,9 +106,7 @@
                         not_valid:
                           row.batch == '' && try_accept && row.type.value != 2,
                       }"
-                      :disabled="
-                        current_items.length > idx || row.type.value == 2
-                      "
+                      :disabled="!row.new || row.type.value == 2"
                     />
                   </div>
                 </td>
@@ -156,7 +154,7 @@
                     :class="{
                       not_valid: row.cost_price == '' && try_accept,
                     }"
-                    :disabled="current_items.length > idx"
+                    :disabled="!row.new"
                   />
                 </td>
                 <td class="item">
@@ -282,7 +280,7 @@ export default {
     BtnsSaveClose,
   },
   props: {
-    current_items: {
+    currentItems: {
       type: Array,
       required: false,
       default() {
@@ -336,7 +334,7 @@ export default {
     this.get_options("batch", this.batch_category_options, "Новая");
     this.get_options("wh", this.wh_options, "Не выбрано");
     this.get_options("units", this.units_options, "Не выбрано");
-    this.push_new_item();
+    this.currentItems.length ? this.pushCurrentItems() : this.push_new_item();
   },
   watch: {
     selected_field_autocomplete: {
@@ -377,14 +375,47 @@ export default {
         units: { name: "Не выбрано", value: -1 },
         cost_price: 0,
         price: {
-          value: 0,
-          nds: false,
-          nds_percent: 0,
-          nds_change: false,
-          nds_include: false,
+          // value: 0,
+          // nds: false,
+          // nds_percent: 0,
+          // nds_change: false,
+          // nds_include: false,
+
+          cost: 0,
+          currency: "RUB",
+          is_manager_can_change_nds: false,
+          is_nds: false,
+          is_price_include_nds: false,
+          nds: 0,
         },
       };
       this.new_items.push(item);
+    },
+    pushCurrentItems() {
+      console.log(this.currentItems);
+      this.currentItems.forEach((val) => {
+        const item = {
+          new: false,
+          type: { name: "Товар", value: 1 },
+          article: val.fields.article,
+          name: val.fields.name,
+          batch_category: { name: "", value: -1 },
+          batch: val.fields.batch,
+          wh: { name: "Не выбрано", value: -1 },
+          count: 0,
+          units: { name: "Не выбрано", value: -1 },
+          cost_price: val.fields.cost_price,
+          price: {
+            cost: 0,
+            currency: "RUB",
+            is_manager_can_change_nds: false,
+            is_nds: false,
+            is_price_include_nds: false,
+            nds: 0,
+          },
+        };
+        this.new_items.push(item);
+      });
     },
     set_selected_field_autocomplete(field, value, idx) {
       if (field == "") this.targetAutocomplete = null;

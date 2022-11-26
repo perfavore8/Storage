@@ -29,7 +29,7 @@
     </transition>
     <transition name="modal_window">
       <div v-if="show_new_position" class="new_position">
-        <new-position />
+        <new-position :currentItems="currentItems" />
       </div>
     </transition>
     <transition name="modal_window">
@@ -180,7 +180,7 @@
               <template v-if="!isServicePage">
                 <button
                   class="button button_2 smallBtn"
-                  @click="open_close_new_position(true)"
+                  @click="addCurrentProducts()"
                 >
                   Добавить
                 </button>
@@ -265,6 +265,7 @@ export default {
         { name: "Услуги" },
       ],
       grid: false,
+      currentItems: [],
     };
   },
   computed: {
@@ -317,7 +318,7 @@ export default {
     },
     show_modals() {
       this.show_modals
-        ? (window.scrollBy(-99999, 0),
+        ? (window.scrollBy(-99999, -99999),
           (document.body.style.overflowX = "hidden"))
         : (document.body.style.overflowX = "auto");
     },
@@ -336,6 +337,14 @@ export default {
       this.ref_main?.changePage(
         this.$store.state.products.meta.meta.current_page
       );
+    },
+    addCurrentProducts() {
+      this.open_close_new_position(true);
+      this.currentItems = [
+        ...this.ref_main?.selectedProducts
+          .filter((val) => val.value)
+          .map((val) => val.item),
+      ];
     },
     open_table_settings() {
       this.$store.commit("open_table_settings");
