@@ -77,6 +77,7 @@ import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector
 import EditDate from "@/components/EditItemSelections/EditDate.vue";
 import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
+import { nextTick } from "process";
 export default {
   components: {
     EditInteger,
@@ -102,16 +103,17 @@ export default {
     };
   },
   async mounted() {
-    // const category_id = this.new_edit_data.category_id;
-    const category_id = 1;
-    await this.$store
-      .dispatch("get_fields_with_parents", category_id)
-      .then(
-        () =>
-          (this.copy_fields_with_parents = [
-            ...this.$store.state.fields.fields_with_parents,
-          ])
-      );
+    nextTick(async () => {
+      const category_id = this.new_edit_data.fields.category;
+      await this.$store
+        .dispatch("get_fields_with_parents", category_id)
+        .then(
+          () =>
+            (this.copy_fields_with_parents = [
+              ...this.$store.state.fields.fields_with_parents,
+            ])
+        );
+    });
   },
   computed: {},
   methods: {
