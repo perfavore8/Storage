@@ -50,7 +50,9 @@ export default {
     GridBottom,
   },
   data() {
-    return {};
+    return {
+      isLoading: false,
+    };
   },
   mounted() {
     this.$store.dispatch("get_all_fields");
@@ -75,14 +77,18 @@ export default {
     changePage(val) {
       this.page = val;
     },
-    unarchive_data(item) {
-      const res = {
-        id: item.id,
-        fields: item.fields,
-        is_archive: 0,
-      };
-      this.$store.dispatch("update_product", res);
-      this.$store.dispatch("get_products", { is_archive: 1 });
+    async unarchive_data(item) {
+      if (!this.isLoading) {
+        this.isLoading = true;
+        const res = {
+          id: item.id,
+          fields: item.fields,
+          is_archive: 0,
+        };
+        await this.$store.dispatch("update_product", res);
+        await this.$store.dispatch("get_products", { is_archive: 1 });
+        this.isLoading = false;
+      }
     },
   },
 };
