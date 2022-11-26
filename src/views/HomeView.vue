@@ -162,7 +162,7 @@
               aria-invalid="false"
             />
             <div class="bot">
-              <p>Найдено: {{ paginatedData.length }}</p>
+              <p>Найдено: {{ totalCountProducts }}</p>
               <input
                 type="checkbox"
                 class="checkbox"
@@ -310,6 +310,9 @@ export default {
       "show_product_category",
       "show_product_properties",
     ]),
+    totalCountProducts() {
+      return this.$store.state.products.meta.meta.total;
+    },
     ref_main() {
       return this.$refs.main;
     },
