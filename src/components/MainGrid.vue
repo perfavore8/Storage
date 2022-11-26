@@ -65,6 +65,7 @@ export default {
     MainGridBar,
   },
   props: {},
+  inject: ["isServicePage"],
 
   data() {
     return {
@@ -76,7 +77,7 @@ export default {
 
   async mounted() {
     this.$store.dispatch("get_all_fields");
-    await this.$store.dispatch("get_products");
+    await this.get_products();
     this.setSelectedProducts();
   },
 
@@ -135,6 +136,7 @@ export default {
         this.selectedProducts.push({ value: false, item: {} });
     },
     async get_products(params) {
+      if (this.isServicePage.value) params = { ...params, is_service: 1 };
       await this.$store.dispatch("get_products", params);
       this.setSelectedProducts();
     },
