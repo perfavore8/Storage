@@ -54,6 +54,19 @@ export default {
       console.log("update_product", json);
       return json;
     },
+    async add_product(context, params) {
+      const url = BaseURL + "product/add";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      console.log("add_product", json);
+      return json;
+    },
     async autocomplete_article(context, query) {
       const url = BaseURL + "product/autocomplete/article";
       const res = await fetch(url + "?query=" + query);
