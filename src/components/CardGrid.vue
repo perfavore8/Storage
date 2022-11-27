@@ -158,8 +158,8 @@ export default {
     data: {
       handler: function () {
         this.ref_links.get_data_categoryes();
-        this.ref_filters.reset_filtersValue();
-        this.ref_filters.feelFilters();
+        this.ref_filters?.reset_filtersValue();
+        this.ref_filters?.feelFilters();
       },
       deep: true,
     },
@@ -184,7 +184,7 @@ export default {
       this.page = 1;
       this.ref_links.reset_sel();
       this.ref_links.showcategoryes();
-      this.ref_filters.feelFilters();
+      this.ref_filters?.feelFilters();
     },
     emit_link(obj) {
       Object.assign(this.link, obj);
@@ -247,10 +247,6 @@ export default {
       justify-content: space-between;
       border-bottom: 1px dotted #c9c9c9;
       padding-top: 5px;
-      .name {
-      }
-      .value {
-      }
       .value:first-child {
         display: none;
       }

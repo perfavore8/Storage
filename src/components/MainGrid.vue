@@ -26,7 +26,7 @@
             v-show="item.table_config.visible"
             :key="item"
           >
-            <div class="dublitem">
+            <div class="dublitem" v-if="row.fields">
               {{ row.fields[item.code] }}
             </div>
           </td>
@@ -110,8 +110,8 @@ export default {
         this.updateKey += 1;
         this.selectedProducts = [];
         nextTick(() => {
-          this.filters.reset_filtersValue();
-          this.filters.feelFilters();
+          this.filters?.reset_filtersValue();
+          this.filters?.feelFilters();
         });
       },
       deep: true,
