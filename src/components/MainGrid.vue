@@ -145,7 +145,7 @@ export default {
     },
     open_edit_modal(row) {
       this.edit_data = { ...row };
-      this.$store.commit("open_edit_modal", row.id);
+      this.$store.commit("open_edit_modal", row.fields.category);
     },
     sort(code, order) {
       const params = {
