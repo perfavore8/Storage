@@ -29,7 +29,11 @@
         ></button>
       </div>
     </th>
-    <th class="bar_item item" style="min-width: 20px"></th>
+    <th class="bar_item item" style="min-width: 20px">
+      <div>
+        <button class="settings_btn" @click="openTableSettings()"></button>
+      </div>
+    </th>
   </tr>
 </template>
 
@@ -79,6 +83,9 @@ export default {
         : (new_order = order_values[0]);
       this.order = { code: code, prev_order: new_order };
       this.$emit("sort", code, new_order);
+    },
+    openTableSettings() {
+      this.$store.commit("open_table_settings");
     },
   },
 };
@@ -133,6 +140,26 @@ export default {
   }
   .bar_item:last-child {
     width: 20px !important;
+    div {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
+}
+.settings_btn {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  transition: all 0.15s ease-out;
+  @include bg_image("../assets/gear_1.svg");
+}
+.settings_btn:hover {
+  transform: rotate(90deg) scale(1.1);
 }
 </style>

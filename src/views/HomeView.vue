@@ -98,11 +98,6 @@
           <transition name="modal">
             <div v-show="show_settings" class="modal_settings">
               <a>
-                <div class="modal_container" @click="open_table_settings()">
-                  Настройка таблицы
-                </div>
-              </a>
-              <a>
                 <div class="modal_container" @click="open_edit_stuff()">
                   Настройка товаров
                 </div>
@@ -348,9 +343,6 @@ export default {
     },
     dropCurrentItems() {
       this.currentItems = [];
-    },
-    open_table_settings() {
-      this.$store.commit("open_table_settings");
     },
     open_close_new_position(value) {
       this.$store.commit("open_close_new_position", value);
