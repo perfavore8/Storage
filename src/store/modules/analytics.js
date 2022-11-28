@@ -8,7 +8,7 @@ export default {
   getters: {},
   mutations: {
     updateAutocomplete(state, value) {
-      state.autocomplete = [...value];
+      if (value) state.autocomplete = [...value];
     },
   },
   actions: {
@@ -18,7 +18,7 @@ export default {
         url + params.field + preparation_params(params.value)
       );
       const json = await res.json();
-      context.dispatch("updateAutocomplete", json);
+      context.commit("updateAutocomplete", json);
     },
   },
 };
