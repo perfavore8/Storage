@@ -144,6 +144,10 @@ export default {
   }
   p {
     margin: 0;
+    text-overflow: ellipsis;
+    overflow-x: clip;
+    white-space: nowrap;
+    max-width: 200px;
   }
   .title {
     height: 20px;
@@ -184,7 +188,7 @@ export default {
   }
   .options {
     position: absolute;
-    top: 34px;
+    top: 100%;
     max-height: 400px;
     overflow-y: scroll;
     scrollbar-width: 0;
