@@ -29,7 +29,7 @@
     </transition>
     <transition name="modal_window">
       <div v-if="show_new_position" class="new_position">
-        <new-position :currentItems="currentItems" />
+        <new-position :currentItems="currentItems" @close="dropCurrentItems" />
       </div>
     </transition>
     <transition name="modal_window">
@@ -345,6 +345,9 @@ export default {
           .filter((val) => val.value)
           .map((val) => val.item),
       ];
+    },
+    dropCurrentItems() {
+      this.currentItems = [];
     },
     open_table_settings() {
       this.$store.commit("open_table_settings");

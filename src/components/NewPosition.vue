@@ -402,7 +402,7 @@ export default {
             ...this.categories_options.filter(
               (value) => value.value == val.fields.category
             )[0],
-          }, // ???
+          },
           price: {
             cost: 0,
             currency: "RUB",
@@ -456,6 +456,7 @@ export default {
       this.new_items[idx][cat] = { ...option };
     },
     close() {
+      this.$emit("close");
       this.$store.commit("open_close_new_position", false);
     },
     save() {
@@ -478,6 +479,7 @@ export default {
         params.products.push(item);
       });
       this.$store.dispatch("add_product", params);
+      this.close();
     },
   },
 };

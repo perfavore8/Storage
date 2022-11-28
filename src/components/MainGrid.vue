@@ -224,7 +224,7 @@ export default {
   margin-right: 0.5em;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: 50% 50%;
+  background-size: 80%;
   cursor: pointer;
   transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 }
