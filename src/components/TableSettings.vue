@@ -60,20 +60,17 @@ export default defineComponent({
   methods: {
     save() {
       this.list.map((val, idx) => (val.table_config.sort = idx + 1));
-      const arr = [];
+      const params = {};
       this.list.forEach((val) => {
-        const res = {};
         let visible = val.table_config.visible;
         if (visible === false) visible = 0;
         if (visible === true) visible = 1;
-        res[val.id] = {
+        params[val.id] = {
           sort: val.table_config.sort,
           visible: visible,
         };
-        arr.push(res);
       });
-      console.log(arr);
-      this.$store.dispatch("update_config_table", arr);
+      this.$store.dispatch("update_config_table", params);
       this.$store.commit("close_table_settings");
     },
     close() {
