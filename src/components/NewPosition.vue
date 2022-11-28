@@ -160,25 +160,25 @@
                 <td class="item">
                   <input
                     type="number"
-                    v-model="row.price.value"
+                    v-model="row.price.cost"
                     class="input"
                     min="0"
                     :class="{
-                      not_valid: row.price.value == '' && try_accept,
+                      not_valid: row.price.cost == '' && try_accept,
                     }"
                   />
                 </td>
                 <td
                   class="item"
                   :class="{
-                    long: row.price.nds,
+                    long: row.price.is_nds,
                   }"
                 >
                   <div class="nds">
-                    <div v-if="!row.price.nds">
+                    <div v-if="!row.price.is_nds">
                       <input
                         type="checkbox"
-                        v-model="row.price.nds"
+                        v-model="row.price.is_nds"
                         class="checkbox"
                         :id="idx + 'nq'"
                       />
@@ -188,21 +188,21 @@
                       <div class="checkboxes">
                         <input
                           type="checkbox"
-                          v-model="row.price.nds"
+                          v-model="row.price.is_nds"
                           class="checkbox"
                           :id="idx + 'nq'"
                         />
                         <label :for="idx + 'nq'">НДС</label>
                         <input
                           type="checkbox"
-                          v-model="row.price.nds_include"
+                          v-model="row.price.is_price_include_nds"
                           class="checkbox"
                           :id="idx + 'nw'"
                         />
                         <label :for="idx + 'nw'">включен в цену</label>
                         <input
                           type="checkbox"
-                          v-model="row.price.nds_change"
+                          v-model="row.price.is_manager_can_change_nds"
                           class="checkbox"
                           :id="idx + 'ne'"
                         />
@@ -211,7 +211,7 @@
                       <input
                         type="number"
                         class="input"
-                        v-model="row.price.nds_percent"
+                        v-model="row.price.nds"
                         placeholder="% НДС"
                         min="0"
                       />
@@ -226,7 +226,6 @@
                     "
                     :selected_option="row.category"
                     :idx="idx"
-                    :disabled="row.type.value == 2"
                   />
                 </td>
                 <transition name="row">
@@ -374,13 +373,8 @@ export default {
         count: 0,
         units: { name: "Не выбрано", value: -1 },
         cost_price: 0,
+        category: { name: "Не выбрано", value: -1 },
         price: {
-          // value: 0,
-          // nds: false,
-          // nds_percent: 0,
-          // nds_change: false,
-          // nds_include: false,
-
           cost: 0,
           currency: "RUB",
           is_manager_can_change_nds: false,
@@ -392,7 +386,6 @@ export default {
       this.new_items.push(item);
     },
     pushCurrentItems() {
-      console.log(this.currentItems);
       this.currentItems.forEach((val) => {
         const item = {
           new: false,
@@ -405,6 +398,11 @@ export default {
           count: 0,
           units: { name: "Не выбрано", value: -1 },
           cost_price: val.fields.cost_price,
+          category: {
+            ...this.categories_options.filter(
+              (value) => value.value == val.fields.category
+            )[0],
+          }, // ???
           price: {
             cost: 0,
             currency: "RUB",
@@ -459,6 +457,27 @@ export default {
     },
     close() {
       this.$store.commit("open_close_new_position", false);
+    },
+    save() {
+      const params = { products: [] };
+      this.new_items.forEach((val) => {
+        const item = {
+          is_service: val.type.value - 1,
+          fields: {
+            name: val.name,
+            article: val.article,
+            batch: val.batch,
+            // wh: { count: 0, reserve: 0 }, !!!не понятно
+            // count: val.count, !!!не работают
+            units: val.units.name,
+            // cost_price: val.cost_price, !!!не работают
+            price: val.price,
+            category: val.category.value,
+          },
+        };
+        params.products.push(item);
+      });
+      this.$store.dispatch("add_product", params);
     },
   },
 };
