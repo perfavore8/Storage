@@ -6,7 +6,17 @@ import categories from "./modules/categories";
 import products from "./modules/products";
 import documents from "./modules/documents";
 import account from "./modules/account";
+import analytics from "./modules/analytics";
 
 export default createStore({
-  modules: { data, shows, fields, categories, products, documents, account },
+  modules: {
+    data,
+    shows,
+    fields,
+    categories,
+    products,
+    documents,
+    account,
+    analytics,
+  },
 });
