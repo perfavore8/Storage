@@ -608,8 +608,8 @@ export default {
           }
           .item:nth-child(7) {
             width: 1%;
-            min-width: 230px;
-            max-width: 230px;
+            max-width: 140px;
+            min-width: 140px;
           }
           .item:nth-child(8) {
             width: 5%;
