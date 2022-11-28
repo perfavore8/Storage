@@ -452,7 +452,6 @@ export default {
       return res;
     },
     option_select(option, idx, cat) {
-      console.log(option, idx, cat);
       this.new_items[idx][cat] = { ...option };
     },
     close() {
