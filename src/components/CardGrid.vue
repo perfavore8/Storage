@@ -73,21 +73,8 @@ export default {
     CardGridFilters,
     CardGridLinks,
   },
-  props: {
-    params: {
-      type: Array,
-      required: true,
-    },
-    data: {
-      type: Array,
-      required: true,
-    },
-    collval: {
-      type: Array,
-      required: true,
-    },
-  },
-  emits: { update_changeValue: null },
+  props: {},
+  emits: {},
   data() {
     return {
       count: 5,
@@ -164,9 +151,7 @@ export default {
       deep: true,
     },
     changeValue: {
-      handler: function () {
-        this.$emit("update_changeValue", this.changeValue);
-      },
+      handler: function () {},
       deep: true,
     },
     show_buttons() {
