@@ -14,15 +14,17 @@
       </div>
     </div>
     <div class="content">
-      <h1>Analytics Page</h1>
+      <ReportGrid />
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import ReportGrid from "@/components/ReportGrid.vue";
 export default {
   name: "AnalyticsView",
+  components: { ReportGrid },
   computed: {
     ...mapGetters(["catalog"]),
   },
