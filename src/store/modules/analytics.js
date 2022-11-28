@@ -12,7 +12,7 @@ export default {
     },
   },
   actions: {
-    async get_autocomplete(context, params) {
+    async getAutocompleteAnalytics(context, params) {
       const url = BaseURL + "analytics/autocomplete/"; // <----- слэш не трогай!!!
       const res = await fetch(
         url + params.field + preparation_params(params.value)
