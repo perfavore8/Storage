@@ -190,6 +190,10 @@
           </transition>
         </div>
         <div class="filters_right">
+          <div class="btns" v-if="filter_value">
+            <button class="btn">Применить</button>
+            <button class="btn">Очистить</button>
+          </div>
           <div class="filter_group">
             <input
               type="checkbox"
@@ -653,6 +657,28 @@ export default {
       display: flex;
       flex-direction: row;
       gap: 18px;
+      .btns {
+        display: flex;
+        flex-direction: row;
+        justify-self: end;
+        .btn:first-child {
+          background-color: #0d6efd;
+          border-radius: 5px 0 0 5px;
+        }
+        .btn:first-child:hover {
+          background-color: #0256d4;
+
+          box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
+        }
+        .btn:last-child {
+          background-color: #6c757d;
+          border-radius: 0 5px 5px 0;
+        }
+        .btn:last-child:hover {
+          background-color: #5f676d;
+          box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
+        }
+      }
 
       .filter_group {
         display: flex;
