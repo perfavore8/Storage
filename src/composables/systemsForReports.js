@@ -1,6 +1,9 @@
 import { computed, reactive, ref, watch } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
 
 export function useSystems() {
+  const { t } = useLangConfiguration();
+
   const systems = reactive([
     {
       id: 0,
@@ -16,12 +19,21 @@ export function useSystems() {
           show: {
             value: true,
           },
-          placeholder: "Сущность",
+          placeholder: t("Analytics.systemsForReports.entities.placeholder"),
           selected: {},
           list: [
-            { name: "Сделка", value: "trade" },
-            { name: "Контакт", value: "contact" },
-            { name: "Компания", value: "company" },
+            {
+              name: t("Analytics.systemsForReports.entities.trade"),
+              value: "trade",
+            },
+            {
+              name: t("Analytics.systemsForReports.entities.contact"),
+              value: "contact",
+            },
+            {
+              name: t("Analytics.systemsForReports.entities.company"),
+              value: "company",
+            },
           ],
         },
         {
@@ -33,11 +45,14 @@ export function useSystems() {
           show: {
             value: computed(() => isValueSelected(1235674, "any")),
           },
-          placeholder: "Данные",
+          placeholder: t("Analytics.systemsForReports.data.placeholder"),
           selected: {},
           list: [
-            { name: "События", value: "event" },
-            { name: "Данные", value: "data" },
+            {
+              name: t("Analytics.systemsForReports.data.event"),
+              value: "event",
+            },
+            { name: t("Analytics.systemsForReports.data.data"), value: "data" },
           ],
         },
         {
@@ -52,16 +67,16 @@ export function useSystems() {
                 isValueSelected(1235674, "trade") && isValueSelected(0, "event")
             ),
           },
-          placeholder: "Сделки",
+          placeholder: t("Analytics.systemsForReports.trade.placeholder"),
           selected: {},
           list: [
-            { name: "Создание", value: 1 },
-            { name: "Смена этапа", value: 2 },
-            { name: "смена ответственного", value: 3 },
-            { name: "добавление примечания", value: 4 },
-            { name: "изменение поля", value: 5 },
-            { name: "привязка компании", value: 6 },
-            { name: "привязка контакта", value: 7 },
+            { name: t("Analytics.systemsForReports.trade.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.trade.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.trade.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.trade.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.trade.5"), value: 5 },
+            { name: t("Analytics.systemsForReports.trade.6"), value: 6 },
+            { name: t("Analytics.systemsForReports.trade.7"), value: 7 },
           ],
         },
         // {
@@ -126,16 +141,16 @@ export function useSystems() {
                 isValueSelected(1235674, "trade") && isValueSelected(0, "data")
             ),
           },
-          placeholder: "Сделки",
+          placeholder: t("Analytics.systemsForReports.trade2.placeholder"),
           selected: {},
           list: [
-            { name: "связанные контакты", value: 1 },
-            { name: "связанная компания", value: 2 },
-            { name: "примечания", value: 3 },
-            { name: "дата создания", value: 4 },
-            { name: "дата закрытия (успешно, не успешно этапы)", value: 5 },
-            { name: "теги", value: 6 },
-            { name: "список задач", value: 7 },
+            { name: t("Analytics.systemsForReports.trade2.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.trade2.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.trade2.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.trade2.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.trade2.5"), value: 5 },
+            { name: t("Analytics.systemsForReports.trade2.6"), value: 6 },
+            { name: t("Analytics.systemsForReports.trade2.7"), value: 7 },
           ],
         },
         {
@@ -151,7 +166,7 @@ export function useSystems() {
                 isValueSelected(0, "event")
             ),
           },
-          placeholder: "Контакты",
+          placeholder: t("Analytics.systemsForReports.contact.placeholder"),
           selected: {},
           list: [
             { name: "создание (дата)", value: 1 },
@@ -160,12 +175,12 @@ export function useSystems() {
               name: "новый чат (сообщение) - список чатов: вк, фб, инста, вотсап, телега, прочие",
               value: 3,
             },
-            { name: "отправлено смс", value: 4 },
-            { name: "отправлено письмо / получено письмо", value: 5 },
-            { name: "смена ответственного", value: 6 },
-            { name: "изменение поля / тега", value: 7 },
-            { name: "привязка к сделке", value: 8 },
-            { name: "привязка к контакту", value: 9 },
+            { name: t("Analytics.systemsForReports.contact.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.contact.5"), value: 5 },
+            { name: t("Analytics.systemsForReports.contact.6"), value: 6 },
+            { name: t("Analytics.systemsForReports.contact.7"), value: 7 },
+            { name: t("Analytics.systemsForReports.contact.8"), value: 8 },
+            { name: t("Analytics.systemsForReports.contact.9"), value: 9 },
           ],
         },
         {
@@ -181,19 +196,19 @@ export function useSystems() {
                 isValueSelected(0, "data")
             ),
           },
-          placeholder: "Контакты",
+          placeholder: t("Analytics.systemsForReports.contact4.placeholder"),
           selected: {},
           list: [
-            { name: "ответственный", value: 1 },
-            { name: "телефон", value: 2 },
-            { name: "почта", value: 3 },
-            { name: "связанные сделки", value: 4 },
-            { name: "связанная компания", value: 5 },
-            { name: "должность", value: 6 },
-            { name: "пользовательские поля (id)", value: 7 },
-            { name: "примечания", value: 8 },
-            { name: "теги", value: 9 },
-            { name: "список задач", value: 10 },
+            { name: t("Analytics.systemsForReports.contact4.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.contact4.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.contact4.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.contact4.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.contact4.5"), value: 5 },
+            { name: t("Analytics.systemsForReports.contact4.6"), value: 6 },
+            { name: t("Analytics.systemsForReports.contact4.7"), value: 7 },
+            { name: t("Analytics.systemsForReports.contact4.8"), value: 8 },
+            { name: t("Analytics.systemsForReports.contact4.9"), value: 9 },
+            { name: t("Analytics.systemsForReports.contact4.10"), value: 10 },
           ],
         },
         {
@@ -209,15 +224,15 @@ export function useSystems() {
                 isValueSelected(0, "event")
             ),
           },
-          placeholder: "Компании",
+          placeholder: t("Analytics.systemsForReports.company.placeholder"),
           selected: {},
           list: [
-            { name: "привязка к сделке)", value: 1 },
-            { name: "привязка к контакту", value: 2 },
-            { name: "создание (дата)", value: 3 },
-            { name: "звонок", value: 4 },
-            { name: "отправлено письмо / получено письмо", value: 5 },
-            { name: "изменение поля / тега", value: 6 },
+            { name: t("Analytics.systemsForReports.company.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.company.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.company.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.company.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.company.5"), value: 5 },
+            { name: t("Analytics.systemsForReports.company.6"), value: 6 },
           ],
         },
         {
@@ -233,19 +248,19 @@ export function useSystems() {
                 isValueSelected(0, "data")
             ),
           },
-          placeholder: "Компании",
+          placeholder: t("Analytics.systemsForReports.company6.placeholder"),
           selected: {},
           list: [
-            { name: "ответственный", value: 1 },
-            { name: "телефон", value: 2 },
-            { name: "почта", value: 3 },
-            { name: "сайт", value: 4 },
-            { name: "связанные контакты", value: 5 },
-            { name: "связанные сделки", value: 6 },
-            { name: "пользовательские поля (id)", value: 7 },
-            { name: "теги", value: 8 },
-            { name: "примечания", value: 9 },
-            { name: "список задач", value: 10 },
+            { name: t("Analytics.systemsForReports.company6.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.company6.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.company6.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.company6.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.company6.5"), value: 5 },
+            { name: t("Analytics.systemsForReports.company6.6"), value: 6 },
+            { name: t("Analytics.systemsForReports.company6.7"), value: 7 },
+            { name: t("Analytics.systemsForReports.company6.8"), value: 8 },
+            { name: t("Analytics.systemsForReports.company6.9"), value: 9 },
+            { name: t("Analytics.systemsForReports.company6.10"), value: 10 },
           ],
         },
         {
@@ -261,14 +276,14 @@ export function useSystems() {
                 isValueSelected(0, "data1")
             ),
           },
-          placeholder: "Задачи",
+          placeholder: t("Analytics.systemsForReports.task.placeholder"),
           selected: {},
           list: [
-            { name: "создание задачи", value: 1 },
-            { name: "изменение задачи (срок)", value: 2 },
-            { name: "изменение задачи (тип)", value: 3 },
-            { name: "изменение задачи (содержимое)", value: 4 },
-            { name: "закрытие задачи (с результатом или без ???)", value: 5 },
+            { name: t("Analytics.systemsForReports.task.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.task.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.task.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.task.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.task.5"), value: 5 },
           ],
         },
         {
@@ -284,17 +299,17 @@ export function useSystems() {
                 isValueSelected(0, "data1")
             ),
           },
-          placeholder: "Задачи",
+          placeholder: t("Analytics.systemsForReports.task8.placeholder"),
           selected: {},
           list: [
-            { name: "ответственный", value: 1 },
-            { name: "дата создания", value: 2 },
-            { name: "дата изменения", value: 3 },
-            { name: "дата завершения", value: 4 },
-            { name: "тип задачи", value: 5 },
-            { name: "содержимое задачи", value: 6 },
-            { name: "результат выполнения", value: 7 },
-            { name: "связаные компании / контакты / сделки", value: 8 },
+            { name: t("Analytics.systemsForReports.task8.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.task8.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.task8.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.task8.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.task8.5"), value: 5 },
+            { name: t("Analytics.systemsForReports.task8.6"), value: 6 },
+            { name: t("Analytics.systemsForReports.task8.7"), value: 7 },
+            { name: t("Analytics.systemsForReports.task8.8"), value: 8 },
           ],
         },
         {
@@ -318,7 +333,7 @@ export function useSystems() {
                 isValueSelected(1235674, "any")
             ),
           },
-          placeholder: "Интервал дат",
+          placeholder: t("Analytics.systemsForReports.date.placeholder"),
           selected: "-",
           list: [],
         },
@@ -343,18 +358,56 @@ export function useSystems() {
                 isValueSelected(1235674, "any")
             ),
           },
-          placeholder: "Воронка и этап",
+          placeholder: t(
+            "Analytics.systemsForReports.vortexAndPhase.placeholder"
+          ),
           selected: {},
           list: [
-            { name: "Все", value: "all", selected: false },
-            { name: "Этап 1", value: 1, selected: false },
-            { name: "Этап 2", value: 2, selected: false },
-            { name: "Этап 3", value: 3, selected: false },
-            { name: "Этап 4", value: 4, selected: false },
-            { name: "Воронка 1", value: 5, selected: false },
-            { name: "Воронка 2", value: 6, selected: false },
-            { name: "Воронка 3", value: 7, selected: false },
-            { name: "Воронка 4", value: 8, selected: false },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.all"),
+              value: "all",
+              selected: false,
+            },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.1"),
+              value: 1,
+              selected: false,
+            },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.2"),
+              value: 2,
+              selected: false,
+            },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.3"),
+              value: 3,
+              selected: false,
+            },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.4"),
+              value: 4,
+              selected: false,
+            },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.5"),
+              value: 5,
+              selected: false,
+            },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.6"),
+              value: 6,
+              selected: false,
+            },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.7"),
+              value: 7,
+              selected: false,
+            },
+            {
+              name: t("Analytics.systemsForReports.vortexAndPhase.8"),
+              value: 8,
+              selected: false,
+            },
           ],
         },
         {
@@ -378,14 +431,14 @@ export function useSystems() {
                 isValueSelected(1235674, "any")
             ),
           },
-          placeholder: "Отвественный",
+          placeholder: t("Analytics.systemsForReports.responsible.placeholder"),
           selected: {},
           list: [
-            { name: "Отвественный 1", value: 1 },
-            { name: "Отвественный 2", value: 2 },
-            { name: "Отвественный 3", value: 3 },
-            { name: "Отвественный 4", value: 4 },
-            { name: "Отвественный 5", value: 5 },
+            { name: t("Analytics.systemsForReports.responsible.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.responsible.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.responsible.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.responsible.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.responsible.5"), value: 5 },
           ],
         },
         {
@@ -409,14 +462,14 @@ export function useSystems() {
                 isValueSelected(1235674, "any")
             ),
           },
-          placeholder: "Теги",
+          placeholder: t("Analytics.systemsForReports.tags.placeholder"),
           selected: {},
           list: [
-            { name: "Тег 1", value: 1 },
-            { name: "Тег 2", value: 2 },
-            { name: "Тег 3", value: 3 },
-            { name: "Тег 4", value: 4 },
-            { name: "Тег 5", value: 5 },
+            { name: t("Analytics.systemsForReports.tags.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.tags.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.tags.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.tags.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.tags.5"), value: 5 },
           ],
         },
         {
@@ -440,14 +493,14 @@ export function useSystems() {
                 isValueSelected(1235674, "any")
             ),
           },
-          placeholder: "Инициатор события",
+          placeholder: t("Analytics.systemsForReports.initiator.placeholder"),
           selected: {},
           list: [
-            { name: "Инициатор 1", value: 1 },
-            { name: "Инициатор 2", value: 2 },
-            { name: "Инициатор 3", value: 3 },
-            { name: "Инициатор 4", value: 4 },
-            { name: "Инициатор 5", value: 5 },
+            { name: t("Analytics.systemsForReports.initiator.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.initiator.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.initiator.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.initiator.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.initiator.5"), value: 5 },
           ],
         },
         {
@@ -455,7 +508,7 @@ export function useSystems() {
           name: "before",
           type: "AppInputSelect",
           value: "",
-          placeholder: "До",
+          placeholder: t("Analytics.systemsForReports.before.placeholder"),
           minLength: 0,
           show: {
             value: computed(
@@ -470,11 +523,11 @@ export function useSystems() {
           },
           selected: {},
           list: [
-            { name: "1", value: 1 },
-            { name: "2", value: 2 },
-            { name: "3", value: 3 },
-            { name: "4", value: 4 },
-            { name: "5", value: 5 },
+            { name: t("Analytics.systemsForReports.before.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.before.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.before.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.before.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.before.5"), value: 5 },
           ],
         },
         {
@@ -482,7 +535,7 @@ export function useSystems() {
           name: "after",
           type: "AppInputSelect",
           value: "",
-          placeholder: "После",
+          placeholder: t("Analytics.systemsForReports.after.placeholder"),
           minLength: 0,
           show: {
             value: computed(
@@ -497,11 +550,11 @@ export function useSystems() {
           },
           selected: {},
           list: [
-            { name: "1", value: 1 },
-            { name: "2", value: 2 },
-            { name: "3", value: 3 },
-            { name: "4", value: 4 },
-            { name: "5", value: 5 },
+            { name: t("Analytics.systemsForReports.after.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.after.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.after.3"), value: 3 },
+            { name: t("Analytics.systemsForReports.after.4"), value: 4 },
+            { name: t("Analytics.systemsForReports.after.5"), value: 5 },
           ],
         },
         {
@@ -509,7 +562,7 @@ export function useSystems() {
           name: "taskStatus",
           type: "AppInputSelect",
           value: "",
-          placeholder: "Статус задачи",
+          placeholder: t("Analytics.systemsForReports.taskStatus.placeholder"),
           minLength: 0,
           show: {
             value: computed(
@@ -522,10 +575,10 @@ export function useSystems() {
           },
           selected: {},
           list: [
-            { name: "Открытый", value: 0 },
-            { name: "Успешный", value: 1 },
-            { name: "Отменен", value: 2 },
-            { name: "Удален", value: 3 },
+            { name: t("Analytics.systemsForReports.taskStatus.0"), value: 0 },
+            { name: t("Analytics.systemsForReports.taskStatus.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.taskStatus.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.taskStatus.3"), value: 3 },
           ],
         },
         {
@@ -533,7 +586,7 @@ export function useSystems() {
           name: "taskType",
           type: "AppInputSelect",
           value: "",
-          placeholder: "Тип задачи",
+          placeholder: t("Analytics.systemsForReports.taskType.placeholder"),
           minLength: 0,
           show: {
             value: computed(
@@ -546,10 +599,10 @@ export function useSystems() {
           },
           selected: {},
           list: [
-            { name: "Открытый", value: 0 },
-            { name: "Успешный", value: 1 },
-            { name: "Отменен", value: 2 },
-            { name: "Удален", value: 3 },
+            { name: t("Analytics.systemsForReports.taskType.0"), value: 0 },
+            { name: t("Analytics.systemsForReports.taskType.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.taskType.2"), value: 2 },
+            { name: t("Analytics.systemsForReports.taskType.3"), value: 3 },
           ],
         },
         {
@@ -557,7 +610,7 @@ export function useSystems() {
           name: "messageType",
           type: "AppInputSelect",
           value: "",
-          placeholder: "Тип сообщения",
+          placeholder: t("Analytics.systemsForReports.messageType.placeholder"),
           minLength: 0,
           show: {
             value: computed(
@@ -570,8 +623,8 @@ export function useSystems() {
           },
           selected: {},
           list: [
-            { name: "Входящий", value: 1 },
-            { name: "Исходящий", value: 2 },
+            { name: t("Analytics.systemsForReports.messageType.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.messageType.2"), value: 2 },
           ],
         },
       ],

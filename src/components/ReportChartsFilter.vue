@@ -13,19 +13,22 @@
 <script>
 import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
 import { reactive } from "@vue/reactivity";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { AppRadioBtnsGroup },
   props: {},
   setup(props, context) {
+    const { t } = useLangConfiguration();
+
     const fields = reactive([
       {
         value: "date",
-        name: "Тип отчета",
-        selected: { name: "По дням", value: "days" },
+        name: t("Analytics.chartsFilters.type"),
+        selected: { name: t("Analytics.chartsFilters.days"), value: "days" },
         list: [
-          { name: "По дням", value: "days" },
-          { name: "По месяцам", value: "months" },
-          { name: "По годам", value: "years" },
+          { name: t("Analytics.chartsFilters.days"), value: "days" },
+          { name: t("Analytics.chartsFilters.months"), value: "months" },
+          { name: t("Analytics.chartsFilters.years"), value: "years" },
         ],
         select(option) {
           fields[0].selected = option;
@@ -34,12 +37,12 @@ export default {
       },
       {
         value: "type",
-        name: "Тип отчета",
-        selected: { name: "Всего продаж", value: "total" },
+        name: t("Analytics.chartsFilters.type"),
+        selected: { name: t("Analytics.chartsFilters.total"), value: "total" },
         list: [
-          { name: "Всего продаж", value: "total" },
-          { name: "По клиентам", value: "customers" },
-          { name: "По продажам", value: "sales" },
+          { name: t("Analytics.chartsFilters.total"), value: "total" },
+          { name: t("Analytics.chartsFilters.customers"), value: "customers" },
+          { name: t("Analytics.chartsFilters.sales"), value: "sales" },
         ],
         select(option) {
           fields[1].selected = option;

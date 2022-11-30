@@ -4,7 +4,9 @@
     <div class="container">
       <div class="header">
         <h5>
-          <slot name="title">Позиции компании "{{ company }}"</slot>
+          <slot name="title">
+            {{ $t("Analytics.positions", { company: company }) }}
+          </slot>
         </h5>
         <button class="btn_del" @click="close()">
           <div class="icon"></div>
@@ -12,7 +14,9 @@
       </div>
       <div class="hr" />
       <div class="content">
-        <label v-if="list.length == 0" class="text"> Ничего не найдено </label>
+        <label v-if="list.length == 0" class="text">
+          {{ $t("global.nothingFound") }}
+        </label>
         <table class="table" v-else>
           <thead>
             <tr class="row title">
