@@ -93,13 +93,13 @@ export default {
   },
   methods: {
     clearFilters() {
-      this.filtersValue = [];
       this.feelFilters();
     },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
     },
     feelFilters() {
+      this.filtersValue = [];
       const copyFields = [];
       this.sortedFields.forEach((val) => {
         const item = this.fields.filter(
