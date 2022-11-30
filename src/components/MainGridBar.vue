@@ -10,22 +10,26 @@
             : (collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) / collsCount +
               '%',
       }"
-      v-for="(field, idx) in fields"
-      v-show="field.table_config.visible"
-      :key="field.id"
+      v-for="(field, idx) in sortedFields"
+      :key="field"
     >
       <div class="bar_item_group">
-        <div>{{ field.name }}</div>
+        <label>{{ field[1].name }}</label>
         <button
           class="bar_item_icon"
           :class="{
             bar_item_icon_up:
-              order.code === field.code && order.prev_order === 'desc',
+              order.code === field[0].split('.')[0] &&
+              order.prev_order === 'desc',
             bar_item_icon_down:
-              order.code === field.code && order.prev_order === 'asc',
+              order.code === field[0].split('.')[0] &&
+              order.prev_order === 'asc',
           }"
-          @click="sort(field.code)"
-          v-if="field.table_config.sortable"
+          @click="sort(field[0].split('.')[0])"
+          v-if="
+            fields.filter((val) => val.code == field[0].split('.')[0])[0]
+              .table_config.sortable
+          "
         ></button>
       </div>
     </th>
@@ -48,6 +52,16 @@ export default {
         return [];
       },
     },
+    sortedFields: {
+      type: Array,
+      required: true,
+      default() {
+        return [];
+      },
+    },
+    tableConfig: {
+      type: Object,
+    },
   },
   data() {
     return {
@@ -60,7 +74,7 @@ export default {
   computed: {
     ...mapGetters(["fields"]),
     collsCount() {
-      return this.fields.filter((val) => val.table_config.visible).length;
+      return this.tableConfig.length;
     },
     width() {
       let arr = [];
@@ -75,6 +89,13 @@ export default {
     },
   },
   methods: {
+    isShow(code) {
+      let res = false;
+      Object.entries(this.tableConfig).forEach((val) => {
+        if (val[0].split(".")[0] == code && val[1]?.visible) res = true;
+      });
+      return res;
+    },
     sort(code) {
       const order_values = ["asc", "desc"];
       let new_order = "";

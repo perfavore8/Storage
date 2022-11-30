@@ -147,7 +147,7 @@ export default {
     text-overflow: ellipsis;
     overflow-x: clip;
     white-space: nowrap;
-    max-width: 200px;
+    // max-width: 200px;
   }
   .title {
     height: 20px;
@@ -206,6 +206,7 @@ export default {
       padding: 6px 12px;
       transition: background-color 0.15s ease-out;
       white-space: pre;
+      text-align: start;
     }
     p:hover {
       background-color: rgb(13 110 253 / 25%);

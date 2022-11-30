@@ -1,4 +1,5 @@
 import { BaseURL } from "@/composables/BaseURL";
+import store from "..";
 export default {
   state: {
     types: {},
@@ -15,11 +16,12 @@ export default {
       state.fields = [...value];
     },
     update_all_fields(state, value) {
+      const tableConfig = store.state.account.tableConfig;
       state.all_fields = [
         ...value.sort((a, b) => {
-          if (a.table_config.sort > b.table_config.sort) return 1;
-          if (a.table_config.sort == b.table_config.sort) return 0;
-          if (a.table_config.sort < b.table_config.sort) return -1;
+          if (tableConfig[a.code]?.sort > tableConfig[b.code]?.sort) return 1;
+          if (tableConfig[a.code]?.sort == tableConfig[b.code]?.sort) return 0;
+          if (tableConfig[a.code]?.sort < tableConfig[b.code]?.sort) return -1;
         }),
       ];
     },
@@ -100,20 +102,6 @@ export default {
       });
       const json = await res.json();
       console.log("update_fields", json);
-      return json;
-    },
-    async update_config_table(context, params) {
-      const url = BaseURL + "field/update-config-table";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
-      });
-      const json = await res.json();
-      console.log("update_config_table", json);
-      context.dispatch("get_all_fields");
       return json;
     },
   },

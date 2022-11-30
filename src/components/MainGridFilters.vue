@@ -3,46 +3,43 @@
     <tr class="filters" v-show="show_filter">
       <transition-group name="mdl">
         <th class="item" key="b1"></th>
-        <th
-          class="item"
-          v-show="fields[idx].table_config.visible && show_filter"
-          v-for="(filter, idx) in filtersValue"
-          :key="idx"
-        >
-          <template v-if="fields[idx].table_config.filtered">
-            <filter-number
-              v-if="filter.type == 1 || filter.type == 2"
-              :item="filter"
-              :idx="idx"
-              @change_filter_value="change_filter_value"
-            />
-            <filter-text
-              v-if="filter.type == 3 || filter.type == 4"
-              :item="filter"
-              :idx="idx"
-              @change_filter_value="change_filter_value"
-            />
-            <filter-list
-              v-if="filter.type == 5 || filter.type == 6"
-              :item="filter"
-              :idx="idx"
-              :selector_options="filter.selector_options"
-              @change_filter_value="change_filter_value"
-            />
-            <filter-date
-              v-if="filter.type == 7 || filter.type == 8"
-              :item="filter"
-              :idx="idx"
-              @change_filter_value="change_filter_value"
-            />
-            <filter-flag
-              v-if="filter.type == 9"
-              :item="filter"
-              :idx="idx"
-              @change_filter_value="change_filter_value"
-            />
-          </template>
-        </th>
+        <template v-for="(filter, idx) in filtersValue" :key="idx">
+          <th class="item" v-show="show_filter">
+            <template v-if="filter.table_config.filtered">
+              <filter-number
+                v-if="filter.type == 1 || filter.type == 2"
+                :item="filter"
+                :idx="idx"
+                @change_filter_value="change_filter_value"
+              />
+              <filter-text
+                v-if="filter.type == 3 || filter.type == 4"
+                :item="filter"
+                :idx="idx"
+                @change_filter_value="change_filter_value"
+              />
+              <filter-list
+                v-if="filter.type == 5 || filter.type == 6"
+                :item="filter"
+                :idx="idx"
+                :selector_options="filter.data"
+                @change_filter_value="change_filter_value"
+              />
+              <filter-date
+                v-if="filter.type == 7 || filter.type == 8"
+                :item="filter"
+                :idx="idx"
+                @change_filter_value="change_filter_value"
+              />
+              <filter-flag
+                v-if="filter.type == 9"
+                :item="filter"
+                :idx="idx"
+                @change_filter_value="change_filter_value"
+              />
+            </template>
+          </th>
+        </template>
         <th class="item" key="2b" />
       </transition-group>
     </tr>
@@ -65,6 +62,16 @@ export default {
         return [];
       },
     },
+    sortedFields: {
+      type: Array,
+      required: true,
+      default() {
+        return [];
+      },
+    },
+    tableConfig: {
+      type: Object,
+    },
   },
   components: {
     FilterNumber,
@@ -85,14 +92,22 @@ export default {
     this.feelFilters();
   },
   methods: {
-    reset_filtersValue() {
+    clearFilters() {
       this.filtersValue = [];
+      this.feelFilters();
     },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
     },
     feelFilters() {
-      this.fields.forEach((val) => {
+      const copyFields = [];
+      this.sortedFields.forEach((val) => {
+        const item = this.fields.filter(
+          (value) => value.code == val[0].split(".")[0]
+        )[0];
+        copyFields.push(item);
+      });
+      copyFields.forEach((val) => {
         const preparation_data = (arr) => {
           const result = [];
           if (arr != null)
@@ -111,6 +126,7 @@ export default {
           option: 1,
           selector_options: preparation_data(val.data),
           value: value,
+          table_config: val.table_config,
         };
         this.filtersValue.push(obj);
       });

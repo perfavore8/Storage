@@ -57,9 +57,10 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("get_account");
-    this.count_values = [
-      ...this.$store.state.account.user.config.per_pages,
-    ].map((val, idx) => (val = { name: val, value: idx }));
+    if (this.$store.state.account.user.config.per_pages)
+      this.count_values = [
+        ...this.$store.state.account.user.config.per_pages,
+      ].map((val, idx) => (val = { name: val, value: idx }));
   },
   computed: {},
   methods: {

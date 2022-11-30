@@ -1,6 +1,6 @@
 <template>
-  <div class="app">
-    <div class="header" :class="{ blur: openSelectedReportModal }">
+  <div class="app" :class="{ blur: openSelectedReportModal }">
+    <div class="header">
       <div class="btns">
         <button
           class="btns_btn"
@@ -30,11 +30,25 @@
           Отчет по продажам
         </button>
       </div>
-      <RepotFIlters :isClient="isClient" />
+      <RepotFIlters :isClient="isClient" ref="filters" @getFilter="getFilter" />
       <ReportGrid
         :title="title"
-        :reports="reports"
+        :reportsData="reports"
+        :isClient="isClient"
+        :isLoading="isLoading"
+        :salesTotal="salesTotal"
         @updateOpenSelectedReportModal="updateOpenSelectedReportModal"
+        @updateOpenedRows="updateOpenedRows"
+        @updateSelectedReport="updateSelectedReport"
+      />
+      <grid-bottom
+        :previous="reports.prev_page_url != null"
+        :next="reports.next_page_url != null"
+        :page="reports.current_page"
+        :show="reports.data?.length != 0"
+        :count="15"
+        @changePage="changePage"
+        @changeCount="changeCount"
       />
     </div>
   </div>
@@ -44,22 +58,33 @@
 import { mapGetters } from "vuex";
 import ReportGrid from "@/components/ReportGrid.vue";
 import RepotFIlters from "@/components/RepotFIlters.vue";
+import GridBottom from "@/components/GridBottom.vue";
 export default {
   name: "AnalyticsView",
-  components: { ReportGrid, RepotFIlters },
+  components: { ReportGrid, RepotFIlters, GridBottom },
   data() {
     return {
       openSelectedReportModal: false,
+      isLoading: false,
       title: [],
       reports: [],
       isClient: true,
+      openedRows: [],
+      selectedReport: {},
+      filter: {},
+      salesTotal: {},
+      page: 1,
     };
   },
   computed: {
     ...mapGetters(["catalog"]),
+    refFilters() {
+      return this.$refs.filters;
+    },
   },
   mounted() {
     this.clients();
+    this.$store.dispatch("get_account");
   },
   methods: {
     route(page_name) {
@@ -68,277 +93,165 @@ export default {
     updateOpenSelectedReportModal(value) {
       this.openSelectedReportModal = value;
     },
-    clients() {
+    async updateOpenedRows(value) {
+      if (!value.length)
+        this.reports.data.map((val) =>
+          val.otv ? (val.otv.value = false) : null
+        );
+      await value?.forEach(async (val) => {
+        if (!this.openedRows.includes(val) && val.company) {
+          this.openedRows.push(val);
+          await this.$store.dispatch("getCustomersResponsible", {
+            filter: {},
+            company: val.company,
+          });
+          this.reports.data.map((report) => {
+            if (report.company == val.company && report.otv) {
+              report.otv.value = val.otv.value;
+              report.otv.list =
+                this.$store.state.analytics.customersResponsible;
+              report.otv.list.map((item) => {
+                item["prib"] = item.sum - item.cost_sum;
+                item.otv = item.user;
+              });
+            }
+          });
+        }
+      });
+      this.openedRows = [...value];
+    },
+    async updateSelectedReport(value) {
+      if (!value.value) {
+        this.reports.data.map((report) => (report.poz.value = false));
+      }
+      if (value.company) {
+        if (
+          !this.reports.data.filter((val) => val.company == value.company)[0]
+            ?.poz.list.length
+        ) {
+          await this.$store.dispatch("getCustomersProducts", {
+            filter: {},
+            company: value.company,
+          });
+        }
+        this.reports.data.map((report) => {
+          if (report.company == value.company && report.poz) {
+            report.poz.value = value.value;
+            report.poz.list = this.$store.state.analytics.customersProducts;
+            report.poz.list.map(
+              (val) => (val["prib"] = val.sum - val.cost_sum)
+            );
+          }
+        });
+      }
+
+      this.selectedReport = { ...value };
+    },
+    async getReports() {
+      if (this.isClient) {
+        await this.$store.dispatch("getCustomers", {
+          filter: this.filter,
+          page: this.page,
+        });
+        this.reports = this.$store.state.analytics.customers;
+        this.reports.data.map((val) => {
+          val["otv"] = {
+            value: false,
+            list: [],
+          };
+          val["poz"] = {
+            value: false,
+            list: [],
+            title: [
+              { name: "Название", code: "name" },
+              { name: "Кол-во", code: "count" },
+              { name: "Оборот", code: "sum" },
+              { name: "Прибыль", code: "prib" },
+            ],
+          };
+          val["prib"] = val.sum - val.cost_sum;
+          val.sum = Math.round(val.sum * 100) / 100 + " р.";
+          val.cost_sum = Math.round(val.cost_sum * 100) / 100 + " р.";
+          val.prib = Math.round(val.prib * 100) / 100 + " р.";
+        });
+      } else {
+        await this.$store.dispatch("getSales", {
+          params: this.filter,
+          page: this.page,
+        });
+        await this.$store.dispatch("getSalesTotal", {
+          params: this.filter,
+          page: this.page,
+        });
+        this.reports = this.$store.state.analytics.sales;
+        this.salesTotal = this.$store.state.analytics.salesTotal;
+        this.salesTotal["prib"] =
+          this.salesTotal.sum - this.salesTotal.cost_sum;
+        this.salesTotal.sum =
+          Math.round(this.salesTotal.sum * 100) / 100 + " р.";
+        this.salesTotal.cost_sum =
+          Math.round(this.salesTotal.cost_sum * 100) / 100 + " р.";
+        this.salesTotal.prib =
+          Math.round(this.salesTotal.prib * 100) / 100 + " р.";
+        this.salesTotal.leads = this.salesTotal.leads.split(",").length;
+        this.salesTotal["name"] = "Общее";
+        this.salesTotal["poz"] = "";
+        this.reports.data.map((val) => {
+          val["poz"] = {
+            value: false,
+            list: [],
+          };
+          val["prib"] = val.sum - val.cost_sum;
+          val.leads = val.leads.split(",");
+          val.sum = Math.round(val.sum * 100) / 100 + " р.";
+          val.cost_sum = Math.round(val.cost_sum * 100) / 100 + " р.";
+          val.prib = Math.round(val.prib * 100) / 100 + " р.";
+        });
+      }
+    },
+    async clients() {
+      this.isLoading = true;
+      if (!this.isClient)
+        this.refFilters?.clearAllFields(),
+          this.page == 1 ? null : this.changePage(1);
       this.isClient = true;
       this.title = [
         { name: "Компания", code: "company", type: 0 },
         { name: "Контакт", code: "contact", type: 0 },
-        { name: "Сделки", code: "deals", type: 0 },
-        { name: "Оборот", code: "ob", type: 0 },
+        { name: "Сделки", code: "leads", type: 0 },
+        { name: "Оборот", code: "sum", type: 0 },
         { name: "Прибыль", code: "prib", type: 0 },
         { name: "Ответственные", code: "otv", type: 1 },
         { name: "Позиции", code: "poz", type: 2 },
       ];
-      this.reports = [
-        {
-          id: 0,
-          otv: {
-            value: false,
-            list: [
-              {
-                id: 0,
-                deals: 1,
-                ob: "62 900.00 р.",
-                prib: "38 273.00 р.",
-                otv: "Абашина Ольга",
-              },
-              {
-                id: 1,
-                deals: 1,
-                ob: "62 900.00 р.",
-                prib: "38 273.00 р.",
-                otv: "Абашина Ольга",
-              },
-              {
-                id: 2,
-                deals: 1,
-                ob: "62 900.00 р.",
-                prib: "38 273.00 р.",
-                otv: "Абашина Ольга",
-              },
-            ],
-          },
-          poz: {
-            value: false,
-            list: [
-              {
-                name: "Концентрат растительных экстрактов для лица и тела Cleopine ampoule",
-                count: "10",
-                ob: "25 500.00 р.",
-                prib: "17 500.00 р.",
-              },
-              {
-                name: "Маска - лифтинг для лица и тела «Multi EX-Lifting» торговой марки Elysien",
-                count: "1",
-                ob: "3 600.00 р.",
-                prib: "2 455.00 р.",
-              },
-              {
-                name: "Лимфодренажный тоник линии Active Line торговой марки Skindex",
-                count: "1",
-                ob: "1 650.00 р.	",
-                prib: "1 200.00 р.",
-              },
-              {
-                name: "Обновляющий гель для умывания линии Active Line торговой марки Skindex",
-                count: "1",
-                ob: "1 200.00 р.",
-                prib: "	820.00 р.",
-              },
-              {
-                name: "Гоммаж-скатка с Keratoline™️ и алоэ линии Active Line торговой марки Skindex",
-                count: "1",
-                ob: "	1 200.00 р.",
-                prib: "	814.00 р.",
-              },
-              {
-                name: "Крем для век мультивосстановление линии Active Line торговой марки Skindex",
-                count: "1",
-                ob: "2 130.00 р.	  ",
-                prib: "	1 680.00 р.",
-              },
-              {
-                name: "Крем для лица интенсивное преображение линии Active Line торговой марки Skindex",
-                count: "1",
-                ob: "	2 175.00 р.",
-                prib: "1 735.00 р.",
-              },
-            ],
-            title: [
-              { name: "Название", code: "name" },
-              { name: "Кол-во", code: "count" },
-              { name: "Оборот", code: "ob" },
-              { name: "Прибыль", code: "prib" },
-            ],
-          },
-          company: "Kasatka Elena ф/л",
-          contact: " Kasatka Elena	",
-          deals: 1,
-          ob: "37 455.00 р.",
-          prib: "26 204.00 р.",
-        },
-        {
-          id: 1,
-          otv: {
-            value: false,
-            list: [],
-          },
-          poz: {
-            value: false,
-            list: [],
-          },
-          company: "Nekrasova Oksana ф/л",
-          contact: " Nekrasova Oksana",
-          deals: 1,
-          ob: "73 900.00 р.",
-          prib: "45 878.00 р.",
-        },
-        {
-          id: 2,
-          otv: {
-            value: false,
-            list: [],
-          },
-          poz: {
-            value: false,
-            list: [],
-          },
-          company: "Абашина Ольга Александровна ф/л",
-          contact: "Абашина Ольга Александровна",
-          deals: 1,
-          ob: "62 900.00 р.",
-          prib: "38 273.00 р.",
-        },
-        {
-          id: 3,
-          otv: {
-            value: false,
-            list: [],
-          },
-          poz: {
-            value: false,
-            list: [],
-          },
-          company: "Абдурахманов Абдухалил Дилшодович ф/л",
-          contact: "Эльмира (InterCharm 2022)	",
-          deals: 1,
-          ob: "145 710.00 р.	",
-          prib: "77 898.00 р.",
-        },
-        {
-          id: 4,
-          otv: {
-            value: false,
-            list: [],
-          },
-          poz: {
-            value: false,
-            list: [],
-          },
-          company: "Агаджанова Ануш ф/л",
-          contact: " Агаджанова Ануш	",
-          deals: 1,
-          ob: "1 200.00 р.	",
-          prib: "814.00 р.",
-        },
-      ];
+      await this.getReports();
+      this.isLoading = false;
     },
-    sales() {
+    async sales() {
+      this.isLoading = true;
+      if (this.isClient)
+        this.refFilters?.clearAllFields(),
+          this.page == 1 ? null : this.changePage(1);
       this.isClient = false;
       this.title = [
         { name: "Название", code: "name", type: 0 },
         { name: "Кол-во", code: "count", type: 0 },
-        { name: "Оборот", code: "ob", type: 0 },
-        { name: "Себестоимость", code: "ceb", type: 0 },
+        { name: "Оборот", code: "sum", type: 0 },
+        { name: "Себестоимость", code: "cost_sum", type: 0 },
         { name: "Прибыль", code: "prib", type: 0 },
-        { name: "Сделки", code: "deals", type: 0 },
+        { name: "Сделки", code: "leads", type: 0 },
         { name: "Позиции", code: "poz", type: 1 },
       ];
-      this.reports = [
-        {
-          id: 0,
-          poz: {
-            value: false,
-            list: [
-              {
-                id: 0,
-                name: "Артикул: 86, партия: 52022",
-                count: "1",
-                ob: "1 950.00 р.",
-                ceb: "751.00 р.",
-                prib: "1 199.00 р.",
-                deals: "17864295",
-              },
-              {
-                id: 1,
-                name: "Артикул: 86, партия: 52022",
-                count: "1",
-                ob: "1 950.00 р.",
-                ceb: "751.00 р.",
-                prib: "1 199.00 р.",
-                deals: "17864295",
-              },
-              {
-                id: 2,
-                name: "Артикул: 86, партия: 52022",
-                count: "1",
-                ob: "1 950.00 р.",
-                ceb: "751.00 р.",
-                prib: "1 199.00 р.",
-                deals: "17864295",
-              },
-            ],
-          },
-          name: "AS19 rotor (вал для компрессора)",
-          count: 1,
-          ob: "1 950.00 р.",
-          ceb: "751.00 р.",
-          prib: "1 199.00 р.",
-          deals: "17864295",
-        },
-        {
-          id: 1,
-          poz: {
-            value: false,
-            list: [],
-          },
-          name: "AS19 rotor (вал для компрессора)",
-          count: 1,
-          ob: "1 950.00 р.",
-          ceb: "751.00 р.",
-          prib: "1 199.00 р.",
-          deals: "17864295",
-        },
-        {
-          id: 2,
-          poz: {
-            value: false,
-            list: [],
-          },
-          name: "AS19 rotor (вал для компрессора)",
-          count: 1,
-          ob: "1 950.00 р.",
-          ceb: "751.00 р.",
-          prib: "1 199.00 р.",
-          deals: "17864295",
-        },
-        {
-          id: 3,
-          poz: {
-            value: false,
-            list: [],
-          },
-          name: "AS19 rotor (вал для компрессора)",
-          count: 1,
-          ob: "1 950.00 р.",
-          ceb: "751.00 р.",
-          prib: "1 199.00 р.",
-          deals: "17864295",
-        },
-        {
-          id: 4,
-          poz: {
-            value: false,
-            list: [],
-          },
-          name: "AS19 rotor (вал для компрессора)",
-          count: 1,
-          ob: "1 950.00 р.",
-          ceb: "751.00 р.",
-          prib: "1 199.00 р.",
-          deals: "17864295",
-        },
-      ];
+      await this.getReports();
+      this.isLoading = false;
+    },
+    changePage(value) {
+      this.page = value;
+      this.isClient ? this.clients() : this.sales();
+    },
+    getFilter(value) {
+      this.filter = value;
+      this.isClient ? this.clients() : this.sales();
     },
   },
 };
@@ -347,7 +260,8 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: calc(100vw - 60px);
+  width: calc(100% - 60px);
+  min-width: 100vh;
   height: 100%;
   padding: 0 30px;
 
@@ -400,6 +314,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-bottom: 20px;
   .btns {
     display: flex;
     flex-direction: row;
@@ -432,5 +347,6 @@ export default {
 }
 .blur {
   filter: blur(5px);
+  pointer-events: none;
 }
 </style>

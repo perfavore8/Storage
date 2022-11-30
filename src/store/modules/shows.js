@@ -13,6 +13,7 @@ export default {
     show_document_setting: false,
     show_product_properties: false,
     show_product_category: false,
+    showThirdPpartyIntegrations: false,
   },
   getters: {
     show_edit_modal(state) {
@@ -53,6 +54,9 @@ export default {
     },
     show_product_category(state) {
       return state.show_product_category;
+    },
+    showThirdPpartyIntegrations(state) {
+      return state.showThirdPpartyIntegrations;
     },
   },
   mutations: {
@@ -104,6 +108,9 @@ export default {
     },
     open_close_product_category(state, value) {
       state.show_product_category = value;
+    },
+    openCloseThirdPpartyIntegrations(state, value) {
+      state.showThirdPpartyIntegrations = value;
     },
   },
   actions: {},

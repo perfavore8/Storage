@@ -2,75 +2,95 @@
   <div
     class="app"
     :class="{
-      disabled: disabled_for_modals,
+      disabled:
+        show_table_settings ||
+        show_edit_modal ||
+        show_edit_stuff ||
+        show_new_position,
     }"
     @click="
       show_settings ? close_settings() : null;
       show_sync ? close_sync() : null;
     "
   >
-    <div v-if="show_table_settings" class="table_setings">
-      <table-settings :selectedWH="selectedWH" />
+    <div v-show="show_table_settings" class="table_setings">
+      <table-setings
+        :names="paginatedParams"
+        :data="paginatedData"
+        :collval="collumn_value"
+        @returnData1="getData"
+      />
     </div>
-    <transition name="modal_window">
-      <div v-if="show_edit_stuff" class="edit_staff">
-        <edit-stuff />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_product_category" class="product_category">
-        <product-category />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="showThirdPpartyIntegrations" class="thirdPpartyIntegrations">
-        <ThirdPpartyIntegrations />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_product_properties" class="product_properties">
-        <product-properties />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_new_position" class="new_position">
-        <new-position :currentItems="currentItems" @close="dropCurrentItems" />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_cancel_position" class="cancel_position">
-        <cancel-position />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_document_setting" class="document_setting">
-        <document-setting @close="open_close_show_document_setting" />
-      </div>
-    </transition>
+    <div v-if="show_edit_stuff" class="edit_staff">
+      <edit-stuff></edit-stuff>
+    </div>
+    <div v-if="show_new_position" class="new_position">
+      <new-position :rows="rows.arr" :idxes="rows.idxes" />
+    </div>
     <div
       class="header"
       :class="{
-        blur: disabled_for_modals,
+        blur:
+          show_table_settings ||
+          show_edit_modal ||
+          show_edit_stuff ||
+          show_new_position,
       }"
     >
       <div class="header_left">
         <div class="btns">
           <button
             class="btns_btn"
-            :class="{ selected_catalog: $route.name === page.value }"
-            @click="route(page.value)"
-            v-for="page in catalog"
-            :key="page"
+            :class="{ selected_catalog: catalog_page === 'Residue' }"
+            @click="catalog_page = 'Residue'"
           >
-            {{ page.name }}
+            Остатки
+          </button>
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: catalog_page === 'Analytics' }"
+            @click="catalog_page = 'Analytics'"
+          >
+            Аналитика
+          </button>
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: catalog_page === 'Archive' }"
+            @click="
+              add2();
+              catalog_page = 'Archive';
+            "
+          >
+            Архив
+          </button>
+          <button
+            class="btns_btn"
+            :class="{ selected_catalog: catalog_page === 'Instructions' }"
+            @click="
+              add();
+              catalog_page = 'Instructions';
+            "
+          >
+            Инструкции
           </button>
         </div>
-        <div class="whs">
-          <SelectorVue
-            :options_props="whs"
-            :selected_option="selectedWH"
-            @select="selectWH"
-          />
+        <div class="radio_btns">
+          <div class="radio_btn">
+            <input type="radio" name="store1" id="store1" />
+            <label for="store1">Все остатки </label>
+          </div>
+          <div class="radio_btn">
+            <input type="radio" name="store1" id="store2" checked />
+            <label for="store2">Склад 1</label>
+          </div>
+          <div class="radio_btn">
+            <input type="radio" name="store1" id="store3" />
+            <label for="store3">Склад 2</label>
+          </div>
+          <div class="radio_btn">
+            <input type="radio" name="store1" id="store4" />
+            <label for="store4">Услуги</label>
+          </div>
         </div>
       </div>
       <div class="header_right">
@@ -80,11 +100,11 @@
         </div>
         <div class="ref">
           <div class="ref_2_logo"></div>
-          <a class="links" @click.stop="open_close_sync()">
-            Синхронизировать товары
-          </a>
+          <a class="links" @click.stop="open_close_sync()"
+            >Синхронизировать товары</a
+          >
           <transition name="modal">
-            <div v-if="show_sync" class="modal_settings modal_sync">
+            <div v-show="show_sync" class="modal_settings modal_sync">
               <a>
                 <div class="modal_container">AmoCrm -> Склад</div>
               </a>
@@ -98,26 +118,13 @@
           <transition name="modal">
             <div v-show="show_settings" class="modal_settings">
               <a>
+                <div class="modal_container" @click="open_table_settings()">
+                  Настройка таблицы
+                </div>
+              </a>
+              <a>
                 <div class="modal_container" @click="open_edit_stuff()">
                   Настройка товаров
-                </div>
-              </a>
-              <a>
-                <div class="modal_container" @click="open_product_category()">
-                  Категории товаров
-                </div>
-              </a>
-              <a>
-                <div
-                  class="modal_container"
-                  @click="openThirdPpartyIntegrations()"
-                >
-                  Сторонние интеграции
-                </div>
-              </a>
-              <a>
-                <div class="modal_container" @click="open_product_properties()">
-                  Свойства товаров
                 </div>
               </a>
               <a>
@@ -126,12 +133,7 @@
                 </div>
               </a>
               <a>
-                <div
-                  class="modal_container"
-                  @click="open_close_show_document_setting(true)"
-                >
-                  Документы
-                </div>
+                <div class="modal_container">Документы</div>
               </a>
             </div>
           </transition>
@@ -141,14 +143,7 @@
     <div
       class="wrapper"
       :class="{
-        blur:
-          show_table_settings ||
-          show_edit_stuff ||
-          show_new_position ||
-          show_cancel_position ||
-          show_product_category ||
-          show_product_properties ||
-          show_document_setting,
+        blur: show_table_settings || show_edit_stuff || show_new_position,
       }"
     >
       <div class="filters" :class="{ blur: show_edit_modal }">
@@ -164,45 +159,22 @@
               aria-required="true"
               aria-invalid="false"
             />
-            <div class="bot">
-              <p>Найдено: {{ totalCountProducts }}</p>
-              <input
-                type="checkbox"
-                class="checkbox"
-                v-model="grid"
-                id="grid"
-              />
-              <label for="grid"></label>
-            </div>
+            <p>Найдено: {{ data.length }}</p>
           </div>
           <transition name="btns">
             <div class="buttons" v-show="show_buttons">
-              <button class="button button_1 smallBtn" @click="archive_data()">
-                Архивировать
+              <button class="button button_1 smallBtn">Архивировать</button>
+              <button
+                class="button button_2 smallBtn"
+                @click="open_close_new_position(true)"
+              >
+                Добавить
               </button>
-              <template v-if="!isServicePage">
-                <button
-                  class="button button_2 smallBtn"
-                  @click="addCurrentProducts()"
-                  :disabled="oneC"
-                >
-                  Добавить
-                </button>
-                <button
-                  class="button button_3 smallBtn"
-                  @click="open_close_cancel_position(true)"
-                >
-                  Списать
-                </button>
-              </template>
+              <button class="button button_3 smallBtn">Списать</button>
             </div>
           </transition>
         </div>
         <div class="filters_right">
-          <div class="btns" v-if="filter_value">
-            <button class="btn">Применить</button>
-            <button class="btn" @click="clearFilters()">Очистить</button>
-          </div>
           <div class="filter_group">
             <input
               type="checkbox"
@@ -216,171 +188,170 @@
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
-            :disabled="isServicePage || oneC"
+            :disabled="rows.arr.length > 0"
           >
             Новая позиция
           </button>
         </div>
       </div>
       <div class="grid">
-        <main-grid ref="main" v-if="!grid" :selectedWH="selectedWH"></main-grid>
-        <card-grid ref="card" v-if="grid"></card-grid>
+        <main-grid
+          :data="paginatedData"
+          :params="paginatedParams"
+          :collval="collumn_value"
+          @apdate_changeValue="apdate_changeValue"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import MainGrid from "@/components/MainGrid.vue";
-import CardGrid from "@/components/CardGrid.vue";
-import TableSettings from "@/components/TableSettings.vue";
+import MainGrid from "@/components/Main_grid.vue";
+import TableSetings from "@/components/Table_setings.vue";
 import EditStuff from "@/components/EditStuff.vue";
 import NewPosition from "@/components/NewPosition.vue";
-import CancelPosition from "@/components/CancelPosition";
-import DocumentSetting from "@/components/DocumentSetting.vue";
-import ProductCategory from "@/components/ProductCategory.vue";
-import ProductProperties from "@/components/ProductProperties.vue";
-import ThirdPpartyIntegrations from "@/components/ThirdPpartyIntegrations.vue";
-import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
-import { computed } from "vue";
 
 export default {
   components: {
     MainGrid,
-    TableSettings,
+    TableSetings,
     EditStuff,
     NewPosition,
-    CancelPosition,
-    CardGrid,
-    DocumentSetting,
-    ProductCategory,
-    ProductProperties,
-    ThirdPpartyIntegrations,
-    SelectorVue,
-  },
-  provide() {
-    return {
-      isServicePage: computed(() => this.isServicePage),
-    };
   },
   data() {
     return {
       filter_value: false,
       paginatedData: [],
       paginatedParams: [],
-      selectedWH: { name: "Все склады", value: "whs" },
-      whs: [],
-      grid: false,
-      currentItems: [],
+      collumn_value: [],
+      changeValue: [],
+      old_data_length: null,
+      catalog_page: "Residue",
     };
+  },
+  created: function () {
+    this.old_data_length = this.data[0].length;
+    this.paginate();
   },
   computed: {
     show_modals() {
-      return this.show_settings || this.disabled_for_modals;
-    },
-    disabled_for_modals() {
       return (
         this.show_edit_modal ||
+        this.show_settings ||
         this.show_table_settings ||
         this.show_edit_stuff ||
-        this.show_product_category ||
-        this.show_product_properties ||
-        this.show_new_position ||
-        this.show_cancel_position ||
-        this.show_document_setting
+        this.show_new_position
       );
     },
-    isServicePage() {
-      return this.selectedWH.value === "services";
+    rows() {
+      let arr = [];
+      let idxes = [];
+      const title = [
+        "Артикул",
+        "Название",
+        "№ партии",
+        "Тип",
+        "Кол-во",
+        "Себестоимость",
+        "Цена",
+        "НДС",
+        "НДС включен в цену",
+        "Менеджер может менять % НДС",
+        "НДС %",
+      ];
+      this.changeValue.forEach((val, idx) => {
+        if (val) {
+          let arr2 = [];
+          title.forEach((val) => {
+            let item = "";
+            const sel = this.data[idx][this.params.indexOf(val) - 1];
+            item = sel;
+            if (sel == "Да") item = true;
+            if (sel == "Нет") item = false;
+            arr2.push(item);
+            if (val == "№ партии") arr2.push(item);
+          });
+          arr.push(arr2);
+          idxes.push(idx);
+        }
+      });
+      return {
+        arr: arr,
+        idxes: idxes,
+      };
     },
-    ...mapGetters([
-      "catalog",
-      "show_edit_modal",
-      "show_settings",
-      "show_table_settings",
-      "show_buttons",
-      "show_filter",
-      "show_edit_stuff",
-      "show_sync",
-      "show_new_position",
-      "show_cancel_position",
-      "show_document_setting",
-      "show_product_category",
-      "show_product_properties",
-      "showThirdPpartyIntegrations",
-    ]),
-    totalCountProducts() {
-      return this.$store.state.products.meta.meta.total;
-    },
-    oneC() {
-      return this.$store.state.account.account?.config?.g_enabled;
-    },
-    ref_main() {
-      return this.$refs.main;
-    },
-    ref_card() {
-      return this.$refs.card;
-    },
-  },
-  async mounted() {
-    await this.$store.dispatch("get_account");
-    this.getWHS();
+    ...mapGetters(["data"]),
+    ...mapGetters(["params"]),
+    ...mapGetters(["show_edit_modal"]),
+    ...mapGetters(["show_settings"]),
+    ...mapGetters(["show_table_settings"]),
+    ...mapGetters(["show_buttons"]),
+    ...mapGetters(["show_filter"]),
+    ...mapGetters(["show_edit_stuff"]),
+    ...mapGetters(["show_sync"]),
+    ...mapGetters(["show_new_position"]),
   },
   watch: {
+    data: {
+      handler: function () {
+        this.paginate();
+      },
+      deep: true,
+    },
     filter_value() {
       this.$store.commit("open_close_filter", this.filter_value);
     },
     show_modals() {
       this.show_modals
-        ? (window.scrollBy(-99999, -99999),
+        ? (window.scrollBy(-99999, 0),
           (document.body.style.overflowX = "hidden"))
         : (document.body.style.overflowX = "auto");
     },
-    selected_storage() {
-      this.grid ? this.ref_card.drop_page() : this.ref_main.drop_page();
-    },
   },
   methods: {
-    clearFilters() {
-      this.ref_main?.clearFilters();
-    },
-    getWHS() {
-      this.$store.state.account.account.whs.forEach((val) =>
-        this.whs.push({ name: val.name, value: val.code })
-      );
-      this.whs.push({ name: "Услуги", value: "services" });
-    },
-    selectWH(value) {
-      this.selectedWH = value;
-    },
-    archive_data() {
-      this.ref_main?.selectedProducts
-        .filter((val) => val.value)
-        ?.forEach((val) => {
-          val.item.is_archive = 1;
-          this.$store.dispatch("update_product", val.item);
-        });
-      this.ref_main?.changePage(
-        this.$store.state.products.meta.meta.current_page
-      );
-    },
-    addCurrentProducts() {
-      this.open_close_new_position(true);
-      this.currentItems = [
-        ...this.ref_main?.selectedProducts
-          .filter((val) => val.value)
-          .map((val) => val.item),
+    add() {
+      const params = [
+        "",
+        "Компания",
+        "Контакт",
+        "Сделки",
+        "Оборот",
+        "Прибыль",
+        "Ответственные",
+        "Позиции",
+        "",
       ];
+      const data = [
+        ["", "", 11, "2 570 102.00 р.", "2 400 339.00 р.", "1", "2"],
+      ];
+      this.$store.commit("update_params", params);
+      this.$store.commit("update_data", data);
     },
-    dropCurrentItems() {
-      this.currentItems = [];
+    add2() {
+      // const params = ["", "Компания", "Контакт", "Сделки", ""];
+      // const data = [[11, "2 570 102.00 р.", "2 400 339.00 р."]];
+      // this.$store.commit("update_params", params);
+      // this.$store.commit("update_data", data);
+      this.$router.push("/qwe");
+    },
+    getData(dat, par, check) {
+      this.paginatedData = [];
+      this.paginatedParams = [];
+      this.collumn_value = [];
+      dat.forEach((val) => this.paginatedData.push(val));
+      par.forEach((val) => this.paginatedParams.push(val));
+      check.forEach((val) => this.collumn_value.push(val));
+      this.paginatedParams.unshift("");
+      this.paginatedParams.push("");
+      this.filter_value = false;
+    },
+    open_table_settings() {
+      this.$store.commit("open_table_settings");
     },
     open_close_new_position(value) {
       this.$store.commit("open_close_new_position", value);
-    },
-    open_close_cancel_position(value) {
-      this.$store.commit("open_close_cancel_position", value);
     },
     open_close_settings() {
       this.$store.commit("open_close_settings");
@@ -397,20 +368,30 @@ export default {
     open_edit_stuff() {
       this.$store.commit("open_close_show_edit_stuff", true);
     },
-    open_product_category() {
-      this.$store.commit("open_close_product_category", true);
+    apdate_changeValue(newValue) {
+      newValue.forEach((val, idx) => {
+        this.changeValue[idx] = val;
+      });
     },
-    openThirdPpartyIntegrations() {
-      this.$store.commit("openCloseThirdPpartyIntegrations", true);
-    },
-    open_product_properties() {
-      this.$store.commit("open_close_show_product_properties", true);
-    },
-    open_close_show_document_setting(val) {
-      this.$store.commit("open_close_show_document_setting", val);
-    },
-    route(page_name) {
-      this.$router.push("/" + page_name);
+    paginate() {
+      this.paginatedData = [];
+      this.paginatedParams = [];
+      this.data.forEach((item) => this.paginatedData.push(item));
+      this.params.forEach((item) => this.paginatedParams.push(item));
+      if (this.old_data_length == this.data[0].length) {
+        this.collumn_value = [];
+        this.paginatedParams.forEach(() => this.collumn_value.push(true));
+        this.collumn_value.pop();
+        this.collumn_value.pop();
+      } else {
+        const len = this.data[0].length - this.old_data_length;
+        if (len > 0) {
+          for (let i = 0; i != len; i++) this.collumn_value.push(false);
+        }
+      }
+      // for (let i = 3; i != 6; i++) {
+      //   this.collumn_value[this.collumn_value.length - i] = false;
+      // }
     },
   },
 };
@@ -419,7 +400,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: calc(100vw - 80px);
+  width: calc(100vw - 60px);
   height: 100%;
   padding: 0 30px;
 
@@ -467,8 +448,45 @@ export default {
         color: hsl(204, 44%, 95%);
       }
     }
-    .whs {
+    .radio_btns {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      flex-wrap: wrap;
       margin-top: 14px;
+      .radio_btn {
+        > input {
+          display: none;
+        }
+        > label {
+          display: inline-block;
+          cursor: pointer;
+          position: relative;
+          padding-left: 25px;
+          margin-right: 0;
+          line-height: 18px;
+          user-select: none;
+          color: #3f3f3f;
+          @include font(400, 18px, 30px);
+        }
+        > label:before {
+          content: "";
+          display: inline-block;
+          width: 19px;
+          height: 19px;
+          position: absolute;
+          left: 0;
+          bottom: 6px;
+          background: #ffffff;
+          border: 1px solid #c9c9c9;
+          border-radius: 50%;
+          @include bg_image("../assets/Ellipse_2.svg", 0 0);
+          transition: background-size 0.15s ease-in-out;
+        }
+        > input:checked + label:before {
+          @include bg_image("../assets/Ellipse_2.svg", 40% 40%);
+        }
+      }
     }
   }
 
@@ -505,15 +523,13 @@ export default {
       height: 18px;
       border: none;
       background-color: transparent;
-      outline: none;
       @include bg_image("../assets/gear.svg");
     }
     .modal_sync {
       position: absolute !important;
-      top: 41px;
-      right: 72px;
-      width: 237px !important;
-      margin: 0 !important;
+      top: 21px;
+      right: 62px;
+      width: 250px !important;
     }
     .modal_settings {
       z-index: 99999;
@@ -598,50 +614,12 @@ export default {
           height: 100%;
           appearance: none;
         }
-        .bot {
-          display: flex;
-          flex-direction: row;
-          gap: 20px;
-          p {
-            color: #757575;
-            @include font(400, 16px, 19px);
-          }
-          .checkbox {
-            position: absolute;
-            z-index: -1;
-            opacity: 0;
-          }
-          .checkbox + label {
-            display: inline-flex;
-            align-items: center;
-            user-select: none;
-          }
-          .checkbox + label::before {
-            content: "";
-            display: inline-block;
-            width: 28px;
-            height: 28px;
-            flex-shrink: 0;
-            flex-grow: 0;
-            border-radius: 0.25em;
-            margin-left: 17px;
-            @include bg_image("@/assets/grid.svg", 100%);
-            cursor: pointer;
-            transition: background-image 0.15s ease-out;
-          }
-          .checkbox:checked + label::before {
-            @include bg_image("@/assets/list.svg", 90%);
-          }
-          .checkbox:not(:checked) + label:hover::before {
-            background-size: 110%;
-          }
-          .checkbox:checked + label:hover::before {
-            background-size: 100%;
-          }
+        p {
+          color: #757575;
+          @include font(400, 16px, 19px);
         }
       }
       .buttons {
-        margin-left: -49px;
         display: flex;
         flex-direction: row;
         gap: 18px;
@@ -651,28 +629,6 @@ export default {
       display: flex;
       flex-direction: row;
       gap: 18px;
-      .btns {
-        display: flex;
-        flex-direction: row;
-        justify-self: end;
-        .btn:first-child {
-          background-color: #0d6efd;
-          border-radius: 5px 0 0 5px;
-        }
-        .btn:first-child:hover {
-          background-color: #0256d4;
-
-          box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
-        }
-        .btn:last-child {
-          background-color: #6c757d;
-          border-radius: 0 5px 5px 0;
-        }
-        .btn:last-child:hover {
-          background-color: #5f676d;
-          box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-        }
-      }
 
       .filter_group {
         display: flex;
@@ -696,7 +652,7 @@ export default {
         .checkbox + label:before {
           content: "";
           position: absolute;
-          top: -5px;
+          top: -4px;
           left: 0;
           width: 54px;
           height: 23px;
@@ -719,10 +675,12 @@ export default {
           background: #757575;
         }
         .checkbox:checked + label:after {
-          left: 35px;
+          left: 33px;
         }
       }
     }
+  }
+  .grid {
   }
 }
 .button {
@@ -802,15 +760,6 @@ export default {
 }
 .btns-enter-from,
 .btns-leave-to {
-  opacity: 0;
-}
-.modal_window-enter-active,
-.modal_window-leave-active {
-  transition: opacity 0.2s ease-in-out;
-  z-index: 999;
-}
-.modal_window-enter-from,
-.modal_window-leave-to {
   opacity: 0;
 }
 </style>

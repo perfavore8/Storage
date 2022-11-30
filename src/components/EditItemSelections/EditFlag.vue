@@ -5,6 +5,7 @@
       class="checkbox"
       :id="idx + 'za'"
       v-model="copy_selected_option"
+      :disabled="disabled"
     />
     <label :for="idx + 'za'">{{ item }}</label>
   </div>
@@ -31,6 +32,13 @@ export default {
     idx: {
       type: Number,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
     },
   },
   data() {

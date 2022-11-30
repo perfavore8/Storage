@@ -5,6 +5,7 @@
       :options_props="preparing_field_data(item.data)"
       @select="option_select"
       :selected_option="{ name: copy_selected_option, value: -1 }"
+      :disabled="disabled"
     />
   </div>
 </template>
@@ -35,6 +36,13 @@ export default {
       type: Number,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
+    },
   },
   data() {
     return {
@@ -52,14 +60,15 @@ export default {
   methods: {
     change_value() {
       nextTick(() => {
-        this.item.data.forEach((val) => {
+        this.item.data?.forEach((val) => {
           if (val == this.selected_option) this.copy_selected_option = val;
         });
       });
     },
     preparing_field_data(arr) {
       const result = [];
-      arr.forEach((val, idx) => result.push({ name: val, value: idx }));
+      if (arr)
+        arr.forEach((val, idx) => result.push({ name: val, value: idx }));
       return result;
     },
     option_select(value) {

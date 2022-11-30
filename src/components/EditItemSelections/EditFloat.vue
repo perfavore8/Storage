@@ -1,7 +1,12 @@
 <template>
   <div class="row">
     <label>{{ item }}:</label>
-    <input type="number" v-model="copy_selected_option" />
+    <input
+      type="number"
+      class="input"
+      v-model="copy_selected_option"
+      :disabled="disabled"
+    />
   </div>
 </template>
 
@@ -26,6 +31,13 @@ export default {
     idx: {
       type: Number,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
     },
   },
   data() {

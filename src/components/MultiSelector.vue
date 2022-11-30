@@ -2,7 +2,7 @@
   <div class="multi_selector">
     <div
       class="item"
-      :class="{ selected: selected_options[idx] }"
+      :class="{ selected: selected_options[idx], disabled: disabled }"
       v-for="(option, idx) in options_props"
       :key="option.value"
       @click="select(idx)"
@@ -32,6 +32,13 @@ export default {
         return [true];
       },
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
+    },
   },
   emits: {
     select: null,
@@ -47,11 +54,13 @@ export default {
       { deep: true }
     );
     const select = (idx) => {
-      if (idx == 0) options_value.value = [];
-      if (options_value.value[0] == true) options_value.value[0] = false;
-      options_value.value[idx] = !options_value.value[idx];
-      if (!options_value.value.includes(true)) options_value.value[0] = true;
-      emit("select", options_value.value);
+      if (!props.disabled) {
+        if (idx == 0) options_value.value = [];
+        if (options_value.value[0] == true) options_value.value[0] = false;
+        options_value.value[idx] = !options_value.value[idx];
+        if (!options_value.value.includes(true)) options_value.value[0] = true;
+        emit("select", options_value.value);
+      }
     };
     return {
       options_value,
@@ -85,6 +94,11 @@ export default {
   }
   .item:hover {
     background-color: rgb(13 110 253 / 20%);
+  }
+  .disabled,
+  .disabled:hover {
+    background-color: #e9ecef !important;
+    cursor: default !important;
   }
 }
 .selected {

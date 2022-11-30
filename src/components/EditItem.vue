@@ -144,53 +144,6 @@ export default {
       label {
         padding: 7px 0;
       }
-      input {
-        width: calc(100% - 24px);
-        height: 20px;
-        padding: 6px 12px;
-        @include font(400, 16px);
-        background-color: white;
-        border: 1px solid #ced4da;
-        appearance: none;
-        border-radius: 4px;
-        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-      }
-      input:focus {
-        color: #212529;
-        background-color: white;
-        border-color: #86b7fe;
-        outline: 0;
-        box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
-      }
-      select {
-        height: 32px;
-        width: 200px;
-        padding: 6px 12px;
-        background-color: white;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        appearance: none;
-        @include bg_image("../assets/arrow_select.svg", 16px 12px);
-        background-position: right 8px center;
-        option {
-          background-color: #fff;
-          height: 32px;
-        }
-        option:focus {
-          background-color: rgb(13 110 253 / 25%);
-        }
-      }
-      select:focus-visible {
-        // outline: #86b7fe auto 1px;
-        border-color: #86b7fe;
-        outline: 0;
-        box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
-        // transform: rotate(180deg);
-      }
-      select:-ms-expand {
-        transform: rotate(180deg);
-        background-clip: content-box;
-      }
     }
   }
   .footer {

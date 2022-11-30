@@ -304,6 +304,7 @@ export default {
 .mdl-leave-active {
   transition: opacity 0.15s ease-in-out;
 }
+
 .mdl-enter-from,
 .mdl-leave-to {
   opacity: 0;

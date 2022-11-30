@@ -4,6 +4,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 1"
     />
@@ -11,6 +12,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 2"
     />
@@ -18,6 +20,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 3"
     />
@@ -25,6 +28,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 4"
     />
@@ -32,6 +36,7 @@
       :item="field"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 5"
     />
@@ -39,6 +44,7 @@
       :item="field"
       :selected_options="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 6"
     />
@@ -67,7 +73,6 @@
 </template>
 
 <script>
-// FIXME в компонентах idx поменять (типы)
 import EditInteger from "@/components/EditItemSelections/EditInteger.vue";
 import EditFloat from "@/components/EditItemSelections/EditFloat.vue";
 import EditString from "@/components/EditItemSelections/EditString.vue";
@@ -115,7 +120,6 @@ export default {
         );
     });
   },
-  computed: {},
   methods: {
     change_value(value, code) {
       this.$emit("change_value", value, code);
@@ -136,8 +140,8 @@ export default {
     padding: 7px 0;
   }
   input {
-    width: calc(100% - 24px);
-    height: 20px;
+    width: 100%;
+    height: 34px;
     padding: 6px 12px;
     @include font(400, 16px);
     background-color: white;
@@ -152,35 +156,6 @@ export default {
     border-color: #86b7fe;
     outline: 0;
     box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
-  }
-  select {
-    height: 32px;
-    width: 200px;
-    padding: 6px 12px;
-    background-color: white;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    appearance: none;
-    @include bg_image("../assets/arrow_select.svg", 16px 12px);
-    background-position: right 8px center;
-    option {
-      background-color: #fff;
-      height: 32px;
-    }
-    option:focus {
-      background-color: rgb(13 110 253 / 25%);
-    }
-  }
-  select:focus-visible {
-    // outline: #86b7fe auto 1px;
-    border-color: #86b7fe;
-    outline: 0;
-    box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
-    // transform: rotate(180deg);
-  }
-  select:-ms-expand {
-    transform: rotate(180deg);
-    background-clip: content-box;
   }
 }
 </style>

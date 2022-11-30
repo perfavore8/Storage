@@ -27,6 +27,11 @@ const routes = [
     name: "instructions",
     component: () => import("../views/InstructionsView.vue"),
   },
+  {
+    path: "/genesis",
+    name: "genesis",
+    component: () => import("../views/GenesisView.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -11,18 +11,15 @@
           >
         </div>
         <draggable class="dragArea" :list="list" @change="changeData">
-          <div class="item" v-for="item in list" :key="item.id">
+          <div class="item" v-for="item in list" :key="item">
             <input
               type="checkbox"
-              v-model="item.table_config.visible"
-              :id="item.id"
+              v-model="item.visible"
+              :id="item.code"
               class="checkbox"
-              :disabled="
-                item.table_config.visible === 2 ||
-                item.table_config.visible === -1
-              "
+              :disabled="item.visible === 2 || item.visible === -1"
             />
-            <label :for="item.id"></label>
+            <label :for="item.code"></label>
             {{ item.name }}
           </div>
         </draggable>
@@ -36,39 +33,59 @@
 
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
-import { defineComponent } from "vue";
+// import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
-export default defineComponent({
+export default {
   components: {
     draggable: VueDraggableNext,
     BtnsSaveClose,
   },
-  props: {},
+  props: {
+    selectedWH: {
+      type: Object,
+    },
+  },
   emits: {},
   data() {
     return {
       list: [],
     };
   },
-  mounted() {
-    this.list = JSON.parse(JSON.stringify(this.$store.state.fields.all_fields));
+  computed: {
+    tableConfig() {
+      return this.$store.state.account.tableConfig;
+    },
+  },
+  async mounted() {
+    await this.$store.dispatch(
+      "getTableConfig",
+      this.selectedWH.value != "services" && this.selectedWH.value != "whs"
+        ? this.selectedWH.value
+        : ""
+    );
+    const list = [];
+    Object.entries(this.tableConfig).map((val) => {
+      val[1].code = val[0];
+      list.push(val[1]);
+    });
+    this.list = JSON.parse(JSON.stringify(list));
     this.list.map((item) => {
-      if (item.table_config.visible === 1) item.table_config.visible = true;
-      if (item.table_config.visible === 0) item.table_config.visible = false;
+      if (item.visible === 1) item.visible = true;
+      if (item.visible === 0) item.visible = false;
     });
   },
   methods: {
     save() {
-      this.list.map((val, idx) => (val.table_config.sort = idx + 1));
-      const params = {};
+      this.list.map((val, idx) => (val.sort = idx + 1));
+      const params = {
+        value: {
+          config: [],
+          code: "",
+        },
+        wh: "",
+      };
       this.list.forEach((val) => {
-        let visible = val.table_config.visible;
-        if (visible === false) visible = 0;
-        if (visible === true) visible = 1;
-        params[val.id] = {
-          sort: val.table_config.sort,
-          visible: visible,
-        };
+        if (val.visible) params.value.config.push(val.code);
       });
       this.$store.dispatch("update_config_table", params);
       this.$store.commit("close_table_settings");
@@ -77,7 +94,7 @@ export default defineComponent({
       this.$store.commit("close_table_settings");
     },
   },
-});
+};
 </script>
 <style lang="scss" scoped>
 @import "@/app.scss";

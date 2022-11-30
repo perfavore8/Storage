@@ -467,10 +467,10 @@ export default {
             name: val.name,
             article: val.article,
             batch: val.batch,
-            // wh: { count: 0, reserve: 0 }, !!!не понятно
-            // count: val.count, !!!не работают
+            // wh: { count: 0, reserve: 0 }, //!!!не понятно
+            // count: val.count, //!!!не работают
             units: val.units.name,
-            // cost_price: val.cost_price, !!!не работают
+            cost_price: val.cost_price, //!!!не работают
             price: val.price,
             category: val.category.value,
           },
@@ -692,9 +692,9 @@ input[type="number"]::-webkit-inner-spin-button {
   display: none;
 }
 .input {
-  width: calc(100% - 24px);
+  width: 100%;
   min-width: 50%;
-  height: 20px;
+  height: 34px;
   padding: 6px 12px;
   background-color: white;
   border: 1px solid #ced4da;

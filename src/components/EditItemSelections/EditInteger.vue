@@ -3,9 +3,11 @@
     <label>{{ item }}:</label>
     <input
       type="number"
+      class="input"
       step="1"
       onchange="this.value = parseInt(this.value);"
       v-model="copy_selected_option"
+      :disabled="disabled"
     />
   </div>
 </template>
@@ -31,6 +33,13 @@ export default {
     idx: {
       type: Number,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
     },
   },
   data() {

@@ -7,6 +7,7 @@
       aria-required="true"
       aria-invalid="false"
       v-model="copy_selected_option"
+      :disabled="disabled"
     />
   </div>
 </template>
@@ -32,6 +33,13 @@ export default {
     idx: {
       type: Number,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
     },
   },
   data() {
@@ -70,12 +78,16 @@ export default {
   position: relative;
   width: 250px !important;
   height: 34px;
-  background: #c9c9c9;
+  background: white;
+  border: 1px solid #ced4da;
   border-radius: 4px;
-  border: none;
   color: #3f3f3f;
   outline: none;
   @include font(400, 16px, 19px);
+}
+.date_input:disabled {
+  color: #212529;
+  background-color: #e9ecef !important;
 }
 .date_input::-webkit-datetime-edit-fields-wrapper {
   display: flex;

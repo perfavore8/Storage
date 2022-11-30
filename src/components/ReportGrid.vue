@@ -1,13 +1,13 @@
 <template>
-  <p class="count">Найдено: {{ count }}</p>
-  <table class="table" :class="{ blur: openSelectedReportModal }">
+  <p class="count">Найдено: {{ reportsData.total }}</p>
+  <table class="table" :class="{ blur: openSelectedReportModal || isLoading }">
     <thead>
       <tr class="row title">
         <td class="item" v-for="tit in title" :key="tit">{{ tit.name }}</td>
       </tr>
     </thead>
     <tbody>
-      <template v-for="(report, idx) in copyReports" :key="report.id">
+      <template v-for="(report, idx) in copyReports" :key="report">
         <tr class="row" :class="{ row_odd: idx % 2 == 0 }">
           <td
             class="item"
@@ -15,23 +15,39 @@
             :key="tit"
             :class="{ center: tit.type }"
           >
-            <span v-if="!tit.type">
+            <span v-if="!tit.type && (isClient || tit.code != 'leads')">
               {{ report[tit.code] }}
             </span>
+            <div v-if="!tit.type && tit.code == 'leads' && !isClient">
+              <a
+                v-for="lead in report[tit.code]"
+                :key="lead"
+                target="black"
+                :href="
+                  'https://' +
+                  accountSubdomain +
+                  '.amocrm.ru/leads/detail/' +
+                  lead
+                "
+              >
+                {{ lead }},
+              </a>
+            </div>
             <button
               class="btn"
-              v-else
-              @click="report[tit.code].value = !report[tit.code].value"
+              v-if="tit.type"
+              v-show="report[tit.code]"
+              @click="report[tit.code].value = !report[tit.code]?.value"
             >
-              {{ report[tit.code].value ? "Скрыть" : "Показать" }}
+              {{ report[tit.code]?.value ? "Скрыть" : "Показать" }}
             </button>
           </td>
         </tr>
         <tr
           class="hiden"
-          v-for="otv in report[buttonInTitle.code].list"
+          v-for="otv in report[buttonInTitle.code]?.list"
           :key="otv.id"
-          v-show="report[buttonInTitle.code].value"
+          v-show="report[buttonInTitle.code]?.value"
         >
           <td class="item" v-for="tit in title" :key="tit">
             <span v-if="otv[tit.code]">
@@ -39,13 +55,19 @@
             </span>
           </td>
         </tr>
-        <tr class="space" v-if="report[buttonInTitle.code].value"></tr>
+        <tr class="space" v-if="report[buttonInTitle.code]?.value"></tr>
       </template>
+      <tr class="space"></tr>
+      <tr class="row title" v-if="!isClient">
+        <td class="item" v-for="tit in title" :key="tit">
+          {{ salesTotal[tit.code] }}
+        </td>
+      </tr>
     </tbody>
   </table>
   <Teleport to="body">
     <ReportGridModal
-      v-if="selectedReport.value"
+      v-if="selectedReport?.value"
       :title="selectedReport?.title"
       :list="selectedReport?.list"
       :company="selectedReport?.company"
@@ -60,7 +82,10 @@ export default {
   components: { ReportGridModal },
   props: {
     title: { type: Array, required: true },
-    reports: { type: Array, required: true },
+    reportsData: { type: Object, required: true },
+    salesTotal: { type: Object, required: false },
+    isClient: { type: Boolean, required: true },
+    isLoading: { type: Boolean, required: true },
   },
   data() {
     return {
@@ -72,11 +97,19 @@ export default {
     this.copy();
   },
   computed: {
+    accountSubdomain() {
+      return this.$store.state.account.account.subdomain;
+    },
     buttonInTitle() {
       return this.title?.filter((val) => val?.type == 1)[0];
     },
     modalInTitle() {
       return this.title?.filter((val) => val?.type == 2)[0];
+    },
+    openedRows() {
+      return this.copyReports.filter(
+        (val) => val[this.buttonInTitle.code]?.value
+      );
     },
     selectedReport() {
       const item = this.copyReports.filter((val) => {
@@ -89,7 +122,7 @@ export default {
           company: item.company,
           value: item[this.modalInTitle?.code].value,
           list: item[this.modalInTitle?.code].list,
-          title: item[this.modalInTitle?.code]?.title,
+          title: item[this.modalInTitle?.code].title,
         };
       }
       return props;
@@ -102,26 +135,43 @@ export default {
     openSelectedReportModal() {
       this.$emit("updateOpenSelectedReportModal", this.openSelectedReportModal);
     },
-    reports: {
+    reportsData: {
       handler: function () {
         this.copy();
+      },
+      deep: true,
+    },
+    openedRows: {
+      handler: function (newVal, oldVal) {
+        let res = false;
+        newVal.forEach((val) => {
+          let a = false;
+          oldVal.forEach((val2) => {
+            if (val2.company == val.company) a = true;
+          });
+          res = res || a;
+        });
+        if (!res) this.$emit("updateOpenedRows", this.openedRows);
+      },
+      deep: true,
+    },
+    selectedReport: {
+      handler: function (newVal, oldVal) {
+        if (newVal.company != oldVal.company || newVal.value != oldVal.value)
+          this.$emit("updateSelectedReport", this.selectedReport);
       },
       deep: true,
     },
   },
   methods: {
     copy() {
-      this.copyReports = JSON.parse(JSON.stringify(this.reports));
+      if (this.reportsData.data)
+        this.copyReports = JSON.parse(JSON.stringify(this.reportsData.data));
     },
     closeReportGridModal() {
-      this.copyReports[
-        this.copyReports.indexOf(
-          this.copyReports.filter((val) => {
-            if (val[this.modalInTitle?.code])
-              return val[this.modalInTitle?.code].value;
-          })[0]
-        )
-      ][this.modalInTitle?.code].value = false;
+      this.copyReports.map(
+        (val) => (val[this.modalInTitle?.code].value = false)
+      );
     },
   },
 };
@@ -183,5 +233,6 @@ export default {
 }
 .blur {
   filter: blur(5px);
+  transition: all 0.5s ease-out;
 }
 </style>

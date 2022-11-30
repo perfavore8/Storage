@@ -6,6 +6,7 @@
       cols="30"
       rows="10"
       v-model="copy_selected_option"
+      :disabled="disabled"
     />
   </div>
 </template>
@@ -31,6 +32,13 @@ export default {
     idx: {
       type: Number,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
     },
   },
   data() {
@@ -74,5 +82,9 @@ export default {
   border: 1px solid #ced4da;
   outline: none;
   resize: vertical;
+}
+.text_area:disabled {
+  color: #212529;
+  background-color: #e9ecef !important;
 }
 </style>

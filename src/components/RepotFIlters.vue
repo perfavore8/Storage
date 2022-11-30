@@ -50,7 +50,7 @@
       </div>
     </div>
     <div class="btns">
-      <button class="btn">Применить</button>
+      <button class="btn" @click="apply()">Применить</button>
       <button class="btn" @click="clearAllFields()">Очистить</button>
     </div>
   </div>
@@ -234,6 +234,29 @@ export default {
     },
     clearAllFields() {
       this.fields.map((val) => (val.selected = []));
+    },
+    apply() {
+      const preparationDate = (date) => {
+        const a = date.split("-");
+        const b = a[0];
+        a.splice(0, 1);
+        a.push(b);
+        return a.join("/");
+      };
+      const filter = {
+        date:
+          preparationDate(this.dateStart) + "-" + preparationDate(this.dateEnd),
+      };
+      this.fields.forEach((val) => {
+        const list = [];
+        val.selected.forEach((value) => list.push(value.value));
+        if (
+          (this.isClient && val.clientShow) ||
+          (!this.isClient && val.salesShow)
+        )
+          filter[val.name] = list;
+      });
+      this.$emit("getFilter", filter);
     },
   },
 };

@@ -4,6 +4,7 @@ export default {
     account: {},
     user: {},
     currencies: {},
+    tableConfig: {},
   },
   getters: {},
   mutations: {
@@ -16,6 +17,9 @@ export default {
     update_currencies(state, value) {
       state.currencies = { ...value };
     },
+    updateTableConfig(state, value) {
+      state.tableConfig = { ...value };
+    },
   },
   actions: {
     async get_account(context) {
@@ -24,6 +28,27 @@ export default {
       const json = await res.json();
       context.commit("update_account", json.account);
       context.commit("update_user", json.user);
+    },
+    async getTableConfig(context, code) {
+      const url = BaseURL + "account/table-config";
+      const res = await fetch(url + "?code=" + code);
+      const json = await res.json();
+      context.commit("updateTableConfig", json);
+    },
+    async update_config_table(context, params) {
+      const url = BaseURL + "account/table-config";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params.value),
+      });
+      const json = await res.json();
+      console.log("update_config_table", json);
+      await context.dispatch("getTableConfig", params.wh);
+      context.dispatch("get_all_fields");
+      return json;
     },
     async get_currencies(context) {
       const url = BaseURL + "account/currencies";

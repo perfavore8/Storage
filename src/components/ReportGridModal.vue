@@ -9,7 +9,8 @@
       </div>
       <div class="hr" />
       <div class="content">
-        <table class="table">
+        <label v-if="list.length == 0" class="text"> Ничего не найдено </label>
+        <table class="table" v-else>
           <thead>
             <tr class="row title">
               <td class="item" v-for="tit in title" :key="tit">
@@ -79,6 +80,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 1005;
+  pointer-events: all;
   .container {
     max-width: 90%;
     margin: 60px auto;
@@ -126,6 +128,8 @@ export default {
     .content {
       width: 100%;
       padding: 16px;
+      display: flex;
+      justify-content: center;
       .table {
         border-collapse: collapse;
         width: 100%;
@@ -161,5 +165,9 @@ export default {
       border-top: 1px solid #dee2e6;
     }
   }
+}
+.text {
+  margin: 0 auto;
+  @include font(500, 18px);
 }
 </style>

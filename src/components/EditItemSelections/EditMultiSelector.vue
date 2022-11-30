@@ -5,6 +5,7 @@
       :options_props="preparing_field_data(item.data)"
       @select="option_select"
       :selected_options="copy_selected_options"
+      :disabled="disabled"
     />
   </div>
 </template>
@@ -35,6 +36,13 @@ export default {
       type: Number,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
+    },
   },
   data() {
     return {
@@ -54,7 +62,7 @@ export default {
       let a = [];
       nextTick(() => {
         const split_selected_options = this.selected_options.split(", ");
-        this.item.data.forEach((val) => {
+        this.item.data?.forEach((val) => {
           split_selected_options.includes(val) ? a.push(true) : a.push(false);
         });
         this.copy_selected_options = [];
@@ -63,7 +71,8 @@ export default {
     },
     preparing_field_data(arr) {
       const result = [];
-      arr.forEach((val, idx) => result.push({ name: val, value: idx }));
+      if (arr)
+        arr.forEach((val, idx) => result.push({ name: val, value: idx }));
       return result;
     },
     option_select(value) {

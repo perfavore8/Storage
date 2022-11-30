@@ -4,8 +4,18 @@
     <label v-if="products.length == 0" class="text"> Ничего не найдено </label>
     <table class="table" :class="{ blur: show_edit_modal }" v-else>
       <thead>
-        <main-grid-bar :fields="all_fields" @sort="sort" />
-        <main-grid-filters ref="filters" :fields="all_fields" />
+        <main-grid-bar
+          :fields="all_fields"
+          @sort="sort"
+          :tableConfig="tableConfig"
+          :sortedFields="sortedFields"
+        />
+        <main-grid-filters
+          ref="filters"
+          :fields="all_fields"
+          :tableConfig="tableConfig"
+          :sortedFields="sortedFields"
+        />
       </thead>
       <tbody>
         <tr class="row" v-for="(row, idx) in products" :key="row.id">
@@ -20,18 +30,70 @@
             />
             <label :for="row.id"></label>
           </td>
-          <td
-            class="item"
-            v-for="item in all_fields"
-            v-show="item.table_config.visible"
-            :key="item"
-          >
-            <div class="dublitem" v-if="row.fields">
-              {{ row.fields[item.code] }}
-            </div>
-          </td>
+          <!-- <template v-for="item in all_fields" :key="item">
+            <template v-if="isShow(item.code).value">
+              <td class="item">
+                <div class="dublitem" v-if="row.fields">
+                  <span v-if="typeof row.fields[item.code] != 'object'">
+                    {{ row.fields[item.code] }}
+                  </span>
+                  <span v-else>
+                    {{
+                      row.fields[item.code] != null
+                        ? isShow(item.code).second == "cost"
+                          ? row.fields[item.code][isShow(item.code).second] +
+                            " " +
+                            row.fields[item.code].currency
+                          : row.fields[item.code][isShow(item.code).second]
+                        : ""
+                    }}
+                  </span>
+                </div>
+              </td>
+            </template>
+          </template> -->
+          <template v-for="item in sortedFields" :key="item">
+            <td class="item">
+              <span v-if="item[0].split('.').length < 2">
+                {{ row.fields[item[0]] }}
+              </span>
+              <span v-else>
+                {{
+                  item[0].split(".")[1] == "cost"
+                    ? row.fields[item[0].split(".")[0]][item[0].split(".")[1]] +
+                      " " +
+                      row.fields[item[0].split(".")[0]].currency
+                    : row.fields[item[0].split(".")[0]][item[0].split(".")[1]]
+                }}
+              </span>
+            </td>
+            <template v-if="isShow(item.code).value && false">
+              <td class="item">
+                <div class="dublitem" v-if="row.fields">
+                  <span v-if="typeof row.fields[item.code] != 'object'">
+                    {{ row.fields[item.code] }}
+                  </span>
+                  <span v-else>
+                    {{
+                      row.fields[item.code] != null
+                        ? isShow(item.code).second == "cost"
+                          ? row.fields[item.code][isShow(item.code).second] +
+                            " " +
+                            row.fields[item.code].currency
+                          : row.fields[item.code][isShow(item.code).second]
+                        : ""
+                    }}
+                  </span>
+                </div>
+              </td>
+            </template>
+          </template>
           <td class="item">
-            <div class="edit_icon" @click="open_edit_modal(row)"></div>
+            <div
+              class="edit_icon"
+              @click="open_edit_modal(row)"
+              :class="{ disabledEdit: oneC }"
+            ></div>
           </td>
         </tr>
       </tbody>
@@ -64,7 +126,11 @@ export default {
     MainGridFilters,
     MainGridBar,
   },
-  props: {},
+  props: {
+    selectedWH: {
+      type: Object,
+    },
+  },
   inject: ["isServicePage"],
 
   data() {
@@ -76,12 +142,34 @@ export default {
   },
 
   async mounted() {
-    this.$store.dispatch("get_all_fields");
+    await this.$store.dispatch(
+      "getTableConfig",
+      this.selectedWH.value != "services" && this.selectedWH.value != "whs"
+        ? this.selectedWH.value
+        : ""
+    );
+    await this.$store.dispatch("get_all_fields");
     await this.get_products();
     this.setSelectedProducts();
   },
 
   computed: {
+    sortedFields() {
+      const list = Object.entries(this.tableConfig);
+      return list
+        .sort((a, b) => {
+          if (a[1].sort > b[1].sort) return 1;
+          if (a[1].sort == b[1].sort) return 0;
+          if (a[1].sort < b[1].sort) return -1;
+        })
+        .filter((val) => val[1].visible);
+    },
+    tableConfig() {
+      return this.$store.state.account.tableConfig;
+    },
+    oneC() {
+      return this.$store.state.account.account?.config?.g_enabled;
+    },
     count() {
       return this.$store.state.account.user.config?.per_page;
     },
@@ -110,7 +198,7 @@ export default {
         this.updateKey += 1;
         this.selectedProducts = [];
         nextTick(() => {
-          this.filters?.reset_filtersValue();
+          this.filters?.clearFilters();
           this.filters?.feelFilters();
         });
       },
@@ -119,9 +207,29 @@ export default {
     show_buttons() {
       this.$store.commit("open_close_buttons", this.show_buttons);
     },
+    async selectedWH() {
+      await this.$store.dispatch(
+        "getTableConfig",
+        this.selectedWH.value != "services" && this.selectedWH.value != "whs"
+          ? this.selectedWH.value
+          : ""
+      );
+      this.get_products();
+    },
   },
 
   methods: {
+    clearFilters() {
+      this.filters?.clearFilters();
+    },
+    isShow(code) {
+      const res = { value: false, second: "" };
+      Object.entries(this.tableConfig).forEach((val) => {
+        if (val[0].split(".")[0] == code && val[1]?.visible)
+          (res.value = true), (res.second = val[0].split(".")[1]);
+      });
+      return res;
+    },
     async changeCount(count) {
       await this.$store.dispatch("update_user", { per_page: count });
       this.changePage(this.meta.current_page);
@@ -137,6 +245,8 @@ export default {
     },
     async get_products(params) {
       if (this.isServicePage.value) params = { ...params, is_service: 1 };
+      if (this.selectedWH.value != "whs" && !this.isServicePage.value)
+        params = { ...params, warehouse: this.selectedWH.value };
       await this.$store.dispatch("get_products", params);
       this.setSelectedProducts();
     },
@@ -144,8 +254,10 @@ export default {
       this.changePage(1);
     },
     open_edit_modal(row) {
-      this.edit_data = { ...row };
-      this.$store.commit("open_edit_modal", row.fields.category);
+      if (!this.oneC) {
+        this.edit_data = { ...row };
+        this.$store.commit("open_edit_modal", row.fields.category);
+      }
     },
     sort(code, order) {
       const params = {
@@ -254,5 +366,8 @@ export default {
 .rows-enter-from,
 .rows-leave-to {
   opacity: 0;
+}
+.disabledEdit {
+  opacity: 0.5;
 }
 </style>
