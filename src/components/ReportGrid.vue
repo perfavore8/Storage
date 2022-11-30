@@ -1,11 +1,10 @@
 <template>
   <div class="top" id="report_count_area">
     <p class="count">
-      Найдено:
       {{
-        reportsData.total !== undefined
-          ? reportsData.total
-          : reportsData?.meta?.total
+        $t("Archive.count", {
+          count: Number(reportsData.total || reportsData?.meta?.total),
+        })
       }}
     </p>
   </div>
@@ -86,7 +85,11 @@
               v-show="report[tit?.code]"
               @click="report[tit?.code].value = !report[tit?.code]?.value"
             >
-              {{ report[tit?.code]?.value ? "Скрыть" : "Показать" }}
+              {{
+                report[tit?.code]?.value
+                  ? $t("Analytics.reportGrid.hide")
+                  : $t("Analytics.reportGrid.show")
+              }}
             </button>
           </td>
         </tr>

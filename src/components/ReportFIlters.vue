@@ -67,7 +67,7 @@
                 "
                 :selected="filteringSystem.selectedSystem"
                 :countLettersReq="0"
-                :placeholder="'Система'"
+                :placeholder="t('Analytics.reportFilters.system')"
                 :requestDelay="0"
                 :SelectedInTitle="true"
                 @focusOut="() => filteringSystem.changeSystemInputValue('')"
@@ -99,17 +99,19 @@
           </template>
         </div>
         <div class="btns">
-          <button class="btn btn_blue" @click="apply()">Применить</button>
+          <button class="btn btn_blue" @click="apply()">
+            {{ $t("global.apply2") }}
+          </button>
           <button
             class="btn btn_yellow"
             v-if="!coincideSelectedItems && isTest"
             style="border-radius: 0"
             @click="createReport()"
           >
-            Создать шаблон
+            {{ $t("Analytics.reportFilters.createTempl") }}
           </button>
           <button class="btn btn_grey" @click="clearAllFields()">
-            Очистить
+            {{ $t("global.clear") }}
           </button>
         </div>
       </div>
@@ -153,6 +155,7 @@ import {
 } from "@vue/runtime-core";
 import store from "@/store";
 import { useRoute } from "vue-router";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     AppInputSelect,
@@ -170,6 +173,8 @@ export default {
   setup(props, context) {
     const filteringSystems = reactive([useSystems()]);
     const addFilteringSystem = () => filteringSystems.push(useSystems());
+
+    const { t } = useLangConfiguration();
 
     const route = useRoute();
     const isTest = computed(() => {
@@ -189,7 +194,7 @@ export default {
         name: "product",
         value: "",
         minLength: 3,
-        placeholder: "Артикулы/Названия",
+        placeholder: t("Analytics.reportFilters.fields.product"),
         typesShow: ["sales", "stuffMove"],
         selected: [],
       },
@@ -198,7 +203,7 @@ export default {
         name: "responsible",
         value: "",
         minLength: 0,
-        placeholder: "Ответственные",
+        placeholder: t("Analytics.reportFilters.fields.responsible"),
         typesShow: ["customers", "sales"],
         selected: [],
       },
@@ -207,7 +212,7 @@ export default {
         name: "pipeline",
         value: "",
         minLength: 0,
-        placeholder: "Воронки",
+        placeholder: t("Analytics.reportFilters.fields.pipeline"),
         typesShow: ["customers"],
         selected: [],
       },
@@ -216,7 +221,7 @@ export default {
         name: "company",
         value: "",
         minLength: 3,
-        placeholder: "Компании",
+        placeholder: t("Analytics.reportFilters.fields.company"),
         typesShow: ["customers"],
         selected: [],
       },
@@ -225,7 +230,7 @@ export default {
         name: "contact",
         value: "",
         minLength: 3,
-        placeholder: "Контакты",
+        placeholder: t("Analytics.reportFilters.fields.contact"),
         typesShow: ["customers"],
         selected: [],
       },
@@ -234,7 +239,7 @@ export default {
         name: "users",
         value: "",
         minLength: 0,
-        placeholder: "Пользователи",
+        placeholder: t("Analytics.reportFilters.fields.users"),
         typesShow: ["stuffMove"],
         selected: [],
         haveTheirOwnLists: true,
@@ -245,7 +250,7 @@ export default {
         name: "event_type",
         value: "",
         minLength: 0,
-        placeholder: "Тип события",
+        placeholder: t("Analytics.reportFilters.fields.event_type"),
         typesShow: ["stuffMove"],
         selected: [],
         haveTheirOwnLists: true,
@@ -256,7 +261,7 @@ export default {
         name: "product/batch",
         value: "",
         minLength: 3,
-        placeholder: "Партия",
+        placeholder: t("Analytics.reportFilters.fields.product_batch"),
         typesShow: ["stuffMove"],
         selected: [],
       },
@@ -265,7 +270,7 @@ export default {
         name: "initial_warehouse",
         value: "",
         minLength: 0,
-        placeholder: "Начальный склад	",
+        placeholder: t("Analytics.reportFilters.fields.initial_warehouse"),
         typesShow: ["stuffMove"],
         selected: [],
         haveTheirOwnLists: true,
@@ -276,7 +281,7 @@ export default {
         name: "final_warehouse",
         value: "",
         minLength: 0,
-        placeholder: "Итоговый склад	",
+        placeholder: t("Analytics.reportFilters.fields.final_warehouse"),
         typesShow: ["stuffMove"],
         selected: [],
         haveTheirOwnLists: true,
@@ -341,7 +346,11 @@ export default {
       {
         id: 1,
         name: "quantity",
-        selected: { option: "=", value: "", placeholder: "Колличество" },
+        selected: {
+          option: "=",
+          value: "",
+          placeholder: t("Analytics.reportFilters.fields.quantity"),
+        },
         list: [],
         typesShow: ["stuffMove"],
         select: (option, id) => {
@@ -492,6 +501,7 @@ export default {
       addFilteringSystem,
       numberData,
       isTest,
+      t,
     };
   },
 };

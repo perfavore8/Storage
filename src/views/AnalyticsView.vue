@@ -98,7 +98,7 @@
       class="inline-flex items-center gap-2"
       v-if="reportType.selected.value === 'customers'"
     >
-      <span>Группировать по: </span>
+      <span>{{ $t("Analytics.group") }}</span>
       <AppRadioBtnsGroup
         :list="groupBy.list"
         :selected="groupBy.selected"
@@ -121,6 +121,10 @@ import GridBottom from "@/components/GridBottom.vue";
 import { nextTick } from "@vue/runtime-core";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   name: "AnalyticsView",
   components: {
@@ -142,44 +146,107 @@ export default {
       reports: [],
       isClient: true,
       reportType: {
-        selected: { name: "Отчет по клиентам", value: "customers" },
+        selected: {
+          name: t("Analytics.reportTypes.customers"),
+          value: "customers",
+        },
         list: [
-          { name: "Отчет по клиентам", value: "customers" },
-          { name: "Отчет по продажам", value: "sales" },
-          { name: "Движение товаров", value: "stuffMove", value2: "movement" },
+          { name: t("Analytics.reportTypes.customers"), value: "customers" },
+          { name: t("Analytics.reportTypes.sales"), value: "sales" },
+          {
+            name: t("Analytics.reportTypes.movement"),
+            value: "stuffMove",
+            value2: "movement",
+          },
         ],
       },
       titles: {
         customers: [
-          { name: "Компания", code: "company", type: 0 },
-          { name: "Контакт", code: "contact", type: 0 },
-          { name: "Сделки", code: "leads", type: 0 },
-          { name: "Оборот", code: "sum", type: 0 },
-          { name: "Прибыль", code: "prib", type: 0 },
-          { name: "Ответственные", code: "otv", type: 1 },
-          { name: "Позиции", code: "poz", type: 2 },
+          {
+            name: t("Analytics.titles.customers.company"),
+            code: "company",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.customers.contact"),
+            code: "contact",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.customers.leads"),
+            code: "leads",
+            type: 0,
+          },
+          { name: t("Analytics.titles.customers.sum"), code: "sum", type: 0 },
+          { name: t("Analytics.titles.customers.prib"), code: "prib", type: 0 },
+          { name: t("Analytics.titles.customers.otv"), code: "otv", type: 1 },
+          { name: t("Analytics.titles.customers.poz"), code: "poz", type: 2 },
         ],
         sales: [
-          { name: "Название", code: "name", type: 0 },
-          { name: "Кол-во", code: "count", type: 0 },
-          { name: "Оборот", code: "sum", type: 0 },
-          { name: "Себестоимость", code: "cost_sum", type: 0 },
-          { name: "Прибыль", code: "prib", type: 0 },
-          { name: "Сделки", code: "leads", type: 0 },
-          { name: "Позиции", code: "poz", type: 1 },
+          { name: t("Analytics.titles.sales.name"), code: "name", type: 0 },
+          { name: t("Analytics.titles.sales.count"), code: "count", type: 0 },
+          { name: t("Analytics.titles.sales.sum"), code: "sum", type: 0 },
+          {
+            name: t("Analytics.titles.sales.cost_sum"),
+            code: "cost_sum",
+            type: 0,
+          },
+          { name: t("Analytics.titles.sales.prib"), code: "prib", type: 0 },
+          { name: t("Analytics.titles.sales.leads"), code: "leads", type: 0 },
+          { name: t("Analytics.titles.sales.poz"), code: "poz", type: 1 },
         ],
         stuffMove: [
-          { name: "Дата события", code: "event_date", type: 0 },
-          { name: "Тип события", code: "event_type", type: 0 },
-          { name: "Артикул", code: "article_number", type: 0 },
-          { name: "Название", code: "title", type: 0 },
-          { name: "Партия", code: "party", type: 0 },
-          { name: "Колличество", code: "quantity", type: 0 },
-          { name: "Себестоимость", code: "cost_price", type: 0 },
-          { name: "Начальный склад", code: "initial_warehouse", type: 0 },
-          { name: "Итоговый склад", code: "final_warehouse", type: 0 },
-          { name: "Пользователь", code: "user", type: 0 },
-          { name: "Комментарий", code: "comment", type: 0 },
+          {
+            name: t("Analytics.titles.movement.event_date"),
+            code: "event_date",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.movement.event_type"),
+            code: "event_type",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.movement.article_number"),
+            code: "article_number",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.movement.title"),
+            code: "title",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.movement.party"),
+            code: "party",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.movement.quantity"),
+            code: "quantity",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.movement.cost_price"),
+            code: "cost_price",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.movement.initial_warehouse"),
+            code: "initial_warehouse",
+            type: 0,
+          },
+          {
+            name: t("Analytics.titles.movement.final_warehouse"),
+            code: "final_warehouse",
+            type: 0,
+          },
+          { name: t("Analytics.titles.movement.user"), code: "user", type: 0 },
+          {
+            name: t("Analytics.titles.movement.comment"),
+            code: "comment",
+            type: 0,
+          },
         ],
       },
       openedRows: [],
@@ -200,10 +267,10 @@ export default {
         },
       },
       groupBy: {
-        selected: { name: "Компании", value: "companies" },
+        selected: { name: t("Analytics.groupComp"), value: "companies" },
         list: [
-          { name: "Компаниям", value: "companies" },
-          { name: "Контактам", value: "contacts" },
+          { name: t("Analytics.groupComp"), value: "companies" },
+          { name: t("Analytics.groupContact"), value: "contacts" },
         ],
         select: (value) => {
           this.groupBy.selected = value;
@@ -285,8 +352,8 @@ export default {
       this.total.prib = this.round(this.total.prib);
       if (this.reportType.selected.value == "sales")
         this.total.leads = this.total?.leads_count;
-      this.total["name"] = "Общее";
-      this.total["company"] = "Общее";
+      this.total["name"] = t("Analytics.general");
+      this.total["company"] = t("Analytics.general");
       this.total["poz"] = "";
     },
     async updateOpenedRows(value) {
@@ -455,10 +522,10 @@ export default {
             value: false,
             list: [],
             title: [
-              { name: "Название", code: "name" },
-              { name: "Кол-во", code: "count" },
-              { name: "Оборот", code: "sum" },
-              { name: "Прибыль", code: "prib" },
+              { name: t("Analytics.subTitles.name"), code: "name" },
+              { name: t("Analytics.subTitles.count"), code: "count" },
+              { name: t("Analytics.subTitles.sum"), code: "sum" },
+              { name: t("Analytics.subTitles.prib"), code: "prib" },
             ],
           };
           val["prib"] = val.sum - val.cost_sum;
@@ -474,7 +541,7 @@ export default {
             list: [],
           };
           val["prib"] = val.sum - val.cost_sum;
-          val.leads = val.leads.split(",");
+          val.leads = val.leads?.split(",");
           val.sum = this.round(val.sum);
           val.cost_sum = this.round(val.cost_sum);
           val.prib = this.round(val.prib);

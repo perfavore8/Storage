@@ -4,7 +4,7 @@
       <div class="backdrop_with_filter" @click="close()" />
       <div class="container">
         <header class="header">
-          <label>Новый отчет</label>
+          <label>{{ $t("Analytics.createModal.new") }}</label>
           <button class="btn cross" @click="close()">
             <span class="material-icons-round"> close </span>
           </button>
@@ -12,11 +12,11 @@
         <main class="content">
           <form>
             <div class="label_input">
-              <label>Название отчета</label>
+              <label>{{ $t("Analytics.createModal.name") }}</label>
               <input
                 class="input"
                 type="text"
-                placeholder="По продажам"
+                :placeholder="t('Analytics.createModal.placeholder')"
                 v-model="newReport.name"
               />
             </div>
@@ -34,17 +34,20 @@
 import store from "@/store";
 import BtnsSaveClose from "./BtnsSaveClose.vue";
 import { reactive } from "@vue/reactivity";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { BtnsSaveClose },
   props: {},
   setup() {
+    const { t } = useLangConfiguration();
+
     const newReport = reactive({
-      name: "По ",
+      name: t("Analytics.createModal.by"),
     });
 
     const close = () => store.commit("toggleReportCreate", false);
 
-    return { close, newReport };
+    return { close, newReport, t };
   },
 };
 </script>
