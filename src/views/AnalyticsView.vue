@@ -94,25 +94,57 @@ export default {
       this.openSelectedReportModal = value;
     },
     async updateOpenedRows(value) {
-      if (!value.length)
+      let query = "";
+      this.isClient ? (query = "company") : (query = "name");
+      const arr = [];
+      value.forEach((val) => arr.push(val[query]));
+      if (this.isClient) {
         this.reports.data.map((val) =>
-          val.otv ? (val.otv.value = false) : null
+          val.otv && !arr.includes(val[query]) ? (val.otv.value = false) : null
         );
+      } else {
+        this.reports.data.map((val) =>
+          val.poz && !arr.includes(val[query]) ? (val.poz.value = false) : null
+        );
+      }
       await value?.forEach(async (val) => {
-        if (!this.openedRows.includes(val) && val.company) {
-          this.openedRows.push(val);
-          await this.$store.dispatch("getCustomersResponsible", {
+        if (this.isClient) {
+          if (!this.openedRows.includes(val)) {
+            this.openedRows.push(val);
+            await this.$store.dispatch("getCustomersResponsible", {
+              filter: {},
+              company: val.company,
+            });
+            this.reports.data.map((report) => {
+              if (report.company == val.company && report.otv) {
+                report.otv.value = val.otv.value;
+                report.otv.list =
+                  this.$store.state.analytics.customersResponsible;
+                report.otv.list.map((item) => {
+                  item["prib"] = item.sum - item.cost_sum;
+                  item.sum = Math.round(item.sum * 100) / 100 + " р.";
+                  item.cost_sum = Math.round(item.cost_sum * 100) / 100 + " р.";
+                  item.prib = Math.round(item.prib * 100) / 100 + " р.";
+                  item.otv = item.user;
+                });
+              }
+            });
+          }
+        } else {
+          await this.$store.dispatch("getSalesProducts", {
             filter: {},
-            company: val.company,
+            product: val.name,
           });
           this.reports.data.map((report) => {
-            if (report.company == val.company && report.otv) {
-              report.otv.value = val.otv.value;
-              report.otv.list =
-                this.$store.state.analytics.customersResponsible;
-              report.otv.list.map((item) => {
+            if (report.name == val.name && report.poz) {
+              report.poz.value = val.poz.value;
+              report.poz.list = this.$store.state.analytics.salesProducts;
+              report.poz.list.map((item) => {
                 item["prib"] = item.sum - item.cost_sum;
-                item.otv = item.user;
+                item.sum = Math.round(item.sum * 100) / 100 + " р.";
+                item.cost_sum = Math.round(item.cost_sum * 100) / 100 + " р.";
+                item.prib = Math.round(item.prib * 100) / 100 + " р.";
+                item.poz = item.user;
               });
             }
           });
@@ -124,26 +156,27 @@ export default {
       if (!value.value) {
         this.reports.data.map((report) => (report.poz.value = false));
       }
-      if (value.company) {
-        if (
-          !this.reports.data.filter((val) => val.company == value.company)[0]
-            ?.poz.list.length
-        ) {
-          await this.$store.dispatch("getCustomersProducts", {
-            filter: {},
-            company: value.company,
-          });
-        }
-        this.reports.data.map((report) => {
-          if (report.company == value.company && report.poz) {
-            report.poz.value = value.value;
-            report.poz.list = this.$store.state.analytics.customersProducts;
-            report.poz.list.map(
-              (val) => (val["prib"] = val.sum - val.cost_sum)
-            );
-          }
+      if (
+        !this.reports.data.filter((val) => val.company == value.company)[0]?.poz
+          .list.length
+      ) {
+        await this.$store.dispatch("getCustomersProducts", {
+          filter: {},
+          company: value.company,
         });
       }
+      this.reports.data.map((report) => {
+        if (report.company == value.company && report.poz) {
+          report.poz.value = value.value;
+          report.poz.list = this.$store.state.analytics.customersProducts;
+          report.poz.list.map((val) => {
+            val["prib"] = val.sum - val.cost_sum;
+            val.sum = Math.round(val.sum * 100) / 100 + " р.";
+            val.cost_sum = Math.round(val.cost_sum * 100) / 100 + " р.";
+            val.prib = Math.round(val.prib * 100) / 100 + " р.";
+          });
+        }
+      });
 
       this.selectedReport = { ...value };
     },

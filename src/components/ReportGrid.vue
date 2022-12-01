@@ -143,15 +143,18 @@ export default {
     },
     openedRows: {
       handler: function (newVal, oldVal) {
+        let query = "";
+        this.isClient ? (query = "company") : (query = "name");
+        const arrNewVal = [];
+        newVal.forEach((val) => arrNewVal.push(val[query]));
+        const arrOldVal = [];
+        oldVal.forEach((val) => arrOldVal.push(val[query]));
+
         let res = false;
-        newVal.forEach((val) => {
-          let a = false;
-          oldVal.forEach((val2) => {
-            if (val2.company == val.company) a = true;
-          });
-          res = res || a;
+        arrNewVal.forEach((val) => {
+          if (!arrOldVal.includes(val)) res = true;
         });
-        if (!res) this.$emit("updateOpenedRows", this.openedRows);
+        if (res) this.$emit("updateOpenedRows", this.openedRows);
       },
       deep: true,
     },
