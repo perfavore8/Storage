@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {
-      copy_selected_option: {},
+      copy_selected_option: "Не выбрано",
     };
   },
   mounted() {
@@ -61,6 +61,7 @@ export default {
     change_value() {
       nextTick(() => {
         this.item.data?.forEach((val) => {
+          console.log(this.selected_option);
           if (val == this.selected_option) this.copy_selected_option = val;
         });
       });
