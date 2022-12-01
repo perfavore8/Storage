@@ -13,20 +13,35 @@
           <div class="bottom">
             <div class="permits">
               <div class="permit">
-                <input type="checkbox" class="checkbox" id="q1" />
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  id="q1"
+                  v-model="copyConfing.allow_add_reserve"
+                />
                 <label for="q1"
                   >Разрешать добавлять товары из резерва в другие сделки</label
                 >
               </div>
               <div class="permit">
-                <input type="checkbox" class="checkbox" id="q2" />
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  id="q2"
+                  v-model="copyConfing.allow_change_price"
+                />
                 <label for="q2"
                   >Изменить цену у товаров в открытых сделках (по
                   умолчанию)</label
                 >
               </div>
               <div class="permit">
-                <input type="checkbox" class="checkbox" id="q3" />
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  id="q3"
+                  v-model="copyConfing.allow_add_with_zero_count"
+                />
                 <label for="q3"
                   >Разрешать добавлять в сделки товар с нулевым остатком</label
                 >
@@ -70,20 +85,18 @@
             резерирование будет происходить в момент добавления товара в сделку.
           </div>
           <div class="steps">
-            <edit-stuff-list :items="copy_items_from_storage">
-              <template #item="{ item: item, idx: idx }">
-                <div class="label_input">
-                  <label> Воронка "{{ item.name }}" </label>
-                  <SelectorVue
-                    :options_props="item.reserve_selector_options"
-                    @select="option_select_reverse"
-                    :selected_option="item.reserve_selected_option"
-                    :idx="idx"
-                    :disabled="item.reserve_disable_change"
-                  />
-                </div>
-              </template>
-            </edit-stuff-list>
+            <div
+              class="label_input"
+              v-for="item in copyPipelinesList"
+              :key="item"
+            >
+              <label> Воронка "{{ item?.name }}" </label>
+              <SelectorVue
+                :options_props="item?.statuses"
+                @select="optionSelect"
+                :selected_option="item.selectedReserveOff"
+              />
+            </div>
           </div>
           <h6>Этапы списания товаров со склада</h6>
           <div class="small">
@@ -91,37 +104,33 @@
             этапа резерирования.
           </div>
           <div class="steps">
-            <edit-stuff-list :items="copy_items_from_storage">
-              <template #item="{ item: item, idx: idx }">
-                <div class="label_input">
-                  <label> Воронка "{{ item.name }}" </label>
-                  <SelectorVue
-                    :options_props="item.cancellation_selector_options"
-                    @select="option_select_cancellation"
-                    :selected_option="item.cancellation_selected_option"
-                    :idx="idx"
-                    :disabled="item.cancellation_disable_change"
-                  />
-                </div>
-              </template>
-            </edit-stuff-list>
+            <div
+              class="label_input"
+              v-for="item in copyPipelinesList"
+              :key="item"
+            >
+              <label> Воронка "{{ item?.name }}" </label>
+              <SelectorVue
+                :options_props="item?.statuses"
+                @select="optionSelect"
+                :selected_option="item.selectedWriteOff"
+              />
+            </div>
           </div>
           <h6>Привязка полей сделок</h6>
           <div class="steps">
-            <edit-stuff-list :items="copy_binding_fields_deals">
-              <template #item="{ item: item, idx: idx }">
-                <div class="label_input">
-                  <label> Поле "{{ item.name }}" </label>
-                  <SelectorVue
-                    :options_props="item.binding_selector_options"
-                    @select="option_select_deals"
-                    :selected_option="item.binding_selected_option"
-                    :idx="idx"
-                    :disabled="item.binding_disable_change"
-                  />
-                </div>
-              </template>
-            </edit-stuff-list>
+            <div
+              class="label_input"
+              v-for="item in copyLeadFieldsList"
+              :key="item"
+            >
+              <label> Поле "{{ item?.name }}" </label>
+              <SelectorVue
+                :options_props="item?.fields"
+                @select="optionSelect"
+                :selected_option="item?.selected"
+              />
+            </div>
           </div>
         </div>
         <div class="footer">
@@ -135,178 +144,86 @@
 </template>
 <script>
 import SelectorVue from "@/components/SelectorVue";
-import EditStuffList from "@/components/EditStuffList.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
-import { mapGetters } from "vuex";
 export default {
   components: {
     SelectorVue,
-    EditStuffList,
     BtnsSaveClose,
   },
   data() {
     return {
-      copy_fields: [],
-      new_fields: [],
-      copy_items_from_storage: [],
-      copy_binding_fields_deals: [],
-      idx_to_delete: [],
-      copy_sync_list_stuff_selected_option: {},
-      copy_sync_list_hide_tab_selected_option: {},
-      copy_binding_selected_option: {},
+      copyConfing: {
+        reserve_off: [],
+        write_off: [],
+      },
+      copyPipelinesList: [],
+      copyLeadFieldsList: [],
     };
   },
-  mounted() {
-    this.copy_fields = [];
-    this.idx_to_delete = [];
-    this.copy_fields = this.fields.map((b, idx) =>
-      Object.assign({ index: idx }, b)
-    );
-    this.copy_items_from_storage = [];
-    this.copy_items_from_storage = this.items_from_storage.map((b, idx) =>
-      Object.assign({ index: idx }, b)
-    );
-    Object.assign(
-      this.copy_sync_list_stuff_selected_option,
-      this.sync_list_stuff_selected_option
-    );
-    Object.assign(
-      this.copy_sync_list_hide_tab_selected_option,
-      this.sync_list_hide_tab_selected_option
-    );
-    this.copy_binding_fields_deals = this.binding_fields_deals.map((b, idx) =>
-      Object.assign({ index: idx }, b)
-    );
-    Object.assign(
-      this.copy_binding_selected_option,
-      this.binding_selected_option
-    );
+  async mounted() {
+    await this.$store.dispatch("get_account");
+    this.copyConfing = this.$store.state.account.account.config;
+    await this.$store.dispatch("getPipelinesList");
+    this.copyPipelinesList = this.pipelinesList;
+    await this.$store.dispatch("getLeadFieldsList");
+    this.copyLeadFieldsList = this.leadFieldsList;
+    this.searchSelectedPipelines();
   },
   computed: {
-    ...mapGetters(["types"]),
-    ...mapGetters(["fields"]),
-    ...mapGetters(["sync_list_stuff_options"]),
-    ...mapGetters(["sync_list_hide_tab_options"]),
-    ...mapGetters(["sync_list_stuff_selected_option"]),
-    ...mapGetters(["sync_list_hide_tab_selected_option"]),
-    ...mapGetters(["items_from_storage"]),
-    ...mapGetters(["binding_fields_deals"]),
+    pipelinesList() {
+      const list = [];
+      Object.entries(this.$store.state.account.pipelinesList).map((val) => {
+        const arr = [];
+        Object.entries(val[1].statuses).forEach((stat) =>
+          arr.push({ name: stat[1], value: stat[0] })
+        );
+        val[1].statuses = arr;
+        val[1].selectedReserveOff = { name: "Не выбрано", value: -1 };
+        val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
+        list.push({ value: val[0], ...val[1] });
+      });
+      return list;
+    },
+    leadFieldsList() {
+      const list = [];
+      Object.entries(this.$store.state.account.leadFieldsList).map((val) => {
+        const arr = [];
+        Object.entries(val[1].fields).forEach((stat) =>
+          arr.push({ name: stat[1], value: stat[0] })
+        );
+        val[1].fields = arr;
+        val[1].selected = { name: "Не выбрано", value: -1 };
+        list.push({ value: val[0], ...val[1] });
+      });
+      return list;
+    },
   },
   methods: {
-    save() {
-      this.copy_fields.forEach((value) => {
-        let a = 1;
-        value.selector_options.forEach((val) => {
-          Object.assign(val, { value: a });
-          a += 1;
-        });
-      });
-      this.new_fields.forEach((val) => this.copy_fields.push(val));
-      this.$store.commit("update_fields", this.copy_fields);
-      this.$store.commit(
-        "update_items_from_storage",
-        this.copy_items_from_storage
-      );
-      this.$store.commit(
-        "update_binding_fields_deals",
-        this.copy_binding_fields_deals
-      );
-      this.$store.commit(
-        "update_sync_list_stuff_selected_option",
-        this.copy_sync_list_stuff_selected_option
-      );
-      this.$store.commit(
-        "update_sync_list_hide_tab_selected_option",
-        this.copy_sync_list_hide_tab_selected_option
-      );
-      this.$store.commit("delete_data_idx", this.idx_to_delete);
-      this.new_fields_push();
-      const arr = [];
-      this.fields.forEach((val) => arr.push(val.field));
-      arr.unshift("");
-      arr.push("");
-      this.$store.commit("update_params", arr);
-      this.new_fields = [];
-      this.close_edit_stuff();
-    },
-    new_fields_push() {
-      let today = new Date();
-      const dd = String(today.getDate()).padStart(2, "0");
-      const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      const yyyy = today.getFullYear();
-      const hour = today.getHours();
-      const min = today.getMinutes();
-      const date = yyyy + "-" + mm + "-" + dd;
-      const datetime = yyyy + "-" + mm + "-" + dd + "T" + hour + ":" + min;
-      this.new_fields.forEach((val) => {
-        let new_field = "";
-        if (val.type.value == 1 || val.type.value == 2) new_field = "0";
-        if (val.type.value == 6) new_field = "Не выбрано";
-        if (val.type.value == 7) new_field = date;
-        if (val.type.value == 8) new_field = datetime;
-        if (val.type.value == 9) new_field = "Нет";
-        this.$store.commit("update_all_data", new_field);
-      });
-    },
-    add_new_field() {
-      this.new_fields.push({
-        id: this.copy_fields.length + 1 + this.new_fields.length,
-        field: "",
-        type: { name: "Строка", value: 3 },
-        selector_options: [{ name: "Не выбрано" }],
-        disable_change_type: false,
-        visibility: false,
-        edit: false,
-        editing: false,
-        delete: true,
-      });
-    },
-    delete_new_field(idx) {
-      this.new_fields.splice(idx, 1);
-    },
-    delete_field(idx) {
-      this.copy_fields.splice(idx, 1);
-      this.idx_to_delete.push(idx);
-    },
-    option_select_type(option, idx) {
-      this.copy_fields[idx].type = option;
-    },
-    option_select_new_field_type(option, idx) {
-      this.new_fields[idx].type = option;
-    },
-    add_selector_option(idx) {
-      this.copy_fields[idx].selector_options.push({
-        name: "",
-      });
-    },
-    remove_selector_option(idx, i) {
-      this.copy_fields[idx].selector_options.splice(i, 1);
-    },
-    add_new_fields_selector_option(idx) {
-      this.new_fields[idx].selector_options.push({
-        name: "",
-      });
-    },
-    remove_new_fields_selector_option(idx, i) {
-      this.new_fields[idx].selector_options.splice(i, 1);
-    },
-    option_select_sync_list_stuff(option) {
-      Object.assign(this.copy_sync_list_stuff_selected_option, option);
-    },
-    option_select_sync_list_hide_tab(option) {
-      Object.assign(this.copy_sync_list_hide_tab_selected_option, option);
-    },
-    option_select_reverse(option, idx) {
-      this.copy_items_from_storage[idx].reserve_selected_option = option;
-    },
-    option_select_cancellation(option, idx) {
-      this.copy_items_from_storage[idx].cancellation_selected_option = option;
-    },
-    option_select_deals(option, idx) {
-      this.copy_binding_fields_deals[idx].binding_selected_option = option;
-    },
     close_edit_stuff() {
       this.$store.commit("open_close_show_edit_stuff", false);
+    },
+    searchSelectedInArr(item, arr, code) {
+      let res = { name: "Не выбрано", value: -1 };
+      arr.forEach((val) => {
+        if (val[code] == item) res = val;
+      });
+      return res;
+    },
+    searchSelectedPipelines() {
+      this.copyPipelinesList.map((val) => {
+        if (this.copyConfing.reserve_off[val.value])
+          val.selectedReserveOff = this.searchSelectedInArr(
+            this.copyConfing.reserve_off[val.value],
+            val.statuses,
+            "value"
+          );
+        if (this.copyConfing.write_off[val.value])
+          val.selectedWriteOff = this.searchSelectedInArr(
+            this.copyConfing.write_off[val.value],
+            val.statuses,
+            "value"
+          );
+      });
     },
   },
 };
@@ -419,26 +336,24 @@ export default {
           border-radius: 4px;
           margin-top: 30px;
           padding: 10px;
-          > div {
-            .label_input {
-              display: flex;
-              flex-direction: row;
-              padding: 10px;
-              label {
-                width: 40%;
+          .label_input {
+            display: flex;
+            flex-direction: row;
+            padding: 10px;
+            label {
+              width: 40%;
+            }
+            .v-select {
+              width: calc(50% - 26px);
+              margin-right: 24px;
+              :deep(.title) {
+                width: 100%;
               }
-              .v-select {
-                width: calc(50% - 26px);
-                margin-right: 24px;
-                :deep(.title) {
-                  width: 100%;
-                }
-                :deep(.options) {
-                  width: calc(100% + 24px);
-                  text-align: left;
-                  p {
-                    width: calc(100% - 24px);
-                  }
+              :deep(.options) {
+                width: calc(100% + 24px);
+                text-align: left;
+                p {
+                  width: calc(100% - 24px);
                 }
               }
             }
@@ -453,96 +368,9 @@ export default {
     }
   }
 }
-.input {
-  height: 20px;
-  padding: 6px 12px;
-  background-color: white;
-  border: 1px solid #ced4da;
-  appearance: none;
-  border-radius: 4px;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  @include font(400, 16px, 20px);
-}
-.input:focus {
-  color: #212529;
-  background-color: white;
-  border-color: #86b7fe;
-  outline: 0;
-  box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
-}
-.checkbox {
-  position: absolute;
-  z-index: -1;
-  opacity: 0;
-}
-.checkbox + label {
-  display: inline-flex;
-  align-items: center;
-  user-select: none;
-}
-.checkbox + label::before {
-  content: "";
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  flex-shrink: 0;
-  flex-grow: 0;
-  background-color: #fff;
-  border: 1px solid #adb5bd;
-  border-radius: 0.25em;
-  margin-right: 0.5em;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 50% 50%;
-  cursor: pointer;
-  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
-}
-.checkbox:checked + label::before {
-  border-color: #0b76ef;
-  background-color: #0b76ef;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
-}
-.checkbox:not(:disabled):not(:checked) + label:hover::before {
-  // border-color: #b3d7ff;
-}
-.checkbox:not(:disabled):active + label::before {
-  background-color: #b3d7ff;
-  border-color: #b3d7ff;
-}
 .checkbox:disabled + label::before {
   background-color: #e9ecef;
   border-color: #b3d7ff;
   cursor: default;
-}
-.btns {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-
-  .btn {
-    cursor: pointer;
-    padding: 6px 12px;
-    height: 36px;
-    border: none;
-    @include font(400, 16px);
-    border-radius: 5px;
-    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  }
-  .btn1 {
-    color: #fff;
-    background-color: #6c757d;
-  }
-  .btn1:hover {
-    background-color: #5f676d;
-    box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-  }
-  .btn2 {
-    color: #fff;
-    background-color: #0d6efd;
-  }
-  .btn2:hover {
-    background-color: #0256d4;
-    box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
-  }
 }
 </style>

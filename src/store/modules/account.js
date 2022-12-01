@@ -5,6 +5,8 @@ export default {
     user: {},
     currencies: {},
     tableConfig: {},
+    pipelinesList: {},
+    leadFieldsList: {},
   },
   getters: {},
   mutations: {
@@ -19,6 +21,12 @@ export default {
     },
     updateTableConfig(state, value) {
       state.tableConfig = { ...value };
+    },
+    updatePipelinesList(state, value) {
+      state.pipelinesList = { ...value };
+    },
+    updateLeadFieldsList(state, value) {
+      state.leadFieldsList = { ...value };
     },
   },
   actions: {
@@ -72,6 +80,26 @@ export default {
       });
       const json = await res.json();
       context.commit("update_currencies", json);
+    },
+    async getPipelinesList(context) {
+      const url = BaseURL + "account/pipelines";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updatePipelinesList", json);
+    },
+    async getLeadFieldsList(context) {
+      const url = BaseURL + "account/lead-fields";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateLeadFieldsList", json);
     },
     async update_account(context, params) {
       const url = BaseURL + "account/update";

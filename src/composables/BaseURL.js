@@ -10,6 +10,6 @@ function findGetParameter(parameterName) {
     });
   return result;
 }
-console.log(findGetParameter("token"));
+// console.log(findGetParameter("token"));
 export const BaseURL = "https://api.gosklad.ru/v1/";
 export let TOKEN = "Bearer " + findGetParameter("token");

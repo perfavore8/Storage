@@ -6,7 +6,7 @@ export default {
     show_filter: false,
     show_table_settings: false,
     show_buttons: false,
-    show_edit_stuff: false,
+    show_edit_stuff: true,
     show_sync: false,
     show_new_position: false,
     show_cancel_position: false,

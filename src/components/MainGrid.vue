@@ -58,13 +58,17 @@
                 {{ row.fields[item[0]] }}
               </span>
               <span v-else>
-                {{
-                  item[0].split(".")[1] == "cost"
-                    ? row.fields[item[0].split(".")[0]][item[0].split(".")[1]] +
-                      " " +
-                      row.fields[item[0].split(".")[0]].currency
-                    : row.fields[item[0].split(".")[0]][item[0].split(".")[1]]
-                }}
+                <template v-if="row.fields[item[0].split('.')[0]]">
+                  {{
+                    item[0].split(".")[1] == "cost"
+                      ? row.fields[item[0].split(".")[0]][
+                          item[0].split(".")[1]
+                        ] +
+                        " " +
+                        row.fields[item[0].split(".")[0]].currency
+                      : row.fields[item[0].split(".")[0]][item[0].split(".")[1]]
+                  }}
+                </template>
               </span>
             </td>
           </template>
