@@ -1,4 +1,4 @@
-import { BaseURL } from "@/composables/BaseURL";
+import { BaseURL, TOKEN } from "@/composables/BaseURL";
 export default {
   state: {
     account: {},
@@ -24,14 +24,22 @@ export default {
   actions: {
     async get_account(context) {
       const url = BaseURL + "account/config";
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       const json = await res.json();
       context.commit("update_account", json.account);
       context.commit("update_user", json.user);
     },
     async getTableConfig(context, code) {
       const url = BaseURL + "account/table-config";
-      const res = await fetch(url + "?code=" + code);
+      const res = await fetch(url + "?code=" + code, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       const json = await res.json();
       context.commit("updateTableConfig", json);
     },
@@ -41,18 +49,27 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params.value),
       });
       const json = await res.json();
       console.log("update_config_table", json);
-      await context.dispatch("getTableConfig", params.wh);
+      await context.dispatch("getTableConfig", params.wh, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       context.dispatch("get_all_fields");
       return json;
     },
     async get_currencies(context) {
       const url = BaseURL + "account/currencies";
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       const json = await res.json();
       context.commit("update_currencies", json);
     },
@@ -62,6 +79,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -75,6 +93,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });

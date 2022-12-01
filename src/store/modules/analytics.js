@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL } from "@/composables/BaseURL";
+import { BaseURL, TOKEN } from "@/composables/BaseURL";
 const { preparation_params } = usePreparationQueryParams();
 export default {
   state: {
@@ -39,7 +39,12 @@ export default {
     async getAutocompleteAnalytics(context, params) {
       const url = BaseURL + "analytics/autocomplete/"; // <----- слэш не трогай!!!
       const res = await fetch(
-        url + params.field + preparation_params(params.value)
+        url + params.field + preparation_params(params.value),
+        {
+          headers: {
+            Authorization: TOKEN,
+          },
+        }
       );
       const json = await res.json();
       context.commit("updateAutocomplete", json);
@@ -50,6 +55,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -62,6 +68,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -74,6 +81,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -86,6 +94,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -98,6 +107,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -110,6 +120,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });

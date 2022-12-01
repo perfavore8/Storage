@@ -54,9 +54,11 @@ export default {
       isLoading: false,
     };
   },
-  mounted() {
-    this.$store.dispatch("get_all_fields");
+  async mounted() {
+    this.$store.dispatch("get_account");
     this.$store.dispatch("get_products", { is_archive: 1 });
+    await this.$store.dispatch("getTableConfig", "");
+    this.$store.dispatch("get_all_fields");
   },
   computed: {
     meta() {

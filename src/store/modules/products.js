@@ -1,4 +1,4 @@
-import { BaseURL } from "@/composables/BaseURL";
+import { BaseURL, TOKEN } from "@/composables/BaseURL";
 export default {
   state: {
     products: [],
@@ -28,6 +28,7 @@ export default {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -37,7 +38,11 @@ export default {
     },
     async get_product(context, id) {
       const url = BaseURL + "product/get";
-      const res = await fetch(url + "?id=" + id);
+      const res = await fetch(url + "?id=" + id, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       const json = await res.json();
       context.commit("update_products", json);
     },
@@ -47,6 +52,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -60,6 +66,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -69,13 +76,21 @@ export default {
     },
     async autocomplete_article(context, query) {
       const url = BaseURL + "product/autocomplete/article";
-      const res = await fetch(url + "?query=" + query);
+      const res = await fetch(url + "?query=" + query, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       const json = await res.json();
       return json.data;
     },
     async autocomplete_name(context, query) {
       const url = BaseURL + "product/autocomplete/name";
-      const res = await fetch(url + "?query=" + query);
+      const res = await fetch(url + "?query=" + query, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       const json = await res.json();
       return json.data;
     },

@@ -41,14 +41,14 @@
               <th class="item">
                 <div class="copy_fields">
                   <span>Поле</span>
-                  <SelectorVue
+                  <!-- <SelectorVue
                     :options_props="properties_for_selector"
                     @select="option_select_copy_fields"
                     :selected_option="{
                       name: 'Категория',
                       value: 1,
                     }"
-                  />
+                  /> -->
                 </div>
               </th>
               <th class="item">Тип</th>
@@ -564,7 +564,7 @@ export default {
               min-width: 34px;
             }
             .new_item_input {
-              width: calc(100% - 26px) !important;
+              // width: calc(100% - 26px) !important;
             }
             .del_btn {
               height: 34px;
@@ -690,7 +690,7 @@ export default {
   }
 }
 .input {
-  height: 20px;
+  // height: 34px;
   padding: 6px 12px;
   background-color: white;
   border: 1px solid #ced4da;

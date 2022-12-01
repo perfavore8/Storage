@@ -74,10 +74,10 @@
         </div>
       </div>
       <div class="header_right">
-        <div class="ref">
+        <!-- <div class="ref">
           <div class="ref_1_logo"></div>
           <a class="links">Выгрузка в эксель</a>
-        </div>
+        </div> -->
         <div class="ref">
           <div class="ref_2_logo"></div>
           <a class="links" @click.stop="open_close_sync()">
@@ -166,17 +166,19 @@
             />
             <div class="bot">
               <p>Найдено: {{ totalCountProducts }}</p>
-              <input
-                type="checkbox"
-                class="checkbox"
-                v-model="grid"
-                id="grid"
-              />
-              <label for="grid"></label>
+              <template v-if="false">
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  v-model="grid"
+                  id="grid"
+                />
+                <label for="grid"></label>
+              </template>
             </div>
           </div>
           <transition name="btns">
-            <div class="buttons" v-show="show_buttons">
+            <div class="buttons" v-if="show_buttons && oneC">
               <button class="button button_1 smallBtn" @click="archive_data()">
                 Архивировать
               </button>
@@ -224,7 +226,7 @@
       </div>
       <div class="grid">
         <main-grid ref="main" v-if="!grid" :selectedWH="selectedWH"></main-grid>
-        <card-grid ref="card" v-if="grid"></card-grid>
+        <card-grid ref="card" v-if="grid" :selectedWH="selectedWH"></card-grid>
       </div>
     </div>
   </div>
@@ -641,7 +643,6 @@ export default {
         }
       }
       .buttons {
-        margin-left: -49px;
         display: flex;
         flex-direction: row;
         gap: 18px;

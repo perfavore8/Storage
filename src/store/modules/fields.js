@@ -1,4 +1,4 @@
-import { BaseURL } from "@/composables/BaseURL";
+import { BaseURL, TOKEN } from "@/composables/BaseURL";
 import store from "..";
 export default {
   state: {
@@ -39,21 +39,35 @@ export default {
     async get_fields(context, category_id) {
       const url = BaseURL + "field/list";
       const res = await fetch(
-        url + "?category_id=" + category_id + "&with_parents=0"
+        url + "?category_id=" + category_id + "&with_parents=0",
+        {
+          headers: {
+            Authorization: TOKEN,
+          },
+        }
       );
       const json = await res.json();
       context.commit("update_fields", json.data);
     },
     async get_all_fields(context) {
       const url = BaseURL + "field/list";
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       const json = await res.json();
       context.commit("update_all_fields", json.data);
     },
     async get_fields_not_save(context, category_id) {
       const url = BaseURL + "field/list";
       const res = await fetch(
-        url + "?category_id=" + category_id + "&with_parents=0"
+        url + "?category_id=" + category_id + "&with_parents=0",
+        {
+          headers: {
+            Authorization: TOKEN,
+          },
+        }
       );
       const json = await res.json();
       return json.data;
@@ -65,7 +79,12 @@ export default {
           "?category_id=" +
           category_id +
           "&with_parents=1" +
-          "&sort=created"
+          "&sort=created",
+        {
+          headers: {
+            Authorization: TOKEN,
+          },
+        }
       );
       const json = await res.json();
       // console.log(json.data);
@@ -73,7 +92,12 @@ export default {
     },
     async delete_field(context, id) {
       const url = BaseURL + "field/delete";
-      const res = await fetch(url + "?id=" + id, { method: "POST" });
+      const res = await fetch(url + "?id=" + id, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       // context.dispatch("get_fields");
       console.log(res);
     },
@@ -83,6 +107,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });
@@ -97,6 +122,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: TOKEN,
         },
         body: JSON.stringify(params),
       });

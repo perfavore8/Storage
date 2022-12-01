@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL } from "@/composables/BaseURL";
+import { BaseURL, TOKEN } from "@/composables/BaseURL";
 const { preparation_params } = usePreparationQueryParams();
 export default {
   state: {
@@ -19,25 +19,40 @@ export default {
     async get_fields_properties(context) {
       const url = BaseURL + "category/list";
       const res = await fetch(url, {
-        rejectUnauthorized: false,
+        headers: {
+          Authorization: TOKEN,
+        },
       });
       const json = await res.json();
       context.commit("update_fields_properties", json);
     },
     async add_fields_properties(context, params) {
       const url = BaseURL + "category/add";
-      await fetch(url + preparation_params(params), { method: "POST" });
+      await fetch(url + preparation_params(params), {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       context.dispatch("get_fields_properties");
     },
     async update_fields_properties(context, params) {
       const url = BaseURL + "category/update";
-      await fetch(url + preparation_params(params), { method: "POST" });
+      await fetch(url + preparation_params(params), {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       context.dispatch("get_fields_properties");
     },
     async delete_fields_properties(context, params) {
       const url = BaseURL + "category/delete";
       const res = await fetch(url + preparation_params(params), {
         method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
       });
       context.dispatch("get_fields_properties");
       console.log(res);
