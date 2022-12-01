@@ -108,9 +108,9 @@ export default {
         );
       }
       await value?.forEach(async (val) => {
-        if (this.isClient) {
-          if (!this.openedRows.includes(val)) {
-            this.openedRows.push(val);
+        if (!this.openedRows.includes(val[query])) {
+          this.openedRows.push(val[query]);
+          if (this.isClient) {
             await this.$store.dispatch("getCustomersResponsible", {
               filter: {},
               company: val.company,
@@ -129,28 +129,27 @@ export default {
                 });
               }
             });
+          } else {
+            await this.$store.dispatch("getSalesProducts", {
+              filter: {},
+              product: val.name,
+            });
+            this.reports.data.map((report) => {
+              if (report.name == val.name && report.poz) {
+                report.poz.value = val.poz.value;
+                report.poz.list = this.$store.state.analytics.salesProducts;
+                report.poz.list.map((item) => {
+                  item["prib"] = item.sum - item.cost_sum;
+                  item.sum = Math.round(item.sum * 100) / 100 + " р.";
+                  item.cost_sum = Math.round(item.cost_sum * 100) / 100 + " р.";
+                  item.prib = Math.round(item.prib * 100) / 100 + " р.";
+                  item.poz = item.user;
+                });
+              }
+            });
           }
-        } else {
-          await this.$store.dispatch("getSalesProducts", {
-            filter: {},
-            product: val.name,
-          });
-          this.reports.data.map((report) => {
-            if (report.name == val.name && report.poz) {
-              report.poz.value = val.poz.value;
-              report.poz.list = this.$store.state.analytics.salesProducts;
-              report.poz.list.map((item) => {
-                item["prib"] = item.sum - item.cost_sum;
-                item.sum = Math.round(item.sum * 100) / 100 + " р.";
-                item.cost_sum = Math.round(item.cost_sum * 100) / 100 + " р.";
-                item.prib = Math.round(item.prib * 100) / 100 + " р.";
-                item.poz = item.user;
-              });
-            }
-          });
         }
       });
-      this.openedRows = [...value];
     },
     async updateSelectedReport(value) {
       if (!value.value) {
