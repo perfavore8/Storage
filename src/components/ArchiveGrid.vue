@@ -6,26 +6,40 @@
     <thead>
       <tr class="row title">
         <td
-          v-for="item in all_fields"
-          :key="item.id"
-          v-show="item?.table_config.visible"
+          v-for="item in tableConfig"
+          :key="item[0]"
+          v-show="item[1].visible"
           class="item"
         >
-          {{ item.name }}
+          {{ item[1].name }}
         </td>
         <td class="item"></td>
       </tr>
     </thead>
     <tbody>
       <tr v-for="item in archive_list" :key="item.id" class="row">
-        <td
-          v-for="field in all_fields"
-          v-show="field?.table_config.visible"
-          :key="field"
-          class="item"
-        >
-          {{ item.fields[field.code] }}
-        </td>
+        <template v-for="field in tableConfig" :key="field">
+          <template v-if="field[1].visible">
+            <td class="item">
+              <span v-if="field[0].split('.').length < 2">
+                {{ item.fields[field[0]] }}
+              </span>
+              <span v-else>
+                {{
+                  field[0].split(".")[1] == "cost"
+                    ? item.fields[field[0].split(".")[0]][
+                        field[0].split(".")[1]
+                      ] +
+                      " " +
+                      item.fields[field[0].split(".")[0]].currency
+                    : item.fields[field[0].split(".")[0]][
+                        field[0].split(".")[1]
+                      ]
+                }}
+              </span>
+            </td>
+          </template>
+        </template>
         <td class="item">
           <div class="edit_icon" @click="unarchive_data(item)"></div>
         </td>
@@ -61,6 +75,9 @@ export default {
     this.$store.dispatch("get_all_fields");
   },
   computed: {
+    tableConfig() {
+      return Object.entries(this.$store.state.account.tableConfig);
+    },
     meta() {
       return this.$store.state.products.meta;
     },

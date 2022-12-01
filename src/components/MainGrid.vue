@@ -67,26 +67,6 @@
                 }}
               </span>
             </td>
-            <template v-if="isShow(item.code).value && false">
-              <td class="item">
-                <div class="dublitem" v-if="row.fields">
-                  <span v-if="typeof row.fields[item.code] != 'object'">
-                    {{ row.fields[item.code] }}
-                  </span>
-                  <span v-else>
-                    {{
-                      row.fields[item.code] != null
-                        ? isShow(item.code).second == "cost"
-                          ? row.fields[item.code][isShow(item.code).second] +
-                            " " +
-                            row.fields[item.code].currency
-                          : row.fields[item.code][isShow(item.code).second]
-                        : ""
-                    }}
-                  </span>
-                </div>
-              </td>
-            </template>
           </template>
           <td class="item">
             <div
