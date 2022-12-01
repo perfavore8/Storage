@@ -241,10 +241,10 @@ export default {
         name: "Архив",
         value: "archive",
       },
-      {
-        name: "Инструкции",
-        value: "instructions",
-      },
+      // {
+      //   name: "Инструкции",
+      //   value: "instructions",
+      // },
     ],
   },
   getters: {
