@@ -1,60 +1,65 @@
 <template>
-  <label v-if="archive_list.length == 0" class="text">
-    Ничего не найдено
-  </label>
-  <table class="table" v-else>
-    <thead>
-      <tr class="row title">
-        <td
-          v-for="item in tableConfig"
-          :key="item[0]"
-          v-show="item[1].visible"
-          class="item"
-        >
-          {{ item[1].name }}
-        </td>
-        <td class="item"></td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="item in archive_list" :key="item.id" class="row">
-        <template v-for="field in tableConfig" :key="field">
-          <template v-if="field[1].visible">
-            <td class="item">
-              <span v-if="field[0].split('.').length < 2">
-                {{ item.fields[field[0]] }}
-              </span>
-              <span v-else>
-                {{
-                  field[0].split(".")[1] == "cost"
-                    ? item.fields[field[0].split(".")[0]][
-                        field[0].split(".")[1]
-                      ] +
-                      " " +
-                      item.fields[field[0].split(".")[0]].currency
-                    : item.fields[field[0].split(".")[0]][
-                        field[0].split(".")[1]
-                      ]
-                }}
-              </span>
-            </td>
+  <div class="grid">
+    <label v-if="archive_list.length == 0" class="text">
+      Ничего не найдено
+    </label>
+    <table class="table" v-else>
+      <thead>
+        <tr class="row title">
+          <td
+            v-for="item in tableConfig"
+            :key="item[0]"
+            v-show="item[1].visible"
+            class="item"
+          >
+            {{ item[1].name }}
+          </td>
+          <td class="item"></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in archive_list" :key="item.id" class="row">
+          <template v-for="field in tableConfig" :key="field">
+            <template v-if="field[1].visible">
+              <td class="item">
+                <span v-if="field[0].split('.').length < 2">
+                  {{ item.fields[field[0]] }}
+                </span>
+                <span v-else>
+                  <template v-if="item.fields[field[0].split('.')[0]]">
+                    {{
+                      field[0].split(".")[1] == "cost"
+                        ? item.fields[field[0].split(".")[0]][
+                            field[0].split(".")[1]
+                          ] +
+                          " " +
+                          item.fields[field[0].split(".")[0]].currency
+                        : item.fields[field[0].split(".")[0]][
+                            field[0].split(".")[1]
+                          ]
+                    }}
+                  </template>
+                </span>
+              </td>
+            </template>
           </template>
-        </template>
-        <td class="item">
-          <div class="edit_icon" @click="unarchive_data(item)"></div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <grid-bottom
-    :previous="meta.links.prev != null"
-    :next="meta.links.next != null"
-    :page="meta.meta.current_page"
-    :show="archive_list.length != 0"
-    :count="meta.meta.per_page"
-    @changePage="changePage"
-    @changeCount="changeCount"
-  />
+          <td class="item">
+            <div class="edit_icon" @click="unarchive_data(item)"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <grid-bottom
+      class="bottom"
+      :previous="meta.links.prev != null"
+      :next="meta.links.next != null"
+      :page="meta.meta.current_page"
+      :show="archive_list.length != 0"
+      :count="meta.meta.per_page"
+      @changePage="changePage"
+      @changeCount="changeCount"
+    />
+  </div>
 </template>
 
 <script>

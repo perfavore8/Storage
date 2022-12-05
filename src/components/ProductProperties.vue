@@ -1,5 +1,9 @@
 <template>
-  <div class="wrapper">
+  <div
+    class="wrapper"
+    @click.self="close_product_properties()"
+    :style="{ minHeight: height + 'px' }"
+  >
     <div class="bgc">
       <div class="container">
         <div class="header">
@@ -41,14 +45,6 @@
               <th class="item">
                 <div class="copy_fields">
                   <span>Поле</span>
-                  <!-- <SelectorVue
-                    :options_props="properties_for_selector"
-                    @select="option_select_copy_fields"
-                    :selected_option="{
-                      name: 'Категория',
-                      value: 1,
-                    }"
-                  /> -->
                 </div>
               </th>
               <th class="item">Тип</th>
@@ -69,8 +65,10 @@
                   v-else
                   type="text"
                   class="input new_item_input"
+                  :class="{ error: row.nameError }"
                   v-model="row.name"
                   @keyup.enter="update_field(idx, ['name'])"
+                  @change="row.changeName = true"
                 />
               </td>
               <td class="item selectors">
@@ -94,21 +92,19 @@
                       type="text"
                       class="input"
                       v-model="row.data[i]"
-                      @keyup.enter="update_field(idx, ['data'])"
+                      @change="row.changeData = true"
                     />
                     <button
                       class="del_button"
                       @click="
-                        remove_selector_option(idx, i),
-                          update_field(idx, ['data'])
+                        remove_selector_option(idx, i), (row.changeData = true)
                       "
-                    >
-                      x
-                    </button>
+                    ></button>
                   </div>
-                  <button @click="add_selector_option(idx)" class="add_button">
-                    +
-                  </button>
+                  <button
+                    @click="add_selector_option(idx), (row.changeData = true)"
+                    class="add_button"
+                  ></button>
                 </div>
               </td>
               <td class="box item">
@@ -118,6 +114,7 @@
                   :id="idx + 'nb'"
                   :disabled="row.lead_config.visible.disabled"
                   v-model="row.lead_config.visible.value"
+                  @change="row.changeLeadConfig = true"
                 />
                 <label :for="idx + 'nb'"></label>
               </td>
@@ -128,26 +125,48 @@
                   :id="idx + 'n'"
                   :disabled="row.lead_config.editable.disabled"
                   v-model="row.lead_config.editable.value"
+                  @change="row.changeLeadConfig = true"
                 />
                 <label :for="idx + 'n'"></label>
               </td>
-              <td class="item">
+              <td class="item del_sell">
                 <button
                   class="del_btn"
                   v-show="!row.is_system"
                   @click="delete_field(row.id)"
+                ></button>
+                <button
+                  class="btn btn_save btn_blue"
+                  v-if="
+                    row.changeName || row.changeData || row.changeLeadConfig
+                  "
+                  @click="
+                    update_field(idx, [
+                      row.changeName ? 'name' : null,
+                      row.changeData ? 'data' : null,
+                      row.changeLeadConfig ? 'lead_config' : null,
+                    ])
+                  "
                 >
-                  X
+                  Сохранить
                 </button>
               </td>
             </tr>
+            <!-- ///
+              //////
+              //////
+              //////
+              //////
+              /////
+              /// -->
             <tr class="row" v-for="(row, idx) in new_fields" :key="row.id">
               <td class="item">
                 <input
                   type="text"
                   class="input new_item_input"
+                  :class="{ error: row.nameError }"
                   v-model="row.name"
-                  @keyup.enter="add_new(row)"
+                  @keyup.enter="add_new(row, idx)"
                 />
               </td>
               <td class="item selectors">
@@ -170,16 +189,12 @@
                     <button
                       class="del_button"
                       @click="remove_new_fields_selector_option(idx, i)"
-                    >
-                      x
-                    </button>
+                    ></button>
                   </div>
                   <button
                     @click="add_new_fields_selector_option(idx)"
                     class="add_button"
-                  >
-                    +
-                  </button>
+                  ></button>
                 </div>
               </td>
               <td class="box item">
@@ -202,18 +217,19 @@
                 />
                 <label :for="idx + 'n1'"></label>
               </td>
-              <td class="item">
+              <td class="item del_sell">
+                <button class="del_btn" @click="delete_new_field(idx)"></button>
                 <button
-                  class="del_btn"
-                  v-show="new_fields[idx].delete"
-                  @click="delete_new_field(idx)"
+                  class="btn btn_save btn_blue"
+                  v-if="row.name != ''"
+                  @click="add_new(row, idx)"
                 >
-                  X
+                  Сохранить
                 </button>
               </td>
             </tr>
           </table>
-          <button @click="add_new_field()" class="add_new_button">+</button>
+          <button @click="add_new_field()" class="add_new_button"></button>
         </div>
         <div class="footer">
           <btns-save-close @close="close_product_properties" :show_save="false">
@@ -235,9 +251,6 @@ export default {
   data() {
     return {
       copy_fields: [],
-      new_fields: [],
-      new_fields_cat: [],
-      idx_to_delete: [],
       copy_fields_properties: [],
       selected_fields_properties: [],
       data_fields_properties: {
@@ -249,28 +262,25 @@ export default {
   },
   async mounted() {
     this.is_loading = true;
-    this.$store.dispatch("get_types");
-    this.$store
-      .dispatch("get_fields_properties")
-      .then(
-        () =>
-          (this.copy_fields_properties = [
-            ...this.$store.state.categories.fields_properties,
-          ])
-      )
-      .then(() => {
-        this.option_select_fields_properties({
-          value: this.copy_fields_properties.filter(
-            (val) => val.parent_id === 0
-          )[0],
-        });
-      })
-      .then(() => {
-        this.get_fields();
-        this.is_loading = false;
-      });
+    await this.$store.dispatch("get_types");
+    await this.$store.dispatch("get_fields_properties");
+    this.copy_fields_properties = [
+      ...this.$store.state.categories.fields_properties,
+    ];
+
+    this.option_select_fields_properties({
+      value: this.copy_fields_properties.filter(
+        (val) => val.parent_id === 0
+      )[0],
+    });
+
+    this.get_fields();
+    this.is_loading = false;
   },
   computed: {
+    height() {
+      return document.documentElement.scrollHeight;
+    },
     types() {
       const arr = [];
       Object.entries(this.$store.state.fields.types).forEach((val) => {
@@ -290,25 +300,21 @@ export default {
   },
   methods: {
     add_new_field() {
-      const id = this.copy_fields.length + 1;
-      const category_id = this.selected_fields_properties.at(-1).id;
-      const type = 3;
-      const name = "";
-      const lead_config = {
-        visible: { disabled: false, value: false },
-        editable: { disabled: false, value: false },
-      };
       const item = {
-        id: id,
-        category_id: category_id,
-        type: type,
-        name: name,
+        id: this.copy_fields.length + 1,
+        category_id: this.selected_fields_properties.at(-1).id,
+        type: 3,
+        name: "",
         data: [],
-        lead_config: lead_config,
+        nameError: false,
+        lead_config: {
+          visible: { disabled: false, value: false },
+          editable: { disabled: false, value: false },
+        },
       };
       this.new_fields.push(item);
     },
-    async add_new(item) {
+    async add_new(item, idx) {
       const preparing = (val, dis) => {
         let res = 0;
         if (val && dis) res = 2;
@@ -334,10 +340,10 @@ export default {
         lead_config: lead_config,
         data: item.data,
       };
-      const error =
-        "error" in (await this.$store.dispatch("add_field", params));
-      // console.log(error, this.new_fields.indexOf(item));
-      if (!error) {
+      const error = await this.$store.dispatch("add_field", params);
+      const nameError = error.error == "This field name exist.";
+      if (nameError) this.new_fields[idx]["nameError"] = true;
+      if (!error.error) {
         this.new_fields.splice(this.new_fields.indexOf(item), 1);
         this.get_fields();
       }
@@ -369,14 +375,31 @@ export default {
       const params = {};
       params["id"] = this.copy_fields[idx]["id"];
       params_names.forEach((val) => {
-        params[val] = this.copy_fields[idx][val];
+        if (val != null) {
+          if (val == "lead_config") {
+            params[val] = {};
+            params[val].visible = this.copy_fields[idx][val].visible.value
+              ? 1
+              : 0;
+            params[val].editable = this.copy_fields[idx][val].editable.value
+              ? 1
+              : 0;
+          } else {
+            params[val] = this.copy_fields[idx][val];
+          }
+        }
       });
+      if (this.copy_fields[idx]?.is_system) delete params?.name;
       // console.log(params);
-      const error =
-        "error" in (await this.$store.dispatch("update_fields", params));
-      // console.log(error);
-      if (!error) {
-        this.get_fields();
+      const error = await this.$store.dispatch("update_fields", params);
+      const nameError = error.error == "This field name exist.";
+
+      this.copy_fields[idx]["nameError"] = nameError;
+      if (!error.error) {
+        this.copy_fields[idx].changeName = false;
+        this.copy_fields[idx].changeData = false;
+        this.copy_fields[idx].changeLeadConfig = false;
+        // this.get_fields();
       }
     },
     async get_fields() {
@@ -387,6 +410,10 @@ export default {
       );
       this.copy_fields = [...this.$store.state.fields.fields];
       this.copy_fields.map((val) => {
+        val["nameError"] = false;
+        val["changeName"] = false;
+        val["changeData"] = false;
+        val["changeLeadConfig"] = false;
         const value = val.lead_config.visible;
         val.lead_config.visible = {
           disabled: value == -1 || value == 2,
@@ -412,8 +439,8 @@ export default {
       );
       item.fields_id.splice(start, 1);
     },
-    delete_field(id) {
-      this.$store.dispatch("delete_field", id);
+    async delete_field(id) {
+      await this.$store.dispatch("delete_field", id);
       this.get_fields();
     },
     option_select_type(option, idx) {
@@ -428,14 +455,14 @@ export default {
         option.value
       );
       const sorted_res = res.filter((val) => !val.is_system);
-      sorted_res.forEach((val) => {
+      sorted_res.forEach(async (val) => {
         const params = {
           id: val.id,
           category_id: this.selected_fields_properties.at(-1).id,
         };
-        this.$store.dispatch("update_fields", params);
+        await this.$store.dispatch("update_fields", params);
       });
-      this.get_fields(); // FixMe 5 срабатывает раньше чем /\
+      this.get_fields();
     },
     add_selector_option(idx) {
       if (this.copy_fields[idx].data == null) this.copy_fields[idx].data = [];
@@ -463,6 +490,8 @@ export default {
   pointer-events: all;
   z-index: 9999999;
   width: 100%;
+  height: max-content;
+  min-height: 100vh;
   position: absolute;
   top: 0;
   left: 0;
@@ -539,6 +568,10 @@ export default {
                   }
                 }
               }
+              .error {
+                border-color: rgba(219, 54, 71);
+                box-shadow: 0 0 0 4px rgba(219, 54, 71, 0.25);
+              }
             }
             .item:nth-child(1) {
               width: 30%;
@@ -570,14 +603,10 @@ export default {
               height: 34px;
               width: 34px !important;
               cursor: pointer;
-              color: #fff;
               background: #dc3545;
               border: none;
               border-radius: 4px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              @include font(400, 16px, 20px);
+              @include bg_image("@/assets/cross.svg", 50%);
             }
             .selectors {
               .v-select {
@@ -604,22 +633,18 @@ export default {
                   flex-direction: row;
                   justify-content: space-between;
                   input {
-                    width: calc(100% - 56px);
-                    height: 10px !important;
+                    width: calc(100% - 30px);
+                    height: 24px !important;
                     @include font(400, 14px, 18px);
                   }
                   .del_button {
                     cursor: pointer;
                     width: 24px;
                     height: 24px;
-                    color: #fff;
                     background: #dc3545;
                     border: none;
                     border-radius: 4px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    @include font(400, 16px, 10px);
+                    @include bg_image("@/assets/cross.svg", 40%);
                   }
                 }
                 .add_button {
@@ -627,10 +652,10 @@ export default {
                   margin-top: 8px;
                   width: 40px;
                   height: 20px;
-                  color: #fff;
                   background: #4e964d;
                   border: none;
                   border-radius: 4px;
+                  @include bg_image("@/assets/plus.svg", 30%);
                 }
               }
             }
@@ -643,10 +668,10 @@ export default {
           right: 18.5%;
           width: 34px;
           height: 34px;
-          color: #fff;
           background: #4e964d;
           border: none;
           border-radius: 4px;
+          @include bg_image("@/assets/plus.svg", 50%);
         }
         .steps {
           display: flex;
@@ -687,6 +712,18 @@ export default {
         margin-top: 60px;
       }
     }
+  }
+}
+.del_sell {
+  position: relative;
+  .btn_save {
+    position: absolute;
+    color: #000;
+    left: 110%;
+    top: calc(50% - 15px);
+    height: min-content;
+    width: min-content;
+    @include font(400, 12px);
   }
 }
 .input {

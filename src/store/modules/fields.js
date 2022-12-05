@@ -17,13 +17,12 @@ export default {
     },
     update_all_fields(state, value) {
       const tableConfig = store.state.account.tableConfig;
-      state.all_fields = [
-        ...value.sort((a, b) => {
-          if (tableConfig[a.code]?.sort > tableConfig[b.code]?.sort) return 1;
-          if (tableConfig[a.code]?.sort == tableConfig[b.code]?.sort) return 0;
-          if (tableConfig[a.code]?.sort < tableConfig[b.code]?.sort) return -1;
-        }),
-      ];
+      const list = value.sort((a, b) => {
+        if (tableConfig[a.code]?.sort > tableConfig[b.code]?.sort) return 1;
+        if (tableConfig[a.code]?.sort == tableConfig[b.code]?.sort) return 0;
+        if (tableConfig[a.code]?.sort < tableConfig[b.code]?.sort) return -1;
+      });
+      state.all_fields = [...list];
     },
     update_fields_with_parents(state, value) {
       state.fields_with_parents = [...value];
@@ -47,7 +46,7 @@ export default {
         }
       );
       const json = await res.json();
-      context.commit("update_fields", json.data);
+      context.commit("update_fields", json);
     },
     async get_all_fields(context) {
       const url = BaseURL + "field/list";
@@ -57,7 +56,7 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("update_all_fields", json.data);
+      context.commit("update_all_fields", json);
     },
     async get_fields_not_save(context, category_id) {
       const url = BaseURL + "field/list";
@@ -87,8 +86,7 @@ export default {
         }
       );
       const json = await res.json();
-      // console.log(json.data);
-      context.commit("update_fields_with_parents", json.data);
+      context.commit("update_fields_with_parents", json);
     },
     async delete_field(context, id) {
       const url = BaseURL + "field/delete";

@@ -1,14 +1,18 @@
 <template>
   <div class="wrapper">
-    <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
+    <teleport to="body">
+      <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
+    </teleport>
     <label v-if="products.length == 0" class="text"> Ничего не найдено </label>
-    <table class="table" :class="{ blur: show_edit_modal }" v-else>
+    <table class="table" :class="{ blur: show_edit_modal }" v-else ref="table">
       <thead>
         <main-grid-bar
+          ref="bar"
           :fields="all_fields"
           @sort="sort"
           :tableConfig="tableConfig"
           :sortedFields="sortedFields"
+          class="main-grid-bar"
         />
         <main-grid-filters
           ref="filters"
@@ -19,7 +23,7 @@
       </thead>
       <tbody>
         <tr class="row" v-for="(row, idx) in products" :key="row.id">
-          <td class="item">
+          <td class="item" v-if="!oneC">
             <input
               type="checkbox"
               class="checkbox"
@@ -30,32 +34,14 @@
             />
             <label :for="row.id"></label>
           </td>
-          <!-- <template v-for="item in all_fields" :key="item">
-            <template v-if="isShow(item.code).value">
-              <td class="item">
-                <div class="dublitem" v-if="row.fields">
-                  <span v-if="typeof row.fields[item.code] != 'object'">
-                    {{ row.fields[item.code] }}
-                  </span>
-                  <span v-else>
-                    {{
-                      row.fields[item.code] != null
-                        ? isShow(item.code).second == "cost"
-                          ? row.fields[item.code][isShow(item.code).second] +
-                            " " +
-                            row.fields[item.code].currency
-                          : row.fields[item.code][isShow(item.code).second]
-                        : ""
-                    }}
-                  </span>
-                </div>
-              </td>
-            </template>
-          </template> -->
           <template v-for="item in sortedFields" :key="item">
             <td class="item">
               <span v-if="item[0].split('.').length < 2">
-                {{ row.fields[item[0]] }}
+                {{
+                  item[0] == "category"
+                    ? categories[row.fields[item[0]]]
+                    : row.fields[item[0]]
+                }}
               </span>
               <span v-else>
                 <template v-if="row.fields[item[0].split('.')[0]]">
@@ -73,11 +59,7 @@
             </td>
           </template>
           <td class="item">
-            <div
-              class="edit_icon"
-              @click="open_edit_modal(row)"
-              :class="{ disabledEdit: oneC }"
-            ></div>
+            <div class="edit_icon" @click="open_edit_modal(row)"></div>
           </td>
         </tr>
       </tbody>
@@ -93,6 +75,7 @@
       @changeCount="changeCount"
     />
   </div>
+  <div class="arrow" v-if="showArrow" @click="scrollUp()"></div>
 </template>
 
 <script>
@@ -122,15 +105,20 @@ export default {
       updateKey: 0,
       selectedProducts: [],
       edit_data: {},
+      showArrow: false,
     };
   },
-
+  created() {
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  unmounted() {
+    window.removeEventListener("scroll", this.handleScroll);
+  },
   async mounted() {
+    this.$store.dispatch("get_fields_properties");
     await this.$store.dispatch(
       "getTableConfig",
-      this.selectedWH.value != "services" && this.selectedWH.value != "whs"
-        ? this.selectedWH.value
-        : ""
+      this.selectedWH.value != "whs" ? this.selectedWH.value : ""
     );
     await this.$store.dispatch("get_all_fields");
     await this.get_products();
@@ -151,8 +139,15 @@ export default {
     tableConfig() {
       return this.$store.state.account.tableConfig;
     },
+    categories() {
+      const obj = {};
+      this.$store.state.categories.fields_properties.forEach(
+        (val) => (obj[val.id] = val.name)
+      );
+      return obj;
+    },
     oneC() {
-      return this.$store.state.account.account?.config?.g_enabled;
+      return this.$store.state.account.account?.g_install;
     },
     count() {
       return this.$store.state.account.user.config?.per_page;
@@ -172,6 +167,12 @@ export default {
     },
     products() {
       return this.$store.state.products.products;
+    },
+    bar() {
+      return this.$refs.bar;
+    },
+    table() {
+      return this.$refs.table;
     },
     ...mapGetters(["show_edit_modal"]),
   },
@@ -194,15 +195,24 @@ export default {
     async selectedWH() {
       await this.$store.dispatch(
         "getTableConfig",
-        this.selectedWH.value != "services" && this.selectedWH.value != "whs"
-          ? this.selectedWH.value
-          : ""
+        this.selectedWH.value != "whs" ? this.selectedWH.value : ""
       );
+      this.bar.dropOrder();
       this.get_products();
     },
   },
 
   methods: {
+    scrollUp() {
+      window.scrollTo(0, 0);
+    },
+    handleScroll() {
+      const yDis =
+        Math.round(this.bar?.$el?.getBoundingClientRect()?.y) -
+          Math.round(this.table?.getBoundingClientRect()?.y) >
+        10;
+      yDis ? (this.showArrow = true) : (this.showArrow = false);
+    },
     clearFilters() {
       this.filters?.clearFilters();
     },
@@ -238,10 +248,8 @@ export default {
       this.changePage(1);
     },
     open_edit_modal(row) {
-      if (!this.oneC) {
-        this.edit_data = { ...row };
-        this.$store.commit("open_edit_modal", row.fields.category);
-      }
+      this.edit_data = { ...row };
+      this.$store.commit("open_edit_modal", row.fields.category);
     },
     sort(code, order) {
       const params = {
@@ -279,7 +287,12 @@ export default {
   margin: 0 auto;
   overflow-x: scroll;
   width: calc(100% + 42px);
-  display: block;
+  // height: 550px;
+  // display: block;
+  .main-grid-bar {
+    position: sticky;
+    top: -1px;
+  }
 }
 .item:first-child {
   width: 17px !important;
@@ -351,7 +364,15 @@ export default {
 .rows-leave-to {
   opacity: 0;
 }
-.disabledEdit {
-  opacity: 0.5;
+.arrow {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  opacity: 0.7;
+  @include bg_image("@/assets/arrow_circle_up.svg");
 }
 </style>

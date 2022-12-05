@@ -1,11 +1,15 @@
 <template>
-  <div class="wrapper">
+  <div
+    class="wrapper"
+    @click.self="close()"
+    :style="{ minHeight: height + 'px' }"
+  >
     <div class="bgc">
       <div class="container">
         <div class="header">
           <div class="top">
-            <label>Настройки товаров</label>
-            <btns-save-close @close="close_edit_stuff" @save="save">
+            <label>Общие настройки</label>
+            <btns-save-close @close="close" @save="save">
               <template v-slot:close>Назад</template>
             </btns-save-close>
           </div>
@@ -19,9 +23,9 @@
                   id="q1"
                   v-model="copyConfing.allow_add_reserve"
                 />
-                <label for="q1"
-                  >Разрешать добавлять товары из резерва в другие сделки</label
-                >
+                <label for="q1">
+                  Разрешать добавлять товары из резерва в другие сделки
+                </label>
               </div>
               <div class="permit">
                 <input
@@ -30,10 +34,9 @@
                   id="q2"
                   v-model="copyConfing.allow_change_price"
                 />
-                <label for="q2"
-                  >Изменить цену у товаров в открытых сделках (по
-                  умолчанию)</label
-                >
+                <label for="q2">
+                  Изменить цену у товаров в открытых сделках (по умолчанию)
+                </label>
               </div>
               <div class="permit">
                 <input
@@ -42,35 +45,39 @@
                   id="q3"
                   v-model="copyConfing.allow_add_with_zero_count"
                 />
-                <label for="q3"
-                  >Разрешать добавлять в сделки товар с нулевым остатком</label
-                >
+                <label for="q3">
+                  Разрешать добавлять в сделки товар с нулевым остатком
+                </label>
               </div>
             </div>
             <div class="sync">
               <label>Синхронизация товаров на складе с товарами amoCRM</label>
               <div class="list">
                 <div class="label_input">
-                  <label
-                    >Выберите список товаров из amoCRM для синхронизации</label
-                  >
+                  <label>
+                    Выберите список товаров из amoCRM для синхронизации
+                  </label>
                   <SelectorVue
-                    :options_props="sync_list_stuff_options"
-                    @select="option_select_sync_list_stuff"
-                    :selected_option="sync_list_stuff_selected_option"
+                    :options_props="copyProductLists"
+                    @select="
+                      (event) => optionSelectSync(event, 'amo_product_list')
+                    "
+                    :selected_option="selectedAmoProductList"
                   />
                 </div>
                 <div class="label_input">
-                  <label
-                    >Скрытие штатной вкладки amoCRM с товарами. В штатной
-                    вкладке с товарами так же можно прикреплять товары к
-                    сделкам, но количество товара на складе учитываться
-                    учитываться не будет.</label
-                  >
+                  <label>
+                    Скрытие штатной вкладки amoCRM с товарами. В штатной вкладке
+                    с товарами так же можно прикреплять товары к сделкам, но
+                    количество товара на складе учитываться учитываться не
+                    будет.
+                  </label>
                   <SelectorVue
-                    :options_props="sync_list_hide_tab_options"
-                    @select="option_select_sync_list_hide_tab"
-                    :selected_option="sync_list_hide_tab_selected_option"
+                    :options_props="amoLeadsGroupHide"
+                    @select="
+                      (event) => optionSelectSync(event, 'amo_leads_group_hide')
+                    "
+                    :selected_option="selectedAmoLeadsGroupHide"
                   />
                 </div>
               </div>
@@ -93,7 +100,10 @@
               <label> Воронка "{{ item?.name }}" </label>
               <SelectorVue
                 :options_props="item?.statuses"
-                @select="optionSelect"
+                @select="
+                  (event) =>
+                    optionSelectSteps(event, item?.value, 'reserve_off')
+                "
                 :selected_option="item.selectedReserveOff"
               />
             </div>
@@ -112,29 +122,27 @@
               <label> Воронка "{{ item?.name }}" </label>
               <SelectorVue
                 :options_props="item?.statuses"
-                @select="optionSelect"
+                @select="
+                  (event) => optionSelectSteps(event, item?.value, 'write_off')
+                "
                 :selected_option="item.selectedWriteOff"
               />
             </div>
           </div>
           <h6>Привязка полей сделок</h6>
           <div class="steps">
-            <div
-              class="label_input"
-              v-for="item in copyLeadFieldsList"
-              :key="item"
-            >
+            <div class="label_input" v-for="item in leadsDeals" :key="item">
               <label> Поле "{{ item?.name }}" </label>
               <SelectorVue
-                :options_props="item?.fields"
-                @select="optionSelect"
+                :options_props="leadsDealsList"
+                @select="(event) => optionSelectLeadsDeals(event, item?.code)"
                 :selected_option="item?.selected"
               />
             </div>
           </div>
         </div>
         <div class="footer">
-          <btns-save-close @close="close_edit_stuff" @save="save">
+          <btns-save-close @close="close" @save="save">
             <template v-slot:close>Назад</template>
           </btns-save-close>
         </div>
@@ -158,6 +166,40 @@ export default {
       },
       copyPipelinesList: [],
       copyLeadFieldsList: [],
+      leadsDeals: [
+        {
+          name: "Товары",
+          code: "field_products",
+          selected: { name: "Не выбрано", value: -1 },
+        },
+        {
+          name: "Себестоимость",
+          code: "field_cost_price",
+          selected: { name: "Не выбрано", value: -1 },
+        },
+        {
+          name: "Прибыль",
+          code: "field_profit",
+          selected: { name: "Не выбрано", value: -1 },
+        },
+
+        {
+          name: "Общий бюджет",
+          code: "field_budget",
+          selected: { name: "Не выбрано", value: -1 },
+        },
+
+        {
+          name: "НДС сумма",
+          code: "field_nds_sum",
+          selected: { name: "Не выбрано", value: -1 },
+        },
+      ],
+      leadsDealsList: [],
+      copyProductLists: [],
+      selectedAmoProductList: { name: "Не выбрано", value: -1 },
+      amoLeadsGroupHide: [],
+      selectedAmoLeadsGroupHide: { name: "Не выбрано", value: -1 },
     };
   },
   async mounted() {
@@ -167,9 +209,19 @@ export default {
     this.copyPipelinesList = this.pipelinesList;
     await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
+    await this.$store.dispatch("getProductLists");
+    this.fillCopyProductLists();
+    this.fillLeadsDealsList();
+    this.fillAmoLeadsGroupHide();
     this.searchSelectedPipelines();
+    this.searchSelectedAmoLeadsGroupHide();
+    this.searchSelectedAmoProductList();
+    this.searchSelectedLeadsDeals();
   },
   computed: {
+    height() {
+      return document.documentElement.scrollHeight;
+    },
     pipelinesList() {
       const list = [];
       Object.entries(this.$store.state.account.pipelinesList).map((val) => {
@@ -178,6 +230,7 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].statuses = arr;
+        val[1].statuses.unshift({ name: "Не выбрано", value: -1 });
         val[1].selectedReserveOff = { name: "Не выбрано", value: -1 };
         val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
         list.push({ value: val[0], ...val[1] });
@@ -192,15 +245,83 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].fields = arr;
+        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
         val[1].selected = { name: "Не выбрано", value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
     },
+    productLists() {
+      return {
+        ...this.$store.state.account.productLists,
+        "-1": "Не выбрано",
+      };
+    },
   },
   methods: {
-    close_edit_stuff() {
+    save() {
+      this.$store.dispatch("update_account", this.copyConfing);
+      this.close();
+    },
+    close() {
       this.$store.commit("open_close_show_edit_stuff", false);
+    },
+    optionSelectLeadsDeals(option, code) {
+      if (option.value == -1) {
+        this.copyConfing[code] = "0";
+      } else {
+        this.copyConfing[code] = option.value;
+      }
+      this.leadsDeals.map((val) => {
+        if (val.code == code) val.selected = option;
+      });
+    },
+    optionSelectSync(option, code) {
+      option.value == -1
+        ? (this.copyConfing[code] = "0")
+        : (this.copyConfing[code] = option.value);
+
+      if (code == "amo_leads_group_hide")
+        this.selectedAmoLeadsGroupHide = option;
+      if (code == "amo_product_list") this.selectedAmoProductList = option;
+    },
+    include(arr, value, code) {
+      let res = false;
+      arr.forEach((val) => {
+        if (val[code] == value) res = true;
+      });
+      return res;
+    },
+    optionSelectSteps(option, value, code) {
+      let addNew = true;
+      if (this.include(this.copyConfing[code], value, "field")) {
+        this.copyConfing[code].map((val) => {
+          if (val.field == value) val.value = option.value;
+        });
+        addNew = false;
+      }
+
+      const obj = {
+        field: value,
+        value: option.value,
+      };
+      if (addNew) this.copyConfing[code].push(obj);
+
+      if (option.value == -1) {
+        this.copyConfing[code].forEach((val, idx) => {
+          if (val.field == value) this.copyConfing[code].splice(idx, 1);
+        });
+      }
+
+      this.copyPipelinesList.map((val) => {
+        if (val.value == value) {
+          if (code == "write_off") {
+            val.selectedWriteOff = option;
+          } else {
+            val.selectedReserveOff = option;
+          }
+        }
+      });
     },
     searchSelectedInArr(item, arr, code) {
       let res = { name: "Не выбрано", value: -1 };
@@ -211,18 +332,69 @@ export default {
     },
     searchSelectedPipelines() {
       this.copyPipelinesList.map((val) => {
-        if (this.copyConfing.reserve_off[val.value])
+        const reserve_off = this.copyConfing.reserve_off.filter(
+          (item) => item.field == val.value
+        );
+        const write_off = this.copyConfing.write_off.filter(
+          (item) => item.field == val.value
+        );
+        if (reserve_off.length)
           val.selectedReserveOff = this.searchSelectedInArr(
-            this.copyConfing.reserve_off[val.value],
+            reserve_off[0].value,
             val.statuses,
             "value"
           );
-        if (this.copyConfing.write_off[val.value])
+        if (write_off.length)
           val.selectedWriteOff = this.searchSelectedInArr(
-            this.copyConfing.write_off[val.value],
+            write_off[0].value,
             val.statuses,
             "value"
           );
+      });
+    },
+    fillCopyProductLists() {
+      const list = [];
+      Object.entries(this.productLists).forEach((val) =>
+        list.push({ name: val[1], value: val[0] })
+      );
+      this.copyProductLists = list;
+    },
+    fillLeadsDealsList() {
+      this.leadsDealsList.push({ name: "Не выбрано", value: -1 });
+      this.copyLeadFieldsList.forEach((val) => {
+        const optgroup = val.name;
+        this.leadsDealsList.push({ name: optgroup, value: "optgroup" });
+        const list = val.fields.splice(1, 999);
+        list.forEach((item) =>
+          this.leadsDealsList.push({ ...item, optgroup: true })
+        );
+      });
+    },
+    fillAmoLeadsGroupHide() {
+      this.amoLeadsGroupHide.push({ name: "Не выбрано", value: -1 });
+      this.copyLeadFieldsList.forEach((val) => {
+        this.amoLeadsGroupHide.push({ name: val.name, value: val.value });
+      });
+    },
+    searchSelectedAmoLeadsGroupHide() {
+      this.amoLeadsGroupHide.forEach((val) => {
+        if (val.value == this.copyConfing.amo_leads_group_hide)
+          this.selectedAmoLeadsGroupHide = val;
+      });
+    },
+    searchSelectedAmoProductList() {
+      this.copyProductLists.forEach((val) => {
+        if (val.value == this.copyConfing.amo_product_list)
+          this.selectedAmoProductList = val;
+      });
+    },
+    searchSelectedLeadsDeals() {
+      this.leadsDeals.map((val) => {
+        val.selected = this.searchSelectedInArr(
+          this.copyConfing[val.code],
+          this.leadsDealsList,
+          "value"
+        );
       });
     },
   },
@@ -235,6 +407,8 @@ export default {
   pointer-events: all;
   z-index: 9999999;
   width: 100%;
+  height: max-content;
+  min-height: 100vh;
   position: absolute;
   top: 0;
   left: 0;

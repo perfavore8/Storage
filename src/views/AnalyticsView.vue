@@ -225,7 +225,7 @@ export default {
           Math.round(this.salesTotal.cost_sum * 100) / 100 + " р.";
         this.salesTotal.prib =
           Math.round(this.salesTotal.prib * 100) / 100 + " р.";
-        this.salesTotal.leads = this.salesTotal.leads.split(",").length;
+        this.salesTotal.leads = this.salesTotal?.leads?.split(",").length;
         this.salesTotal["name"] = "Общее";
         this.salesTotal["poz"] = "";
         this.reports.data.map((val) => {
@@ -293,8 +293,7 @@ export default {
 @import "@/app.scss";
 .app {
   width: calc(100% - 60px);
-  min-width: 100vh;
-  height: 100%;
+  height: 100vh;
   padding: 0 30px;
 
   display: flex;
@@ -314,8 +313,7 @@ export default {
     gap: 12px;
     flex-wrap: wrap;
     .btns_btn {
-      height: 40px;
-      padding: 9px;
+      padding: calc(0.1 * $vv) calc(0.4 * $vv);
       cursor: pointer;
       text-align: center;
       vertical-align: center;
@@ -323,10 +321,10 @@ export default {
       border: 1px solid #1b3546;
       border-radius: 4px;
       color: #1b3546;
-      background: white;
+      background: transparent;
 
       transition: all 0.15s ease-out;
-      @include font(400, 18px, 22px);
+      @include font(400, 18px);
     }
     .btns_btn:hover {
       border-color: #396f93;

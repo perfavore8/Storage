@@ -61,19 +61,24 @@ export default {
     change_value() {
       nextTick(() => {
         this.item.data?.forEach((val) => {
-          console.log(this.selected_option);
           if (val == this.selected_option) this.copy_selected_option = val;
+          if (val.value == this.selected_option)
+            this.copy_selected_option = val.name;
         });
       });
     },
     preparing_field_data(arr) {
       const result = [];
       if (arr)
-        arr.forEach((val, idx) => result.push({ name: val, value: idx }));
+        arr[0].name
+          ? arr.forEach((val) =>
+              result.push({ name: val.name, value: val.value })
+            )
+          : arr.forEach((val, idx) => result.push({ name: val, value: idx }));
       return result;
     },
     option_select(value) {
-      this.$emit("change_value", value.name, this.idx);
+      this.$emit("change_value", value.name, this.idx, value.value);
     },
   },
 };

@@ -1,5 +1,9 @@
 <template>
-  <div class="app_new">
+  <div
+    class="app_new"
+    :style="{ minHeight: height + 'px' }"
+    @click.self="close_modal()"
+  >
     <div class="container">
       <div class="header"><slot name="title"></slot></div>
       <div class="content">
@@ -24,7 +28,7 @@
         <div class="label_input">
           <label class="label">Этап авто-генерации:</label>
           <selector-vue
-            :options_props="pipelines_options"
+            :options_props="copyPipelinesList"
             @select="select_pipelines_option"
             :selected_option="status_id"
           />
@@ -98,20 +102,55 @@ export default {
       try_accept: false,
       name: "",
       file: "",
+      copyPipelinesList: [],
       status_id: { name: "Не выбрано", value: 1 },
       url_field: { name: "Не выбрано", value: 1 },
     };
   },
-  mounted() {
-    this.$store.state.documents.config.types.forEach((val, idx) =>
+  async mounted() {
+    await this.$store.dispatch("getLeadFieldsList");
+    this.copyLeadFieldsList = this.leadFieldsList;
+    await this.$store.dispatch("getPipelinesList");
+    this.copyPipelinesList = this.pipelinesList;
+    this.$store.state.documents.config.types?.forEach((val, idx) =>
       this.type_options.push({ name: val, value: idx })
     );
-    this.$store.state.documents.config.export_type.forEach((val, idx) =>
+    this.$store.state.documents.config.export_type?.forEach((val, idx) =>
       this.export_type_options.push({ name: val, value: idx })
     );
     this.set_pipelines_options();
     this.set_lead_fields_options();
     nextTick(() => this.add_cur_doc());
+  },
+  computed: {
+    height() {
+      return document.documentElement.scrollHeight;
+    },
+    leadFieldsList() {
+      const list = [];
+      Object.entries(this.$store.state.account.leadFieldsList).map((val) => {
+        const arr = [];
+        Object.entries(val[1].fields).forEach((stat) =>
+          arr.push({ name: stat[1], value: stat[0] })
+        );
+        val[1].fields = arr;
+        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
+        val[1].selected = { name: "Не выбрано", value: -1 };
+        list.push({ value: val[0], ...val[1] });
+      });
+      return list;
+    },
+    pipelinesList() {
+      const list = [];
+      list.push({ name: "Не выбрано", value: -1 });
+      Object.entries(this.$store.state.account.pipelinesList).map((val) => {
+        list.push({ name: val[1].name, value: "optgroup" });
+        Object.entries(val[1].statuses).forEach((stat) =>
+          list.push({ name: stat[1], value: stat[0], optgroup: true })
+        );
+      });
+      return list;
+    },
   },
   methods: {
     save() {
@@ -153,7 +192,7 @@ export default {
         this.name = this.cur_doc.name;
         this.file = this.cur_doc.file;
         const serch_selected_item = (options, name, value) => {
-          let obj = {};
+          let obj = { name: "Не выбрано", value: -1 };
           options.forEach((val) => {
             if (val[value] == name) {
               Object.assign(obj, val);
@@ -167,7 +206,7 @@ export default {
           "name"
         );
         this.status_id = serch_selected_item(
-          this.pipelines_options,
+          this.copyPipelinesList,
           this.cur_doc.status_id,
           "value"
         );
@@ -202,21 +241,21 @@ export default {
       });
     },
     set_lead_fields_options() {
-      const fields = Object.entries(
-        this.$store.state.documents.config.lead_fields
-      );
-      fields.forEach((val) => {
-        const optgroup = val[0];
+      this.lead_fields_options.push({ name: "Не выбрано", value: -1 });
+      this.copyLeadFieldsList.forEach((val) => {
+        const optgroup = val.name;
         this.lead_fields_options.push({ name: optgroup, value: "optgroup" });
-        const list = Object.entries(val[1]);
-        list.forEach((pip) =>
-          this.lead_fields_options.push({
-            name: pip[1],
-            value: pip[0],
-            optgroup: true,
-          })
+        const list = val.fields.splice(1, 999);
+        list.forEach((item) =>
+          this.lead_fields_options.push({ ...item, optgroup: true })
         );
       });
+
+      this.lead_fields_options.forEach((val) =>
+        val.value == this.$store.state.documents.config.field_docs
+          ? (this.lead_fields = val)
+          : null
+      );
     },
   },
 };
@@ -232,6 +271,7 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
+  @include font(400, 16px);
   .container {
     width: 500px;
     background-color: #fff;
@@ -263,9 +303,9 @@ export default {
           width: calc(100% - 26px) !important;
         }
         .input {
-          width: calc(100% - 26px);
+          width: 100%;
           min-width: 50%;
-          height: 20px;
+          // height: 20px;
           padding: 6px 12px;
           background-color: white;
           border: 1px solid #ced4da;

@@ -1,5 +1,5 @@
 <template>
-  <div class="modal">
+  <div class="modal" :style="{ minHeight: height + 'px' }">
     <div class="wrapper">
       <div class="modal-header">
         <div class="head-text">Настройка таблицы</div>
@@ -52,6 +52,9 @@ export default {
     };
   },
   computed: {
+    height() {
+      return document.documentElement.scrollHeight;
+    },
     tableConfig() {
       return this.$store.state.account.tableConfig;
     },
@@ -59,9 +62,7 @@ export default {
   async mounted() {
     await this.$store.dispatch(
       "getTableConfig",
-      this.selectedWH.value != "services" && this.selectedWH.value != "whs"
-        ? this.selectedWH.value
-        : ""
+      this.selectedWH.value != "whs" ? this.selectedWH.value : ""
     );
     const list = [];
     Object.entries(this.tableConfig).map((val) => {
@@ -80,9 +81,9 @@ export default {
       const params = {
         value: {
           config: [],
-          code: "",
+          code: this.selectedWH.value != "whs" ? this.selectedWH.value : "",
         },
-        wh: "",
+        wh: this.selectedWH.value != "whs" ? this.selectedWH.value : "",
       };
       this.list.forEach((val) => {
         if (val.visible) params.value.config.push(val.code);
@@ -100,6 +101,13 @@ export default {
 @import "@/app.scss";
 .modal {
   pointer-events: all;
+  z-index: 1100;
+  width: 100%;
+  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: transparent;
 }
 .wrapper {
   box-shadow: 0 0 7px 6px rgb(206 212 218 / 50%);
@@ -111,7 +119,7 @@ export default {
   left: calc(50% - 233px);
   user-select: none;
   height: auto;
-  max-height: calc(100% - 3.5rem);
+  max-height: calc(100vh - 3.5rem);
   max-width: 600px;
   min-width: 500px;
   overflow-y: clip;

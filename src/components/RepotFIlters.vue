@@ -50,8 +50,8 @@
       </div>
     </div>
     <div class="btns">
-      <button class="btn" @click="apply()">Применить</button>
-      <button class="btn" @click="clearAllFields()">Очистить</button>
+      <button class="btn btn_blue" @click="apply()">Применить</button>
+      <button class="btn btn_grey" @click="clearAllFields()">Очистить</button>
     </div>
   </div>
   <div class="row selected_row">

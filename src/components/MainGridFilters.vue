@@ -2,7 +2,7 @@
   <transition name="mdl1">
     <tr class="filters" v-show="show_filter">
       <transition-group name="mdl">
-        <th class="item" key="b1"></th>
+        <th class="item" key="b1" v-if="!oneC"></th>
         <template v-for="(filter, idx) in filtersValue" :key="idx">
           <th class="item" v-show="show_filter">
             <template v-if="filter.table_config.filtered">
@@ -87,6 +87,9 @@ export default {
   },
   computed: {
     ...mapGetters(["show_filter"]),
+    oneC() {
+      return this.$store.state.account.account?.g_install;
+    },
   },
   mounted() {
     this.feelFilters();

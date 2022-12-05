@@ -7,6 +7,8 @@ export default {
     tableConfig: {},
     pipelinesList: {},
     leadFieldsList: {},
+    productLists: {},
+    syncFields: {},
   },
   getters: {},
   mutations: {
@@ -27,6 +29,12 @@ export default {
     },
     updateLeadFieldsList(state, value) {
       state.leadFieldsList = { ...value };
+    },
+    updateProductLists(state, value) {
+      state.productLists = { ...value };
+    },
+    updateSyncFields(state, value) {
+      state.syncFields = { ...value };
     },
   },
   actions: {
@@ -51,6 +59,26 @@ export default {
       const json = await res.json();
       context.commit("updateTableConfig", json);
     },
+    async getGoogleAuthUrl() {
+      const url = BaseURL + "account/google-auth-url";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      return json.url;
+    },
+    async googleLogOut() {
+      const url = BaseURL + "account/google-logout";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      return json.url;
+    },
     async update_config_table(context, params) {
       const url = BaseURL + "account/table-config";
       const res = await fetch(url, {
@@ -63,11 +91,7 @@ export default {
       });
       const json = await res.json();
       console.log("update_config_table", json);
-      await context.dispatch("getTableConfig", params.wh, {
-        headers: {
-          Authorization: TOKEN,
-        },
-      });
+      await context.dispatch("getTableConfig", params.wh);
       context.dispatch("get_all_fields");
       return json;
     },
@@ -100,6 +124,26 @@ export default {
       });
       const json = await res.json();
       context.commit("updateLeadFieldsList", json);
+    },
+    async getProductLists(context) {
+      const url = BaseURL + "account/product-lists";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateProductLists", json);
+    },
+    async getSyncFields(context) {
+      const url = BaseURL + "account/sync-fields";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateSyncFields", json);
     },
     async update_account(context, params) {
       const url = BaseURL + "account/update";

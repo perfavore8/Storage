@@ -1,5 +1,9 @@
 <template>
-  <div class="app_fileds">
+  <div
+    class="app_fileds"
+    :style="{ minHeight: height + 'px' }"
+    @click.self="close()"
+  >
     <div class="container">
       <div class="header">
         <div class="left">
@@ -65,6 +69,11 @@ export default {
       this.tpl_fields.push(field1);
     });
     if (this.tpl_fields[0].name) this.select_catalog(this.tpl_fields[0]);
+  },
+  computed: {
+    height() {
+      return document.documentElement.scrollHeight;
+    },
   },
   methods: {
     select_catalog(field) {

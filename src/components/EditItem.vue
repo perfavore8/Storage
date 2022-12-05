@@ -1,42 +1,44 @@
 <template>
-  <div class="background_edit_modal"></div>
-  <div class="app_edit_modal">
-    <div class="header">
-      <div class="header_left">
-        Редактирование {{ edit_data.fields["name"] }}
+  <div class="background_edit_modal" @click.self="close()">
+    <div class="app_edit_modal">
+      <div class="header">
+        <div class="header_left">
+          Редактирование {{ edit_data.fields["name"] }}
+        </div>
+        <div class="header_right">
+          <BtnsSaveClose @close="close" @save="save">
+            <template v-slot:close>Отмена</template>
+            <template v-slot:other_btns v-if="!oneC">
+              <button class="btn btn3" @click="archive()">Архивировать</button>
+            </template>
+          </BtnsSaveClose>
+        </div>
       </div>
-      <div class="header_right">
+      <div class="hr" />
+      <div class="main">
+        <div class="row">
+          <label>Тип:</label>
+          <SelectorVue
+            :options_props="options_1"
+            @select="option_select_1"
+            :selected_option="selected_option_1"
+            :disabled="oneC"
+          />
+        </div>
+        <edit-item-fields
+          :new_edit_data="new_edit_data"
+          @change_value="change_value"
+        />
+      </div>
+      <div class="hr" />
+      <div class="footer">
         <BtnsSaveClose @close="close" @save="save">
           <template v-slot:close>Отмена</template>
-          <template v-slot:other_btns>
+          <template v-slot:other_btns v-if="!oneC">
             <button class="btn btn3" @click="archive()">Архивировать</button>
           </template>
         </BtnsSaveClose>
       </div>
-    </div>
-    <div class="hr" />
-    <div class="main">
-      <div class="row">
-        <label>Тип:</label>
-        <SelectorVue
-          :options_props="options_1"
-          @select="option_select_1"
-          :selected_option="selected_option_1"
-        />
-      </div>
-      <edit-item-fields
-        :new_edit_data="new_edit_data"
-        @change_value="change_value"
-      />
-    </div>
-    <div class="hr" />
-    <div class="footer">
-      <BtnsSaveClose @close="close" @save="save">
-        <template v-slot:close>Отмена</template>
-        <template v-slot:other_btns>
-          <button class="btn btn3" @click="archive()">Архивировать</button>
-        </template>
-      </BtnsSaveClose>
     </div>
   </div>
 </template>
@@ -58,7 +60,11 @@ export default {
     },
   },
   inject: ["isServicePage"],
-  computed: {},
+  computed: {
+    oneC() {
+      return this.$store.state.account.account?.g_install;
+    },
+  },
   data() {
     return {
       options_1: [
@@ -89,8 +95,11 @@ export default {
     close() {
       this.$store.commit("close_edit_modal");
     },
-    save() {
-      this.$store.dispatch("update_product", this.new_edit_data);
+    async save() {
+      await this.$store.dispatch("update_product", {
+        products: [this.new_edit_data],
+      });
+      this.$store.dispatch("get_products");
       this.close();
     },
   },
@@ -209,5 +218,14 @@ export default {
 .btn3:hover {
   background: #1b3546d9;
   box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
+}
+.background_edit_modal {
+  width: 100%;
+  height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

@@ -52,6 +52,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 7"
     />
@@ -59,6 +60,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 8"
     />
@@ -66,8 +68,26 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
+      :disabled="!!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 9"
+    />
+    <edit-price
+      :item="field.name"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
+      :disabled="!!field.is_editable"
+      :currencies="currencies"
+      @change_value="change_value"
+      v-if="field.type == 11"
+    />
+    <edit-wh
+      :item="field.name"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
+      :disabled="!!field.is_editable"
+      @change_value="change_value"
+      v-if="field.type == 13"
     />
   </div>
 </template>
@@ -82,6 +102,8 @@ import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector
 import EditDate from "@/components/EditItemSelections/EditDate.vue";
 import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
+import EditPrice from "@/components/EditItemSelections/EditPrice.vue";
+import EditWh from "@/components/EditItemSelections/EditWh.vue";
 import { nextTick } from "process";
 export default {
   components: {
@@ -94,6 +116,8 @@ export default {
     EditDate,
     EditDateTime,
     EditFlag,
+    EditPrice,
+    EditWh,
   },
   props: {
     new_edit_data: {
@@ -105,9 +129,16 @@ export default {
   data() {
     return {
       copy_fields_with_parents: [],
+      currencies: [],
     };
   },
   async mounted() {
+    await this.$store.dispatch("get_currencies");
+    Object.entries(this.$store.state.account.currencies).forEach((val) =>
+      this.currencies.push(val[1])
+    );
+    this.currencies.map((val) => (val.value = val.code_name));
+
     nextTick(async () => {
       const category_id = this.new_edit_data.fields.category;
       await this.$store

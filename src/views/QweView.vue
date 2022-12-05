@@ -1,12 +1,9 @@
 <template>
-  <document-setting></document-setting>
+  <div>123</div>
 </template>
 
 <script>
-import DocumentSetting from "@/components/DocumentSetting.vue";
-export default {
-  components: { DocumentSetting },
-};
+export default {};
 </script>
 
 <style></style>

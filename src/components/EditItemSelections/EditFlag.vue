@@ -23,11 +23,8 @@ export default {
       },
     },
     selected_option: {
-      type: String,
+      // type: Boolean,
       required: true,
-      default() {
-        return "";
-      },
     },
     idx: {
       type: Number,
@@ -54,23 +51,14 @@ export default {
       this.change_value();
     },
     copy_selected_option() {
-      let val = "";
-      if (this.copy_selected_option) {
-        val = "Да";
-      } else {
-        val = "Нет";
-      }
-      this.option_select(val);
+      this.option_select(this.copy_selected_option);
     },
   },
   methods: {
     change_value() {
       nextTick(() => {
-        if (this.selected_option == "Да") {
-          this.copy_selected_option = true;
-        } else {
-          this.copy_selected_option = false;
-        }
+        if (this.selected_option != undefined)
+          this.copy_selected_option = !!this.selected_option;
       });
     },
     option_select(value) {

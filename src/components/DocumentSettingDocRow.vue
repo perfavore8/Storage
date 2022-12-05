@@ -5,6 +5,7 @@
     <td class="item">
       <a
         href="https://docs.google.com/spreadsheets/d/13U76ujSjV_iaY0L2WBVHVw7q07TSEqstuL0kSeX-Sh8/edit"
+        target="blank"
         >Шаблон</a
       >
     </td>

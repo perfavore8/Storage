@@ -28,6 +28,11 @@
       </div>
     </transition>
     <transition name="modal_window">
+      <div v-if="showSyncSettings" class="SyncSettings">
+        <SyncSettings />
+      </div>
+    </transition>
+    <transition name="modal_window">
       <div v-if="show_product_properties" class="product_properties">
         <product-properties />
       </div>
@@ -57,20 +62,39 @@
         <div class="btns">
           <button
             class="btns_btn"
-            :class="{ selected_catalog: $route.name === page.value }"
+            :class="{ selected_catalog: $route.path === '/' + page.value }"
             @click="route(page.value)"
             v-for="page in catalog"
             :key="page"
           >
             {{ page.name }}
           </button>
+          <!-- {{ $route }} -->
         </div>
         <div class="whs">
-          <SelectorVue
+          <!-- <SelectorVue
             :options_props="whs"
             :selected_option="selectedWH"
             @select="selectWH"
-          />
+          /> -->
+          <div class="radio_btns" :class="{ whs_full: whsFull }">
+            <div class="radio_btn" v-for="page in whs" :key="page">
+              <input
+                type="radio"
+                :value="page.value"
+                :id="page.name"
+                name="selected_storage"
+                :checked="selectedWH.value == page.value"
+                @change="selectWH(page)"
+              />
+              <label :for="page.name">{{ page.name }}</label>
+            </div>
+          </div>
+          <div
+            class="arrow"
+            @click="whsFull = !whsFull"
+            :class="{ rotate_arrow: whsFull }"
+          ></div>
         </div>
       </div>
       <div class="header_right">
@@ -79,63 +103,75 @@
           <a class="links">Выгрузка в эксель</a>
         </div> -->
         <div class="ref">
-          <div class="ref_2_logo"></div>
-          <a class="links" @click.stop="open_close_sync()">
-            Синхронизировать товары
-          </a>
+          <div
+            class="ref_2_logo"
+            :class="{ ref_2_logo_fill: show_sync }"
+            @click.stop="open_close_sync()"
+          ></div>
           <transition name="modal">
             <div v-if="show_sync" class="modal_settings modal_sync">
               <a>
-                <div class="modal_container">AmoCrm -> Склад</div>
-              </a>
-              <a>
-                <div class="modal_container">Склад -> AmoCrm</div>
-              </a>
-            </div>
-          </transition>
-        </div>
-        <button class="settings_btn" @click.stop="open_close_settings()">
-          <transition name="modal">
-            <div v-show="show_settings" class="modal_settings">
-              <a>
-                <div class="modal_container" @click="open_edit_stuff()">
-                  Настройка товаров
-                </div>
-              </a>
-              <a>
-                <div class="modal_container" @click="open_product_category()">
-                  Категории товаров
-                </div>
-              </a>
-              <a>
-                <div
-                  class="modal_container"
-                  @click="openThirdPpartyIntegrations()"
-                >
-                  Сторонние интеграции
-                </div>
-              </a>
-              <a>
-                <div class="modal_container" @click="open_product_properties()">
-                  Свойства товаров
+                <div class="modal_container">
+                  Синхронизировать товары amoCRM -> Склад
                 </div>
               </a>
               <a>
                 <div class="modal_container">
-                  Синхронизация склада с товарами amoCrm
-                </div>
-              </a>
-              <a>
-                <div
-                  class="modal_container"
-                  @click="open_close_show_document_setting(true)"
-                >
-                  Документы
+                  Синхронизировать товары Склад -> amoCRM
                 </div>
               </a>
             </div>
           </transition>
-        </button>
+        </div>
+        <button
+          class="settings_btn"
+          :class="{ settings_btn_rotate: show_settings }"
+          @click.stop="open_close_settings()"
+        ></button>
+        <transition name="modal">
+          <div v-show="show_settings" class="modal_settings">
+            <a>
+              <div class="modal_container" @click="open_edit_stuff()">
+                Общие настройки
+              </div>
+            </a>
+            <a>
+              <div class="modal_container" @click="open_product_category()">
+                Категории товаров
+              </div>
+            </a>
+
+            <a>
+              <div class="modal_container" @click="open_product_properties()">
+                Свойства товаров
+              </div>
+            </a>
+            <a>
+              <div class="modal_container" @click="openSyncSettings()">
+                Настройки синхронизации товаров
+              </div>
+            </a>
+            <a>
+              <div
+                class="modal_container"
+                @click="open_close_show_document_setting(true)"
+              >
+                Документы
+              </div>
+            </a>
+            <a>
+              <div
+                class="modal_container"
+                @click="openThirdPpartyIntegrations()"
+              >
+                Интеграции
+              </div>
+            </a>
+            <a>
+              <div class="modal_container">Настройки аккаунта</div>
+            </a>
+          </div>
+        </transition>
       </div>
     </div>
     <div
@@ -148,7 +184,9 @@
           show_cancel_position ||
           show_product_category ||
           show_product_properties ||
-          show_document_setting,
+          show_document_setting ||
+          showThirdPpartyIntegrations ||
+          showSyncSettings,
       }"
     >
       <div class="filters" :class="{ blur: show_edit_modal }">
@@ -178,7 +216,7 @@
             </div>
           </div>
           <transition name="btns">
-            <div class="buttons" v-if="show_buttons && oneC">
+            <div class="buttons" v-if="show_buttons && !oneC">
               <button class="button button_1 smallBtn" @click="archive_data()">
                 Архивировать
               </button>
@@ -202,8 +240,10 @@
         </div>
         <div class="filters_right">
           <div class="btns" v-if="filter_value">
-            <button class="btn">Применить</button>
-            <button class="btn" @click="clearFilters()">Очистить</button>
+            <button class="btn btn_blue">Применить</button>
+            <button class="btn btn_grey" @click="clearFilters()">
+              Очистить
+            </button>
           </div>
           <div class="filter_group">
             <input
@@ -218,7 +258,8 @@
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
-            :disabled="isServicePage || oneC"
+            :disabled="isServicePage"
+            v-if="!oneC"
           >
             Новая позиция
           </button>
@@ -243,7 +284,8 @@ import DocumentSetting from "@/components/DocumentSetting.vue";
 import ProductCategory from "@/components/ProductCategory.vue";
 import ProductProperties from "@/components/ProductProperties.vue";
 import ThirdPpartyIntegrations from "@/components/ThirdPpartyIntegrations.vue";
-import SelectorVue from "@/components/SelectorVue.vue";
+import SyncSettings from "@/components/SyncSattings.vue";
+// import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
 
@@ -259,7 +301,8 @@ export default {
     ProductCategory,
     ProductProperties,
     ThirdPpartyIntegrations,
-    SelectorVue,
+    SyncSettings,
+    // SelectorVue,
   },
   provide() {
     return {
@@ -275,6 +318,7 @@ export default {
       whs: [],
       grid: false,
       currentItems: [],
+      whsFull: false,
     };
   },
   computed: {
@@ -290,7 +334,9 @@ export default {
         this.show_product_properties ||
         this.show_new_position ||
         this.show_cancel_position ||
-        this.show_document_setting
+        this.show_document_setting ||
+        this.showThirdPpartyIntegrations ||
+        this.showSyncSettings
       );
     },
     isServicePage() {
@@ -311,12 +357,13 @@ export default {
       "show_product_category",
       "show_product_properties",
       "showThirdPpartyIntegrations",
+      "showSyncSettings",
     ]),
     totalCountProducts() {
       return this.$store.state.products.meta.meta.total;
     },
     oneC() {
-      return this.$store.state.account.account?.config?.g_enabled;
+      return this.$store.state.account.account?.g_install;
     },
     ref_main() {
       return this.$refs.main;
@@ -356,13 +403,17 @@ export default {
     selectWH(value) {
       this.selectedWH = value;
     },
-    archive_data() {
+    async archive_data() {
+      const params = {
+        products: [],
+      };
       this.ref_main?.selectedProducts
         .filter((val) => val.value)
         ?.forEach((val) => {
           val.item.is_archive = 1;
-          this.$store.dispatch("update_product", val.item);
+          params.products.push(val.item);
         });
+      await this.$store.dispatch("update_product", params);
       this.ref_main?.changePage(
         this.$store.state.products.meta.meta.current_page
       );
@@ -405,6 +456,9 @@ export default {
     openThirdPpartyIntegrations() {
       this.$store.commit("openCloseThirdPpartyIntegrations", true);
     },
+    openSyncSettings() {
+      this.$store.commit("openCloseSyncSettings", true);
+    },
     open_product_properties() {
       this.$store.commit("open_close_show_product_properties", true);
     },
@@ -424,7 +478,6 @@ export default {
   width: calc(100vw - 80px);
   height: 100%;
   padding: 0 30px;
-
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -442,8 +495,8 @@ export default {
       gap: 12px;
       flex-wrap: wrap;
       .btns_btn {
-        height: 40px;
-        padding: 9px;
+        // height: 30px;
+        padding: calc(0.1 * $vv) calc(0.4 * $vv);
         cursor: pointer;
         text-align: center;
         vertical-align: center;
@@ -451,10 +504,10 @@ export default {
         border: 1px solid #1b3546;
         border-radius: 4px;
         color: #1b3546;
-        background: white;
+        background: transparent;
 
         transition: all 0.15s ease-out;
-        @include font(400, 18px, 22px);
+        @include font(400, 18px);
       }
       .btns_btn:hover {
         border-color: #396f93;
@@ -471,6 +524,66 @@ export default {
     }
     .whs {
       margin-top: 14px;
+      display: flex;
+      flex-direction: row;
+      width: 80%;
+      .arrow {
+        margin-top: 20px;
+        cursor: pointer;
+        width: 32px;
+        height: 24px;
+        @include bg_image("@/assets/arrow_select.svg", 50%);
+        transition: transform 0.2s ease-in-out;
+      }
+      .rotate_arrow {
+        transform: rotateX(180deg);
+      }
+    }
+    .whs_full {
+      height: 100% !important;
+    }
+    .radio_btns {
+      height: 40px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      width: 80%;
+      .radio_btn {
+        > input {
+          display: none;
+        }
+        > label {
+          display: inline-block;
+          cursor: pointer;
+          position: relative;
+          padding-left: 25px;
+          margin-right: 0;
+          line-height: 18px;
+          user-select: none;
+          color: #3f3f3f;
+          @include font(400, 16px);
+        }
+        > label:before {
+          content: "";
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          position: absolute;
+          left: 0;
+          bottom: 5px;
+          background: #ffffff;
+          border: 1px solid #c9c9c9;
+          border-radius: 50%;
+          @include bg_image("../assets/Ellipse_2.svg", 0);
+          transition: background-size 0.15s ease-in-out;
+        }
+        > input:checked + label:before {
+          @include bg_image("../assets/Ellipse_2.svg", 40%);
+        }
+      }
     }
   }
 
@@ -478,6 +591,7 @@ export default {
     display: flex;
     flex-direction: row;
     gap: 25px;
+    position: relative;
     .ref {
       display: flex;
       flex-direction: row;
@@ -491,9 +605,14 @@ export default {
         transform: rotate(180deg);
       }
       .ref_2_logo {
-        width: 18px;
-        height: 18px;
-        @include bg_image("../assets/sync.svg");
+        width: 33px;
+        height: 33px;
+        cursor: pointer;
+        transition: all 0.2s ease-out;
+        @include bg_image("../assets/cloud_sync.svg", 67%);
+      }
+      .ref_2_logo_fill {
+        @include bg_image("../assets/cloud_sync_fill.svg", 67%);
       }
     }
     .links {
@@ -503,26 +622,32 @@ export default {
     }
     .settings_btn {
       cursor: pointer;
-      width: 18px;
-      height: 18px;
+      width: 24px;
+      height: 24px;
       border: none;
       background-color: transparent;
       outline: none;
-      @include bg_image("../assets/gear.svg");
+      transition: all 0.15s ease-out;
+      @include bg_image("../assets/gear.svg", 75%);
+    }
+    .settings_btn:hover,
+    .settings_btn_rotate {
+      transform: rotate(90deg) scale(1.1);
     }
     .modal_sync {
       position: absolute !important;
-      top: 41px;
-      right: 72px;
-      width: 237px !important;
+      top: 24px !important;
+      right: 40px !important;
+      width: 400px !important;
       margin: 0 !important;
+      a {
+        padding-bottom: 0 !important;
+      }
     }
     .modal_settings {
-      z-index: 99999;
+      z-index: 999;
       display: flex;
       align-items: center;
-      position: sticky;
-      float: right;
       margin: 20px 10px 0 0;
       flex-direction: column;
       width: 358px;
@@ -530,6 +655,9 @@ export default {
       border-radius: 4px;
       background: white;
       overflow: hidden;
+      position: absolute;
+      top: 8px;
+      right: 12px;
       a {
         display: flex;
         justify-content: center;
@@ -561,7 +689,7 @@ export default {
   .filters {
     display: flex;
     flex-direction: row;
-    margin-top: 60px;
+    margin-top: 20px;
     justify-content: space-between;
     &_left {
       display: flex;
@@ -572,6 +700,12 @@ export default {
         flex-direction: column;
         gap: 19px;
 
+        input::-webkit-datetime-edit-day-field,
+        input::-webkit-datetime-edit-month-field,
+        input::-webkit-datetime-edit-year-field {
+          background: transparent;
+          color: #3f3f3f;
+        }
         input {
           position: relative;
           width: 112px;
@@ -582,6 +716,9 @@ export default {
           color: #3f3f3f;
           outline: none;
           @include font(400, 16px, 19px);
+        }
+        input:focus {
+          outline: 2px solid #3f3f3f6c;
         }
         input::-webkit-datetime-edit-fields-wrapper {
           display: flex;

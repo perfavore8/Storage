@@ -13,6 +13,7 @@ export default {
     show_document_setting: false,
     show_product_properties: false,
     show_product_category: false,
+    showSyncSettings: false,
     showThirdPpartyIntegrations: false,
   },
   getters: {
@@ -57,6 +58,9 @@ export default {
     },
     showThirdPpartyIntegrations(state) {
       return state.showThirdPpartyIntegrations;
+    },
+    showSyncSettings(state) {
+      return state.showSyncSettings;
     },
   },
   mutations: {
@@ -111,6 +115,9 @@ export default {
     },
     openCloseThirdPpartyIntegrations(state, value) {
       state.showThirdPpartyIntegrations = value;
+    },
+    openCloseSyncSettings(state, value) {
+      state.showSyncSettings = value;
     },
   },
   actions: {},

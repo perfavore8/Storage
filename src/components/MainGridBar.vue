@@ -1,6 +1,6 @@
 <template>
   <tr class="bar_row">
-    <th class="bar_item item" style="min-width: 17px"></th>
+    <th class="bar_item item" style="min-width: 17px" v-if="!oneC"></th>
     <th
       class="bar_item item"
       :style="{
@@ -76,6 +76,9 @@ export default {
     collsCount() {
       return this.tableConfig.length;
     },
+    oneC() {
+      return this.$store.state.account.account?.g_install;
+    },
     width() {
       let arr = [];
       this.fields.forEach((field) => {
@@ -95,6 +98,12 @@ export default {
         if (val[0].split(".")[0] == code && val[1]?.visible) res = true;
       });
       return res;
+    },
+    dropOrder() {
+      this.order = {
+        code: "",
+        prev_order: "",
+      };
     },
     sort(code) {
       const order_values = ["asc", "desc"];

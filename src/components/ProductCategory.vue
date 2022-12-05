@@ -2,6 +2,8 @@
   <div
     class="wrapper"
     :class="{ opened_close_remove_modal: del_modal_config.show }"
+    @click.self="close_product_category()"
+    :style="{ minHeight: height + 'px' }"
   >
     <div class="bgc">
       <div class="container">
@@ -88,6 +90,30 @@
                     :disabled="item.parent_id === 0"
                   />
                 </div>
+                <button
+                  @click="rename(item.id)"
+                  v-if="
+                    !all_old?.name?.includes(item.name) &&
+                    all_old?.id?.includes(item.id)
+                  "
+                  class="btns"
+                  @mouseenter="
+                    hovered_category = { id: item.id, type: 'apply' }
+                  "
+                  @mouseleave="target_hovered_category = null"
+                  :ref="
+                    (el) =>
+                      item.id === hovered_category?.id &&
+                      hovered_category.type == 'apply'
+                        ? (target_hovered_category = el)
+                        : null
+                  "
+                >
+                  <div
+                    class="btn"
+                    :class="{ apply: !confirm, confirm: confirm }"
+                  ></div>
+                </button>
                 <button
                   @click="prevname(item.id)"
                   v-if="
@@ -189,13 +215,15 @@ export default {
       target_hovered_category: null,
       all_old: {},
       isDragged: null,
+      confirm: false,
       del_modal_config: {
         show: false,
         id: null,
         level: null,
       },
       hovered_category_text: {
-        name: "Для изменеия названия категории нажмите Enter",
+        name: "Изменение названия категории",
+        apply: "Сохраняет название категории",
         prevname: "Возвращает изначальное название",
         delete: "Удаление категории",
         add: "Добавлние новой подкатегории",
@@ -208,6 +236,9 @@ export default {
       .then(() => this.get_all_old());
   },
   computed: {
+    height() {
+      return document.documentElement.scrollHeight;
+    },
     copy_fields_properties() {
       return this.$store.state.categories.fields_properties;
     },
@@ -262,7 +293,7 @@ export default {
         this.reset_fields_cat_name();
       }
     },
-    rename(id) {
+    async rename(id) {
       const item = [...this.copy_fields_properties].filter(
         (val) => val.id === id
       )[0];
@@ -271,7 +302,13 @@ export default {
         parent_id: "",
         name: item.name,
       };
-      this.$store.dispatch("update_fields_properties", params);
+      await this.$store.dispatch("update_fields_properties", params);
+
+      this.confirm = true;
+      setTimeout(() => {
+        this.confirm = false;
+        this.get_all_old();
+      }, 1000);
     },
     prevname(id) {
       this.$store.state.categories.fields_properties.map((val) => {
@@ -326,6 +363,8 @@ export default {
   pointer-events: all;
   z-index: 1000;
   width: 100%;
+  height: max-content;
+  min-height: 100vh;
   position: absolute;
   top: 0;
   left: 0;
@@ -397,7 +436,10 @@ export default {
           }
           .btns {
             padding: 0.25rem;
-            margin-left: 4px;
+            margin-left: 8px;
+            height: fit-content;
+            width: fit-content;
+            align-self: center;
             background-color: transparent;
             border: none;
             outline: none;
@@ -457,29 +499,54 @@ export default {
             width: 2rem;
             height: 2rem;
             background-color: transparent;
-            border: 3px solid;
           }
           .rename {
             // border-color: #5f676d;
-            border-radius: 1rem;
+            // border-radius: 1rem;
             width: 1rem;
             height: 1rem;
             position: relative;
             top: 1px;
-            transform: scale(1.17);
+            transform: scale(1.8);
             align-self: center;
             border: none;
-            @include bg_image("@/assets/circular_arrow.svg");
+            @include bg_image("@/assets/undo.svg", 100% 90%);
             transition: all 0.2s ease-out;
           }
           .rename:active {
             transform: rotate(-90deg);
           }
+          .apply {
+            margin-left: 4px;
+            border-radius: 1rem;
+            width: 1rem;
+            height: 1rem;
+            position: relative;
+            top: 1px;
+            transform: scale(1.6);
+            align-self: center;
+            border: none;
+            @include bg_image("@/assets/download.svg");
+            transition: all 0.2s ease-out;
+          }
+          .confirm {
+            margin-left: 4px;
+            border-radius: 1rem;
+            width: 1rem;
+            height: 1rem;
+            position: relative;
+            top: 1px;
+            transform: scale(1.6);
+            align-self: center;
+            border: none;
+            @include bg_image("@/assets/download_done.svg");
+            transition: all 0.2s ease-out;
+          }
           .remove {
-            @include bg_image("@/assets/delete_circle.svg", 94%);
+            @include bg_image("@/assets/cross_red.svg", 70%);
           }
           .add {
-            @include bg_image("@/assets/add_circle.svg");
+            @include bg_image("@/assets/plus_green.svg", 70%);
           }
         }
         .item:first-child {
@@ -501,14 +568,10 @@ export default {
   }
 }
 .input {
-  height: 20px;
-  padding: 6px 12px;
   background-color: white;
   border: none;
   border-bottom: 1px solid #ced4da;
   appearance: none;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  @include font(400, 16px, 20px);
 }
 .input:focus {
   color: #212529;

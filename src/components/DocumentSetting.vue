@@ -6,6 +6,7 @@
     @close="close_add_new"
     @save_new_doc="save_new_doc"
     @save_cur_doc="save_cur_doc"
+    :style="{ minHeight: height + 'px' }"
   >
     <template v-slot:title>
       <span v-if="selected_doc_id === null">
@@ -20,14 +21,25 @@
     v-if="showFields"
     @close="close_fields"
   ></document-setting-fields>
-  <div class="app" ref="app" @click="show_settings ? close_settings() : null">
+  <div
+    class="app"
+    ref="app"
+    @click="show_settings ? close_settings() : null"
+    @click.self="close()"
+  >
     <div class="container">
       <div class="header">
         <div class="left">
           <div class="title">Настройки документов</div>
-          <div class="autorization">
-            Вы авторизированы в сервисе Google Drive как "{{ name }}".
-            <button>Выйти</button>
+          <div class="autorization" v-if="account.is_google_auth">
+            Вы авторизированы в сервисе Google Drive как "{{
+              account.google_user_name
+            }}".
+            <button @click="unAutorization()">Выйти</button>
+          </div>
+          <div class="autorization" v-else>
+            Вы не авторизированы в сервисе Google Drive
+            <button @click="autorization()">Войти</button>
           </div>
         </div>
         <div class="right">
@@ -168,16 +180,54 @@ export default {
     };
   },
   computed: {
+    height() {
+      return document.documentElement.scrollHeight;
+    },
     documents_templates() {
       return this.$store.state.documents.templates;
+    },
+    account() {
+      return this.$store.state.account.account;
+    },
+    leadFieldsList() {
+      const list = [];
+      Object.entries(this.$store.state.account.leadFieldsList).map((val) => {
+        const arr = [];
+        Object.entries(val[1].fields).forEach((stat) =>
+          arr.push({ name: stat[1], value: stat[0] })
+        );
+        val[1].fields = arr;
+        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
+        val[1].selected = { name: "Не выбрано", value: -1 };
+        list.push({ value: val[0], ...val[1] });
+      });
+      return list;
     },
   },
   async mounted() {
     await this.$store.dispatch("get_documents");
+    await this.$store.dispatch("get_account");
+    await this.$store.dispatch("getLeadFieldsList");
+    this.copyLeadFieldsList = this.leadFieldsList;
     this.set_lead_fields_options();
     this.set_contact_name_type_options();
   },
   methods: {
+    async autorization() {
+      let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=450,height=600,left=500,top=200`;
+      const url = await this.$store.dispatch("getGoogleAuthUrl");
+      const windowAutorization = window.open(url, "Авторизация Google", params);
+      const interval = setInterval(() => {
+        if (windowAutorization.closed) {
+          clearInterval(interval);
+          this.$store.dispatch("get_account");
+        }
+      }, 1000);
+    },
+    async unAutorization() {
+      await this.$store.dispatch("googleLogOut");
+      this.$store.dispatch("get_account");
+    },
     save() {
       this.$store.dispatch("update_account", {
         field_docs: this.lead_fields.value,
@@ -185,21 +235,16 @@ export default {
       });
     },
     set_lead_fields_options() {
-      const fields = Object.entries(
-        this.$store.state.documents.config.lead_fields
-      );
-      fields.forEach((val) => {
-        const optgroup = val[0];
+      this.lead_fields_options.push({ name: "Не выбрано", value: -1 });
+      this.copyLeadFieldsList.forEach((val) => {
+        const optgroup = val.name;
         this.lead_fields_options.push({ name: optgroup, value: "optgroup" });
-        const list = Object.entries(val[1]);
-        list.forEach((pip) =>
-          this.lead_fields_options.push({
-            name: pip[1],
-            value: pip[0],
-            optgroup: true,
-          })
+        const list = val.fields.splice(1, 999);
+        list.forEach((item) =>
+          this.lead_fields_options.push({ ...item, optgroup: true })
         );
       });
+
       this.lead_fields_options.forEach((val) =>
         val.value == this.$store.state.documents.config.field_docs
           ? (this.lead_fields = val)
@@ -279,6 +324,8 @@ export default {
   pointer-events: all;
   z-index: 50;
   width: 100%;
+  height: max-content;
+  min-height: 100vh;
   position: absolute;
   top: 0;
   left: 0;

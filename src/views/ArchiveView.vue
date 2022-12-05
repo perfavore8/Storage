@@ -17,7 +17,7 @@
       <div class="top">
         <p>Найдено: {{ coun_archive }}</p>
       </div>
-      <archive-grid></archive-grid>
+      <archive-grid class="grid"></archive-grid>
     </div>
   </div>
 </template>
@@ -67,8 +67,7 @@ export default {
     gap: 12px;
     flex-wrap: wrap;
     .btns_btn {
-      height: 40px;
-      padding: 9px;
+      padding: calc(0.1 * $vv) calc(0.4 * $vv);
       cursor: pointer;
       text-align: center;
       vertical-align: center;
@@ -76,10 +75,10 @@ export default {
       border: 1px solid #1b3546;
       border-radius: 4px;
       color: #1b3546;
-      background: white;
+      background: transparent;
 
       transition: all 0.15s ease-out;
-      @include font(400, 18px, 22px);
+      @include font(400, 18px);
     }
     .btns_btn:hover {
       border-color: #396f93;
