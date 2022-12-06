@@ -38,12 +38,20 @@
         </div>
         <div class="item">
           <img class="icon" src="@/assets/lo.jpg" />
-          <a><button class="btn btn_dark_blue">Установить</button></a>
+          <a
+            href="https://www.amocrm.ru/oauth/?client_id=a4864c29-6b9b-470b-bb0e-9a1c22496087"
+            target="blank"
+            ><button class="btn btn_dark_blue">Установить</button></a
+          >
           <small>Бесплатное дополнение</small>
         </div>
         <div class="item">
           <img class="icon" src="@/assets/re.jpg" />
-          <a><button class="btn btn_dark_blue">Установить</button></a>
+          <a
+            href="https://www.amocrm.ru/oauth/?client_id=47855e7f-c170-44b3-8d95-a3fe357d2cc7"
+            target="blank"
+            ><button class="btn btn_dark_blue">Установить</button></a
+          >
           <small>Бесплатное дополнение</small>
         </div>
         <div class="item">
