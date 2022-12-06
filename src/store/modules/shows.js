@@ -15,6 +15,7 @@ export default {
     show_product_category: false,
     showSyncSettings: false,
     showThirdPpartyIntegrations: false,
+    showEditPrice: false,
   },
   getters: {
     show_edit_modal(state) {
@@ -61,6 +62,9 @@ export default {
     },
     showSyncSettings(state) {
       return state.showSyncSettings;
+    },
+    showEditPrice(state) {
+      return state.showEditPrice;
     },
   },
   mutations: {
@@ -118,6 +122,9 @@ export default {
     },
     openCloseSyncSettings(state, value) {
       state.showSyncSettings = value;
+    },
+    openCloseEditPrice(state, value) {
+      state.showEditPrice = value;
     },
   },
   actions: {},

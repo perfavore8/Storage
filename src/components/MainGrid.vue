@@ -3,6 +3,13 @@
     <teleport to="body">
       <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
     </teleport>
+    <teleport to="body">
+      <GridEditPrice
+        v-if="showEditPrice"
+        :editPrice="editPrice"
+        @close="get_products()"
+      />
+    </teleport>
     <label v-if="products.length == 0" class="text"> Ничего не найдено </label>
     <div class="main" v-else>
       <table class="table" :class="{ blur: show_edit_modal }" ref="table">
@@ -59,6 +66,20 @@
                     }}
                   </template>
                 </span>
+                <template v-if="row.fields[item[0].split('.')[0]]">
+                  &nbsp;
+                  <button
+                    class="edit_icon"
+                    style="width: 16px; heigth: 16px"
+                    v-if="
+                      item[0].split('.')[1] == 'cost' &&
+                      row.fields[item[0].split('.')[0]][
+                        item[0].split('.')[1]
+                      ] != undefined
+                    "
+                    @click="openGridEditPrice(row, item[0].split('.')[0])"
+                  ></button>
+                </template>
               </td>
             </template>
             <td class="item">
@@ -87,6 +108,7 @@ import EditItem from "@/components/EditItem.vue";
 import GridBottom from "@/components/GridBottom.vue";
 import MainGridFilters from "@/components/MainGridFilters.vue";
 import MainGridBar from "@/components/MainGridBar.vue";
+import GridEditPrice from "@/components/GridEditPrice.vue";
 import { mapGetters } from "vuex";
 import { nextTick } from "process";
 export default {
@@ -96,6 +118,7 @@ export default {
     GridBottom,
     MainGridFilters,
     MainGridBar,
+    GridEditPrice,
   },
   props: {
     selectedWH: {
@@ -110,6 +133,7 @@ export default {
       selectedProducts: [],
       edit_data: {},
       showArrow: false,
+      editPrice: {},
     };
   },
   created() {
@@ -168,6 +192,9 @@ export default {
     show_buttons() {
       const value = this.selectedProducts.filter((val) => val.value).length > 0;
       return value;
+    },
+    showEditPrice() {
+      return this.$store.state.shows.showEditPrice;
     },
     products() {
       return this.$store.state.products.products;
@@ -255,6 +282,15 @@ export default {
       this.edit_data = { ...row };
       this.$store.commit("open_edit_modal", row.fields.category);
     },
+    openGridEditPrice(item, code) {
+      this.editPrice = {
+        name: item.fields.name,
+        price: item.fields[code].cost,
+        product_id: item.id,
+        price_field_code: code,
+      };
+      this.$store.commit("openCloseEditPrice", true);
+    },
     sort(code, order) {
       const params = {
         page: this.meta.current_page,
@@ -281,6 +317,9 @@ export default {
   min-width: 50px;
 }
 .edit_icon {
+  border: none;
+  outline: none;
+  background-color: transparent;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -300,7 +339,7 @@ export default {
   }
 }
 .main {
-  overflow-x: scroll;
+  // overflow-x: scroll;
   width: calc(100% + 42px);
 }
 .item:first-child {

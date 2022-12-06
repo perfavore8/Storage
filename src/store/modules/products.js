@@ -70,9 +70,8 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      const json = await res.json();
-      console.log("setPrice", json);
-      return json;
+      console.log("setPrice", res);
+      return res;
     },
     async add_product(context, params) {
       const url = BaseURL + "product/add";
