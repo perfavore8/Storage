@@ -77,7 +77,7 @@ export default {
       return this.tableConfig.length;
     },
     oneC() {
-      return this.$store.state.account.account?.g_install;
+      return this.$store.state.account.account?.config?.g_enabled;
     },
     width() {
       let arr = [];
