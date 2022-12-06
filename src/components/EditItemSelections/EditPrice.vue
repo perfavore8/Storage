@@ -6,7 +6,7 @@
         :item="'Значение'"
         :selected_option="copy_selected_option?.cost"
         :idx="idx + 'cost'"
-        :disabled="disabled"
+        :disabled="true"
         @change_value="(option) => option_select(option, 'cost')"
       />
       <edit-selector

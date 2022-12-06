@@ -33,13 +33,13 @@
     <div class="content">
       <div v-if="selectedTab == 1">
         <div class="autorization" v-if="account?.config?.g_enabled">
-          Genesis активирован.
+          Genezis активирован.
           <button class="btn btn_yellow" @click="unAutorization()">
             Выключить
           </button>
         </div>
         <div class="autorization" v-else>
-          Genesis не активирован.
+          Genezis не активирован.
           <button class="btn btn_yellow" @click="autorization()">
             Включить
           </button>
@@ -47,7 +47,7 @@
       </div>
       <div v-show="selectedTab == 2">
         <iframe
-          name="genesis"
+          name="genezis"
           frameborder="0"
           class="frame"
           :src="account?.g_url"
@@ -77,11 +77,11 @@ export default {
   },
   methods: {
     async unAutorization() {
-      await this.$store.dispatch("genesisEnableDisable", "disable");
+      await this.$store.dispatch("genezisEnableDisable", "disable");
       this.$store.dispatch("get_account");
     },
     async autorization() {
-      await this.$store.dispatch("genesisEnableDisable", "enable");
+      await this.$store.dispatch("genezisEnableDisable", "enable");
       this.$store.dispatch("get_account");
     },
     route(page_name) {

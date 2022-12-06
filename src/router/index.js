@@ -28,9 +28,9 @@ const routes = [
     component: () => import("../views/InstructionsView.vue"),
   },
   {
-    path: "/genesis",
-    name: "genesis",
-    component: () => import("../views/GenesisView.vue"),
+    path: "/genezis",
+    name: "genezis",
+    component: () => import("../views/genezisView.vue"),
   },
 ];
 

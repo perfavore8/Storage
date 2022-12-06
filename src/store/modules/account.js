@@ -79,7 +79,7 @@ export default {
       const json = await res.json();
       return json.url;
     },
-    async genesisEnableDisable(context, param) {
+    async genezisEnableDisable(context, param) {
       const url = BaseURL + "account/genezis-" + param;
       const res = await fetch(url, {
         headers: {
