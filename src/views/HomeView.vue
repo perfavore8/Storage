@@ -186,7 +186,8 @@
           show_product_properties ||
           show_document_setting ||
           showThirdPpartyIntegrations ||
-          showSyncSettings,
+          showSyncSettings ||
+          showEditPrice,
       }"
     >
       <div class="filters" :class="{ blur: show_edit_modal }">
@@ -336,7 +337,8 @@ export default {
         this.show_cancel_position ||
         this.show_document_setting ||
         this.showThirdPpartyIntegrations ||
-        this.showSyncSettings
+        this.showSyncSettings ||
+        this.showEditPrice
       );
     },
     isServicePage() {
@@ -358,6 +360,7 @@ export default {
       "show_product_properties",
       "showThirdPpartyIntegrations",
       "showSyncSettings",
+      "showEditPrice",
     ]),
     totalCountProducts() {
       return this.$store.state.products.meta.meta.total;
