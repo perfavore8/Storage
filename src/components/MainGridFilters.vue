@@ -94,6 +94,14 @@ export default {
   mounted() {
     this.feelFilters();
   },
+  watch: {
+    sortedFields: {
+      handler: function () {
+        this.feelFilters();
+      },
+      deep: true,
+    },
+  },
   methods: {
     clearFilters() {
       this.feelFilters();
