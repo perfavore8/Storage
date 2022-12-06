@@ -60,6 +60,20 @@ export default {
       console.log("update_product", json);
       return json;
     },
+    async setPrice(context, params) {
+      const url = BaseURL + "product/set-price";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      console.log("setPrice", json);
+      return json;
+    },
     async add_product(context, params) {
       const url = BaseURL + "product/add";
       const res = await fetch(url, {
