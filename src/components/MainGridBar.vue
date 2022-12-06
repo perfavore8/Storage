@@ -101,13 +101,13 @@ export default {
       };
     },
     sort(code) {
-      if (code.split(".").length > 1) code = code.split(".").join("->");
       const order_values = ["asc", "desc"];
       let new_order = "";
       this.order.code === code && this.order.prev_order == order_values[0]
         ? (new_order = order_values[1])
         : (new_order = order_values[0]);
       this.order = { code: code, prev_order: new_order };
+      if (code.split(".").length > 1) code = code.split(".").join("->");
       this.$emit("sort", code, new_order);
     },
     openTableSettings() {
@@ -152,6 +152,7 @@ export default {
         @include bg_image("@/assets/sort.svg");
         border: none;
         cursor: pointer;
+        transition: all 0.2s ease-out;
         &_up {
           @include bg_image("@/assets/sort_up.svg");
         }
