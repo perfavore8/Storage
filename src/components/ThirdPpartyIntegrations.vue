@@ -13,19 +13,28 @@
       </div>
       <div class="content">
         <div class="item">
-          <img class="icon" src="@/assets/genesis.jpg" />
+          <img
+            class="icon"
+            src="@/assets/genesis.jpg"
+            @click="route('genesis')"
+          />
           <a
             href=" https://www.amocrm.ru/oauth/?state=%7B%22external_source%22:%22gosklad%22%7D&client_id=d9322b36-0001-4269-bb61-976571e8a51a"
             target="blank"
           >
-            <button class="btn btn_dark_blue" :disabled="oneC">
-              {{ oneC ? "Установлено" : "Установить" }}
-            </button></a
-          >
-          <small v-if="!oneC">
+            <button class="btn btn_dark_blue" :disabled="account?.g_install">
+              {{ account?.g_install ? "Установлено" : "Установить" }}
+            </button>
+          </a>
+          <small v-if="!account?.g_install">
             Для интеграции с 1С-Генезис необходимо установить виджет «Генезис:
             1С интеграция»
           </small>
+          <a @click="route('genesis')">
+            <button class="btn btn_dark_blue" :disabled="!account?.g_install">
+              Настройки
+            </button>
+          </a>
         </div>
         <div class="item">
           <img class="icon" src="@/assets/lo.jpg" />
@@ -57,10 +66,16 @@ export default {
       return document.documentElement.scrollHeight;
     },
     oneC() {
-      return this.$store.state.account.account?.g_install;
+      return this.$store.state.account.account?.config?.g_enabled;
+    },
+    account() {
+      return this.$store.state.account.account;
     },
   },
   methods: {
+    route(page_name) {
+      this.$router.push("/" + page_name);
+    },
     close() {
       this.$store.commit("openCloseThirdPpartyIntegrations", false);
     },
