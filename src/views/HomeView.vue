@@ -102,7 +102,7 @@
           <div class="ref_1_logo"></div>
           <a class="links">Выгрузка в эксель</a>
         </div> -->
-        <div class="ref">
+        <div class="ref" v-if="!oneC">
           <div
             class="ref_2_logo"
             :class="{ ref_2_logo_fill: show_sync }"
@@ -146,7 +146,7 @@
                 Свойства товаров
               </div>
             </a>
-            <a>
+            <a v-if="!oneC">
               <div class="modal_container" @click="openSyncSettings()">
                 Настройки синхронизации товаров
               </div>
@@ -363,7 +363,7 @@ export default {
       return this.$store.state.products.meta.meta.total;
     },
     oneC() {
-      return this.$store.state.account.account?.g_install;
+      return this.$store.state.account.account?.config?.g_enabled;
     },
     ref_main() {
       return this.$refs.main;
