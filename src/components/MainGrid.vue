@@ -284,7 +284,7 @@ export default {
       this.editPrice = {
         name: item.fields.name,
         price:
-          item.field?.[code]?.cost == undefined ? 0 : item.fields[code].cost,
+          item.fields?.[code]?.cost == undefined ? 0 : item.fields[code].cost,
         product_id: item.id,
         price_field_code: code,
       };
