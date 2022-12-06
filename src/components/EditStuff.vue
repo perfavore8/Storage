@@ -22,6 +22,12 @@
                   class="checkbox"
                   id="q1"
                   v-model="copyConfing.allow_add_reserve"
+                  @change="
+                    () =>
+                      copyConfing.allow_add_reserve
+                        ? null
+                        : (copyConfing.allow_add_with_zero_count = false)
+                  "
                 />
                 <label for="q1">
                   Разрешать добавлять товары из резерва в другие сделки
@@ -31,18 +37,8 @@
                 <input
                   type="checkbox"
                   class="checkbox"
-                  id="q2"
-                  v-model="copyConfing.allow_change_price"
-                />
-                <label for="q2">
-                  Изменить цену у товаров в открытых сделках (по умолчанию)
-                </label>
-              </div>
-              <div class="permit">
-                <input
-                  type="checkbox"
-                  class="checkbox"
                   id="q3"
+                  :disabled="!copyConfing.allow_add_reserve"
                   v-model="copyConfing.allow_add_with_zero_count"
                 />
                 <label for="q3">
@@ -259,6 +255,9 @@ export default {
     },
   },
   methods: {
+    log(value) {
+      console.log(value);
+    },
     save() {
       this.$store.dispatch("update_account", this.copyConfing);
       this.close();
