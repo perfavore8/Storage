@@ -19,17 +19,12 @@
           class="bar_item_icon"
           :class="{
             bar_item_icon_up:
-              order.code === field[0].split('.')[0] &&
-              order.prev_order === 'desc',
+              order.code === field[0] && order.prev_order === 'desc',
             bar_item_icon_down:
-              order.code === field[0].split('.')[0] &&
-              order.prev_order === 'asc',
+              order.code === field[0] && order.prev_order === 'asc',
           }"
-          @click="sort(field[0].split('.')[0])"
-          v-if="
-            fields.filter((val) => val.code == field[0].split('.')[0])[0]
-              .table_config.sortable
-          "
+          @click="sort(field[0])"
+          v-if="field[1].sortable"
         ></button>
       </div>
     </th>
@@ -106,6 +101,7 @@ export default {
       };
     },
     sort(code) {
+      if (code.split(".").length > 1) code = code.split(".").join("->");
       const order_values = ["asc", "desc"];
       let new_order = "";
       this.order.code === code && this.order.prev_order == order_values[0]
