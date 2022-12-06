@@ -14,8 +14,13 @@
         <input type="number" class="input" v-model="copyEditPrice.price" />
       </div>
       <div class="footer">
-        <btns-save-close @close="close" @save="accept">
+        <btns-save-close @close="close" :show_save="false">
           <template v-slot:close>Назад</template>
+          <template v-slot:other_btns>
+            <button class="btn btn_dark_blue" @click="accept()">
+              Сохранить
+            </button>
+          </template>
         </btns-save-close>
       </div>
     </div>
@@ -25,9 +30,11 @@
         <button class="btn cross" @click="closeAccept()"></button>
       </div>
       <div class="footer">
-        <btns-save-close @close="dismiss" @save="confirm">
+        <btns-save-close @close="dismiss" :show_save="false">
           <template v-slot:close>Нет</template>
-          <template v-slot:save>Да</template>
+          <template v-slot:other_btns>
+            <button class="btn btn_dark_blue" @click="confirm()">Да</button>
+          </template>
         </btns-save-close>
       </div>
     </div>
