@@ -79,6 +79,16 @@ export default {
       const json = await res.json();
       return json.url;
     },
+    async genesisEnableDisable(context, param) {
+      const url = BaseURL + "account/genezis-" + param;
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      return json.url;
+    },
     async update_config_table(context, params) {
       const url = BaseURL + "account/table-config";
       const res = await fetch(url, {
