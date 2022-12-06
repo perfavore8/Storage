@@ -4,66 +4,70 @@
       <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
     </teleport>
     <label v-if="products.length == 0" class="text"> Ничего не найдено </label>
-    <table class="table" :class="{ blur: show_edit_modal }" v-else ref="table">
-      <thead>
-        <main-grid-bar
-          ref="bar"
-          :fields="all_fields"
-          @sort="sort"
-          :tableConfig="tableConfig"
-          :sortedFields="sortedFields"
-          class="main-grid-bar"
-        />
-        <main-grid-filters
-          ref="filters"
-          :fields="all_fields"
-          :tableConfig="tableConfig"
-          :sortedFields="sortedFields"
-        />
-      </thead>
-      <tbody>
-        <tr class="row" v-for="(row, idx) in products" :key="row.id">
-          <td class="item" v-if="!oneC">
-            <input
-              type="checkbox"
-              class="checkbox"
-              :id="row.id"
-              v-if="selectedProducts[idx] != undefined"
-              v-model="selectedProducts[idx].value"
-              @change="selectedProducts[idx].item = row"
-            />
-            <label :for="row.id"></label>
-          </td>
-          <template v-for="item in sortedFields" :key="item">
-            <td class="item">
-              <span v-if="item[0].split('.').length < 2">
-                {{
-                  item[0] == "category"
-                    ? categories[row.fields[item[0]]]
-                    : row.fields[item[0]]
-                }}
-              </span>
-              <span v-else>
-                <template v-if="row.fields[item[0].split('.')[0]]">
-                  {{
-                    item[0].split(".")[1] == "cost"
-                      ? row.fields[item[0].split(".")[0]][
-                          item[0].split(".")[1]
-                        ] +
-                        " " +
-                        row.fields[item[0].split(".")[0]].currency
-                      : row.fields[item[0].split(".")[0]][item[0].split(".")[1]]
-                  }}
-                </template>
-              </span>
+    <div class="main" v-else>
+      <table class="table" :class="{ blur: show_edit_modal }" ref="table">
+        <thead>
+          <main-grid-bar
+            ref="bar"
+            :fields="all_fields"
+            @sort="sort"
+            :tableConfig="tableConfig"
+            :sortedFields="sortedFields"
+            class="main-grid-bar"
+          />
+          <main-grid-filters
+            ref="filters"
+            :fields="all_fields"
+            :tableConfig="tableConfig"
+            :sortedFields="sortedFields"
+          />
+        </thead>
+        <tbody>
+          <tr class="row" v-for="(row, idx) in products" :key="row.id">
+            <td class="item" v-if="!oneC">
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="row.id"
+                v-if="selectedProducts[idx] != undefined"
+                v-model="selectedProducts[idx].value"
+                @change="selectedProducts[idx].item = row"
+              />
+              <label :for="row.id"></label>
             </td>
-          </template>
-          <td class="item">
-            <div class="edit_icon" @click="open_edit_modal(row)"></div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <template v-for="item in sortedFields" :key="item">
+              <td class="item">
+                <span v-if="item[0].split('.').length < 2">
+                  {{
+                    item[0] == "category"
+                      ? categories[row.fields[item[0]]]
+                      : row.fields[item[0]]
+                  }}
+                </span>
+                <span v-else>
+                  <template v-if="row.fields[item[0].split('.')[0]]">
+                    {{
+                      item[0].split(".")[1] == "cost"
+                        ? row.fields[item[0].split(".")[0]][
+                            item[0].split(".")[1]
+                          ] +
+                          " " +
+                          row.fields[item[0].split(".")[0]].currency
+                        : row.fields[item[0].split(".")[0]][
+                            item[0].split(".")[1]
+                          ]
+                    }}
+                  </template>
+                </span>
+              </td>
+            </template>
+            <td class="item">
+              <div class="edit_icon" @click="open_edit_modal(row)"></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <grid-bottom
       :previous="meta.links.prev != null"
       :next="meta.links.next != null"
@@ -285,14 +289,19 @@ export default {
 .table {
   border-collapse: collapse;
   margin: 0 auto;
-  overflow-x: scroll;
-  width: calc(100% + 42px);
+  // overflow-x: scroll;
+  // width: calc(100% + 42px);
+  width: 100%;
   // height: 550px;
   // display: block;
   .main-grid-bar {
     position: sticky;
     top: -1px;
   }
+}
+.main {
+  overflow-x: scroll;
+  width: calc(100% + 42px);
 }
 .item:first-child {
   width: 17px !important;
