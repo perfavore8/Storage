@@ -268,6 +268,7 @@
           >
             Новая позиция
           </button>
+          <div class="sync_icon" @click="updateProducts()"></div>
         </div>
       </div>
       <div class="grid">
@@ -474,6 +475,11 @@ export default {
     },
     route(page_name) {
       this.$router.push("/" + page_name);
+    },
+    updateProducts() {
+      this.ref_main?.changePage(
+        this.$store.state.products.meta.meta.current_page
+      );
     },
   },
 };
@@ -752,9 +758,23 @@ export default {
       }
     }
     &_right {
+      position: relative;
       display: flex;
       flex-direction: row;
       gap: 18px;
+      .sync_icon {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: 70px;
+        right: 0px;
+        transition: all 0.2s ease-out;
+        @include bg_image("@/assets/sync.svg");
+      }
+      .sync_icon:hover {
+        transform: rotate(90deg);
+      }
       .btns {
         display: flex;
         flex-direction: row;
