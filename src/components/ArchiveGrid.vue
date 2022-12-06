@@ -105,9 +105,13 @@ export default {
       if (!this.isLoading) {
         this.isLoading = true;
         const res = {
-          id: item.id,
-          fields: item.fields,
-          is_archive: 0,
+          products: [
+            {
+              id: item.id,
+              fields: item.fields,
+              is_archive: 0,
+            },
+          ],
         };
         await this.$store.dispatch("update_product", res);
         await this.$store.dispatch("get_products", { is_archive: 1 });
