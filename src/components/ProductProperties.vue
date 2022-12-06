@@ -253,6 +253,7 @@ export default {
       copy_fields: [],
       copy_fields_properties: [],
       selected_fields_properties: [],
+      new_fields: [],
       data_fields_properties: {
         items: null,
         selected: { name: "Выбор подкатегории", value: -1 },
