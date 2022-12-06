@@ -30,7 +30,7 @@ const routes = [
   {
     path: "/genezis",
     name: "genezis",
-    component: () => import("../views/genezisView.vue"),
+    component: () => import("../views/GenezisView.vue"),
   },
 ];
 
