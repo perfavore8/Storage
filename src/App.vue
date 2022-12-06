@@ -6,6 +6,8 @@
 body {
   margin: 0;
   box-sizing: border-box;
+  width: fit-content;
+  overflow: auto;
 }
 *::-webkit-scrollbar {
   width: 8px;

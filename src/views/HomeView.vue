@@ -109,18 +109,20 @@
             @click.stop="open_close_sync()"
           ></div>
           <transition name="modal">
-            <div v-if="show_sync" class="modal_settings modal_sync">
-              <a>
-                <div class="modal_container">
-                  Синхронизировать товары amoCRM -> Склад
-                </div>
-              </a>
-              <a>
-                <div class="modal_container">
-                  Синхронизировать товары Склад -> amoCRM
-                </div>
-              </a>
-            </div>
+            <teleport to="body">
+              <div v-if="show_sync" class="modal_settings modal_sync">
+                <a>
+                  <div class="modal_container">
+                    Синхронизировать товары amoCRM -> Склад
+                  </div>
+                </a>
+                <a>
+                  <div class="modal_container">
+                    Синхронизировать товары Склад -> amoCRM
+                  </div>
+                </a>
+              </div>
+            </teleport>
           </transition>
         </div>
         <button
@@ -129,48 +131,50 @@
           @click.stop="open_close_settings()"
         ></button>
         <transition name="modal">
-          <div v-show="show_settings" class="modal_settings">
-            <a>
-              <div class="modal_container" @click="open_edit_stuff()">
-                Общие настройки
-              </div>
-            </a>
-            <a>
-              <div class="modal_container" @click="open_product_category()">
-                Категории товаров
-              </div>
-            </a>
+          <teleport to="body">
+            <div v-show="show_settings" class="modal_settings">
+              <a>
+                <div class="modal_container" @click="open_edit_stuff()">
+                  Общие настройки
+                </div>
+              </a>
+              <a>
+                <div class="modal_container" @click="open_product_category()">
+                  Категории товаров
+                </div>
+              </a>
 
-            <a>
-              <div class="modal_container" @click="open_product_properties()">
-                Свойства товаров
-              </div>
-            </a>
-            <a v-if="!oneC">
-              <div class="modal_container" @click="openSyncSettings()">
-                Настройки синхронизации товаров
-              </div>
-            </a>
-            <a>
-              <div
-                class="modal_container"
-                @click="open_close_show_document_setting(true)"
-              >
-                Документы
-              </div>
-            </a>
-            <a>
-              <div
-                class="modal_container"
-                @click="openThirdPpartyIntegrations()"
-              >
-                Интеграции
-              </div>
-            </a>
-            <a>
-              <div class="modal_container">Настройки аккаунта</div>
-            </a>
-          </div>
+              <a>
+                <div class="modal_container" @click="open_product_properties()">
+                  Свойства товаров
+                </div>
+              </a>
+              <a v-if="!oneC">
+                <div class="modal_container" @click="openSyncSettings()">
+                  Настройки синхронизации товаров
+                </div>
+              </a>
+              <a>
+                <div
+                  class="modal_container"
+                  @click="open_close_show_document_setting(true)"
+                >
+                  Документы
+                </div>
+              </a>
+              <a>
+                <div
+                  class="modal_container"
+                  @click="openThirdPpartyIntegrations()"
+                >
+                  Интеграции
+                </div>
+              </a>
+              <a>
+                <div class="modal_container">Настройки аккаунта</div>
+              </a>
+            </div>
+          </teleport>
         </transition>
       </div>
     </div>
@@ -478,9 +482,9 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: calc(100vw - 80px);
+  // width: calc(100vw - 80px);
   height: 100%;
-  padding: 0 30px;
+  // padding: 0 30px;
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -491,6 +495,10 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: sticky;
+  padding: 0 30px;
+  left: 0;
+  width: calc(100vw - 80px);
   &_left {
     .btns {
       display: flex;
@@ -637,55 +645,6 @@ export default {
     .settings_btn_rotate {
       transform: rotate(90deg) scale(1.1);
     }
-    .modal_sync {
-      position: absolute !important;
-      top: 24px !important;
-      right: 40px !important;
-      width: 400px !important;
-      margin: 0 !important;
-      a {
-        padding-bottom: 0 !important;
-      }
-    }
-    .modal_settings {
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      margin: 20px 10px 0 0;
-      flex-direction: column;
-      width: 358px;
-      border: 1px solid #c9c9c9;
-      border-radius: 4px;
-      background: white;
-      overflow: hidden;
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      a {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        transition: background-color 0.15s ease-in-out;
-      }
-      a:hover {
-        background-color: #f5f5f5;
-      }
-    }
-    .modal_settings:last-child {
-      a {
-        padding-bottom: 10px;
-      }
-    }
-    .modal_container {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      text-align: left;
-      height: 30px;
-      cursor: pointer;
-      padding: 5px 15px;
-      @include font(400, 16px, 22px);
-    }
   }
 }
 .wrapper {
@@ -694,6 +653,10 @@ export default {
     flex-direction: row;
     margin-top: 20px;
     justify-content: space-between;
+    position: sticky;
+    padding: 0 30px;
+    left: 0;
+    width: calc(100vw - 80px);
     &_left {
       display: flex;
       flex-direction: row;
@@ -866,6 +829,9 @@ export default {
     }
   }
 }
+.grid {
+  margin-left: 30px;
+}
 .button {
   cursor: pointer;
   color: #ffffff;
@@ -953,5 +919,55 @@ export default {
 .modal_window-enter-from,
 .modal_window-leave-to {
   opacity: 0;
+}
+
+.modal_sync {
+  position: absolute !important;
+  top: 44px !important;
+  right: 82px !important;
+  width: 400px !important;
+  margin: 0 !important;
+  z-index: 99999;
+  a {
+    padding-bottom: 0 !important;
+  }
+}
+.modal_settings {
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 358px;
+  border: 1px solid #c9c9c9;
+  border-radius: 4px;
+  background: white;
+  overflow: hidden;
+  position: absolute;
+  top: 48px;
+  right: 64px;
+  a {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    transition: background-color 0.15s ease-in-out;
+  }
+  a:hover {
+    background-color: #f5f5f5;
+  }
+}
+.modal_settings:last-child {
+  a {
+    padding-bottom: 10px;
+  }
+}
+.modal_container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  height: 30px;
+  cursor: pointer;
+  padding: 5px 15px;
+  @include font(400, 16px, 22px);
 }
 </style>

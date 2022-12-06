@@ -338,8 +338,7 @@ export default {
   }
 }
 .main {
-  // overflow-x: scroll;
-  width: calc(100% + 42px);
+  width: 100%;
 }
 .item:first-child {
   width: 17px !important;
