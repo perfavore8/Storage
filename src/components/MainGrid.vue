@@ -52,34 +52,32 @@
                   }}
                 </span>
                 <span v-else>
-                  <template v-if="row.fields[item[0].split('.')[0]]">
-                    {{
-                      item[0].split(".")[1] == "cost"
-                        ? row.fields[item[0].split(".")[0]][
+                  {{
+                    item[0].split(".")[1] == "cost"
+                      ? row.fields?.[item[0].split(".")[0]]?.[
+                          item[0].split(".")[1]
+                        ] === undefined
+                        ? "0"
+                        : row.fields?.[item[0].split(".")[0]]?.[
                             item[0].split(".")[1]
                           ] +
                           " " +
-                          row.fields[item[0].split(".")[0]].currency
-                        : row.fields[item[0].split(".")[0]][
-                            item[0].split(".")[1]
-                          ]
-                    }}
-                  </template>
+                          (row.fields?.[item[0].split(".")[0]]?.currency ==
+                          undefined
+                            ? ""
+                            : row.fields?.[item[0].split(".")[0]]?.currency)
+                      : row.fields?.[item[0].split(".")[0]]?.[
+                          item[0].split(".")[1]
+                        ]
+                  }}
                 </span>
-                <template v-if="row.fields[item[0].split('.')[0]]">
-                  &nbsp;
-                  <button
-                    class="edit_icon"
-                    style="width: 16px; heigth: 16px"
-                    v-if="
-                      item[0].split('.')[1] == 'cost' &&
-                      row.fields[item[0].split('.')[0]][
-                        item[0].split('.')[1]
-                      ] != undefined
-                    "
-                    @click="openGridEditPrice(row, item[0].split('.')[0])"
-                  ></button>
-                </template>
+                &nbsp;
+                <button
+                  class="edit_icon"
+                  style="width: 16px; heigth: 16px"
+                  v-if="item[0].split('.')[1] == 'cost'"
+                  @click="openGridEditPrice(row, item[0].split('.')[0])"
+                ></button>
               </td>
             </template>
             <td class="item">
@@ -285,7 +283,8 @@ export default {
     openGridEditPrice(item, code) {
       this.editPrice = {
         name: item.fields.name,
-        price: item.fields[code].cost,
+        price:
+          item.field?.[code]?.cost == undefined ? 0 : item.fields[code].cost,
         product_id: item.id,
         price_field_code: code,
       };
