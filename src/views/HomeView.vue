@@ -39,12 +39,12 @@
     </transition>
     <transition name="modal_window">
       <div v-if="show_new_position" class="new_position">
-        <new-position :currentItems="currentItems" @close="dropCurrentItems" />
+        <new-position :currentItems="currentItems" @close="updateProducts" />
       </div>
     </transition>
     <transition name="modal_window">
       <div v-if="show_cancel_position" class="cancel_position">
-        <cancel-position />
+        <cancel-position :currentItems="currentItems" @close="updateProducts" />
       </div>
     </transition>
     <transition name="modal_window">
@@ -132,7 +132,11 @@
         ></button>
         <transition name="modal">
           <teleport to="body">
-            <div v-show="show_settings" class="modal_settings">
+            <div
+              v-show="show_settings"
+              class="modal_settings"
+              @click="close_settings()"
+            >
               <a>
                 <div class="modal_container" @click="open_edit_stuff()">
                   Общие настройки
@@ -235,7 +239,7 @@
                 </button>
                 <button
                   class="button button_3 smallBtn"
-                  @click="open_close_cancel_position(true)"
+                  @click="openCancelPosition()"
                 >
                   Списать
                 </button>
@@ -427,12 +431,22 @@ export default {
       );
     },
     addCurrentProducts() {
-      this.currentItems = [
-        ...this.ref_main?.selectedProducts
-          .filter((val) => val.value)
-          .map((val) => val.item),
-      ];
+      const arr = JSON.parse(
+        JSON.stringify(
+          this.ref_main?.selectedProducts.filter((val) => val.value)
+        )
+      );
+      this.currentItems = [...arr.map((val) => val.item)];
       this.open_close_new_position(true);
+    },
+    openCancelPosition() {
+      const arr = JSON.parse(
+        JSON.stringify(
+          this.ref_main?.selectedProducts.filter((val) => val.value)
+        )
+      );
+      this.currentItems = [...arr.map((val) => val.item)];
+      this.open_close_cancel_position(true);
     },
     dropCurrentItems() {
       this.currentItems = [];
@@ -480,6 +494,8 @@ export default {
       this.ref_main?.changePage(
         this.$store.state.products.meta.meta.current_page
       );
+      this.ref_main?.setSelectedProducts();
+      this.dropCurrentItems();
     },
   },
 };
