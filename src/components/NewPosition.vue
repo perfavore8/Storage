@@ -254,7 +254,9 @@
           </tbody>
         </table>
         <div class="content_footer">
-          <button class="add_new_button" @click="push_new_item()">+</button>
+          <button class="add_new_button" @click="push_new_item()" v-if="isNew">
+            +
+          </button>
         </div>
       </div>
       <teleport
@@ -337,6 +339,9 @@ export default {
     fields() {
       return this.$store.state.fields.all_fields;
     },
+    isNew() {
+      return !this.currentItems.length;
+    },
   },
   async mounted() {
     await this.$store.dispatch("get_fields_properties");
@@ -404,6 +409,7 @@ export default {
       this.currentItems.forEach((val) => {
         const item = {
           new: false,
+          id: val.id,
           type: { name: "Товар", value: 1 },
           article: val.fields.article,
           name: val.fields.name,
@@ -491,7 +497,7 @@ export default {
       this.$emit("close");
       this.$store.commit("open_close_new_position", false);
     },
-    save() {
+    async save() {
       const params = { products: [] };
       this.new_items.forEach((val) => {
         const item = {
@@ -507,15 +513,49 @@ export default {
             category: val.category.value,
           },
         };
+        if (!this.isNew) item.id = val.id;
         item.fields[val.wh.value] = {
           count: val.count,
           reserve: 0,
         };
         item.fields[val.price_cat.value] = val.price;
         params.products.push(item);
-        console.log(item);
       });
-      this.$store.dispatch("add_product", params);
+      if (this.isNew) {
+        await this.$store.dispatch("add_product", params);
+      } else {
+        params.products.map((val) => {
+          // console.log(val);
+          // console.log(
+          //   this.new_items.filter((value) => value.name == val.fields.name)[0]
+          //     .count,
+          //   this.currentItems.filter(
+          //     (value) => value.fields.name == val.fields.name
+          //   )[0].fields[
+          //     this.new_items.filter((value) => value.name == val.fields.name)[0]
+          //       .wh.value
+          //   ].count
+          // );
+          val.fields[
+            this.new_items.filter(
+              (value) => value.name == val.fields.name
+            )[0].wh.value
+          ] = {
+            count:
+              this.new_items.filter((value) => value.name == val.fields.name)[0]
+                .count +
+              this.currentItems.filter(
+                (value) => value.fields.name == val.fields.name
+              )[0].fields[
+                this.new_items.filter(
+                  (value) => value.name == val.fields.name
+                )[0].wh.value
+              ].count,
+            reserve: 0,
+          };
+        });
+        await this.$store.dispatch("update_product", params);
+      }
       this.close();
     },
   },
