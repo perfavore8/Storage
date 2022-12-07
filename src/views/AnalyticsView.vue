@@ -41,7 +41,7 @@
         @updateOpenedRows="updateOpenedRows"
         @updateSelectedReport="updateSelectedReport"
       />
-      <grid-bottom
+      <!-- <grid-bottom
         :previous="reports.prev_page_url != null"
         :next="reports.next_page_url != null"
         :page="reports.current_page"
@@ -49,7 +49,7 @@
         :count="15"
         @changePage="changePage"
         @changeCount="changeCount"
-      />
+      /> -->
     </div>
   </div>
 </template>
@@ -58,10 +58,10 @@
 import { mapGetters } from "vuex";
 import ReportGrid from "@/components/ReportGrid.vue";
 import RepotFIlters from "@/components/RepotFIlters.vue";
-import GridBottom from "@/components/GridBottom.vue";
+// import GridBottom from "@/components/GridBottom.vue";
 export default {
   name: "AnalyticsView",
-  components: { ReportGrid, RepotFIlters, GridBottom },
+  components: { ReportGrid, RepotFIlters },
   data() {
     return {
       openSelectedReportModal: false,
@@ -243,6 +243,7 @@ export default {
     },
     async clients() {
       this.isLoading = true;
+      this.openedRows = [];
       if (!this.isClient)
         this.refFilters?.clearAllFields(),
           this.page == 1 ? null : this.changePage(1);
@@ -261,6 +262,7 @@ export default {
     },
     async sales() {
       this.isLoading = true;
+      this.openedRows = [];
       if (this.isClient)
         this.refFilters?.clearAllFields(),
           this.page == 1 ? null : this.changePage(1);

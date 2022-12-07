@@ -151,9 +151,16 @@ export default {
         oldVal.forEach((val) => arrOldVal.push(val[query]));
 
         let res = false;
-        arrNewVal.forEach((val) => {
-          if (!arrOldVal.includes(val)) res = true;
-        });
+        if (arrNewVal.length > arrOldVal.length) {
+          arrNewVal.forEach((val) => {
+            if (!arrOldVal.includes(val)) res = true;
+          });
+        }
+        if (arrNewVal.length < arrOldVal.length) {
+          arrOldVal.forEach((val) => {
+            if (!arrNewVal.includes(val)) res = true;
+          });
+        }
         if (res) this.$emit("updateOpenedRows", this.openedRows);
       },
       deep: true,
@@ -224,6 +231,7 @@ export default {
     text-align: left;
     .btn {
       background-color: #6c757d;
+      color: white;
     }
     .btn:hover {
       background-color: #5c636b;
