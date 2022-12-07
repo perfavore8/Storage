@@ -427,12 +427,12 @@ export default {
       );
     },
     addCurrentProducts() {
-      this.open_close_new_position(true);
       this.currentItems = [
         ...this.ref_main?.selectedProducts
           .filter((val) => val.value)
           .map((val) => val.item),
       ];
+      this.open_close_new_position(true);
     },
     dropCurrentItems() {
       this.currentItems = [];
