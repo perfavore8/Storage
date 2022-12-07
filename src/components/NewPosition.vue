@@ -3,246 +3,252 @@
     <div class="container">
       <div class="header"><label>Добавление товаров</label></div>
       <div class="content">
-        <table class="table">
-          <thead>
-            <tr class="row title">
-              <td class="item" v-for="tit in title" :key="tit">{{ tit }}</td>
-              <td class="item"></td>
-            </tr>
-          </thead>
-          <tbody>
-            <transition-group name="row">
-              <tr class="row" v-for="(row, idx) in new_items" :key="row">
-                <td class="item">
-                  <selector-vue
-                    :options_props="options_type"
-                    @select="
-                      (option, idx) => option_select(option, idx, 'type')
-                    "
-                    :selected_option="row.type"
-                    :idx="idx"
-                    :disabled="!row.new"
-                  />
-                </td>
-                <td
-                  class="item"
-                  :ref="
-                    (el) =>
-                      selected_field_autocomplete.idx == idx &&
-                      selected_field_autocomplete.field == 'article'
-                        ? (targetAutocomplete = el)
-                        : null
-                  "
-                >
-                  <input
-                    type="text"
-                    v-model="row.article"
-                    @focusin="
-                      set_selected_field_autocomplete(
-                        'article',
-                        row.article,
-                        idx
-                      )
-                    "
-                    @focusout="set_selected_field_autocomplete('', '', idx)"
-                    @input="
-                      set_selected_field_autocomplete(
-                        'article',
-                        row.article,
-                        idx
-                      )
-                    "
-                    class="input"
-                    :class="{
-                      not_valid: row.article == '' && try_accept,
-                    }"
-                    :disabled="!row.new"
-                  />
-                </td>
-                <td
-                  class="item"
-                  :ref="
-                    (el) =>
-                      selected_field_autocomplete.idx == idx &&
-                      selected_field_autocomplete.field == 'name'
-                        ? (targetAutocomplete = el)
-                        : null
-                  "
-                >
-                  <input
-                    type="text"
-                    v-model="row.name"
-                    @focusin="
-                      set_selected_field_autocomplete('name', row.name, idx)
-                    "
-                    @focusout="set_selected_field_autocomplete('', '', idx)"
-                    @input="
-                      set_selected_field_autocomplete('name', row.name, idx)
-                    "
-                    class="input"
-                    :class="{
-                      not_valid: row.name == '' && try_accept,
-                    }"
-                    :disabled="!row.new"
-                  />
-                </td>
-                <td class="item">
-                  <div class="select_input">
+        <div class="main">
+          <table class="table">
+            <thead>
+              <tr class="row title">
+                <td class="item" v-for="tit in title" :key="tit">{{ tit }}</td>
+                <td class="item"></td>
+              </tr>
+            </thead>
+            <tbody>
+              <transition-group name="row">
+                <tr class="row" v-for="(row, idx) in new_items" :key="row">
+                  <td class="item">
                     <selector-vue
-                      :options_props="batch_category_options"
+                      :options_props="options_type"
                       @select="
-                        (option, idx) =>
-                          option_select(option, idx, 'batch_category')
+                        (option, idx) => option_select(option, idx, 'type')
                       "
-                      :selected_option="row.batch_category"
+                      :selected_option="row.type"
                       :idx="idx"
-                      :disabled="!row.new || row.type.value == 2"
+                      :disabled="!row.new"
                     />
+                  </td>
+                  <td
+                    class="item"
+                    :ref="
+                      (el) =>
+                        selected_field_autocomplete.idx == idx &&
+                        selected_field_autocomplete.field == 'article'
+                          ? (targetAutocomplete = el)
+                          : null
+                    "
+                  >
                     <input
                       type="text"
-                      v-model="row.batch"
+                      v-model="row.article"
+                      @focusin="
+                        set_selected_field_autocomplete(
+                          'article',
+                          row.article,
+                          idx
+                        )
+                      "
+                      @focusout="set_selected_field_autocomplete('', '', idx)"
+                      @input="
+                        set_selected_field_autocomplete(
+                          'article',
+                          row.article,
+                          idx
+                        )
+                      "
                       class="input"
                       :class="{
-                        not_valid:
-                          row.batch == '' && try_accept && row.type.value != 2,
+                        not_valid: row.article == '' && try_accept,
                       }"
-                      :disabled="!row.new || row.type.value == 2"
+                      :disabled="!row.new"
                     />
-                  </div>
-                </td>
-                <td class="item">
-                  <selector-vue
-                    :options_props="wh_options"
-                    @select="(option, idx) => option_select(option, idx, 'wh')"
-                    :selected_option="row.wh"
-                    :idx="idx"
-                    :disabled="row.type.value == 2"
-                  />
-                </td>
-                <td class="item">
-                  <input
-                    type="number"
-                    v-model="row.count"
-                    class="input"
-                    :disabled="row.type.value == 2"
-                    min="0"
-                    :class="{
-                      not_valid:
-                        (row.count == '' || row.count == undefined) &&
-                        try_accept &&
-                        row.type != 2,
-                    }"
-                  />
-                </td>
-                <td class="item">
-                  <selector-vue
-                    :options_props="units_options"
-                    @select="
-                      (option, idx) => option_select(option, idx, 'units')
+                  </td>
+                  <td
+                    class="item"
+                    :ref="
+                      (el) =>
+                        selected_field_autocomplete.idx == idx &&
+                        selected_field_autocomplete.field == 'name'
+                          ? (targetAutocomplete = el)
+                          : null
                     "
-                    :selected_option="row.units"
-                    :idx="idx"
-                    :disabled="row.type.value == 2"
-                  />
-                </td>
-                <td class="item">
-                  <input
-                    type="number"
-                    v-model="row.cost_price"
-                    class="input"
-                    min="0"
-                    :class="{
-                      not_valid: row.cost_price == '' && try_accept,
-                    }"
-                    :disabled="!row.new"
-                  />
-                </td>
-                <td class="item">
-                  <input
-                    type="number"
-                    v-model="row.price.cost"
-                    class="input"
-                    min="0"
-                    :class="{
-                      not_valid: row.price.cost == '' && try_accept,
-                    }"
-                  />
-                </td>
-                <td
-                  class="item"
-                  :class="{
-                    long: row.price.is_nds,
-                  }"
-                >
-                  <div class="nds">
-                    <div v-if="!row.price.is_nds">
-                      <input
-                        type="checkbox"
-                        v-model="row.price.is_nds"
-                        class="checkbox"
-                        :id="idx + 'nq'"
+                  >
+                    <input
+                      type="text"
+                      v-model="row.name"
+                      @focusin="
+                        set_selected_field_autocomplete('name', row.name, idx)
+                      "
+                      @focusout="set_selected_field_autocomplete('', '', idx)"
+                      @input="
+                        set_selected_field_autocomplete('name', row.name, idx)
+                      "
+                      class="input"
+                      :class="{
+                        not_valid: row.name == '' && try_accept,
+                      }"
+                      :disabled="!row.new"
+                    />
+                  </td>
+                  <td class="item">
+                    <div class="select_input">
+                      <selector-vue
+                        :options_props="batch_category_options"
+                        @select="
+                          (option, idx) =>
+                            option_select(option, idx, 'batch_category')
+                        "
+                        :selected_option="row.batch_category"
+                        :idx="idx"
+                        :disabled="!row.new || row.type.value == 2"
                       />
-                      <label :for="idx + 'nq'"></label>
+                      <input
+                        type="text"
+                        v-model="row.batch"
+                        class="input"
+                        :class="{
+                          not_valid:
+                            row.batch == '' &&
+                            try_accept &&
+                            row.type.value != 2,
+                        }"
+                        :disabled="!row.new || row.type.value == 2"
+                      />
                     </div>
-                    <div class="hiden" v-else>
-                      <div class="checkboxes">
+                  </td>
+                  <td class="item">
+                    <selector-vue
+                      :options_props="wh_options"
+                      @select="
+                        (option, idx) => option_select(option, idx, 'wh')
+                      "
+                      :selected_option="row.wh"
+                      :idx="idx"
+                      :disabled="row.type.value == 2"
+                    />
+                  </td>
+                  <td class="item">
+                    <input
+                      type="number"
+                      v-model="row.count"
+                      class="input"
+                      :disabled="row.type.value == 2"
+                      min="0"
+                      :class="{
+                        not_valid:
+                          (row.count == '' || row.count == undefined) &&
+                          try_accept &&
+                          row.type != 2,
+                      }"
+                    />
+                  </td>
+                  <td class="item">
+                    <selector-vue
+                      :options_props="units_options"
+                      @select="
+                        (option, idx) => option_select(option, idx, 'units')
+                      "
+                      :selected_option="row.units"
+                      :idx="idx"
+                      :disabled="row.type.value == 2"
+                    />
+                  </td>
+                  <td class="item">
+                    <input
+                      type="number"
+                      v-model="row.cost_price"
+                      class="input"
+                      min="0"
+                      :class="{
+                        not_valid: row.cost_price == '' && try_accept,
+                      }"
+                      :disabled="!row.new"
+                    />
+                  </td>
+                  <td class="item">
+                    <input
+                      type="number"
+                      v-model="row.price.cost"
+                      class="input"
+                      min="0"
+                      :class="{
+                        not_valid: row.price.cost == '' && try_accept,
+                      }"
+                    />
+                  </td>
+                  <td
+                    class="item"
+                    :class="{
+                      long: row.price.is_nds,
+                    }"
+                  >
+                    <div class="nds">
+                      <div v-if="!row.price.is_nds">
                         <input
                           type="checkbox"
                           v-model="row.price.is_nds"
                           class="checkbox"
                           :id="idx + 'nq'"
                         />
-                        <label :for="idx + 'nq'">НДС</label>
-                        <input
-                          type="checkbox"
-                          v-model="row.price.is_price_include_nds"
-                          class="checkbox"
-                          :id="idx + 'nw'"
-                        />
-                        <label :for="idx + 'nw'">включен в цену</label>
-                        <input
-                          type="checkbox"
-                          v-model="row.price.is_manager_can_change_nds"
-                          class="checkbox"
-                          :id="idx + 'ne'"
-                        />
-                        <label :for="idx + 'ne'">можно менять %</label>
+                        <label :for="idx + 'nq'"></label>
                       </div>
-                      <input
-                        type="number"
-                        class="input"
-                        v-model="row.price.nds"
-                        placeholder="% НДС"
-                        min="0"
-                      />
+                      <div class="hiden" v-else>
+                        <div class="checkboxes">
+                          <input
+                            type="checkbox"
+                            v-model="row.price.is_nds"
+                            class="checkbox"
+                            :id="idx + 'nq'"
+                          />
+                          <label :for="idx + 'nq'">НДС</label>
+                          <input
+                            type="checkbox"
+                            v-model="row.price.is_price_include_nds"
+                            class="checkbox"
+                            :id="idx + 'nw'"
+                          />
+                          <label :for="idx + 'nw'">включен в цену</label>
+                          <input
+                            type="checkbox"
+                            v-model="row.price.is_manager_can_change_nds"
+                            class="checkbox"
+                            :id="idx + 'ne'"
+                          />
+                          <label :for="idx + 'ne'">можно менять %</label>
+                        </div>
+                        <input
+                          type="number"
+                          class="input"
+                          v-model="row.price.nds"
+                          placeholder="% НДС"
+                          min="0"
+                        />
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td class="item">
-                  <selector-vue
-                    :options_props="categories_options"
-                    @select="
-                      (option, idx) => option_select(option, idx, 'category')
-                    "
-                    :selected_option="row.category"
-                    :idx="idx"
-                  />
-                </td>
-                <transition name="row">
-                  <td class="item">
-                    <button
-                      class="del_btn"
-                      v-show="new_items.length > 1"
-                      @click="del_item(idx)"
-                    >
-                      X
-                    </button>
                   </td>
-                </transition>
-              </tr>
-            </transition-group>
-          </tbody>
-        </table>
+                  <td class="item">
+                    <selector-vue
+                      :options_props="categories_options"
+                      @select="
+                        (option, idx) => option_select(option, idx, 'category')
+                      "
+                      :selected_option="row.category"
+                      :idx="idx"
+                    />
+                  </td>
+                  <transition name="row">
+                    <td class="item">
+                      <button
+                        class="del_btn"
+                        v-show="new_items.length > 1"
+                        @click="del_item(idx)"
+                      >
+                        X
+                      </button>
+                    </td>
+                  </transition>
+                </tr>
+              </transition-group>
+            </tbody>
+          </table>
+        </div>
         <div class="content_footer">
           <button class="add_new_button" @click="push_new_item()">+</button>
         </div>
@@ -496,7 +502,8 @@ export default {
   background: transparent;
   .container {
     width: calc(100% - 60px);
-    min-width: 1400px;
+    max-height: calc(100vh - 60px);
+    // min-width: 1400px;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -518,13 +525,20 @@ export default {
       @include font(400, 16px);
       padding: 15px 50px 0;
       // border-bottom: 2px solid #dee2e6;
+      .main {
+        max-height: calc(100vh - 226px);
+        overflow: auto;
+      }
       .table {
         border: 1px solid #c9c9c9;
         border-collapse: collapse;
         width: 100%;
         .title {
           @include font(500, 16px);
-          background-color: rgba(0, 0, 0, 0.15) !important;
+          background-color: #d9d9d9 !important;
+          position: sticky;
+          top: -1px;
+          z-index: 2;
           .item {
             padding-bottom: 20px !important;
             text-align: center !important;
@@ -540,6 +554,7 @@ export default {
             border: 1px solid #c9c9c9;
             border-top: 2px solid #c9c9c9;
             text-align: left;
+            min-width: 90px;
             .nds {
               // text-align: center;
               display: flex;
