@@ -15,7 +15,7 @@
                 <td class="item">
                   <input
                     type="text"
-                    v-model="items_to_cancel[idx][0]"
+                    v-model="row.fields.article"
                     class="input"
                     disabled
                   />
@@ -23,7 +23,7 @@
                 <td class="item">
                   <input
                     type="text"
-                    v-model="items_to_cancel[idx][1]"
+                    v-model="row.fields.name"
                     class="input"
                     disabled
                   />
@@ -31,31 +31,41 @@
                 <td class="item">
                   <div class="select_input">
                     <selector-vue
-                      :options_props="options1[idx]"
+                      :options_props="[]"
                       @select="option_select1"
-                      :selected_option="items_to_cancel[idx][2]"
-                      :idx="idx"
+                      :selected_option="{ name: row.fields?.batch, value: -1 }"
                       :disabled="true"
+                    />
+                  </div>
+                </td>
+                <td class="item">
+                  <div class="select_input">
+                    <selector-vue
+                      :options_props="whs_options"
+                      @select="option_select"
+                      :selected_option="row.fields.whToCancel"
+                      :idx="idx"
                     />
                   </div>
                 </td>
                 <td class="item">
                   <input
                     type="number"
-                    v-model="items_to_cancel[idx][3]"
+                    v-model="row.fields.countToCancel"
+                    :max="row.fields?.whToCancel.count"
                     class="input"
                     :class="{
-                      not_valid: items_to_cancel[idx][3] == '' && try_accept,
+                      not_valid: row.fields?.countToCancel == '' && try_accept,
                     }"
                   />
                 </td>
                 <td class="item">
                   <input
                     type="text"
-                    v-model="items_to_cancel[idx][4]"
+                    v-model="row.fields.rison"
                     class="input"
                     :class="{
-                      not_valid: items_to_cancel[idx][4] == '' && try_accept,
+                      not_valid: row.fields?.rison == '' && try_accept,
                     }"
                   />
                 </td>
@@ -81,94 +91,117 @@ export default {
     BtnsSaveClose,
   },
   props: {
-    rows: {
+    currentItems: {
       type: Array,
       required: true,
       default() {
         return [];
       },
     },
-    idxes: {
-      type: Array,
-      required: true,
-    },
   },
   data() {
     return {
-      title: ["Артикул", "Название", "№ партии", "Кол-во", "Причина списания"],
+      title: [
+        "Артикул",
+        "Название",
+        "№ партии",
+        "Склад",
+        "Кол-во",
+        "Причина списания",
+      ],
       items_to_cancel: [],
-      options1: [],
+      whs_options: [],
       try_accept: false,
-      max_count_to_cancel: [],
     };
   },
+  async mounted() {
+    await this.$store.dispatch("get_all_fields");
+    this.fillWhs();
+    nextTick(() => {
+      this.items_to_cancel = [...this.currentItems];
+      this.items_to_cancel.map((val) => {
+        val.fields.countToCancel = 0;
+        val.fields.rison = "";
+        val.fields.whToCancel = { name: "Не выбрано", value: -1 };
+      });
+    });
+  },
+  computed: {
+    fields() {
+      return this.$store.state.fields.all_fields;
+    },
+    countToCancel() {
+      const list = [];
+      this.items_to_cancel.forEach((val) =>
+        list.push(val.fields.countToCancel)
+      );
+      return list;
+    },
+  },
   watch: {
-    items_to_cancel: {
+    countToCancel: {
       handler: function () {
-        this.items_to_cancel.forEach((val, idx) => {
-          if (val[3] < 0) this.items_to_cancel[idx][3] = 0;
-          if (val[3] > this.max_count_to_cancel[idx])
-            this.items_to_cancel[idx][3] = this.max_count_to_cancel[idx];
+        this.items_to_cancel.map((val) => {
+          if (val.fields.whToCancel) {
+            let count = val.fields?.[val.fields.whToCancel?.value]?.count;
+            count == undefined ? (count = 0) : null;
+            if (val.fields.countToCancel > count)
+              val.fields.countToCancel = count;
+            if (val.fields.countToCancel < 0) val.fields.countToCancel = 0;
+          }
         });
       },
       deep: true,
     },
   },
-  mounted() {
-    nextTick(() => {
-      this.push_current_item();
-
-      this.items_to_cancel.forEach((val) => {
-        this.max_count_to_cancel.push(val[3]);
-      });
-    });
-  },
   methods: {
-    push_current_item() {
-      this.rows.forEach((val, idx) => {
-        this.items_to_cancel.push([]);
-        val.forEach((value) => {
-          this.items_to_cancel[idx].push(value);
-        });
-        this.options1.push([
-          {
-            name: this.items_to_cancel[idx][2],
-            value: 1,
-          },
-        ]);
-        this.items_to_cancel[idx][2] = this.options1[idx][0];
-      });
+    fillWhs() {
+      this.fields
+        .filter((val) => val.type == 13 && val.code != "whs")
+        .forEach((val) =>
+          this.whs_options.push({ name: val.name, value: val.code })
+        );
     },
-    save() {
+    async save() {
       this.try_accept = true;
       let accept = true;
       this.items_to_cancel.forEach((val) => {
         accept =
           accept &&
-          val[3] != "" &&
-          val[4] != "" &&
-          val[3] != undefined &&
-          val[4] != undefined;
+          val.fields.countToCancel != "" &&
+          val.fields.rison != "" &&
+          val.fields.countToCancel != undefined &&
+          val.fields.rison != undefined;
       });
       if (accept) {
-        this.items_to_cancel.forEach((val, idx) => {
-          const payload = {
-            name: "На складе",
-            idx: this.idxes[idx],
-            count: val[3],
+        const params = {
+          products: [],
+        };
+        this.items_to_cancel.forEach((val) => {
+          const item = {
+            id: val.id,
+            fields: val.fields,
           };
-          this.$store.commit("cancel_item_in_data", payload);
+          item.fields[val.fields.whToCancel.value].count =
+            item.fields[val.fields.whToCancel.value].count -
+            item.fields.countToCancel;
+          delete item.fields.countToCancel;
+          delete item.fields.rison;
+          delete item.fields.whToCancel;
+          params.products.push(item);
         });
+        await this.$store.dispatch("update_product", params);
         this.close_modal();
       }
     },
     close_modal() {
       this.items_to_cancel = [];
       this.try_accept = false;
+      this.$emit("close");
       this.$store.commit("open_close_cancel_position", false);
     },
-    option_select1(option, idx) {
-      this.items_to_cancel[idx][2] = option;
+    option_select(option, idx) {
+      this.items_to_cancel[idx].fields.whToCancel = option;
     },
   },
 };
@@ -228,7 +261,7 @@ export default {
             border-top: 2px solid #c9c9c9;
             text-align: left;
             .v-select {
-              width: calc(100% - 26px) !important;
+              width: 100%;
             }
           }
           .item:nth-child(1) {
@@ -238,14 +271,17 @@ export default {
             width: 20%;
           }
           .item:nth-child(3) {
-            width: 7%;
-            // min-width: 224px;
-            // max-width: 224px;
+            width: 1%;
+            min-width: 150px;
+            max-width: 150px;
           }
           .item:nth-child(4) {
-            width: 10%;
+            width: 30%;
           }
           .item:nth-child(5) {
+            width: 10%;
+          }
+          .item:nth-child(6) {
             width: 30%;
           }
         }
@@ -273,28 +309,6 @@ input[type="number"] {
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   display: none;
-}
-.input {
-  width: calc(100% - 24px);
-  min-width: 50%;
-  height: 20px;
-  padding: 6px 12px;
-  background-color: white;
-  border: 1px solid #ced4da;
-  appearance: none;
-  border-radius: 4px;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  @include font(400, 16px, 20px);
-}
-.input:disabled {
-  background-color: #e9ecef !important;
-}
-.input:focus {
-  color: #212529;
-  background-color: white;
-  border-color: #86b7fe;
-  outline: 0;
-  box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
 }
 .btns {
   display: flex;
