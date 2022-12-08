@@ -13,3 +13,5 @@ function findGetParameter(parameterName) {
 // console.log(findGetParameter("token"));
 export const BaseURL = "https://api.gosklad.ru/v1/";
 export let TOKEN = "Bearer " + findGetParameter("token");
+// export let TOKEN =
+//   "Bearer $2y$10$IbrftJL/LZ/BFwMY0Luudu0lNAEViMpUC0sId7FKu/YsZArpocNO2";

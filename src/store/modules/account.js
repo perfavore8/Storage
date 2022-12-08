@@ -59,6 +59,16 @@ export default {
       const json = await res.json();
       context.commit("updateTableConfig", json);
     },
+    async importOldData() {
+      const url = BaseURL + "account/import-old-data ";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      return json;
+    },
     async getGoogleAuthUrl() {
       const url = BaseURL + "account/google-auth-url";
       const res = await fetch(url, {

@@ -2,7 +2,9 @@
   <div
     class="app"
     :class="{
-      disabled: disabled_for_modals,
+      disabled:
+        disabled_for_modals ||
+        (account?.is_old_data_load_start && !account?.is_old_data_loaded),
     }"
     @click="
       show_settings ? close_settings() : null;
@@ -59,17 +61,37 @@
       }"
     >
       <div class="header_left">
-        <div class="btns">
-          <button
-            class="btns_btn"
-            :class="{ selected_catalog: $route.path === '/' + page.value }"
-            @click="route(page.value)"
-            v-for="page in catalog"
-            :key="page"
+        <div class="header_row">
+          <div class="btns">
+            <button
+              class="btns_btn"
+              :class="{ selected_catalog: $route.path === '/' + page.value }"
+              @click="route(page.value)"
+              v-for="page in catalog"
+              :key="page"
+            >
+              {{ page.name }}
+            </button>
+            <!-- {{ $route }} -->
+          </div>
+          <div
+            class="old"
+            v-if="account?.is_exist_old_data && !account?.is_old_data_loaded"
           >
-            {{ page.name }}
-          </button>
-          <!-- {{ $route }} -->
+            <p>
+              Внимание, обнаружены данные вашего аккаунта предыдущей версии
+              склада.
+              {{
+                account?.is_old_data_load_start
+                  ? "идет загрузка..."
+                  : "Для загрузки данных нажмите на кнопку ЗАГРУЗИТЬ."
+              }}
+              Загрузка может занять некоторое время.
+            </p>
+            <button class="btn btn_yellow" @click="importOldData()">
+              Загрузить
+            </button>
+          </div>
         </div>
         <div class="whs">
           <!-- <SelectorVue
@@ -377,6 +399,9 @@ export default {
     oneC() {
       return this.$store.state.account.account?.config?.g_enabled;
     },
+    account() {
+      return this.$store.state.account.account;
+    },
     ref_main() {
       return this.$refs.main;
     },
@@ -414,6 +439,18 @@ export default {
     },
     selectWH(value) {
       this.selectedWH = value;
+    },
+    importOldData() {
+      this.$store.dispatch("importOldData");
+      const interval = setInterval(async () => {
+        await this.$store.dispatch("get_account");
+        if (this.account?.is_old_data_loaded) {
+          clearInterval(interval);
+          this.getWHS();
+          this.clearFilters();
+          this.updateProducts();
+        }
+      }, 5000);
     },
     async archive_data() {
       const params = {
@@ -522,6 +559,24 @@ export default {
   left: 0;
   width: calc(100vw - 80px);
   &_left {
+    .header_row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .old {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        width: 65%;
+        margin-right: 5%;
+        p {
+          margin: 0;
+          text-align: left;
+        }
+      }
+    }
     .btns {
       display: flex;
       flex-direction: row;
@@ -530,6 +585,7 @@ export default {
       .btns_btn {
         // height: 30px;
         padding: calc(0.1 * $vv) calc(0.4 * $vv);
+        height: min-content;
         cursor: pointer;
         text-align: center;
         vertical-align: center;
