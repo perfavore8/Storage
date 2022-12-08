@@ -442,6 +442,7 @@ export default {
     },
     importOldData() {
       this.$store.dispatch("importOldData");
+      this.$store.dispatch("get_account");
       const interval = setInterval(async () => {
         await this.$store.dispatch("get_account");
         if (this.account?.is_old_data_loaded) {
