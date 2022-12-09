@@ -78,19 +78,22 @@
             class="old"
             v-if="account?.is_exist_old_data && !account?.is_old_data_loaded"
           >
-            <p>
-              Внимание, обнаружены данные вашего аккаунта предыдущей версии
-              склада.
-              {{
-                account?.is_old_data_load_start
-                  ? "идет загрузка..."
-                  : "Для загрузки данных нажмите на кнопку ЗАГРУЗИТЬ."
-              }}
-              Загрузка может занять некоторое время.
-            </p>
-            <button class="btn btn_yellow" @click="importOldData()">
-              Загрузить
-            </button>
+            <template v-if="account?.is_old_data_load_start">
+              <p>
+                Внимание! Идет загурзка данных аккаунта. Это может занять
+                несколько минут
+              </p>
+            </template>
+            <template v-else>
+              <p>
+                Внимание, обнаружены данные вашего аккаунта предыдущей версии
+                склада. Для загрузки данных нажмите на кнопку ЗАГРУЗИТЬ.
+                Загрузка может занять некоторое время.
+              </p>
+              <button class="btn btn_yellow" @click="importOldData()">
+                Загрузить
+              </button>
+            </template>
           </div>
         </div>
         <div class="whs">
@@ -575,6 +578,7 @@ export default {
         p {
           margin: 0;
           text-align: left;
+          @include font(400, 16px);
         }
       }
     }
