@@ -245,6 +245,9 @@ export default {
     clearFilters() {
       this.filters?.clearFilters();
     },
+    confirmFilters() {
+      this.filters?.confirmFilters();
+    },
     isShow(code) {
       const res = { value: false, second: "" };
       Object.entries(this.tableConfig).forEach((val) => {

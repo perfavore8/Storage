@@ -106,6 +106,50 @@ export default {
     clearFilters() {
       this.feelFilters();
     },
+    confirmFilters() {
+      const filter = {};
+      this.filtersValue
+        .filter((val) => val.value != null)
+        .forEach((val) => {
+          if (val.type == 1 || val.type == 2)
+            filter[val.code] = {
+              comapre: val.option,
+              query: val.value,
+            };
+          if (val.type == 3 || val.type == 4)
+            filter[val.code] = {
+              comapre: val.option,
+              query: val.value,
+            };
+          if (val.type == 5 || val.type == 6)
+            filter[val.code] = {
+              comapre: "in",
+              query: val.value,
+            };
+          if (val.type == 7) {
+            const date = val.value
+              .split("~")
+              .map((val) => val.split("-").join("."));
+            filter[val.code] = {
+              from: date[0],
+              to: date[1],
+            };
+          }
+          if (val.type == 8) {
+            const date = val.value.split("~").map((val) => {
+              const split = val.split("T");
+              split[0].split("-").join(".");
+              val = split.join(" ");
+            });
+            filter[val.code] = {
+              from: date[0],
+              to: date[1],
+            };
+          }
+        });
+      console.log(filter);
+      // this.$store.dispatch("get_products", filter);
+    },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
     },
@@ -123,7 +167,7 @@ export default {
           const result = [];
           if (arr != null)
             arr.forEach((val, idx) => result.push({ name: val, value: idx }));
-          return arr;
+          return result;
         };
         let value = null;
         if (val.type == 5 || val.type == 6) {
@@ -134,7 +178,8 @@ export default {
         }
         const obj = {
           type: val.type,
-          option: 1,
+          code: val.code,
+          option: "=",
           selector_options: preparation_data(val.data),
           value: value,
           table_config: val.table_config,
