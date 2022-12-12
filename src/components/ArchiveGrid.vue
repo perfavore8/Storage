@@ -44,7 +44,9 @@
             </template>
           </template>
           <td class="item">
-            <div class="edit_icon" @click="unarchive_data(item)"></div>
+            <div class="edit_icon" @click="unarchive_data(item)">
+              <span class="material-icons"> ios_share </span>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -153,8 +155,12 @@ export default {
   height: 20px;
   margin: 0 auto;
   cursor: pointer;
-  @include bg_image("@/assets/export.svg");
-  transform: rotate(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #757575;
+  // @include bg_image("@/assets/export.svg");
+  // transform: rotate(180deg);
 }
 .count {
   margin-top: 20px;

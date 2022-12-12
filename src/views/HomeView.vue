@@ -115,11 +115,18 @@
               <label :for="page.name">{{ page.name }}</label>
             </div>
           </div>
-          <div
+          <!-- <div
             class="arrow"
             @click="whsFull = !whsFull"
             :class="{ rotate_arrow: whsFull }"
-          ></div>
+          ></div> -->
+          <button
+            @click="whsFull = !whsFull"
+            class="arrow btn"
+            :class="{ rotate_arrow: whsFull }"
+          >
+            <span class="material-icons-outlined"> expand_more </span>
+          </button>
         </div>
       </div>
       <div class="header_right">
@@ -128,14 +135,24 @@
           <a class="links">Выгрузка в эксель</a>
         </div> -->
         <div class="ref" v-if="!oneC">
-          <div
+          <!-- <div
             class="ref_2_logo"
             :class="{ ref_2_logo_fill: show_sync }"
             @click.stop="open_close_sync()"
-          ></div>
+          ></div> -->
+          <button class="ref_2_logo btn" @click.stop="open_close_sync()">
+            <transition name="modal">
+              <span class="material-icons" v-if="show_sync"> cloud_sync </span>
+              <span class="material-icons-outlined" v-else> cloud_sync </span>
+            </transition>
+          </button>
           <transition name="modal">
             <teleport to="body">
-              <div v-if="show_sync" class="modal_settings modal_sync">
+              <div
+                v-if="show_sync"
+                class="modal_settings modal_sync"
+                @click.stop="open_close_sync()"
+              >
                 <a>
                   <div class="modal_container">
                     Синхронизировать товары amoCRM -> Склад
@@ -154,7 +171,9 @@
           class="settings_btn"
           :class="{ settings_btn_rotate: show_settings }"
           @click.stop="open_close_settings()"
-        ></button>
+        >
+          <span class="material-icons"> settings </span>
+        </button>
         <transition name="modal">
           <teleport to="body">
             <div
@@ -274,7 +293,9 @@
         </div>
         <div class="filters_right">
           <div class="btns" v-if="filter_value">
-            <button class="btn btn_blue">Применить</button>
+            <button class="btn btn_blue" @click="confirmFilters()">
+              Применить
+            </button>
             <button class="btn btn_grey" @click="clearFilters()">
               Очистить
             </button>
@@ -297,7 +318,9 @@
           >
             Новая позиция
           </button>
-          <div class="sync_icon" @click="updateProducts()"></div>
+          <button class="sync_icon btn" @click="updateProducts()">
+            <span class="material-icons-outlined"> sync </span>
+          </button>
         </div>
       </div>
       <div class="grid">
@@ -431,6 +454,9 @@ export default {
     },
   },
   methods: {
+    confirmFilters() {
+      this.ref_main?.confirmFilters();
+    },
     clearFilters() {
       this.ref_main?.clearFilters();
     },
@@ -626,8 +652,15 @@ export default {
         cursor: pointer;
         width: 32px;
         height: 24px;
-        @include bg_image("@/assets/arrow_select.svg", 50%);
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: transform 0.2s ease-in-out;
+        > span {
+          color: #757575;
+          font-size: x-large;
+        }
       }
       .rotate_arrow {
         transform: rotateX(180deg);
@@ -701,12 +734,16 @@ export default {
       .ref_2_logo {
         width: 33px;
         height: 33px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        color: #757575;
         cursor: pointer;
         transition: all 0.2s ease-out;
-        @include bg_image("../assets/cloud_sync.svg", 67%);
-      }
-      .ref_2_logo_fill {
-        @include bg_image("../assets/cloud_sync_fill.svg", 67%);
+        > span {
+          position: absolute;
+        }
       }
     }
     .links {
@@ -720,9 +757,12 @@ export default {
       height: 24px;
       border: none;
       background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #757575;
       outline: none;
       transition: all 0.15s ease-out;
-      @include bg_image("../assets/gear.svg", 75%);
     }
     .settings_btn:hover,
     .settings_btn_rotate {
@@ -840,17 +880,21 @@ export default {
       flex-direction: row;
       gap: 18px;
       .sync_icon {
-        cursor: pointer;
         width: 16px;
         height: 16px;
         position: absolute;
         top: 70px;
         right: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        color: #757575;
+        transform: scaleX(-1);
         transition: all 0.2s ease-out;
-        @include bg_image("@/assets/sync.svg");
       }
       .sync_icon:hover {
-        transform: rotate(90deg);
+        transform: rotateZ(90deg) scaleX(-1);
       }
       .btns {
         display: flex;
