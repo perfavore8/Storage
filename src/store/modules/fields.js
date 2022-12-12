@@ -31,7 +31,11 @@ export default {
   actions: {
     async get_types(context) {
       const url = BaseURL + "field/types";
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
       const json = await res.json();
       context.commit("update_types", json.data);
     },
