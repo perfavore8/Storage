@@ -122,24 +122,25 @@ export default {
               query: val.value,
             };
           if (val.type == 5 || val.type == 6)
-            filter[val.code] = {
-              comapre: "in",
-              query: val.value,
-            };
+            if (val.value?.length)
+              filter[val.code] = {
+                comapre: "in",
+                query: val.value,
+              };
           if (val.type == 7) {
-            const date = val.value
-              .split("~")
-              .map((val) => val.split("-").join("."));
+            const date = val.value.split("~");
+            date.forEach((val, idx) => (date[idx] = val.split("-").join(".")));
             filter[val.code] = {
               from: date[0],
               to: date[1],
             };
           }
           if (val.type == 8) {
-            const date = val.value.split("~").map((val) => {
+            const date = val.value.split("~");
+            date.forEach((val, idx) => {
               const split = val.split("T");
-              split[0].split("-").join(".");
-              val = split.join(" ");
+              split[0] = split[0].split("-").join(".");
+              date[idx] = split.join(" ");
             });
             filter[val.code] = {
               from: date[0],
@@ -147,7 +148,6 @@ export default {
             };
           }
         });
-      console.log(filter);
       this.$store.dispatch("get_products", filter);
     },
     change_filter_value(new_obj, idx) {
