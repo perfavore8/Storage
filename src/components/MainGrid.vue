@@ -211,11 +211,10 @@ export default {
       handler: function () {
         this.updateKey += 1;
         this.selectedProducts = [];
-        if (!this.filters?.isConfirmFilters)
-          nextTick(() => {
-            this.filters?.clearFilters();
-            this.filters?.setFalseIsConfirmFilters();
-          });
+        nextTick(() => {
+          if (!this.filters?.isConfirmFilters) this.filters?.clearFilters();
+          this.filters?.setFalseIsConfirmFilters();
+        });
       },
       deep: true,
     },
