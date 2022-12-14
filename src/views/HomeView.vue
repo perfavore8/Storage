@@ -134,7 +134,7 @@
           <div class="ref_1_logo"></div>
           <a class="links">Выгрузка в эксель</a>
         </div> -->
-        <div class="ref" v-if="!oneC">
+        <div class="ref" v-if="!oneC || false">
           <!-- <div
             class="ref_2_logo"
             :class="{ ref_2_logo_fill: show_sync }"
