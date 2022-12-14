@@ -7,7 +7,7 @@
       class="selector"
       id="selector123"
       v-if="show_selector"
-      :options_props="selector_options"
+      :options_props="[{ name: 'Все', value: -1 }, ...selector_options]"
       @select="option_select_multi"
       :selected_options="filterValue"
       @focusout="handleFocusOut"
@@ -67,14 +67,21 @@ export default {
   methods: {
     change_value() {
       nextTick(() => {
-        this.filterValue = [];
+        this.filterValue = [false];
         this.item.value.forEach((val, idx) => {
-          this.filterValue[idx] = val;
+          this.filterValue[idx + 1] = val;
         });
       });
     },
     emit_value() {
-      this.$emit("change_filter_value", this.option_value, this.idx);
+      const res = {
+        value: [],
+      };
+      const arr = [{ name: "Все", value: -1 }, ...this.selector_options];
+      this.option_value.value.forEach((val, idx) =>
+        val ? res.value.push(arr[idx]?.name) : null
+      );
+      this.$emit("change_filter_value", res, this.idx);
     },
     option_select_multi(options) {
       this.filterValue = options;
