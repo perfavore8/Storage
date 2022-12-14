@@ -97,12 +97,11 @@
           </div>
         </div>
         <div class="whs">
-          <!-- <SelectorVue
-            :options_props="whs"
-            :selected_option="selectedWH"
-            @select="selectWH"
-          /> -->
-          <div class="radio_btns" :class="{ whs_full: whsFull }">
+          <div
+            class="radio_btns"
+            :class="{ whs_full: whsFull }"
+            ref="radio_btns"
+          >
             <div class="radio_btn" v-for="page in whs" :key="page">
               <input
                 type="radio"
@@ -115,15 +114,11 @@
               <label :for="page.name">{{ page.name }}</label>
             </div>
           </div>
-          <!-- <div
-            class="arrow"
-            @click="whsFull = !whsFull"
-            :class="{ rotate_arrow: whsFull }"
-          ></div> -->
           <button
             @click="whsFull = !whsFull"
             class="arrow btn"
             :class="{ rotate_arrow: whsFull }"
+            v-if="showWhsArrow"
           >
             <span class="material-icons-outlined"> expand_more </span>
           </button>
@@ -134,7 +129,7 @@
           <div class="ref_1_logo"></div>
           <a class="links">Выгрузка в эксель</a>
         </div> -->
-        <div class="ref" v-if="!oneC || false">
+        <div class="ref" v-if="!oneC && false">
           <!-- <div
             class="ref_2_logo"
             :class="{ ref_2_logo_fill: show_sync }"
@@ -345,7 +340,7 @@ import ThirdPpartyIntegrations from "@/components/ThirdPpartyIntegrations.vue";
 import SyncSettings from "@/components/SyncSattings.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
-import { computed } from "vue";
+import { computed, nextTick } from "vue";
 
 export default {
   components: {
@@ -376,7 +371,8 @@ export default {
       whs: [],
       grid: false,
       currentItems: [],
-      whsFull: false,
+      whsFull: true,
+      showWhsArrow: true,
     };
   },
   computed: {
@@ -434,12 +430,23 @@ export default {
     ref_card() {
       return this.$refs.card;
     },
+    refRadioBtns() {
+      return this.$refs.radio_btns;
+    },
+    storeWhs() {
+      return this.$store.state.account.account.whs;
+    },
   },
   async mounted() {
     await this.$store.dispatch("get_account");
     this.getWHS();
+    this.setShowWhsArrow();
   },
   watch: {
+    storeWhs() {
+      this.getWHS();
+      this.setShowWhsArrow();
+    },
     filter_value() {
       this.$store.commit("open_close_filter", this.filter_value);
     },
@@ -460,7 +467,15 @@ export default {
     clearFilters() {
       this.ref_main?.clearFilters();
     },
+    setShowWhsArrow() {
+      nextTick(() => {
+        this.showWhsArrow =
+          this.refRadioBtns?.getBoundingClientRect().height > 30;
+        this.showWhsArrow ? null : (this.whsFull = false);
+      });
+    },
     getWHS() {
+      this.whs = [];
       this.$store.state.account.account.whs.forEach((val) =>
         this.whs.push({ name: val.name, value: val.code })
       );
@@ -643,12 +658,13 @@ export default {
       }
     }
     .whs {
-      margin-top: 14px;
+      margin-top: 24px;
       display: flex;
       flex-direction: row;
-      width: 80%;
+      gap: 20px;
+      width: 100%;
       .arrow {
-        margin-top: 20px;
+        margin-top: 1px;
         cursor: pointer;
         width: 32px;
         height: 24px;
@@ -670,14 +686,13 @@ export default {
       height: 100% !important;
     }
     .radio_btns {
-      height: 40px;
+      height: 24px;
       overflow: hidden;
       display: flex;
       flex-direction: row;
       gap: 16px;
       flex-wrap: wrap;
-      margin-top: 14px;
-      width: 80%;
+      width: 100%;
       .radio_btn {
         > input {
           display: none;
