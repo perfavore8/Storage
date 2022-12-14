@@ -83,6 +83,7 @@ export default {
   data() {
     return {
       filtersValue: [],
+      isConfirmFilters: false,
     };
   },
   computed: {
@@ -107,6 +108,7 @@ export default {
       this.feelFilters();
     },
     confirmFilters() {
+      this.isConfirmFilters = true;
       const filter = {};
       this.filtersValue
         .filter((val) => val.value != null)
@@ -152,6 +154,9 @@ export default {
     },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
+    },
+    setFalseIsConfirmFilters() {
+      this.isConfirmFilters = false;
     },
     feelFilters() {
       this.filtersValue = [];
