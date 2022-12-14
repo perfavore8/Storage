@@ -486,18 +486,23 @@ export default {
       this.selectedWH = value;
     },
     async importOldData() {
-      if (this.account?.is_old_data_load_start)
-        await this.$store.dispatch("importOldData"); // после подгрузки нужно чтобы is_old_data_load_start=false
-      this.$store.dispatch("get_account");
-      const interval = setInterval(async () => {
-        await this.$store.dispatch("get_account");
-        if (this.account?.is_old_data_loaded) {
-          clearInterval(interval);
-          this.getWHS();
-          this.clearFilters();
-          this.updateProducts();
-        }
-      }, 5000);
+      if (
+        this.account?.is_exist_old_data &&
+        !this.account?.is_old_data_loaded
+      ) {
+        if (!this.account?.is_old_data_load_start)
+          await this.$store.dispatch("importOldData");
+        this.$store.dispatch("get_account");
+        const interval = setInterval(async () => {
+          await this.$store.dispatch("get_account");
+          if (this.account?.is_old_data_loaded) {
+            clearInterval(interval);
+            this.getWHS();
+            this.clearFilters();
+            this.updateProducts();
+          }
+        }, 5000);
+      }
     },
     async archive_data() {
       const params = {
