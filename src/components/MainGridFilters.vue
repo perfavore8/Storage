@@ -25,6 +25,13 @@
                 :selector_options="filter.selector_options"
                 @change_filter_value="change_filter_value"
               />
+              <filter-list
+                v-if="filter.type == 12"
+                :item="filter"
+                :idx="idx"
+                :selector_options="categories_options"
+                @change_filter_value="change_filter_value"
+              />
               <filter-date
                 v-if="filter.type == 7 || filter.type == 8"
                 :item="filter"
@@ -83,6 +90,7 @@ export default {
   data() {
     return {
       filtersValue: [],
+      categories_options: [],
       isConfirmFilters: false,
     };
   },
@@ -92,7 +100,9 @@ export default {
       return this.$store.state.account.account?.config?.g_enabled;
     },
   },
-  mounted() {
+  async mounted() {
+    await this.$store.dispatch("get_fields_properties");
+    this.get_categories_options();
     this.feelFilters();
   },
   watch: {
@@ -123,7 +133,7 @@ export default {
               comapre: val.option,
               query: val.value,
             };
-          if (val.type == 5 || val.type == 6)
+          if (val.type == 5 || val.type == 6 || val.type == 12)
             if (val.value?.length)
               filter[val.code] = {
                 comapre: "in",
@@ -184,6 +194,9 @@ export default {
         if (val.type == 9) {
           value = 1;
         }
+        if (val.type == 12) {
+          value = [];
+        }
         const obj = {
           type: val.type,
           code: val.code,
@@ -204,6 +217,17 @@ export default {
         //   obj.type = 2;
         // }
         this.filtersValue.push(obj);
+      });
+    },
+    get_categories_options() {
+      this.$store.state.categories.fields_properties.forEach((val) => {
+        let spaces = "";
+        for (let i = 1; i < val.level; i++) spaces = spaces + "    ";
+        this.categories_options.push({
+          // name: spaces + val.name,
+          name: val.name,
+          value: val.id,
+        });
       });
     },
   },
