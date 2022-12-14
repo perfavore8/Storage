@@ -22,7 +22,7 @@
                 v-if="filter.type == 5 || filter.type == 6"
                 :item="filter"
                 :idx="idx"
-                :selector_options="filter.data"
+                :selector_options="filter.selector_options"
                 @change_filter_value="change_filter_value"
               />
               <filter-date
