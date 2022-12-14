@@ -441,6 +441,7 @@ export default {
     await this.$store.dispatch("get_account");
     this.getWHS();
     this.setShowWhsArrow();
+    this.importOldData();
   },
   watch: {
     storeWhs() {
@@ -484,8 +485,9 @@ export default {
     selectWH(value) {
       this.selectedWH = value;
     },
-    importOldData() {
-      this.$store.dispatch("importOldData");
+    async importOldData() {
+      if (this.account?.is_old_data_load_start)
+        await this.$store.dispatch("importOldData"); // после подгрузки нужно чтобы is_old_data_load_start=false
       this.$store.dispatch("get_account");
       const interval = setInterval(async () => {
         await this.$store.dispatch("get_account");
