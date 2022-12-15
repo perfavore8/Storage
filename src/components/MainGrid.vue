@@ -48,6 +48,10 @@
                   {{
                     item[0] == "category"
                       ? categories[row.fields[item[0]]]
+                      : item[1].type == 9
+                      ? !!row.fields[item[0]]
+                        ? "Да"
+                        : "Нет"
                       : row.fields[item[0]]
                   }}
                 </span>
@@ -66,6 +70,12 @@
                           undefined
                             ? ""
                             : row.fields?.[item[0].split(".")[0]]?.currency)
+                      : item[1].type == 9
+                      ? !!row.fields?.[item[0].split(".")[0]]?.[
+                          item[0].split(".")[1]
+                        ]
+                        ? "Да"
+                        : "Нет"
                       : row.fields?.[item[0].split(".")[0]]?.[
                           item[0].split(".")[1]
                         ]
