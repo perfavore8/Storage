@@ -4,13 +4,15 @@
     <p>
       Срок подписки сервиса GoСклад подошел к концу. Для продления обратитесь в
       отдел продаж:
+    </p>
+    <div class="icons">
       <a href="https://t.me/goskladbot" target="black">
         <img src="@/assets/telegram.jpg" alt="Telegram" />
       </a>
       <a href="https://wa.me/74954199745" target="black">
         <img src="@/assets/whats_app.jpg" alt="WhatsApp" />
       </a>
-    </p>
+    </div>
   </div>
 </template>
 
@@ -39,7 +41,12 @@ p {
   width: 40%;
   color: #6c757d;
   @include font(300, 1.25rem);
-
+}
+.icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   img {
     width: 24px;
     height: 24px;
