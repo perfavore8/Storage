@@ -160,7 +160,7 @@ export default {
             };
           }
         });
-      this.$store.dispatch("get_products", filter);
+      this.$store.dispatch("get_products", { filter: filter });
     },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
