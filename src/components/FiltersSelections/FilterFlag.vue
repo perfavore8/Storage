@@ -80,8 +80,5 @@ export default {
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  .v-select {
-    width: calc(100% - 26px) !important;
-  }
 }
 </style>

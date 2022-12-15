@@ -97,7 +97,7 @@ export default {
     handleFocusOut() {
       setTimeout(() => {
         nextTick(() => {
-          this.show_selector = false;
+          // this.show_selector = false;
         });
       }, 150);
     },
@@ -141,8 +141,10 @@ export default {
     max-width: 224px;
   }
   .multi_selector {
+    width: min-content;
     :deep(.item) {
-      width: 200px;
+      width: max-content;
+      min-width: calc(100% - 24px);
     }
   }
 }
