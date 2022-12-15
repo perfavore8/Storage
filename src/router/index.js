@@ -64,7 +64,7 @@ router.beforeEach(async (to, from, next) => {
     (!store.state.account?.account?.expired && to.path == "/Error_is_expired")
   )
     next("/");
-  if (!store.state.account?.account?.expired && to.path != "/Error_is_expired")
+  if (store.state.account?.account?.expired && to.path != "/Error_is_expired")
     next("/Error_is_expired"); // не забудь переключить !expired => expired
   else next();
 });
