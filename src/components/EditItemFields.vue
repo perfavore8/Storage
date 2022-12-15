@@ -4,7 +4,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 1"
     />
@@ -12,7 +12,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 2"
     />
@@ -20,7 +20,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 3"
     />
@@ -28,7 +28,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 4"
     />
@@ -36,7 +36,7 @@
       :item="field"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 5"
     />
@@ -44,7 +44,7 @@
       :item="field"
       :selected_options="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 6"
     />
@@ -52,7 +52,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 7"
     />
@@ -60,7 +60,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 8"
     />
@@ -68,7 +68,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 9"
     />
@@ -76,7 +76,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       :currencies="currencies"
       @change_value="change_value"
       v-if="field.type == 11"
@@ -85,7 +85,7 @@
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
-      :disabled="!!field.is_editable"
+      :disabled="!field.is_editable"
       @change_value="change_value"
       v-if="field.type == 13"
     />
