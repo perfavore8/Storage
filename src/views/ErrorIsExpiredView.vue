@@ -3,7 +3,13 @@
     <h1>Внимание!</h1>
     <p>
       Срок подписки виджета Sales-Склад подошел к концу. Для продления
-      обратитесь в отдел продаж: +7 (495) 278-18-15 или sales@sls-up.ru
+      обратитесь в отдел продаж:
+      <a href="https://t.me/goskladbot" target="black">
+        <img src="@/assets/telegram.jpg" alt="Telegram" />
+      </a>
+      <a href="https://wa.me/74954199745" target="black">
+        <img src="@/assets/whats_app.jpg" alt="WhatsApp" />
+      </a>
     </p>
   </div>
 </template>
@@ -33,5 +39,11 @@ p {
   width: 40%;
   color: #6c757d;
   @include font(300, 1.25rem);
+
+  img {
+    width: 24px;
+    height: 24px;
+    margin: 8px;
+  }
 }
 </style>
