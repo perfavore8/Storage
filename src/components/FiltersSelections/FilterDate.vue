@@ -57,6 +57,9 @@ export default {
           const a = this.item.value.split("~");
           this.date_start = a[0];
           this.date_end = a[1];
+        } else {
+          this.date_start = "";
+          this.date_end = "";
         }
       });
     },

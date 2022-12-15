@@ -172,9 +172,12 @@ export default {
       this.filtersValue = [];
       const copyFields = [];
       this.sortedFields.forEach((val) => {
-        const item = this.fields.filter(
-          (value) => value.code.split(".")[0] == val[0].split(".")[0]
-        )[0];
+        let item = {};
+        item = {
+          ...this.fields.filter((value) => {
+            return value.code.split(".")[0] == val[0].split(".")[0];
+          })[0],
+        };
         item.type = val[1].type;
         item.code = val[0];
 
@@ -205,17 +208,6 @@ export default {
           value: value,
           table_config: val.table_config,
         };
-        // if (val.type == 11) {
-        //   if (val.code.split(".")[1] == "cost") obj.type = 2;
-        //   if (val.code.split(".")[1] == "is_nds") obj.type = 9;
-        //   if (val.code.split(".")[1] == "is_price_include_nds") obj.type = 9;
-        //   if (val.code.split(".")[1] == "is_manager_can_change_nds")
-        //     obj.type = 9;
-        //   if (val.code.split(".")[1] == "nds") obj.type = 2;
-        // }
-        // if (val.type == 13) {
-        //   obj.type = 2;
-        // }
         this.filtersValue.push(obj);
       });
     },

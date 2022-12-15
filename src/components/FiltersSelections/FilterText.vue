@@ -53,6 +53,7 @@ export default {
     change_value() {
       nextTick(() => {
         this.filterValue = this.item.value;
+        if (this.item.value == null) this.option = 0;
       });
     },
     emit_value() {

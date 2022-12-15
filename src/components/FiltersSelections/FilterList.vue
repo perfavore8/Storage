@@ -97,7 +97,7 @@ export default {
     handleFocusOut() {
       setTimeout(() => {
         nextTick(() => {
-          // this.show_selector = false;
+          this.show_selector = false;
         });
       }, 150);
     },
