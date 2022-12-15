@@ -22,7 +22,7 @@
             :options_props="options_1"
             @select="option_select_1"
             :selected_option="selected_option_1"
-            :disabled="oneC"
+            :disabled="oneC || true"
           />
         </div>
         <edit-item-fields
