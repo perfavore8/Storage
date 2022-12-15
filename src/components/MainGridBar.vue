@@ -24,7 +24,7 @@
               order.code === field[0] && order.prev_order === 'asc',
           }"
           @click="sort(field[0])"
-          v-if="field[1].sortable"
+          v-if="field[1].sortable && field[1].type != 9"
         ></button>
       </div>
     </th>
