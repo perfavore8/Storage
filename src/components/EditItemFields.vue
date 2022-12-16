@@ -104,7 +104,7 @@ import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
 import EditPrice from "@/components/EditItemSelections/EditPrice.vue";
 import EditWh from "@/components/EditItemSelections/EditWh.vue";
-import { nextTick } from "process";
+import { nextTick } from "vue";
 export default {
   components: {
     EditInteger,

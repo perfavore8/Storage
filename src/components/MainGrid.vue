@@ -118,7 +118,7 @@ import MainGridFilters from "@/components/MainGridFilters.vue";
 import MainGridBar from "@/components/MainGridBar.vue";
 import GridEditPrice from "@/components/GridEditPrice.vue";
 import { mapGetters } from "vuex";
-import { nextTick } from "process";
+import { nextTick } from "vue";
 export default {
   name: "Main_grid",
   components: {
@@ -252,8 +252,9 @@ export default {
         10;
       yDis ? (this.showArrow = true) : (this.showArrow = false);
     },
-    clearFilters() {
-      this.filters?.clearFilters();
+    async clearFilters() {
+      await this.filters?.clearFilters();
+      this.filters?.confirmFilters();
     },
     confirmFilters() {
       this.filters?.confirmFilters();
@@ -310,6 +311,7 @@ export default {
           by: code,
           order: order,
         },
+        filter: this.filters?.filter,
       };
       this.get_products(params);
     },

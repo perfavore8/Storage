@@ -198,7 +198,7 @@
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import ProductsCategoryRemoveModal from "@/components/ProductsCategoryRemoveModal.vue";
-import { nextTick } from "process";
+import { nextTick } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 export default {
   components: {

@@ -90,7 +90,7 @@
                 склада. Для загрузки данных нажмите на кнопку ЗАГРУЗИТЬ.
                 Загрузка может занять некоторое время.
               </p>
-              <button class="btn btn_yellow" @click="importOldData()">
+              <button class="btn btn_yellow" @click="importOldData('click')">
                 Загрузить
               </button>
             </template>
@@ -441,7 +441,7 @@ export default {
     await this.$store.dispatch("get_account");
     this.getWHS();
     this.setShowWhsArrow();
-    this.importOldData();
+    this.importOldData("start");
   },
   watch: {
     storeWhs() {
@@ -485,23 +485,28 @@ export default {
     selectWH(value) {
       this.selectedWH = value;
     },
-    async importOldData() {
+    async importOldData(a) {
       if (
         this.account?.is_exist_old_data &&
         !this.account?.is_old_data_loaded
       ) {
-        if (!this.account?.is_old_data_load_start)
+        if (!this.account?.is_old_data_load_start && a == "click")
           await this.$store.dispatch("importOldData");
-        this.$store.dispatch("get_account");
-        const interval = setInterval(async () => {
-          await this.$store.dispatch("get_account");
-          if (this.account?.is_old_data_loaded) {
-            clearInterval(interval);
-            this.getWHS();
-            this.clearFilters();
-            this.updateProducts();
-          }
-        }, 5000);
+        if (this.account?.is_old_data_load_start || a == "click") {
+          this.$store.dispatch("get_account");
+          const interval = setInterval(async () => {
+            await this.$store.dispatch("get_account");
+            if (
+              this.account?.is_old_data_loaded ??
+              !this.account?.is_old_data_load_start
+            ) {
+              clearInterval(interval);
+              this.getWHS();
+              this.clearFilters();
+              this.updateProducts();
+            }
+          }, 5000);
+        }
       }
     },
     async archive_data() {

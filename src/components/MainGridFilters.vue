@@ -92,6 +92,7 @@ export default {
       filtersValue: [],
       categories_options: [],
       isConfirmFilters: false,
+      filter: {},
     };
   },
   computed: {
@@ -125,18 +126,18 @@ export default {
         .forEach((val) => {
           if (val.type == 1 || val.type == 2)
             filter[val.code] = {
-              comapre: val.option,
+              compare: val.option,
               query: val.value,
             };
           if (val.type == 3 || val.type == 4)
             filter[val.code] = {
-              comapre: val.option,
+              compare: val.option,
               query: val.value,
             };
           if (val.type == 5 || val.type == 6 || val.type == 12)
             if (val.value?.length)
               filter[val.code] = {
-                comapre: "in",
+                compare: "in",
                 query: val.value,
               };
           if (val.type == 7) {
@@ -160,6 +161,7 @@ export default {
             };
           }
         });
+      this.filter = filter;
       this.$store.dispatch("get_products", { filter: filter });
     },
     change_filter_value(new_obj, idx) {
