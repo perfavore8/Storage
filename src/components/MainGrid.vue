@@ -308,7 +308,7 @@ export default {
     },
     sort(code, order) {
       const params = {
-        page: this.meta.current_page,
+        page: 1,
         sort: {
           by: code,
           order: order,
