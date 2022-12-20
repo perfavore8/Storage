@@ -238,7 +238,7 @@ export default {
         "getTableConfig",
         this.selectedWH.value != "whs" ? this.selectedWH.value : ""
       );
-      this.bar.dropOrder();
+      this.bar?.dropOrder();
       this.get_products();
     },
   },
