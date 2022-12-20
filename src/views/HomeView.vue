@@ -205,7 +205,7 @@
                   Документы
                 </div>
               </a>
-              <!-- <a>
+              <a>
                 <div
                   class="modal_container"
                   @click="openThirdPpartyIntegrations()"
@@ -215,7 +215,7 @@
               </a>
               <a>
                 <div class="modal_container">Настройки аккаунта</div>
-              </a> -->
+              </a>
             </div>
           </teleport>
         </transition>
