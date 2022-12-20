@@ -52,6 +52,8 @@
                       ? !!row.fields[item[0]]
                         ? "Да"
                         : "Нет"
+                      : item[0] == "cost_price"
+                      ? Math.round(row.fields[item[0]] * 100) / 100
                       : row.fields[item[0]]
                   }}
                 </span>
