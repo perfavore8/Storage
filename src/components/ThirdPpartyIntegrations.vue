@@ -22,7 +22,10 @@
             href=" https://www.amocrm.ru/oauth/?state=%7B%22external_source%22:%22gosklad%22%7D&client_id=d9322b36-0001-4269-bb61-976571e8a51a"
             target="blank"
           >
-            <button class="btn btn_dark_blue" :disabled="account?.g_install">
+            <button
+              class="btn btn_dark_blue"
+              :disabled="account?.g_install || true"
+            >
               {{ account?.g_install ? "Установлено" : "Установить" }}
             </button>
           </a>
