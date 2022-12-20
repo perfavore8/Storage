@@ -46,38 +46,6 @@
                 </label>
               </div>
             </div>
-            <div class="sync">
-              <label>Синхронизация товаров на складе с товарами amoCRM</label>
-              <div class="list">
-                <div class="label_input">
-                  <label>
-                    Выберите список товаров из amoCRM для синхронизации
-                  </label>
-                  <SelectorVue
-                    :options_props="copyProductLists"
-                    @select="
-                      (event) => optionSelectSync(event, 'amo_product_list')
-                    "
-                    :selected_option="selectedAmoProductList"
-                  />
-                </div>
-                <div class="label_input">
-                  <label>
-                    Скрытие штатной вкладки amoCRM с товарами. В штатной вкладке
-                    с товарами так же можно прикреплять товары к сделкам, но
-                    количество товара на складе учитываться учитываться не
-                    будет.
-                  </label>
-                  <SelectorVue
-                    :options_props="amoLeadsGroupHide"
-                    @select="
-                      (event) => optionSelectSync(event, 'amo_leads_group_hide')
-                    "
-                    :selected_option="selectedAmoLeadsGroupHide"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         <div class="content">
@@ -192,10 +160,6 @@ export default {
         },
       ],
       leadsDealsList: [],
-      copyProductLists: [],
-      selectedAmoProductList: { name: "Не выбрано", value: -1 },
-      amoLeadsGroupHide: [],
-      selectedAmoLeadsGroupHide: { name: "Не выбрано", value: -1 },
     };
   },
   async mounted() {
@@ -205,13 +169,8 @@ export default {
     this.copyPipelinesList = this.pipelinesList;
     await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
-    await this.$store.dispatch("getProductLists");
-    this.fillCopyProductLists();
     this.fillLeadsDealsList();
-    this.fillAmoLeadsGroupHide();
     this.searchSelectedPipelines();
-    this.searchSelectedAmoLeadsGroupHide();
-    this.searchSelectedAmoProductList();
     this.searchSelectedLeadsDeals();
   },
   computed: {
@@ -247,12 +206,6 @@ export default {
       });
       return list;
     },
-    productLists() {
-      return {
-        ...this.$store.state.account.productLists,
-        "-1": "Не выбрано",
-      };
-    },
   },
   methods: {
     log(value) {
@@ -274,15 +227,6 @@ export default {
       this.leadsDeals.map((val) => {
         if (val.code == code) val.selected = option;
       });
-    },
-    optionSelectSync(option, code) {
-      option.value == -1
-        ? (this.copyConfing[code] = "0")
-        : (this.copyConfing[code] = option.value);
-
-      if (code == "amo_leads_group_hide")
-        this.selectedAmoLeadsGroupHide = option;
-      if (code == "amo_product_list") this.selectedAmoProductList = option;
     },
     include(arr, value, code) {
       let res = false;
@@ -351,13 +295,7 @@ export default {
           );
       });
     },
-    fillCopyProductLists() {
-      const list = [];
-      Object.entries(this.productLists).forEach((val) =>
-        list.push({ name: val[1], value: val[0] })
-      );
-      this.copyProductLists = list;
-    },
+
     fillLeadsDealsList() {
       this.leadsDealsList.push({ name: "Не выбрано", value: -1 });
       this.copyLeadFieldsList.forEach((val) => {
@@ -367,24 +305,6 @@ export default {
         list.forEach((item) =>
           this.leadsDealsList.push({ ...item, optgroup: true })
         );
-      });
-    },
-    fillAmoLeadsGroupHide() {
-      this.amoLeadsGroupHide.push({ name: "Не выбрано", value: -1 });
-      this.copyLeadFieldsList.forEach((val) => {
-        this.amoLeadsGroupHide.push({ name: val.name, value: val.value });
-      });
-    },
-    searchSelectedAmoLeadsGroupHide() {
-      this.amoLeadsGroupHide.forEach((val) => {
-        if (val.value == this.copyConfing.amo_leads_group_hide)
-          this.selectedAmoLeadsGroupHide = val;
-      });
-    },
-    searchSelectedAmoProductList() {
-      this.copyProductLists.forEach((val) => {
-        if (val.value == this.copyConfing.amo_product_list)
-          this.selectedAmoProductList = val;
       });
     },
     searchSelectedLeadsDeals() {
@@ -452,43 +372,6 @@ export default {
             .permit {
               label {
                 @include font(400, 16px);
-              }
-            }
-          }
-          .sync {
-            label {
-              @include font(500, 16px);
-            }
-            .list {
-              padding: 15px;
-              border: 1px solid #c9c9c9;
-              border-radius: 5px;
-              margin-top: 10px;
-              display: flex;
-              flex-direction: column;
-              gap: 10px;
-              .label_input {
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-                label {
-                  @include font(400, 14px);
-                }
-
-                .v-select {
-                  width: calc(100% - 26px) !important;
-                  margin-right: 24px;
-                  :deep(.title) {
-                    width: 100% !important;
-                  }
-                  :deep(.options) {
-                    width: calc(100% + 24px) !important;
-                    text-align: left;
-                    p {
-                      width: calc(100% - 24px) !important;
-                    }
-                  }
-                }
               }
             }
           }

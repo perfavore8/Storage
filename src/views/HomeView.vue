@@ -192,11 +192,11 @@
                   Свойства товаров
                 </div>
               </a>
-              <a v-if="!oneC">
+              <!-- <a v-if="!oneC">
                 <div class="modal_container" @click="openSyncSettings()">
                   Настройки синхронизации товаров
                 </div>
-              </a>
+              </a> -->
               <a>
                 <div
                   class="modal_container"
@@ -205,7 +205,7 @@
                   Документы
                 </div>
               </a>
-              <a>
+              <!-- <a>
                 <div
                   class="modal_container"
                   @click="openThirdPpartyIntegrations()"
@@ -215,7 +215,7 @@
               </a>
               <a>
                 <div class="modal_container">Настройки аккаунта</div>
-              </a>
+              </a> -->
             </div>
           </teleport>
         </transition>
@@ -244,8 +244,8 @@
               type="date"
               id="start"
               name="trip-start"
-              value="2018-07-22"
-              min="2018-01-01"
+              :value="date"
+              min="2000-01-01"
               max="2032-12-31"
               aria-required="true"
               aria-invalid="false"
@@ -376,6 +376,19 @@ export default {
     };
   },
   computed: {
+    date() {
+      const date = new Date();
+
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      const year = date.getFullYear();
+
+      if (month < 10) month = "0" + month;
+      if (day < 10) day = "0" + day;
+
+      const today = year + "-" + month + "-" + day;
+      return today;
+    },
     show_modals() {
       return this.show_settings || this.disabled_for_modals;
     },
