@@ -7,11 +7,15 @@ const routes = [
     name: "home",
     component: () => import("../views/HomeView.vue"),
   },
-  // { path: "/", redirect: "/home" },
   {
     path: "/qwe",
     name: "qwe",
     component: () => import("../views/QweView.vue"),
+  },
+  {
+    path: "/authorization",
+    name: "authorization",
+    component: () => import("../views/AuthView.vue"),
   },
   {
     path: "/archive",
