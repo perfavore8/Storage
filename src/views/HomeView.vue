@@ -130,7 +130,7 @@
           <a class="links">Выгрузка в эксель</a>
         </div> -->
         <template v-if="isTest">
-          <div class="ref" v-if="!oneC">
+          <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
             <!-- <div
             class="ref_2_logo"
             :class="{ ref_2_logo_fill: show_sync }"
@@ -153,12 +153,12 @@
                 >
                   <a>
                     <div class="modal_container">
-                      Синхронизировать товары amoCRM -> Склад
+                      Синхронизировать товары amoCRM -> GoСклад
                     </div>
                   </a>
                   <a>
                     <div class="modal_container">
-                      Синхронизировать товары Склад -> amoCRM
+                      Синхронизировать товары GoСклад -> amoCRM
                     </div>
                   </a>
                 </div>
@@ -314,7 +314,6 @@
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
-            :disabled="isServicePage"
             v-if="!oneC"
           >
             Новая позиция
@@ -457,6 +456,12 @@ export default {
     },
     isTest() {
       return this.$store.state.account?.account?.id == 1;
+    },
+    is_empty_amo_product_list() {
+      return (
+        !this.account?.config?.amo_product_list ||
+        this.account?.config?.amo_product_list == "-1"
+      );
     },
   },
   async mounted() {
