@@ -7,7 +7,7 @@
     <div class="bgc">
       <div class="container">
         <div class="header">
-          <label>Настройки синхронизации склада с товарами amoCRM</label>
+          <label>Настройки синхронизации GoСклад с товарами amoCRM</label>
           <btns-save-close @close="close" @save="save">
             <template v-slot:close>Назад</template>
             <template v-slot:other_btns v-if="false">
@@ -37,7 +37,7 @@
                 <label>
                   Скрытие штатной вкладки amoCRM с товарами. В штатной вкладке с
                   товарами так же можно прикреплять товары к сделкам, но
-                  количество товара на складе учитываться учитываться не будет.
+                  количество товара на GoСклад учитываться не будет.
                 </label>
                 <SelectorVue
                   :options_props="amoLeadsGroupHide"
@@ -50,7 +50,7 @@
             </div>
           </div>
           <template v-if="selectedAmoProductList.value != -1">
-            <div class="product_comparison">
+            <!-- <div class="product_comparison">
               <h6>Поля сравнения товаров</h6>
               <div class="radio_btns">
                 <div
@@ -70,7 +70,7 @@
                   <label :for="field.name">{{ field.name }}</label>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div class="autosync">
               <div
                 class="list"
@@ -89,25 +89,26 @@
                     :id="item.id + autosync.value"
                     v-model="item[autosync.value]"
                   />
-                  <label :for="item.id + autosync.value">{{
-                    item.label
-                  }}</label>
+                  <label :for="item.id + autosync.value">
+                    {{ item.label }}
+                  </label>
                 </div>
               </div>
             </div>
             <div class="fields">
               <h6>
                 Настройка соответствий полей amoCRM-товаров и свойств товаров на
-                складе
+                GoСклад
               </h6>
-              <p class="small">
+              <!-- <p class="small">
                 Для работы синхронизации необходимо, что бы в товарах amoCRM
                 было свойство артикул и что бы это поле было привязано к
-                артикулу товара на складе
-              </p>
+                артикулу товара на GoСклад
+              </p> -->
               <div class="row">
                 <span>Имя поля amoCRM-товара</span>
-                <span>Имя поля товара на складе</span>
+                <span>Имя поля товара на GoСклад</span>
+                <span class="center">Сравнение</span>
               </div>
               <div
                 class="row"
@@ -127,6 +128,16 @@
                   :selected_option="field.selected"
                   :disabled="field.disabled"
                 />
+                <div class="checkbox_input">
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    :id="field.field"
+                    v-model="field.product_comparison"
+                    :disabled="field?.product_comparison_disabled"
+                  />
+                  <label :for="field.field"></label>
+                </div>
               </div>
             </div>
           </template>
@@ -178,13 +189,13 @@ export default {
           id: 1,
           productValue: false,
           listProductValue: false,
-          label: "склад -> амо",
+          label: "GoСклад -> amoCRM",
         },
         {
           id: 2,
           productValue: false,
           listProductValue: false,
-          label: "амо -> склад",
+          label: "amoCRM -> GoСклад",
         },
       ],
       autosyncValues: [
@@ -209,10 +220,14 @@ export default {
 
     this.searchSelectedAmoProductList();
     this.searchSelectedAmoLeadsGroupHide();
+    this.searchAutosyncProducts();
   },
   computed: {
     height() {
       return document.documentElement.scrollHeight;
+    },
+    account() {
+      return this.$store.state.account.account;
     },
     productLists() {
       return this.$store.state.account.productLists;
@@ -235,16 +250,32 @@ export default {
   methods: {
     save() {
       const params = {
-        sync_products_fields: [],
+        auto_sync_products_gs_amo: this.autosyncProducts[0].productValue
+          ? 1
+          : 0,
+        auto_sync_products_amo_gs: this.autosyncProducts[1].productValue
+          ? 1
+          : 0,
+        auto_sync_orders_gs_amo: this.autosyncProducts[0].listProductValue
+          ? 1
+          : 0,
+        auto_sync_orders_amo_gs: this.autosyncProducts[1].listProductValue
+          ? 1
+          : 0,
       };
-      this.copySyncFields.amoFields.forEach((val) =>
-        val.selected.value != -1
-          ? params.sync_products_fields.push({
-              field: val.field,
-              value: val.selected.value,
-            })
-          : null
-      );
+      if (this.selectedAmoProductList.value != -1) {
+        const list = [];
+        this.copySyncFields.amoFields.forEach((val) =>
+          val.selected.value != -1
+            ? list.push({
+                field: val.field,
+                value: val.selected.value,
+                compare: val.product_comparison ? 1 : 0,
+              })
+            : null
+        );
+        if (list.length) params.sync_products_fields = list;
+      }
 
       this.$store.dispatch(
         "update_account",
@@ -273,7 +304,10 @@ export default {
               const items = this.copySyncFields.fields.filter(
                 (value) => value.value == field.value
               );
-              if (items.length) val.selected = items[0];
+              if (items.length) {
+                val.selected = items[0];
+                val.product_comparison = !!field?.compare;
+              }
             }
           }
         );
@@ -298,6 +332,7 @@ export default {
           field: val[0],
           selected: { name: "Не выбрано", value: -1 },
           disabled: 0,
+          product_comparison: false,
         })
       );
       this.copySyncFields.amoFields = newAmoFields;
@@ -337,6 +372,16 @@ export default {
         if (val.value == this.copyConfing.amo_leads_group_hide)
           this.selectedAmoLeadsGroupHide = val;
       });
+    },
+    searchAutosyncProducts() {
+      this.autosyncProducts[0].productValue =
+        !!this.account?.config?.auto_sync_products_gs_amo;
+      this.autosyncProducts[1].productValue =
+        !!this.account?.config?.auto_sync_products_amo_gs;
+      this.autosyncProducts[0].listProductValue =
+        !!this.account?.config?.auto_sync_orders_gs_amo;
+      this.autosyncProducts[1].listProductValue =
+        !!this.account?.config?.auto_sync_orders_amo_gs;
     },
 
     selectProductComparisonField(field) {
@@ -502,12 +547,23 @@ export default {
         .fields {
           .row {
             display: grid;
-            grid-template-columns: minmax(50%, 2fr) minmax(50%, 1fr);
+            grid-template-columns: minmax(40%, 2fr) minmax(45%, 1fr) minmax(
+                10%,
+                1fr
+              );
             gap: 16px;
             padding: 6px 12px;
             border-bottom: 1px solid #dee2e6;
             .selector {
               width: calc(100% - 16px);
+            }
+            .checkbox_input {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .center {
+              text-align: center;
             }
           }
         }
