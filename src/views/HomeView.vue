@@ -192,11 +192,13 @@
                   Свойства товаров
                 </div>
               </a>
-              <!-- <a v-if="!oneC">
-                <div class="modal_container" @click="openSyncSettings()">
-                  Настройки синхронизации товаров
-                </div>
-              </a> -->
+              <template v-if="isTest">
+                <a v-if="!oneC">
+                  <div class="modal_container" @click="openSyncSettings()">
+                    Настройки синхронизации товаров
+                  </div>
+                </a>
+              </template>
               <a>
                 <div
                   class="modal_container"
@@ -448,6 +450,9 @@ export default {
     },
     storeWhs() {
       return this.$store.state.account.account.whs;
+    },
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
     },
   },
   async mounted() {
