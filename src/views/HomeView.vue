@@ -129,39 +129,43 @@
           <div class="ref_1_logo"></div>
           <a class="links">Выгрузка в эксель</a>
         </div> -->
-        <div class="ref" v-if="!oneC && false">
-          <!-- <div
+        <template v-if="isTest">
+          <div class="ref" v-if="!oneC">
+            <!-- <div
             class="ref_2_logo"
             :class="{ ref_2_logo_fill: show_sync }"
             @click.stop="open_close_sync()"
           ></div> -->
-          <button class="ref_2_logo btn" @click.stop="open_close_sync()">
+            <button class="ref_2_logo btn" @click.stop="open_close_sync()">
+              <transition name="modal">
+                <span class="material-icons" v-if="show_sync">
+                  cloud_sync
+                </span>
+                <span class="material-icons-outlined" v-else> cloud_sync </span>
+              </transition>
+            </button>
             <transition name="modal">
-              <span class="material-icons" v-if="show_sync"> cloud_sync </span>
-              <span class="material-icons-outlined" v-else> cloud_sync </span>
+              <teleport to="body">
+                <div
+                  v-if="show_sync"
+                  class="modal_settings modal_sync"
+                  @click.stop="open_close_sync()"
+                >
+                  <a>
+                    <div class="modal_container">
+                      Синхронизировать товары amoCRM -> Склад
+                    </div>
+                  </a>
+                  <a>
+                    <div class="modal_container">
+                      Синхронизировать товары Склад -> amoCRM
+                    </div>
+                  </a>
+                </div>
+              </teleport>
             </transition>
-          </button>
-          <transition name="modal">
-            <teleport to="body">
-              <div
-                v-if="show_sync"
-                class="modal_settings modal_sync"
-                @click.stop="open_close_sync()"
-              >
-                <a>
-                  <div class="modal_container">
-                    Синхронизировать товары amoCRM -> Склад
-                  </div>
-                </a>
-                <a>
-                  <div class="modal_container">
-                    Синхронизировать товары Склад -> amoCRM
-                  </div>
-                </a>
-              </div>
-            </teleport>
-          </transition>
-        </div>
+          </div>
+        </template>
         <button
           class="settings_btn"
           :class="{ settings_btn_rotate: show_settings }"
