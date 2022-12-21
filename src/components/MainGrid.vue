@@ -214,7 +214,6 @@ export default {
       return this.$refs.bar;
     },
     showGridBottom() {
-      console.log(this.meta);
       return this.meta.meta.total >= this.meta.meta.per_page;
     },
     table() {

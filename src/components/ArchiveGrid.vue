@@ -96,7 +96,6 @@ export default {
       return this.$store.state.products.products;
     },
     showGridBottom() {
-      console.log(this.meta);
       return this.meta.meta.total >= this.meta.meta.per_page;
     },
   },
