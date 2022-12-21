@@ -6,10 +6,6 @@
         disabled_for_modals ||
         (account?.is_old_data_load_start && !account?.is_old_data_loaded),
     }"
-    @click="
-      show_settings ? close_settings() : null;
-      show_sync ? close_sync() : null;
-    "
   >
     <div v-if="show_table_settings" class="table_setings">
       <table-settings :selectedWH="selectedWH" />
@@ -154,22 +150,24 @@
             </button>
             <transition name="modal">
               <teleport to="body">
-                <div
-                  v-if="show_sync"
-                  class="modal_settings modal_sync"
-                  @click.stop="open_close_sync()"
-                >
-                  <a>
-                    <div class="modal_container" @click="syncAmoGs()">
-                      Синхронизировать товары amoCRM -> GoСклад
-                    </div>
-                  </a>
-                  <a>
-                    <div class="modal_container" @click="syncGsAmo()">
-                      Синхронизировать товары GoСклад -> amoCRM
-                    </div>
-                  </a>
-                </div>
+                <template v-if="show_sync">
+                  <div class="backdrop" @click="open_close_sync()" />
+                  <div
+                    class="modal_settings modal_sync"
+                    @click.stop="open_close_sync()"
+                  >
+                    <a>
+                      <div class="modal_container" @click="syncAmoGs()">
+                        Синхронизировать товары amoCRM -> GoСклад
+                      </div>
+                    </a>
+                    <a>
+                      <div class="modal_container" @click="syncGsAmo()">
+                        Синхронизировать товары GoСклад -> amoCRM
+                      </div>
+                    </a>
+                  </div>
+                </template>
               </teleport>
             </transition>
           </div>
@@ -183,54 +181,56 @@
         </button>
         <transition name="modal">
           <teleport to="body">
-            <div
-              v-show="show_settings"
-              class="modal_settings"
-              @click="close_settings()"
-            >
-              <a>
-                <div class="modal_container" @click="open_edit_stuff()">
-                  Общие настройки
-                </div>
-              </a>
-              <a>
-                <div class="modal_container" @click="open_product_category()">
-                  Категории товаров
-                </div>
-              </a>
-
-              <a>
-                <div class="modal_container" @click="open_product_properties()">
-                  Свойства товаров
-                </div>
-              </a>
-              <template v-if="isTest">
-                <a v-if="!oneC">
-                  <div class="modal_container" @click="openSyncSettings()">
-                    Настройки синхронизации товаров
+            <template v-if="show_settings">
+              <div class="backdrop" @click="close_settings()" />
+              <div class="modal_settings" @click="close_settings()">
+                <a>
+                  <div class="modal_container" @click="open_edit_stuff()">
+                    Общие настройки
                   </div>
                 </a>
-              </template>
-              <a>
-                <div
-                  class="modal_container"
-                  @click="open_close_show_document_setting(true)"
-                >
-                  Документы
-                </div>
-              </a>
-              <a>
-                <div
-                  class="modal_container"
-                  @click="openThirdPpartyIntegrations()"
-                >
-                  Интеграции
-                </div>
-              </a>
-              <a>
-                <div class="modal_container">Настройки аккаунта</div>
-              </a>
-            </div>
+                <a>
+                  <div class="modal_container" @click="open_product_category()">
+                    Категории товаров
+                  </div>
+                </a>
+
+                <a>
+                  <div
+                    class="modal_container"
+                    @click="open_product_properties()"
+                  >
+                    Свойства товаров
+                  </div>
+                </a>
+                <template v-if="isTest">
+                  <a v-if="!oneC">
+                    <div class="modal_container" @click="openSyncSettings()">
+                      Настройки синхронизации товаров
+                    </div>
+                  </a>
+                </template>
+                <a>
+                  <div
+                    class="modal_container"
+                    @click="open_close_show_document_setting(true)"
+                  >
+                    Документы
+                  </div>
+                </a>
+                <a>
+                  <div
+                    class="modal_container"
+                    @click="openThirdPpartyIntegrations()"
+                  >
+                    Интеграции
+                  </div>
+                </a>
+                <a>
+                  <div class="modal_container">Настройки аккаунта</div>
+                </a>
+              </div>
+            </template>
           </teleport>
         </transition>
       </div>
