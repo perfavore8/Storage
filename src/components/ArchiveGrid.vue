@@ -58,6 +58,7 @@
       :page="meta.meta.current_page"
       :show="archive_list.length != 0"
       :count="meta.meta.per_page"
+      v-if="showGridBottom"
       @changePage="changePage"
       @changeCount="changeCount"
     />
@@ -93,6 +94,10 @@ export default {
     },
     archive_list() {
       return this.$store.state.products.products;
+    },
+    showGridBottom() {
+      console.log(this.meta);
+      return this.meta.meta.total >= this.meta.meta.per_page;
     },
   },
   watch: {},

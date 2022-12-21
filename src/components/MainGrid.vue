@@ -106,6 +106,7 @@
       :blur="show_edit_modal"
       :show="products.length != 0"
       :count="count"
+      v-if="showGridBottom"
       @changePage="changePage"
       @changeCount="changeCount"
     />
@@ -211,6 +212,10 @@ export default {
     },
     bar() {
       return this.$refs.bar;
+    },
+    showGridBottom() {
+      console.log(this.meta);
+      return this.meta.meta.total >= this.meta.meta.per_page;
     },
     table() {
       return this.$refs.table;
