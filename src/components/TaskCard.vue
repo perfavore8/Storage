@@ -36,7 +36,7 @@ export default {
     position: relative;
     width: 100%;
     height: 12px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     .active_bar {
       max-width: 100%;
