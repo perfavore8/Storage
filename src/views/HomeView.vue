@@ -318,7 +318,11 @@
           >
             Новая позиция
           </button>
-          <button class="sync_icon btn" @click="updateProducts()">
+          <button
+            class="sync_icon btn"
+            :disabled="isUpdateProducts"
+            @click="updateProducts()"
+          >
             <span class="material-icons-outlined"> sync </span>
           </button>
         </div>
@@ -378,6 +382,7 @@ export default {
       currentItems: [],
       whsFull: true,
       showWhsArrow: true,
+      isUpdateProducts: false,
     };
   },
   computed: {
@@ -612,6 +617,10 @@ export default {
       this.$router.push("/" + page_name);
     },
     updateProducts() {
+      this.isUpdateProducts = true;
+      setTimeout(() => {
+        this.isUpdateProducts = false;
+      }, 2250);
       this.ref_main?.changePage(
         this.$store.state.products.meta.meta.current_page
       );
@@ -949,6 +958,18 @@ export default {
       }
       .sync_icon:hover {
         transform: rotateZ(90deg) scaleX(-1);
+      }
+      .sync_icon:disabled,
+      .sync_icon:disabled:hover {
+        @keyframes rotating {
+          from {
+            transform: rotate(0deg) scaleX(-1);
+          }
+          to {
+            transform: rotate(360deg) scaleX(-1);
+          }
+        }
+        animation: rotating 0.75s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
       }
       .btns {
         display: flex;

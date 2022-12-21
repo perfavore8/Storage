@@ -7,7 +7,7 @@
       <GridEditPrice
         v-if="showEditPrice"
         :editPrice="editPrice"
-        @close="get_products()"
+        @close="get_products(productsParams)"
       />
     </teleport>
     <label v-if="products.length == 0" class="text"> Ничего не найдено </label>
@@ -159,7 +159,7 @@ export default {
       this.selectedWH.value != "whs" ? this.selectedWH.value : ""
     );
     await this.$store.dispatch("get_all_fields");
-    await this.get_products();
+    await this.get_products(this.productsParams);
     this.setSelectedProducts();
   },
 
@@ -215,6 +215,9 @@ export default {
     table() {
       return this.$refs.table;
     },
+    productsParams() {
+      return this.$store.state.products.productsParams;
+    },
     ...mapGetters(["show_edit_modal"]),
   },
 
@@ -239,7 +242,7 @@ export default {
         this.selectedWH.value != "whs" ? this.selectedWH.value : ""
       );
       this.bar?.dropOrder();
-      this.get_products();
+      this.get_products(this.productsParams);
     },
   },
 
@@ -270,12 +273,16 @@ export default {
       return res;
     },
     async changeCount(count) {
+      this.setTrueIsConfirmFilters();
       await this.$store.dispatch("update_user", { per_page: count });
-      this.changePage(this.meta.current_page);
+      // this.changePage(this.meta.current_page);
+      this.drop_page();
     },
     changePage(val) {
+      this.setTrueIsConfirmFilters();
       const params = { page: val };
-      this.get_products(params);
+      this.$store.commit("updateProductsParams", params);
+      this.get_products(this.productsParams);
     },
     setSelectedProducts() {
       this.selectedProducts = [];
@@ -293,6 +300,7 @@ export default {
       this.changePage(1);
     },
     open_edit_modal(row) {
+      this.setTrueIsConfirmFilters();
       this.edit_data = { ...row };
       this.$store.commit("open_edit_modal", row.fields.category);
     },
@@ -306,16 +314,20 @@ export default {
       };
       this.$store.commit("openCloseEditPrice", true);
     },
+    setTrueIsConfirmFilters() {
+      nextTick(() => this.filters?.setTrueIsConfirmFilters());
+    },
     sort(code, order) {
+      this.setTrueIsConfirmFilters();
       const params = {
         page: 1,
         sort: {
           by: code,
           order: order,
         },
-        filter: this.filters?.filter,
       };
-      this.get_products(params);
+      this.$store.commit("updateProductsParams", params);
+      this.get_products(this.productsParams);
     },
   },
 };

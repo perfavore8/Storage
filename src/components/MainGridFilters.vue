@@ -100,6 +100,9 @@ export default {
     oneC() {
       return this.$store.state.account.account?.config?.g_enabled;
     },
+    productsParams() {
+      return this.$store.state.products.productsParams;
+    },
   },
   async mounted() {
     await this.$store.dispatch("get_fields_properties");
@@ -162,13 +165,17 @@ export default {
           }
         });
       this.filter = filter;
-      this.$store.dispatch("get_products", { filter: filter });
+      this.$store.commit("updateProductsParams", { filter: filter, page: 1 });
+      this.$store.dispatch("get_products", this.productsParams);
     },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
     },
     setFalseIsConfirmFilters() {
       this.isConfirmFilters = false;
+    },
+    setTrueIsConfirmFilters() {
+      this.isConfirmFilters = true;
     },
     feelFilters() {
       this.filtersValue = [];

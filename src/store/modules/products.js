@@ -7,6 +7,11 @@ export default {
       links: {},
       meta: {},
     },
+    productsParams: {
+      page: 1,
+      filter: {},
+      sort: {},
+    },
   },
   getters: {},
   mutations: {
@@ -18,6 +23,9 @@ export default {
     },
     update_meta(state, value) {
       state.meta = { ...value };
+    },
+    updateProductsParams(state, params) {
+      Object.assign(state.productsParams, params);
     },
   },
   actions: {
