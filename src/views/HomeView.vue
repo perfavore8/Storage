@@ -125,17 +125,25 @@
         </div>
       </div>
       <div class="header_right">
-        <!-- <div class="ref">
-          <div class="ref_1_logo"></div>
-          <a class="links">Выгрузка в эксель</a>
-        </div> -->
+        <template v-if="isTest">
+          <div class="ref">
+            <button class="ref_2_logo btn" @click.stop="openTaskCenter()">
+              <span class="material-icons"> splitscreen </span>
+            </button>
+            <transition name="modal">
+              <teleport to="body">
+                <div class="tasks">
+                  <TaskCenter
+                    @close="closeTaskCenter()"
+                    v-if="showTaskCenter"
+                  />
+                </div>
+              </teleport>
+            </transition>
+          </div>
+        </template>
         <template v-if="isTest">
           <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
-            <!-- <div
-            class="ref_2_logo"
-            :class="{ ref_2_logo_fill: show_sync }"
-            @click.stop="open_close_sync()"
-          ></div> -->
             <button class="ref_2_logo btn" @click.stop="open_close_sync()">
               <transition name="modal">
                 <span class="material-icons" v-if="show_sync">
@@ -152,12 +160,12 @@
                   @click.stop="open_close_sync()"
                 >
                   <a>
-                    <div class="modal_container">
+                    <div class="modal_container" @click="syncAmoGs()">
                       Синхронизировать товары amoCRM -> GoСклад
                     </div>
                   </a>
                   <a>
-                    <div class="modal_container">
+                    <div class="modal_container" @click="syncGsAmo()">
                       Синхронизировать товары GoСклад -> amoCRM
                     </div>
                   </a>
@@ -346,6 +354,7 @@ import DocumentSetting from "@/components/DocumentSetting.vue";
 import ProductCategory from "@/components/ProductCategory.vue";
 import ProductProperties from "@/components/ProductProperties.vue";
 import ThirdPpartyIntegrations from "@/components/ThirdPpartyIntegrations.vue";
+import TaskCenter from "@/components/TaskCenter.vue";
 import SyncSettings from "@/components/SyncSattings.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
@@ -364,6 +373,7 @@ export default {
     ProductProperties,
     ThirdPpartyIntegrations,
     SyncSettings,
+    TaskCenter,
     // SelectorVue,
   },
   provide() {
@@ -437,6 +447,7 @@ export default {
       "showThirdPpartyIntegrations",
       "showSyncSettings",
       "showEditPrice",
+      "showTaskCenter",
     ]),
     totalCountProducts() {
       return this.$store.state.products.meta.meta.total;
@@ -577,6 +588,12 @@ export default {
     dropCurrentItems() {
       this.currentItems = [];
     },
+    syncAmoGs() {
+      this.$store.dispatch("syncAmoGs");
+    },
+    syncGsAmo() {
+      this.$store.dispatch("syncGsAmo");
+    },
     open_close_new_position(value) {
       this.$store.commit("open_close_new_position", value);
     },
@@ -594,6 +611,12 @@ export default {
     },
     open_close_sync() {
       this.$store.commit("open_close_sync");
+    },
+    openTaskCenter() {
+      this.$store.commit("openCloseTaskCenter", true);
+    },
+    closeTaskCenter() {
+      this.$store.commit("openCloseTaskCenter", false);
     },
     open_edit_stuff() {
       this.$store.commit("open_close_show_edit_stuff", true);
@@ -788,6 +811,7 @@ export default {
       align-items: center;
       max-height: 18px;
       gap: 8px;
+      position: relative;
       .ref_1_logo {
         width: 18px;
         height: 18px;
@@ -1181,9 +1205,24 @@ export default {
   display: flex;
   align-items: center;
   text-align: left;
-  height: 30px;
+  // height: 30px;
   cursor: pointer;
   padding: 5px 15px;
   @include font(400, 16px, 22px);
+}
+.backdrop {
+  background-color: transparent;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+}
+.tasks {
+  position: absolute;
+  top: 48px;
+  right: 64px;
+  width: fit-content;
 }
 </style>

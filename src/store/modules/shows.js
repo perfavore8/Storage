@@ -16,6 +16,7 @@ export default {
     showSyncSettings: false,
     showThirdPpartyIntegrations: false,
     showEditPrice: false,
+    showTaskCenter: false,
   },
   getters: {
     show_edit_modal(state) {
@@ -65,6 +66,9 @@ export default {
     },
     showEditPrice(state) {
       return state.showEditPrice;
+    },
+    showTaskCenter(state) {
+      return state.showTaskCenter;
     },
   },
   mutations: {
@@ -125,6 +129,9 @@ export default {
     },
     openCloseEditPrice(state, value) {
       state.showEditPrice = value;
+    },
+    openCloseTaskCenter(state, value) {
+      state.showTaskCenter = value;
     },
   },
   actions: {},

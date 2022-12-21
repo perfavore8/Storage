@@ -7,6 +7,7 @@ import products from "./modules/products";
 import documents from "./modules/documents";
 import account from "./modules/account";
 import analytics from "./modules/analytics";
+import tasks from "./modules/tasks";
 
 export default createStore({
   modules: {
@@ -18,5 +19,6 @@ export default createStore({
     documents,
     account,
     analytics,
+    tasks,
   },
 });
