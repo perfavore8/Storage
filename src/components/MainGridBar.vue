@@ -11,6 +11,7 @@
               '%',
       }"
       v-for="(field, idx) in sortedFields"
+      @click="field[1].sortable && field[1].type != 9 ? sort(field[0]) : null"
       :key="field"
     >
       <div class="bar_item_group">
@@ -23,7 +24,6 @@
             bar_item_icon_down:
               order.code === field[0] && order.prev_order === 'asc',
           }"
-          @click="sort(field[0])"
           v-if="field[1].sortable && field[1].type != 9"
         ></button>
       </div>
@@ -135,7 +135,11 @@ export default {
     @include font(500, 16px, 19px);
     color: #000000;
     vertical-align: middle;
+    text-align: center;
     cursor: pointer;
+    label {
+      cursor: inherit;
+    }
 
     .bar_item_group {
       display: flex;
