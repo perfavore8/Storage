@@ -70,9 +70,9 @@ export default {
     preparing_field_data(arr) {
       const result = [];
       if (arr)
-        arr[0].name
+        arr[0]?.name
           ? arr.forEach((val) =>
-              result.push({ name: val.name, value: val.value })
+              result.push({ name: val.name, value: val?.value })
             )
           : arr.forEach((val, idx) => result.push({ name: val, value: idx }));
       return result;
