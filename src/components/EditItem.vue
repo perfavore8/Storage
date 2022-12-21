@@ -64,6 +64,9 @@ export default {
     oneC() {
       return this.$store.state.account.account?.config?.g_enabled;
     },
+    productsParams() {
+      return this.$store.state.products.productsParams;
+    },
   },
   data() {
     return {
@@ -99,7 +102,7 @@ export default {
       await this.$store.dispatch("update_product", {
         products: [this.new_edit_data],
       });
-      this.$store.dispatch("get_products");
+      this.$store.dispatch("get_products", this.productsParams);
       this.close();
     },
   },
