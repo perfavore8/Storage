@@ -125,7 +125,7 @@
                 />
                 <SelectorVue
                   class="selector"
-                  :options_props="copySyncFields.fields"
+                  :options_props="field.fields"
                   @select="(option) => select(option, idx)"
                   :selected_option="field.selected"
                   :disabled="field.disabled"
@@ -303,7 +303,7 @@ export default {
         this.$store.state.account.account?.config?.sync_products_fields.forEach(
           (field) => {
             if (field.field == val.field) {
-              const items = this.copySyncFields.fields.filter(
+              const items = this.copySyncFields.fields[val.type].filter(
                 (value) => value.value == field.value
               );
               if (items.length) {
@@ -320,17 +320,22 @@ export default {
 
       const fields = list.fields;
       const newFields = [];
-      newFields.push({ name: "Не выбрано", value: -1 });
-      Object.entries(fields).forEach((val) =>
-        newFields.push({ name: val[1], value: val[0] })
-      );
+      Object.entries(fields).forEach((val) => {
+        const list = [{ name: "Не выбрано", value: -1 }];
+        Object.entries(val[1]).forEach((field) =>
+          list.push({ name: field[1], value: field[0] })
+        );
+        newFields[val[0]] = list;
+      });
       this.copySyncFields.fields = newFields;
 
       const amo_fields = list.amo_fields;
       const newAmoFields = [];
       Object.entries(amo_fields).forEach((val) =>
         newAmoFields.push({
-          name: val[1],
+          name: val[1].name,
+          type: val[1].type,
+          fields: newFields[val[1].type],
           field: val[0],
           selected: { name: "Не выбрано", value: -1 },
           disabled: 0,
