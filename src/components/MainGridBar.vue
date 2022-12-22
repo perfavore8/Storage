@@ -30,7 +30,11 @@
     </th>
     <th class="bar_item item" style="min-width: 20px">
       <div>
-        <button class="settings_btn" @click="openTableSettings()"></button>
+        <button
+          class="settings_btn"
+          @click="openTableSettings()"
+          title="Настройка таблицы"
+        ></button>
       </div>
     </th>
   </tr>

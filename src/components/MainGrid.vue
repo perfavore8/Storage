@@ -92,11 +92,16 @@
                   style="width: 16px; heigth: 16px"
                   v-if="item[0].split('.')[1] == 'cost'"
                   @click="openGridEditPrice(row, item[0].split('.')[0])"
+                  title="Редактирование цены"
                 ></button>
               </td>
             </template>
             <td class="item">
-              <div class="edit_icon" @click="open_edit_modal(row)"></div>
+              <div
+                class="edit_icon"
+                @click="open_edit_modal(row)"
+                title="Редактирование товара"
+              ></div>
             </td>
           </tr>
         </tbody>

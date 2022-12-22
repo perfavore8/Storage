@@ -44,7 +44,11 @@
             </template>
           </template>
           <td class="item">
-            <div class="edit_icon" @click="unarchive_data(item)">
+            <div
+              class="edit_icon"
+              @click="unarchive_data(item)"
+              title="Разархивирование товара"
+            >
               <span class="material-icons"> ios_share </span>
             </div>
           </td>
