@@ -44,14 +44,6 @@
                 </button>
               </div>
             </teleport>
-            <teleport
-              :to="target_hovered_category"
-              v-if="target_hovered_category !== null"
-            >
-              <p class="tooltip_teleport">
-                {{ hovered_category_text[hovered_category?.type] }}
-              </p>
-            </teleport>
           </div>
         </div>
         <div class="content">
@@ -70,18 +62,7 @@
               :class="{ darag: isDragged == idx }"
             >
               <div class="input_name">
-                <div
-                  @mouseenter="hovered_category = { id: item.id, type: 'name' }"
-                  @mouseleave="target_hovered_category = null"
-                  :ref="
-                    (el) =>
-                      item.id === hovered_category?.id &&
-                      hovered_category.type == 'name'
-                        ? (target_hovered_category = el)
-                        : null
-                  "
-                  class="text_block"
-                >
+                <div title="Изменение названия категории" class="text_block">
                   <input
                     type="text"
                     class="input"
@@ -97,17 +78,7 @@
                     all_old?.id?.includes(item.id)
                   "
                   class="btns"
-                  @mouseenter="
-                    hovered_category = { id: item.id, type: 'apply' }
-                  "
-                  @mouseleave="target_hovered_category = null"
-                  :ref="
-                    (el) =>
-                      item.id === hovered_category?.id &&
-                      hovered_category.type == 'apply'
-                        ? (target_hovered_category = el)
-                        : null
-                  "
+                  title="Сохраняет название категории"
                 >
                   <div
                     class="btn"
@@ -121,17 +92,7 @@
                     all_old?.id?.includes(item.id)
                   "
                   class="btns"
-                  @mouseenter="
-                    hovered_category = { id: item.id, type: 'prevname' }
-                  "
-                  @mouseleave="target_hovered_category = null"
-                  :ref="
-                    (el) =>
-                      item.id === hovered_category?.id &&
-                      hovered_category.type == 'prevname'
-                        ? (target_hovered_category = el)
-                        : null
-                  "
+                  title="Возвращает изначальное название"
                 >
                   <div class="rename btn"></div>
                 </button>
@@ -146,17 +107,7 @@
                       : true)
                   "
                   class="btns"
-                  @mouseenter="
-                    hovered_category = { id: item.id, type: 'delete' }
-                  "
-                  @mouseleave="target_hovered_category = null"
-                  :ref="
-                    (el) =>
-                      item.id === hovered_category?.id &&
-                      hovered_category.type == 'delete'
-                        ? (target_hovered_category = el)
-                        : null
-                  "
+                  title="Удаление категории"
                 >
                   <div class="remove btn"></div>
                 </button>
@@ -166,15 +117,9 @@
                   class="btns"
                   :ref="
                     (el) =>
-                      item.id === selected_category_id
-                        ? (target = el)
-                        : item.id === hovered_category?.id &&
-                          hovered_category.type == 'add'
-                        ? (target_hovered_category = el)
-                        : null
+                      item.id === selected_category_id ? (target = el) : null
                   "
-                  @mouseenter="hovered_category = { id: item.id, type: 'add' }"
-                  @mouseleave="target_hovered_category = null"
+                  title="Добавлние новой подкатегории"
                 >
                   <div class="add btn"></div>
                 </button>
@@ -210,9 +155,7 @@ export default {
     return {
       fields_cat_name: "",
       selected_category_id: null,
-      hovered_category: null,
       target: null,
-      target_hovered_category: null,
       all_old: {},
       isDragged: null,
       confirm: false,
@@ -220,13 +163,6 @@ export default {
         show: false,
         id: null,
         level: null,
-      },
-      hovered_category_text: {
-        name: "Изменение названия категории",
-        apply: "Сохраняет название категории",
-        prevname: "Возвращает изначальное название",
-        delete: "Удаление категории",
-        add: "Добавлние новой подкатегории",
       },
     };
   },
@@ -251,9 +187,6 @@ export default {
         });
       },
       deep: true,
-    },
-    target_hovered_category() {
-      // console.log(this.hovered_category, this.target_hovered_category);
     },
   },
   methods: {
