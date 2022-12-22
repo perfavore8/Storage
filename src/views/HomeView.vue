@@ -138,40 +138,39 @@
             </transition>
           </div>
         </template>
-        <template v-if="isTest">
-          <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
-            <button class="ref_2_logo btn" @click.stop="open_close_sync()">
-              <transition name="modal">
-                <span class="material-icons" v-if="show_sync">
-                  cloud_sync
-                </span>
-                <span class="material-icons-outlined" v-else> cloud_sync </span>
-              </transition>
-            </button>
+
+        <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
+          <button class="ref_2_logo btn" @click.stop="open_close_sync()">
             <transition name="modal">
-              <teleport to="body">
-                <template v-if="show_sync">
-                  <div class="backdrop" @click="open_close_sync()" />
-                  <div
-                    class="modal_settings modal_sync"
-                    @click.stop="open_close_sync()"
-                  >
-                    <a>
-                      <div class="modal_container" @click="syncAmoGs()">
-                        Синхронизировать товары amoCRM -> GoСклад
-                      </div>
-                    </a>
+              <span class="material-icons" v-if="show_sync"> cloud_sync </span>
+              <span class="material-icons-outlined" v-else> cloud_sync </span>
+            </transition>
+          </button>
+          <transition name="modal">
+            <teleport to="body">
+              <template v-if="show_sync">
+                <div class="backdrop" @click="open_close_sync()" />
+                <div
+                  class="modal_settings modal_sync"
+                  @click.stop="open_close_sync()"
+                >
+                  <a>
+                    <div class="modal_container" @click="syncAmoGs()">
+                      Синхронизировать товары amoCRM -> GoСклад
+                    </div>
+                  </a>
+                  <template v-if="isTest">
                     <a>
                       <div class="modal_container" @click="syncGsAmo()">
                         Синхронизировать товары GoСклад -> amoCRM
                       </div>
                     </a>
-                  </div>
-                </template>
-              </teleport>
-            </transition>
-          </div>
-        </template>
+                  </template>
+                </div>
+              </template>
+            </teleport>
+          </transition>
+        </div>
         <button
           class="settings_btn"
           :class="{ settings_btn_rotate: show_settings }"

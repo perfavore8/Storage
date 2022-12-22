@@ -71,30 +71,32 @@
                 </div>
               </div>
             </div> -->
-            <div class="autosync">
-              <div
-                class="list"
-                v-for="autosync in autosyncValues"
-                :key="autosync"
-              >
-                <h6>{{ autosync.label }}</h6>
+            <template v-if="isTest">
+              <div class="autosync">
                 <div
-                  class="row"
-                  v-for="item in autosyncProducts"
-                  :key="item.id"
+                  class="list"
+                  v-for="autosync in autosyncValues"
+                  :key="autosync"
                 >
-                  <input
-                    type="checkbox"
-                    class="checkbox"
-                    :id="item.id + autosync.value"
-                    v-model="item[autosync.value]"
-                  />
-                  <label :for="item.id + autosync.value">
-                    {{ item.label }}
-                  </label>
+                  <h6>{{ autosync.label }}</h6>
+                  <div
+                    class="row"
+                    v-for="item in autosyncProducts"
+                    :key="item.id"
+                  >
+                    <input
+                      type="checkbox"
+                      class="checkbox"
+                      :id="item.id + autosync.value"
+                      v-model="item[autosync.value]"
+                    />
+                    <label :for="item.id + autosync.value">
+                      {{ item.label }}
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
+            </template>
             <div class="fields">
               <h6>
                 Настройка соответствий полей amoCRM-товаров и свойств товаров на
@@ -233,6 +235,9 @@ export default {
     },
     productLists() {
       return this.$store.state.account.productLists;
+    },
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
     },
     leadFieldsList() {
       const list = [];
