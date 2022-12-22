@@ -53,7 +53,9 @@
                         ? "Да"
                         : "Нет"
                       : item[0] == "cost_price"
-                      ? Math.round(row.fields[item[0]] * 100) / 100
+                      ? row.fields[item[0]]
+                        ? Math.round(row.fields[item[0]] * 100) / 100
+                        : ""
                       : row.fields[item[0]]
                   }}
                 </span>
@@ -62,14 +64,15 @@
                     item[0].split(".")[1] == "cost"
                       ? row.fields?.[item[0].split(".")[0]]?.[
                           item[0].split(".")[1]
-                        ] === undefined
+                        ] == undefined
                         ? "0"
                         : row.fields?.[item[0].split(".")[0]]?.[
                             item[0].split(".")[1]
                           ] +
                           " " +
                           (row.fields?.[item[0].split(".")[0]]?.currency ==
-                          undefined
+                            undefined ||
+                          row.fields?.[item[0].split(".")[0]]?.currency == null
                             ? ""
                             : row.fields?.[item[0].split(".")[0]]?.currency)
                       : item[1].type == 9
