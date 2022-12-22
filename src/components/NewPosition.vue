@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" @click.self="close()">
     <div class="container">
       <div class="header"><label>Добавление товаров</label></div>
       <div class="content">
@@ -557,7 +557,7 @@ export default {
   padding: 30px;
   box-sizing: border-box;
   pointer-events: all;
-  z-index: 9999999;
+  z-index: 1001;
   width: 100%;
   height: 100%;
   position: absolute;
