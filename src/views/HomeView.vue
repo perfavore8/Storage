@@ -121,23 +121,18 @@
         </div>
       </div>
       <div class="header_right">
-        <template v-if="isTest">
-          <div class="ref">
-            <button class="ref_2_logo btn" @click.stop="openTaskCenter()">
-              <span class="material-icons"> splitscreen </span>
-            </button>
-            <transition name="modal">
-              <teleport to="body">
-                <div class="tasks">
-                  <TaskCenter
-                    @close="closeTaskCenter()"
-                    v-if="showTaskCenter"
-                  />
-                </div>
-              </teleport>
-            </transition>
-          </div>
-        </template>
+        <div class="ref">
+          <button class="ref_2_logo btn" @click.stop="openTaskCenter()">
+            <span class="material-icons"> splitscreen </span>
+          </button>
+          <transition name="modal">
+            <teleport to="body">
+              <div class="tasks">
+                <TaskCenter @close="closeTaskCenter()" v-if="showTaskCenter" />
+              </div>
+            </teleport>
+          </transition>
+        </div>
 
         <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
           <button class="ref_2_logo btn" @click.stop="open_close_sync()">
