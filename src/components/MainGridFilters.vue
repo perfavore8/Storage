@@ -5,7 +5,7 @@
         <th class="item" key="b1" v-if="!oneC"></th>
         <template v-for="(filter, idx) in filtersValue" :key="idx">
           <th class="item" v-show="show_filter">
-            <template v-if="filter.table_config.filtered">
+            <template v-if="filter.table_config?.filtered">
               <filter-number
                 v-if="filter.type == 1 || filter.type == 2"
                 :item="filter"
