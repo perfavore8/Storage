@@ -52,7 +52,7 @@
                   <input
                     type="number"
                     v-model="row.fields.countToCancel"
-                    :max="row.fields?.whToCancel.count"
+                    :max="row.fields?.whToCancel?.count"
                     class="input"
                     :class="{
                       not_valid: row.fields?.countToCancel == '' && try_accept,
@@ -184,6 +184,8 @@ export default {
           };
           item.fields[val.fields.whToCancel.value].count =
             item.fields[val.fields.whToCancel.value].count -
+            item.fields.countToCancel;
+          item.fields[val.fields.whToCancel.value].reserve +=
             item.fields.countToCancel;
           delete item.fields.countToCancel;
           delete item.fields.rison;
