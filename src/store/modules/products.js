@@ -103,7 +103,7 @@ export default {
         },
       });
       const json = await res.json();
-      return json.data;
+      return json;
     },
     async autocomplete_name(context, query) {
       const url = BaseURL + "product/autocomplete/name";
@@ -113,7 +113,7 @@ export default {
         },
       });
       const json = await res.json();
-      return json.data;
+      return json;
     },
   },
 };

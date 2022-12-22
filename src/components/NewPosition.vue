@@ -254,9 +254,7 @@
           </tbody>
         </table>
         <div class="content_footer">
-          <button class="add_new_button" @click="push_new_item()" v-if="isNew">
-            +
-          </button>
+          <button class="add_new_button" @click="push_new_item()">+</button>
         </div>
       </div>
       <teleport
@@ -267,9 +265,7 @@
           <li
             v-for="item in selected_field_autocomplete_list"
             :key="item.id"
-            @click="
-              select_current_product(item.fields.name, item.fields.article)
-            "
+            @click="select_current_product(item)"
           >
             {{ item.fields.name }}
           </li>
@@ -333,19 +329,18 @@ export default {
       selected_field_autocomplete_list: [],
       timer: 0,
       targetAutocomplete: null,
+      copyCurrentItems: [],
     };
   },
   computed: {
     fields() {
       return this.$store.state.fields.all_fields;
     },
-    isNew() {
-      return !this.currentItems.length;
-    },
   },
   async mounted() {
     await this.$store.dispatch("get_fields_properties");
     await this.$store.dispatch("get_all_fields");
+    this.tocopyCurrentItems(this.currentItems);
     this.get_categories_options();
     this.get_options("batch", this.batch_category_options, "Новая");
     this.fillWhs();
@@ -388,12 +383,12 @@ export default {
         name: "",
         batch_category: { name: "Новая", value: -1 },
         batch: "",
-        wh: { name: "Не выбрано", value: -1 },
+        wh: { name: "Основной склад", value: "wh" },
         count: 0,
         units: { name: "Не выбрано", value: -1 },
         cost_price: 0,
-        category: { name: "Не выбрано", value: -1 },
-        price_cat: { name: "Не выбрано", value: -1 },
+        category: { name: "Basic category", value: 1 },
+        price_cat: { name: "Цена", value: "price" },
         price: {
           cost: 0,
           currency: "RUB",
@@ -406,36 +401,39 @@ export default {
       this.new_items.push(item);
     },
     pushCurrentItems() {
-      this.currentItems.forEach((val) => {
-        const item = {
-          new: false,
-          id: val.id,
-          type: { name: "Товар", value: 1 },
-          article: val.fields.article,
-          name: val.fields.name,
-          batch_category: { name: "", value: -1 },
-          batch: val.fields.batch,
-          wh: { name: "Не выбрано", value: -1 },
-          count: 0,
-          units: { name: "Не выбрано", value: -1 },
-          cost_price: val.fields.cost_price,
-          category: {
-            ...this.categories_options.filter(
-              (value) => value.value == val.fields.category
-            )[0],
-          },
-          price_cat: { name: "Не выбрано", value: -1 },
-          price: {
-            cost: 0,
-            currency: "RUB",
-            is_manager_can_change_nds: false,
-            is_nds: false,
-            is_price_include_nds: false,
-            nds: 0,
-          },
-        };
-        this.new_items.push(item);
-      });
+      this.currentItems.forEach((val) => this.pushCurrentItem(val));
+    },
+    pushCurrentItem(val, idx) {
+      const item = {
+        new: false,
+        id: val.id,
+        type: { name: "Товар", value: 1 },
+        article: val.fields.article,
+        name: val.fields.name,
+        batch_category: { name: "", value: -1 },
+        batch: val.fields.batch,
+        wh: { name: "Основной склад", value: "wh" },
+        count: 0,
+        units: { name: "Не выбрано", value: -1 },
+        cost_price: val.fields.cost_price,
+        category: {
+          ...this.categories_options.filter(
+            (value) => value.value == val.fields.category
+          )[0],
+        },
+        price_cat: { name: "Цена", value: "price" },
+        price: {
+          cost: 0,
+          currency: "RUB",
+          is_manager_can_change_nds: false,
+          is_nds: false,
+          is_price_include_nds: false,
+          nds: 0,
+        },
+      };
+      idx != undefined
+        ? Object.assign(this.new_items[idx], item)
+        : this.new_items.push(item);
     },
     del_item(idx) {
       this.new_items.splice(idx, 1);
@@ -462,9 +460,8 @@ export default {
         idx: idx,
       };
     },
-    select_current_product(name, article) {
-      this.new_items[this.selected_field_autocomplete.idx].name = name;
-      this.new_items[this.selected_field_autocomplete.idx].article = article;
+    select_current_product(item) {
+      this.pushCurrentItem(item, this.selected_field_autocomplete.idx);
       this.set_selected_field_autocomplete("", "", null);
     },
     get_options(cat, catArr, name) {
@@ -497,8 +494,12 @@ export default {
       this.$emit("close");
       this.$store.commit("open_close_new_position", false);
     },
+    tocopyCurrentItems(value) {
+      this.copyCurrentItems = value;
+    },
     async save() {
       const params = { products: [] };
+      const paramsNew = { products: [] };
       this.new_items.forEach((val) => {
         const item = {
           is_service: val.type.value - 1,
@@ -506,36 +507,24 @@ export default {
             name: val.name,
             article: val.article,
             batch: val.batch,
-            // wh: { count: 0, reserve: 0 }, //!!!не понятно
-            // count: val.count, //!!!не работают
             units: val.units.name,
-            cost_price: val.cost_price, //!!!не работают
+            cost_price: val.cost_price,
             category: val.category.value,
           },
         };
-        if (!this.isNew) item.id = val.id;
+        if (!val.new) item.id = val.id;
         item.fields[val.wh.value] = {
           count: val.count,
           reserve: 0,
         };
         item.fields[val.price_cat.value] = val.price;
-        params.products.push(item);
+        val.new ? paramsNew.products.push(item) : params.products.push(item);
       });
-      if (this.isNew) {
-        await this.$store.dispatch("add_product", params);
-      } else {
+      if (paramsNew.products.length) {
+        await this.$store.dispatch("add_product", paramsNew);
+      }
+      if (params.products.length) {
         params.products.map((val) => {
-          // console.log(val);
-          // console.log(
-          //   this.new_items.filter((value) => value.name == val.fields.name)[0]
-          //     .count,
-          //   this.currentItems.filter(
-          //     (value) => value.fields.name == val.fields.name
-          //   )[0].fields[
-          //     this.new_items.filter((value) => value.name == val.fields.name)[0]
-          //       .wh.value
-          //   ].count
-          // );
           val.fields[
             this.new_items.filter(
               (value) => value.name == val.fields.name
@@ -544,7 +533,7 @@ export default {
             count:
               this.new_items.filter((value) => value.name == val.fields.name)[0]
                 .count +
-              this.currentItems.filter(
+              this.copyCurrentItems.filter(
                 (value) => value.fields.name == val.fields.name
               )[0].fields[
                 this.new_items.filter(
