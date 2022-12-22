@@ -122,7 +122,11 @@
       </div>
       <div class="header_right">
         <div class="ref">
-          <button class="ref_2_logo btn" @click.stop="openTaskCenter()">
+          <button
+            class="ref_2_logo btn"
+            @click.stop="openTaskCenter()"
+            title="Список задач"
+          >
             <span class="material-icons"> splitscreen </span>
           </button>
           <transition name="modal">
@@ -135,7 +139,11 @@
         </div>
 
         <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
-          <button class="ref_2_logo btn" @click.stop="open_close_sync()">
+          <button
+            class="ref_2_logo btn"
+            @click.stop="open_close_sync()"
+            title="Синхронизация товаров"
+          >
             <transition name="modal">
               <span class="material-icons" v-if="show_sync"> cloud_sync </span>
               <span class="material-icons-outlined" v-else> cloud_sync </span>
@@ -170,6 +178,7 @@
           class="settings_btn"
           :class="{ settings_btn_rotate: show_settings }"
           @click.stop="open_close_settings()"
+          title="Настройки"
         >
           <span class="material-icons"> settings </span>
         </button>
@@ -322,6 +331,7 @@
             class="sync_icon btn"
             :disabled="isUpdateProducts"
             @click="updateProducts()"
+            title="Обновить список"
           >
             <span class="material-icons-outlined"> sync </span>
           </button>
