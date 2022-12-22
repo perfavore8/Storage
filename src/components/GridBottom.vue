@@ -68,7 +68,6 @@ export default {
       this.$emit("changePage", val);
     },
     change_count(option) {
-      console.log(option);
       this.$emit("changeCount", option.name);
     },
   },

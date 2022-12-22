@@ -208,9 +208,6 @@ export default {
     },
   },
   methods: {
-    log(value) {
-      console.log(value);
-    },
     save() {
       this.$store.dispatch("update_account", this.copyConfing);
       this.close();
