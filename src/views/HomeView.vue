@@ -202,13 +202,11 @@
                     Свойства товаров
                   </div>
                 </a>
-                <template v-if="isTest">
-                  <a v-if="!oneC">
-                    <div class="modal_container" @click="openSyncSettings()">
-                      Настройки синхронизации товаров
-                    </div>
-                  </a>
-                </template>
+                <a v-if="!oneC">
+                  <div class="modal_container" @click="openSyncSettings()">
+                    Настройки синхронизации товаров
+                  </div>
+                </a>
                 <a>
                   <div
                     class="modal_container"
