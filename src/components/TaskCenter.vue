@@ -51,7 +51,7 @@ export default {
       this.interval = setInterval(() => {
         this.getTasks();
         if (!this.isTasksInProgress) clearInterval(this.interval);
-      }, 500);
+      }, 2000);
     },
   },
 };
