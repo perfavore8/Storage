@@ -79,6 +79,7 @@
       :disabled="!field.is_editable"
       :currencies="currencies"
       @change_value="change_value"
+      @changeEditPrice="changeEditPrice"
       v-if="field.type == 11"
     />
     <edit-wh
@@ -130,6 +131,7 @@ export default {
     return {
       copy_fields_with_parents: [],
       currencies: [],
+      editPrices: [],
     };
   },
   async mounted() {
@@ -141,19 +143,46 @@ export default {
 
     nextTick(async () => {
       const category_id = this.new_edit_data.fields.category;
-      await this.$store
-        .dispatch("get_fields_with_parents", category_id)
-        .then(
-          () =>
-            (this.copy_fields_with_parents = [
-              ...this.$store.state.fields.fields_with_parents,
-            ])
-        );
+      await this.$store.dispatch("get_fields_with_parents", category_id);
+      this.copy_fields_with_parents = [
+        ...this.$store.state.fields.fields_with_parents,
+      ];
+      this.fillEditPrices();
     });
+  },
+  wath: {
+    editPrices: {
+      handler: function () {
+        console.log("123");
+      },
+      deep: true,
+    },
   },
   methods: {
     change_value(value, code) {
       this.$emit("change_value", value, code);
+    },
+    fillEditPrices() {
+      const priceFields = this.copy_fields_with_parents.filter(
+        (val) => val.type == 11
+      );
+      priceFields.forEach((field) =>
+        this.editPrices.push({
+          isNew: false,
+          product_id: this.new_edit_data.id,
+          price: "",
+          is_update_leads: false,
+          price_field_code: field.code,
+        })
+      );
+    },
+    changeEditPrice(value, code) {
+      this.editPrices.map((price) => {
+        if (price.price_field_code === code) {
+          Object.assign(price, value);
+        }
+      });
+      this.$emit("changeEditPrices", this.editPrices);
     },
   },
 };

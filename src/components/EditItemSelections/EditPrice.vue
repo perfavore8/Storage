@@ -6,9 +6,20 @@
         :item="'Значение'"
         :selected_option="copy_selected_option?.cost"
         :idx="idx + 'cost'"
-        :disabled="true"
+        :disabled="disabled"
         @change_value="(option) => option_select(option, 'cost')"
       />
+      <template v-if="isNewPrice">
+        <div class="qew">
+          <input
+            type="checkbox"
+            id="0"
+            class="checkbox"
+            v-model="editPrice.is_update_leads"
+          />
+          <label for="0">Изменить цену этого товара в открытых сделках?</label>
+        </div>
+      </template>
       <edit-selector
         :item="{ name: 'Валюта', data: currencies }"
         :selected_option="copy_selected_option?.currency"
@@ -82,7 +93,7 @@ export default {
       required: true,
     },
     idx: {
-      type: Number,
+      type: String,
       required: true,
     },
     disabled: {
@@ -99,10 +110,35 @@ export default {
   data() {
     return {
       copy_selected_option: {},
+      oldPrice: null,
+      editPrice: {
+        isNew: true,
+        price: "",
+        is_update_leads: false,
+      },
     };
   },
   mounted() {
     this.change_value();
+    nextTick(() => {
+      this.oldPrice = this.selected_option.cost;
+      if (this.selected_option.cost == undefined) {
+        this.oldPrice = "";
+        this.copy_selected_option.cost = "";
+      }
+      this.dropEditPrice();
+    });
+  },
+  computed: {
+    isNewPrice() {
+      return this.oldPrice != this.copy_selected_option?.cost;
+    },
+    isChangePrice() {
+      return {
+        is_update_leads: this.editPrice.is_update_leads,
+        cost: this.copy_selected_option.cost,
+      };
+    },
   },
   watch: {
     selected_option: {
@@ -110,6 +146,14 @@ export default {
         this.change_value();
       },
       deep: true,
+    },
+    isNewPrice() {
+      nextTick(() => {
+        if (!this.isNewPrice) this.dropEditPrice();
+      });
+    },
+    isChangePrice() {
+      this.changeEditPrice();
     },
   },
   methods: {
@@ -123,6 +167,18 @@ export default {
         ? (this.copy_selected_option[code] = cur)
         : (this.copy_selected_option[code] = value);
       this.$emit("change_value", this.copy_selected_option, this.idx);
+    },
+    dropEditPrice() {
+      this.editPrice = {
+        isNew: true,
+        price: "",
+        is_update_leads: false,
+      };
+    },
+    changeEditPrice() {
+      this.editPrice.isNew = this.isNewPrice;
+      this.editPrice.price = this.copy_selected_option.cost;
+      this.$emit("changeEditPrice", this.editPrice, this.idx);
     },
   },
 };

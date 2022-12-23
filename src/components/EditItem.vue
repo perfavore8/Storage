@@ -28,6 +28,7 @@
         <edit-item-fields
           :new_edit_data="new_edit_data"
           @change_value="change_value"
+          @changeEditPrices="changeEditPrices"
         />
       </div>
       <div class="hr" />
@@ -60,14 +61,6 @@ export default {
     },
   },
   inject: ["isServicePage"],
-  computed: {
-    oneC() {
-      return this.$store.state.account.account?.config?.g_enabled;
-    },
-    productsParams() {
-      return this.$store.state.products.productsParams;
-    },
-  },
   data() {
     return {
       options_1: [
@@ -76,8 +69,19 @@ export default {
       ],
       selected_option_1: { name: "Товар", value: 1 },
       new_edit_data: {},
+      editPrices: [],
     };
   },
+
+  computed: {
+    oneC() {
+      return this.$store.state.account.account?.config?.g_enabled;
+    },
+    productsParams() {
+      return this.$store.state.products.productsParams;
+    },
+  },
+
   mounted() {
     this.new_edit_data = JSON.parse(JSON.stringify(this.edit_data));
     this.isServicePage.value
@@ -91,6 +95,9 @@ export default {
     option_select_1(option) {
       this.selected_option_1 = { ...option };
     },
+    changeEditPrices(value) {
+      this.editPrices = [...value];
+    },
     archive() {
       this.new_edit_data.is_archive = 1;
       this.save();
@@ -101,6 +108,13 @@ export default {
     async save() {
       await this.$store.dispatch("update_product", {
         products: [this.new_edit_data],
+      });
+      this.editPrices.forEach(async (val) => {
+        if (val.isNew) {
+          const params = { ...val };
+          params.is_update_leads = params.is_update_leads ? 1 : 0;
+          await this.$store.dispatch("setPrice", params);
+        }
       });
       this.$store.dispatch("get_products", this.productsParams);
       this.close();
