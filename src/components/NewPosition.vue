@@ -345,7 +345,6 @@ export default {
     this.get_options("batch", this.batch_category_options, "Новая");
     this.fillWhs();
     this.fillPriceCat();
-    // this.get_options("wh", this.wh_options, "Не выбрано");
     this.get_options("units", this.units_options, "Не выбрано");
     this.currentItems.length ? this.pushCurrentItems() : this.push_new_item();
   },
