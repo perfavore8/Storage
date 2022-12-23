@@ -25,6 +25,14 @@
             :disabled="oneC || true"
           />
         </div>
+        <div class="row">
+          <label>Категория:</label>
+          <SelectorVue
+            :options_props="categories_options"
+            @select="option_select_cat"
+            :selected_option="selectedCategory"
+          />
+        </div>
         <edit-item-fields
           :new_edit_data="new_edit_data"
           @change_value="change_value"
@@ -70,6 +78,8 @@ export default {
       selected_option_1: { name: "Товар", value: 1 },
       new_edit_data: {},
       editPrices: [],
+      categories_options: [],
+      selectedCategory: {},
     };
   },
 
@@ -82,11 +92,15 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
     this.new_edit_data = JSON.parse(JSON.stringify(this.edit_data));
     this.isServicePage.value
       ? (this.selected_option_1 = { ...this.options_1[1] })
       : (this.selected_option_1 = { ...this.options_1[0] });
+
+    await this.$store.dispatch("get_fields_properties");
+    this.get_categories_options();
+    this.searchSelectedCategory();
   },
   methods: {
     change_value(value, code) {
@@ -118,6 +132,26 @@ export default {
       });
       this.$store.dispatch("get_products", this.productsParams);
       this.close();
+    },
+    option_select_cat(value) {
+      this.selectedCategory = value;
+      this.new_edit_data.fields.category = value.value;
+    },
+    get_categories_options() {
+      this.$store.state.categories.fields_properties.forEach((val) => {
+        let spaces = "";
+        for (let i = 1; i < val.level; i++) spaces = spaces + "    ";
+        this.categories_options.push({
+          name: spaces + val.name,
+          value: val.id,
+        });
+      });
+    },
+    searchSelectedCategory() {
+      const cat = this.categories_options.find(
+        (val) => val.value == this.new_edit_data?.fields?.category
+      );
+      if (cat != undefined) this.selectedCategory = cat;
     },
   },
 };
