@@ -96,7 +96,7 @@
                       "
                       :selected_option="row.batch_category"
                       :idx="idx"
-                      :disabled="!row.new || row.type.value == 2"
+                      :disabled="row.type.value == 2"
                     />
                     <input
                       type="text"
@@ -106,7 +106,9 @@
                         not_valid:
                           row.batch == '' && try_accept && row.type.value != 2,
                       }"
-                      :disabled="!row.new || row.type.value == 2"
+                      :disabled="
+                        row.type.value == 2 || row.batch_category.value != -1
+                      "
                     />
                   </div>
                 </td>
@@ -142,7 +144,7 @@
                     "
                     :selected_option="row.units"
                     :idx="idx"
-                    :disabled="row.type.value == 2"
+                    :disabled="row.type.value == 2 || !row.new"
                   />
                 </td>
                 <td class="item">
@@ -164,6 +166,7 @@
                       (option, idx) => option_select(option, idx, 'price_cat')
                     "
                     :selected_option="row.price_cat"
+                    :disabled="!row.new"
                     :idx="idx"
                   />
                 </td>
@@ -176,6 +179,7 @@
                     :class="{
                       not_valid: row.price.cost == '' && try_accept,
                     }"
+                    :disabled="!row.new"
                   />
                 </td>
                 <td
@@ -191,6 +195,7 @@
                         v-model="row.price.is_nds"
                         class="checkbox"
                         :id="idx + 'nq'"
+                        :disabled="!row.new"
                       />
                       <label :for="idx + 'nq'"></label>
                     </div>
@@ -201,6 +206,7 @@
                           v-model="row.price.is_nds"
                           class="checkbox"
                           :id="idx + 'nq'"
+                          :disabled="!row.new"
                         />
                         <label :for="idx + 'nq'">НДС</label>
                         <input
@@ -208,6 +214,7 @@
                           v-model="row.price.is_price_include_nds"
                           class="checkbox"
                           :id="idx + 'nw'"
+                          :disabled="!row.new"
                         />
                         <label :for="idx + 'nw'">включен в цену</label>
                         <input
@@ -215,6 +222,7 @@
                           v-model="row.price.is_manager_can_change_nds"
                           class="checkbox"
                           :id="idx + 'ne'"
+                          :disabled="!row.new"
                         />
                         <label :for="idx + 'ne'">можно менять %</label>
                       </div>
@@ -224,6 +232,7 @@
                         v-model="row.price.nds"
                         placeholder="% НДС"
                         min="0"
+                        :disabled="!row.new"
                       />
                     </div>
                   </div>
@@ -236,6 +245,7 @@
                     "
                     :selected_option="row.category"
                     :idx="idx"
+                    :disabled="!row.new"
                   />
                 </td>
                 <transition name="row">
@@ -403,32 +413,30 @@ export default {
       this.currentItems.forEach((val) => this.pushCurrentItem(val));
     },
     pushCurrentItem(val, idx) {
+      console.log(val.fields.price);
       const item = {
         new: false,
         id: val.id,
         type: { name: "Товар", value: 1 },
         article: val.fields.article,
         name: val.fields.name,
-        batch_category: { name: "", value: -1 },
+        batch_category: { name: "", value: -2 },
         batch: val.fields.batch,
         wh: { name: "Основной склад", value: "wh" },
         count: 0,
-        units: { name: "Не выбрано", value: -1 },
+        units: {
+          ...this.units_options.find(
+            (value) => value.value == val.fields.units
+          ),
+        },
         cost_price: val.fields.cost_price,
         category: {
-          ...this.categories_options.filter(
+          ...this.categories_options.find(
             (value) => value.value == val.fields.category
-          )[0],
+          ),
         },
         price_cat: { name: "Цена", value: "price" },
-        price: {
-          cost: 0,
-          currency: "RUB",
-          is_manager_can_change_nds: false,
-          is_nds: false,
-          is_price_include_nds: false,
-          nds: 0,
-        },
+        price: { ...val.fields.price },
       };
       if (idx != undefined) {
         Object.assign(this.new_items[idx], item);
@@ -671,6 +679,7 @@ export default {
           }
           .item:nth-child(4) {
             width: 30%;
+            min-width: 150px;
           }
           .item:nth-child(5) {
             width: 20%;
