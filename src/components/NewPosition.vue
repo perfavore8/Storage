@@ -528,13 +528,6 @@ export default {
       }
       if (params.products.length) {
         params.products.map((val) => {
-          console.log(
-            this.copyCurrentItems.find(
-              (value) => value.fields.name == val.fields.name
-            ),
-            this.copyCurrentItems,
-            val
-          );
           val.fields[
             this.new_items.filter(
               (value) => value.name == val.fields.name
