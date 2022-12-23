@@ -431,9 +431,12 @@ export default {
           nds: 0,
         },
       };
-      idx != undefined
-        ? Object.assign(this.new_items[idx], item)
-        : this.new_items.push(item);
+      if (idx != undefined) {
+        Object.assign(this.new_items[idx], item);
+        this.copyCurrentItems.push(val);
+      } else {
+        this.new_items.push(item);
+      }
     },
     del_item(idx) {
       this.new_items.splice(idx, 1);
@@ -525,6 +528,13 @@ export default {
       }
       if (params.products.length) {
         params.products.map((val) => {
+          console.log(
+            this.copyCurrentItems.find(
+              (value) => value.fields.name == val.fields.name
+            ),
+            this.copyCurrentItems,
+            val
+          );
           val.fields[
             this.new_items.filter(
               (value) => value.name == val.fields.name
