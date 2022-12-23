@@ -114,7 +114,7 @@
                 </td>
                 <td class="item">
                   <selector-vue
-                    :options_props="wh_options"
+                    :options_props="row.wh_options"
                     @select="(option, idx) => option_select(option, idx, 'wh')"
                     :selected_option="row.wh"
                     :idx="idx"
@@ -161,7 +161,7 @@
                 </td>
                 <td class="item">
                   <selector-vue
-                    :options_props="price_cat_options"
+                    :options_props="row.price_cat_options"
                     @select="
                       (option, idx) => option_select(option, idx, 'price_cat')
                     "
@@ -346,6 +346,11 @@ export default {
     fields() {
       return this.$store.state.fields.all_fields;
     },
+    categories() {
+      const arr = [];
+      this.new_items.forEach((val) => arr.push(val.category));
+      return arr;
+    },
   },
   async mounted() {
     await this.$store.dispatch("get_fields_properties");
@@ -382,6 +387,21 @@ export default {
       },
       deep: true,
     },
+    categories: {
+      handler() {
+        this.new_items.map((item) => {
+          item.wh_options = this.searchCatArr(
+            this.wh_options,
+            this.searchParentsCat(item.category)
+          );
+          item.price_cat_options = this.searchCatArr(
+            this.price_cat_options,
+            this.searchParentsCat(item.category)
+          );
+        });
+      },
+      deep: true,
+    },
   },
   methods: {
     push_new_item() {
@@ -406,6 +426,14 @@ export default {
           is_price_include_nds: false,
           nds: 0,
         },
+        wh_options: this.searchCatArr(
+          this.wh_options,
+          this.searchParentsCat({ name: "Basic category", value: 1 })
+        ),
+        price_cat_options: this.searchCatArr(
+          this.price_cat_options,
+          this.searchParentsCat({ name: "Basic category", value: 1 })
+        ),
       };
       this.new_items.push(item);
     },
@@ -413,7 +441,6 @@ export default {
       this.currentItems.forEach((val) => this.pushCurrentItem(val));
     },
     pushCurrentItem(val, idx) {
-      console.log(val.fields.price);
       const item = {
         new: false,
         id: val.id,
@@ -437,6 +464,14 @@ export default {
         },
         price_cat: { name: "Цена", value: "price" },
         price: { ...val.fields.price },
+        wh_options: this.searchCatArr(
+          this.wh_options,
+          this.searchParentsCat(val.category)
+        ),
+        price_cat_options: this.searchCatArr(
+          this.price_cat_options,
+          this.searchParentsCat(val.category)
+        ),
       };
       if (idx != undefined) {
         Object.assign(this.new_items[idx], item);
@@ -461,6 +496,27 @@ export default {
         .forEach((val) =>
           this.price_cat_options.push({ name: val.name, value: val.code })
         );
+    },
+    searchCatArr(arr, categories) {
+      const res = [];
+      arr.forEach((val) => {
+        if (
+          categories.includes(
+            this.fields.find((value) => val.value == value.code).category_id
+          )
+        )
+          res.push(val);
+      });
+      return res;
+    },
+    searchParentsCat(cat) {
+      let res = [];
+      this.$store.state.categories.fields_properties.forEach((val) => {
+        if (val.id == cat.value) res = [...val.levels];
+      });
+      const zeroIdx = res.indexOf(0);
+      res = res.slice(0, zeroIdx);
+      return res;
     },
     set_selected_field_autocomplete(field, value, idx) {
       if (field == "") this.targetAutocomplete = null;
