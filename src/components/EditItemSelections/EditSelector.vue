@@ -62,8 +62,9 @@ export default {
       nextTick(() => {
         this.item.data?.forEach((val) => {
           if (val == this.selected_option) this.copy_selected_option = val;
-          if (val.value == this.selected_option)
-            this.copy_selected_option = val.name;
+          if (val?.value == this.selected_option && val?.value != undefined) {
+            this.copy_selected_option = val?.name;
+          }
         });
       });
     },
