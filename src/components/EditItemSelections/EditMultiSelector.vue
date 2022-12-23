@@ -61,7 +61,9 @@ export default {
     change_value() {
       let a = [];
       nextTick(() => {
-        const split_selected_options = this.selected_options.split(", ");
+        let split_selected_options = [];
+        if (this.selected_options != undefined)
+          split_selected_options = this.selected_options.split(", ");
         this.item.data?.forEach((val) => {
           split_selected_options.includes(val) ? a.push(true) : a.push(false);
         });
