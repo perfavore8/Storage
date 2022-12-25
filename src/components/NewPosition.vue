@@ -144,7 +144,9 @@
                     "
                     :selected_option="row.units"
                     :idx="idx"
-                    :disabled="row.type.value == 2 || !row.new"
+                    :disabled="
+                      row.type.value == 2 || (!row.new && !row.newBatch)
+                    "
                   />
                 </td>
                 <td class="item">
@@ -156,7 +158,7 @@
                     :class="{
                       not_valid: row.cost_price == '' && try_accept,
                     }"
-                    :disabled="!row.new"
+                    :disabled="!row.new && !row.newBatch"
                   />
                 </td>
                 <td class="item">
@@ -166,7 +168,7 @@
                       (option, idx) => option_select(option, idx, 'price_cat')
                     "
                     :selected_option="row.price_cat"
-                    :disabled="!row.new"
+                    :disabled="!row.new && !row.newBatch"
                     :idx="idx"
                   />
                 </td>
@@ -179,7 +181,7 @@
                     :class="{
                       not_valid: row.price.cost == '' && try_accept,
                     }"
-                    :disabled="!row.new"
+                    :disabled="!row.new && !row.newBatch"
                   />
                 </td>
                 <td
@@ -195,7 +197,7 @@
                         v-model="row.price.is_nds"
                         class="checkbox"
                         :id="idx + 'nq'"
-                        :disabled="!row.new"
+                        :disabled="!row.new && !row.newBatch"
                       />
                       <label :for="idx + 'nq'"></label>
                     </div>
@@ -206,7 +208,7 @@
                           v-model="row.price.is_nds"
                           class="checkbox"
                           :id="idx + 'nq'"
-                          :disabled="!row.new"
+                          :disabled="!row.new && !row.newBatch"
                         />
                         <label :for="idx + 'nq'">НДС</label>
                         <input
@@ -214,7 +216,7 @@
                           v-model="row.price.is_price_include_nds"
                           class="checkbox"
                           :id="idx + 'nw'"
-                          :disabled="!row.new"
+                          :disabled="!row.new && !row.newBatch"
                         />
                         <label :for="idx + 'nw'">включен в цену</label>
                         <input
@@ -222,7 +224,7 @@
                           v-model="row.price.is_manager_can_change_nds"
                           class="checkbox"
                           :id="idx + 'ne'"
-                          :disabled="!row.new"
+                          :disabled="!row.new && !row.newBatch"
                         />
                         <label :for="idx + 'ne'">можно менять %</label>
                       </div>
@@ -232,7 +234,7 @@
                         v-model="row.price.nds"
                         placeholder="% НДС"
                         min="0"
-                        :disabled="!row.new"
+                        :disabled="!row.new && !row.newBatch"
                       />
                     </div>
                   </div>
@@ -245,7 +247,7 @@
                     "
                     :selected_option="row.category"
                     :idx="idx"
-                    :disabled="!row.new"
+                    :disabled="!row.new && !row.newBatch"
                   />
                 </td>
                 <transition name="row">
@@ -351,6 +353,11 @@ export default {
       this.new_items.forEach((val) => arr.push(val.category));
       return arr;
     },
+    batch_categories() {
+      const arr = [];
+      this.new_items.forEach((val) => arr.push(val.batch_category));
+      return arr;
+    },
   },
   async mounted() {
     await this.$store.dispatch("get_fields_properties");
@@ -398,6 +405,16 @@ export default {
             this.price_cat_options,
             this.searchParentsCat(item.category)
           );
+        });
+      },
+      deep: true,
+    },
+    batch_categories: {
+      handler() {
+        this.new_items.map((item) => {
+          item.batch_category.value === -1
+            ? (item.newBatch = true)
+            : (item.newBatch = false);
         });
       },
       deep: true,
@@ -512,7 +529,7 @@ export default {
     searchParentsCat(cat) {
       let res = [];
       this.$store.state.categories.fields_properties.forEach((val) => {
-        if (val.id == cat.value) res = [...val.levels];
+        if (val.id == cat?.value) res = [...val.levels];
       });
       const zeroIdx = res.indexOf(0);
       res = res.slice(0, zeroIdx);
