@@ -4,10 +4,11 @@
     <td class="item">{{ doc.file }}</td>
     <td class="item">
       <a
-        href="https://docs.google.com/spreadsheets/d/13U76ujSjV_iaY0L2WBVHVw7q07TSEqstuL0kSeX-Sh8/edit"
+        :href="`https://docs.google.com/spreadsheets/d/${doc.file}/edit`"
         target="blank"
-        >Шаблон</a
       >
+        Шаблон
+      </a>
     </td>
     <td class="item">{{ doc.type }}</td>
     <td class="item">{{ doc.export_type }}</td>
