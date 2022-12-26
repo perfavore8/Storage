@@ -1,5 +1,9 @@
 <template>
-  <router-view></router-view>
+  <router-view v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <component :is="Component" />
+    </transition>
+  </router-view>
 </template>
 
 <style lang="scss">
@@ -22,5 +26,15 @@ body {
 *::-webkit-scrollbar-track {
   // background: #ddd;
   border-radius: 20px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.2s ease-out;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  filter: blur(3px);
 }
 </style>
