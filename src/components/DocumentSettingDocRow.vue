@@ -3,12 +3,7 @@
     <td class="item">{{ doc.name }}</td>
     <td class="item">{{ doc.file }}</td>
     <td class="item">
-      <a
-        :href="`https://docs.google.com/spreadsheets/d/${doc.file}/edit`"
-        target="blank"
-      >
-        Шаблон
-      </a>
+      <a :href="getHref(doc.file, doc.type)" target="blank"> Шаблон </a>
     </td>
     <td class="item">{{ doc.type }}</td>
     <td class="item">{{ doc.export_type }}</td>
@@ -40,6 +35,14 @@ export default {
     },
     delete_cur_doc(id) {
       this.$store.dispatch("delete_template", { id: id });
+    },
+    getHref(GId, type) {
+      let res = "#";
+      if (type == "docx")
+        res = `https://docs.google.com/document/d/${GId}/edit`;
+      if (type == "xlsx")
+        res = `https://docs.google.com/spreadsheets/d/${GId}/edit`;
+      return res;
     },
   },
 };
