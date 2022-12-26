@@ -280,9 +280,6 @@
           </div>
           <transition name="btns">
             <div class="buttons" v-if="show_buttons && !oneC">
-              <button class="button button_1 smallBtn" @click="archive_data()">
-                Архивировать
-              </button>
               <template v-if="!isServicePage">
                 <button
                   class="button button_2 smallBtn"
@@ -298,6 +295,12 @@
                   Списать
                 </button>
               </template>
+              <template v-if="isTest">
+                <button class="button button_5 smallBtn">Перемещение</button>
+              </template>
+              <button class="button button_1 smallBtn" @click="archive_data()">
+                Архивировать
+              </button>
             </div>
           </transition>
         </div>
@@ -1127,6 +1130,16 @@ export default {
 }
 .button_4:disabled:hover {
   box-shadow: none;
+}
+.button_5 {
+  width: 112px;
+  height: 34px;
+  color: #2a2a2a;
+  background: #ffeab2;
+}
+.button_5:hover {
+  background: #ffe9ac;
+  box-shadow: 0 0 5px 2px rgb(255 233 172 / 50%);
 }
 .disabled {
   pointer-events: none;
