@@ -55,7 +55,7 @@
                       : item[0] == "cost_price"
                       ? row.fields[item[0]]
                         ? Math.round(row.fields[item[0]] * 100) / 100
-                        : ""
+                        : "0"
                       : row.fields[item[0]]
                   }}
                 </span>
