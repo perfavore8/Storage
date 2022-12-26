@@ -267,14 +267,23 @@
             />
             <div class="bot">
               <p>Найдено: {{ totalCountProducts }}</p>
-              <template v-if="false">
+              <template v-if="isTest">
                 <input
                   type="checkbox"
                   class="checkbox"
                   v-model="grid"
                   id="grid"
                 />
-                <label for="grid"></label>
+                <label for="grid">
+                  <transition name="modal" mode="out-in">
+                    <span class="material-icons-round icon" v-if="grid">
+                      format_list_bulleted
+                    </span>
+                    <span class="material-icons-round icon" v-else>
+                      grid_view
+                    </span>
+                  </transition>
+                </label>
               </template>
             </div>
           </div>
@@ -922,6 +931,11 @@ export default {
           display: flex;
           flex-direction: row;
           gap: 20px;
+          .icon {
+            color: #757575;
+            font-size: 28px;
+            font-weight: 600;
+          }
           p {
             color: #757575;
             @include font(400, 16px, 19px);
@@ -935,6 +949,7 @@ export default {
             display: inline-flex;
             align-items: center;
             user-select: none;
+            position: relative;
           }
           .checkbox + label::before {
             content: "";
@@ -944,19 +959,12 @@ export default {
             flex-shrink: 0;
             flex-grow: 0;
             border-radius: 0.25em;
-            margin-left: 17px;
-            @include bg_image("@/assets/grid.svg", 100%);
+            position: absolute;
+            border: none;
+
+            // @include bg_image("@/assets/grid.svg", 100%);
             cursor: pointer;
-            transition: background-image 0.15s ease-out;
-          }
-          .checkbox:checked + label::before {
-            @include bg_image("@/assets/list.svg", 90%);
-          }
-          .checkbox:not(:checked) + label:hover::before {
-            background-size: 110%;
-          }
-          .checkbox:checked + label:hover::before {
-            background-size: 100%;
+            background: transparent !important;
           }
         }
       }

@@ -1,58 +1,112 @@
 <template>
-  <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
+  <teleport to="body">
+    <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
+  </teleport>
+  <teleport to="body">
+    <GridEditPrice
+      v-if="showEditPrice"
+      :editPrice="editPrice"
+      @close="get_products(productsParams)"
+    />
+  </teleport>
   <div class="wrapper" :class="{ blur: show_edit_modal }">
     <div class="header">
       <transition name="mdl">
-        <card-grid-filters ref="filters" :collval="collval" :params="params" />
+        <card-grid-filters
+          ref="filters"
+          :fields="all_fields"
+          :tableConfig="tableConfig"
+          :sortedFields="sortedFields"
+        />
       </transition>
-      <card-grid-links ref="links" @emit_link="emit_link" />
+      <!-- <card-grid-links ref="links" @emit_link="emit_link" /> -->
     </div>
-    <div
-      class="grid"
-      v-if="
-        !link.show_categoryes ||
-        link.path.length == link.selected_categoryes.length
-      "
-    >
-      <label v-if="paginatedData.length == 0" class="text">
+    <div class="grid">
+      <label v-if="products.length == 0" class="text">
         Ничего не найдено
       </label>
-      <div class="card" v-for="(row, i) in paginatedData" :key="row">
-        <div
-          class="row"
-          v-for="(item, idx) in row"
-          :key="item"
-          v-show="collval[idx]"
-        >
-          <div class="name">{{ params[idx + 1] }} :</div>
-          <div class="value">{{ item }}</div>
+      <div class="card" v-for="(row, idx) in products" :key="row.id">
+        <div class="row" v-for="item in sortedFields" :key="item">
+          <div class="name">{{ item[1].name }}<span> :</span></div>
+          <div class="value">
+            <span v-if="item[0].split('.').length < 2">
+              {{
+                item[0] == "category"
+                  ? categories[row.fields[item[0]]]
+                  : item[1].type == 9
+                  ? !!row.fields[item[0]]
+                    ? "Да"
+                    : "Нет"
+                  : item[0] == "cost_price"
+                  ? row.fields[item[0]]
+                    ? Math.round(row.fields[item[0]] * 100) / 100
+                    : "0"
+                  : row.fields[item[0]]
+              }}
+            </span>
+            <span v-else>
+              {{
+                item[0].split(".")[1] == "cost"
+                  ? row.fields?.[item[0].split(".")[0]]?.[
+                      item[0].split(".")[1]
+                    ] == undefined
+                    ? "0"
+                    : row.fields?.[item[0].split(".")[0]]?.[
+                        item[0].split(".")[1]
+                      ] +
+                      " " +
+                      (row.fields?.[item[0].split(".")[0]]?.currency ==
+                        undefined ||
+                      row.fields?.[item[0].split(".")[0]]?.currency == null
+                        ? ""
+                        : row.fields?.[item[0].split(".")[0]]?.currency)
+                  : item[1].type == 9
+                  ? !!row.fields?.[item[0].split(".")[0]]?.[
+                      item[0].split(".")[1]
+                    ]
+                    ? "Да"
+                    : "Нет"
+                  : row.fields?.[item[0].split(".")[0]]?.[item[0].split(".")[1]]
+              }}
+            </span>
+            &nbsp;
+            <button
+              class="edit_icon"
+              style="width: 16px; heigth: 16px"
+              v-if="item[0].split('.')[1] == 'cost'"
+              @click="openGridEditPrice(row, item[0].split('.')[0])"
+              title="Редактирование цены"
+            ></button>
+          </div>
         </div>
         <div class="card_footer">
-          <input
-            type="checkbox"
-            class="checkbox"
-            :id="i + 'a'"
-            v-model="changeValue[i]"
-          />
-          <label :for="i + 'a'"></label>
+          <template v-if="!oneC">
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="row.id"
+              v-if="selectedProducts[idx] != undefined"
+              v-model="selectedProducts[idx].value"
+              @change="selectedProducts[idx].item = row"
+            />
+            <label :for="row.id"></label>
+          </template>
           <div
             class="edit_icon"
-            @click="open_edit_modal(row, data.indexOf(row))"
-          ></div>
+            @click="open_edit_modal(row)"
+            title="Редактирование товара"
+          />
         </div>
       </div>
     </div>
     <grid-bottom
-      :previous="page > 1"
-      :next="page * count < data.length"
-      :page="page"
+      :previous="meta.links.prev != null"
+      :next="meta.links.next != null"
+      :page="meta.meta.current_page"
       :blur="show_edit_modal"
-      :show="
-        (!link.show_categoryes ||
-          link.path.length == link.selected_categoryes.length) &&
-        paginatedData.length != 0
-      "
+      :show="products.length != 0"
       :count="count"
+      v-if="showGridBottom"
       @changePage="changePage"
       @changeCount="changeCount"
     />
@@ -63,121 +117,230 @@
 import EditItem from "@/components/EditItem.vue";
 import GridBottom from "@/components/GridBottom.vue";
 import CardGridFilters from "@/components/CardGridFilters.vue";
-import CardGridLinks from "@/components/CardGridLinks.vue";
+import GridEditPrice from "@/components/GridEditPrice.vue";
+// import CardGridLinks from "@/components/CardGridLinks.vue";
 import { mapGetters } from "vuex";
+import { nextTick } from "@vue/runtime-core";
 export default {
   name: "Main_grid",
   components: {
     EditItem,
     GridBottom,
     CardGridFilters,
-    CardGridLinks,
+    // CardGridLinks,
+    GridEditPrice,
   },
-  props: {},
+  props: {
+    selectedWH: {
+      type: Object,
+    },
+  },
+  inject: ["isServicePage"],
   emits: {},
   data() {
     return {
-      count: 5,
-      page: 1,
-      edit_data: [],
-      changeValue: [],
-      link: {
-        path: null,
-        selected_categoryes: null,
-        sel_idx: null,
-        show_categoryes: null,
-        categoryes: null,
-      },
+      edit_data: {},
+      selectedProducts: [],
+      showArrow: false,
+      // link: {
+      //   path: null,
+      //   selected_categoryes: null,
+      //   sel_idx: null,
+      //   show_categoryes: null,
+      //   categoryes: null,
+      // },
     };
   },
+  created() {
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  unmounted() {
+    window.removeEventListener("scroll", this.handleScroll);
+  },
+  async mounted() {
+    this.$store.dispatch("get_fields_properties");
+    await this.$store.dispatch(
+      "getTableConfig",
+      this.selectedWH.value != "whs" ? this.selectedWH.value : ""
+    );
+    await this.$store.dispatch("get_all_fields");
+    await this.get_products(this.productsParams);
+    this.setSelectedProducts();
+  },
   computed: {
-    countPage() {
-      return this.count * (this.page - 1);
+    sortedFields() {
+      const list = Object.entries(this.tableConfig);
+      return list
+        .sort((a, b) => {
+          if (a[1].sort > b[1].sort) return 1;
+          if (a[1].sort == b[1].sort) return 0;
+          if (a[1].sort < b[1].sort) return -1;
+        })
+        .filter((val) => val[1].visible);
     },
-    paginatedData() {
-      if (this.link.show_categoryes) {
-        let dat = [];
-        dat = dat.concat(this.data);
-        let result = [];
-        dat.forEach((val) => {
-          let a = true;
-          this.link.path.forEach((title, i) => {
-            const title_idx = this.params.indexOf(title) - 1;
-            a = val[title_idx] == this.link.selected_categoryes[i] && a;
-          });
-          if (a) result.push(val);
-        });
-        return result.slice(this.countPage, this.count * this.page);
-      } else {
-        return this.data.slice(this.countPage, this.count * this.page);
-      }
+    tableConfig() {
+      return this.$store.state.account.tableConfig;
+    },
+    categories() {
+      const obj = {};
+      this.$store.state.categories.fields_properties.forEach(
+        (val) => (obj[val.id] = val.name)
+      );
+      return obj;
+    },
+    oneC() {
+      return this.$store.state.account.account?.config?.g_enabled;
+    },
+    count() {
+      return this.$store.state.account.user.config?.per_page;
+    },
+    meta() {
+      return this.$store.state.products.meta;
+    },
+    all_fields() {
+      return this.$store.state.fields.all_fields;
+    },
+    filters() {
+      return this.$refs.filters;
     },
     show_buttons() {
-      let value = false;
-      this.changeValue.forEach((val) => {
-        if (val != undefined) {
-          value = val || value;
-        }
-      });
+      const value = this.selectedProducts.filter((val) => val.value).length > 0;
       return value;
+    },
+    showEditPrice() {
+      return this.$store.state.shows.showEditPrice;
+    },
+    products() {
+      return this.$store.state.products.products;
+    },
+    bar() {
+      return this.$refs.bar;
+    },
+    showGridBottom() {
+      return this.meta.meta.total >= this.meta.meta.per_page;
+    },
+    table() {
+      return this.$refs.table;
+    },
+    productsParams() {
+      return this.$store.state.products.productsParams;
+    },
+    isDataLoading() {
+      return this.$store.state.products.isLoading;
     },
     ...mapGetters(["show_edit_modal"]),
     ref_links() {
       return this.$refs.links;
     },
-    ref_filters() {
-      return this.$refs.filters;
-    },
   },
   watch: {
-    page() {
-      if (this.page < 1) this.page = 1;
-    },
-    count() {
-      this.page = 1;
-    },
-    paginatedData: {
+    products: {
       handler: function () {
-        this.changeValue = [];
+        this.updateKey += 1;
+        nextTick(() => {
+          if (!this.filters?.isConfirmFilters) this.filters?.clearFilters();
+          this.filters?.setFalseIsConfirmFilters();
+        });
       },
-      deep: true,
-    },
-    data: {
-      handler: function () {
-        this.ref_links.get_data_categoryes();
-        this.ref_filters?.reset_filtersValue();
-        this.ref_filters?.feelFilters();
-      },
-      deep: true,
-    },
-    changeValue: {
-      handler: function () {},
       deep: true,
     },
     show_buttons() {
       this.$store.commit("open_close_buttons", this.show_buttons);
     },
+    async selectedWH() {
+      await this.$store.dispatch(
+        "getTableConfig",
+        this.selectedWH.value != "whs" ? this.selectedWH.value : ""
+      );
+      this.bar?.dropOrder();
+      this.get_products(this.productsParams);
+    },
   },
   methods: {
-    changeCount(val) {
-      this.count = val;
+    scrollUp() {
+      window.scrollTo(0, 0);
+    },
+    handleScroll() {
+      const yDis =
+        Math.round(this.bar?.$el?.getBoundingClientRect()?.y) -
+          Math.round(this.table?.getBoundingClientRect()?.y) >
+        10;
+      yDis ? (this.showArrow = true) : (this.showArrow = false);
+    },
+    async clearFilters() {
+      await this.filters?.clearFilters();
+      this.filters?.confirmFilters();
+    },
+    confirmFilters() {
+      this.filters?.confirmFilters();
+    },
+    isShow(code) {
+      const res = { value: false, second: "" };
+      Object.entries(this.tableConfig).forEach((val) => {
+        if (val[0].split(".")[0] == code && val[1]?.visible)
+          (res.value = true), (res.second = val[0].split(".")[1]);
+      });
+      return res;
+    },
+    async changeCount(count) {
+      this.setTrueIsConfirmFilters();
+      await this.$store.dispatch("update_user", { per_page: count });
+      // this.changePage(this.meta.current_page);
+      this.drop_page();
     },
     changePage(val) {
-      this.page = val;
+      this.setTrueIsConfirmFilters();
+      const params = { page: val };
+      this.$store.commit("updateProductsParams", params);
+      this.get_products(this.productsParams);
+    },
+    setSelectedProducts() {
+      this.selectedProducts = [];
+      for (let i = 0; i < this.count; i++)
+        this.selectedProducts.push({ value: false, item: {} });
+    },
+    async get_products(params) {
+      if (this.isServicePage.value) params = { ...params, is_service: 1 };
+      if (this.selectedWH.value != "whs" && !this.isServicePage.value)
+        params = { ...params, warehouse: this.selectedWH.value };
+      await this.$store.dispatch("get_products", params);
+      this.setSelectedProducts();
     },
     drop_page() {
-      this.page = 1;
-      this.ref_links.reset_sel();
-      this.ref_links.showcategoryes();
-      this.ref_filters?.feelFilters();
+      this.changePage(1);
+    },
+    open_edit_modal(row) {
+      this.setTrueIsConfirmFilters();
+      this.edit_data = { ...row };
+      this.$store.commit("open_edit_modal", row.fields.category);
+    },
+    openGridEditPrice(item, code) {
+      this.editPrice = {
+        name: item.fields.name,
+        price:
+          item.fields?.[code]?.cost == undefined ? 0 : item.fields[code].cost,
+        product_id: item.id,
+        price_field_code: code,
+      };
+      this.$store.commit("openCloseEditPrice", true);
+    },
+    setTrueIsConfirmFilters() {
+      nextTick(() => this.filters?.setTrueIsConfirmFilters());
+    },
+    sort(code, order) {
+      this.setTrueIsConfirmFilters();
+      const params = {
+        page: 1,
+        sort: {
+          by: code,
+          order: order,
+        },
+      };
+      this.$store.commit("updateProductsParams", params);
+      this.get_products(this.productsParams);
     },
     emit_link(obj) {
       Object.assign(this.link, obj);
-    },
-    open_edit_modal(row, idx) {
-      this.edit_data = [];
-      this.edit_data = this.edit_data.concat(row);
-      this.$store.commit("open_edit_modal", idx);
     },
   },
 };
@@ -230,10 +393,18 @@ export default {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      gap: 8px;
       border-bottom: 1px dotted #c9c9c9;
       padding-top: 5px;
       .value:first-child {
         display: none;
+      }
+      .name {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: flex-end;
+        justify-content: flex-start;
       }
     }
     .row:first-child {
@@ -252,12 +423,15 @@ export default {
   justify-content: space-between;
   align-items: flex-end;
   margin-top: 10px;
-  .edit_icon {
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-    @include bg_image("@/assets/edit.svg");
-  }
+}
+.edit_icon {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  @include bg_image("@/assets/edit.svg");
 }
 .blur {
   filter: blur(5px);
