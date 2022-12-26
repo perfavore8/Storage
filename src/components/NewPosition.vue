@@ -674,7 +674,9 @@ export default {
             reserve: 0,
           };
           item.fields[val.price_cat.value] = val.price;
-          val.new ? paramsNew.products.push(item) : params.products.push(item);
+          !val.new && !val?.newBatch
+            ? params.products.push(item)
+            : paramsNew.products.push(item);
         });
         if (paramsNew.products.length) {
           await this.$store.dispatch("add_product", paramsNew);
