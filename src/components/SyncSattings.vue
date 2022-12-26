@@ -40,7 +40,7 @@
                   количество товара на GoСклад учитываться не будет.
                 </label>
                 <SelectorVue
-                  :options_props="amoLeadsGroupHide"
+                  :options_props="copyLeadFieldGroupsList"
                   @select="
                     (event) => optionSelectSync(event, 'amo_leads_group_hide')
                   "
@@ -178,6 +178,7 @@ export default {
         reserve_off: [],
         write_off: [],
       },
+      copyLeadFieldGroupsList: [],
       copyProductLists: [],
       selectedAmoProductList: { name: "Не выбрано", value: -1 },
       amoLeadsGroupHide: [],
@@ -215,7 +216,9 @@ export default {
     await this.$store.dispatch("get_account");
     await this.$store.dispatch("getProductLists");
     await this.$store.dispatch("getLeadFieldsList");
+    await this.$store.dispatch("getLeadFieldGroupsList");
     this.copyLeadFieldsList = this.leadFieldsList;
+    this.copyLeadFieldGroupsList = this.leadFieldGroupsList;
     this.copyConfing = this.$store.state.account.account.config;
     this.updateFields();
 
@@ -251,6 +254,13 @@ export default {
         val[1].selected = { name: "Не выбрано", value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
+      return list;
+    },
+    leadFieldGroupsList() {
+      const list = [];
+      Object.entries(this.$store.state.account.leadFieldGroupsList).forEach(
+        (val) => list.push({ name: val[1], value: val[0] })
+      );
       return list;
     },
   },
@@ -380,8 +390,8 @@ export default {
       });
     },
     searchSelectedAmoLeadsGroupHide() {
-      this.amoLeadsGroupHide.forEach((val) => {
-        if (val.value == this.copyConfing.amo_leads_group_hide)
+      this.leadFieldGroupsList.forEach((val) => {
+        if (val.value == this.copyConfing?.amo_leads_group_hide)
           this.selectedAmoLeadsGroupHide = val;
       });
     },
