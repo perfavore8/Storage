@@ -237,7 +237,6 @@ export default {
     products: {
       handler: function () {
         this.updateKey += 1;
-        this.selectedProducts = [];
         nextTick(() => {
           if (!this.filters?.isConfirmFilters) this.filters?.clearFilters();
           this.filters?.setFalseIsConfirmFilters();
