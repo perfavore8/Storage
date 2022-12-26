@@ -859,13 +859,13 @@ export default {
             width: 10%;
           }
           .item:nth-child(2) {
-            width: 9%;
+            width: 10%;
           }
           .item:nth-child(3) {
-            width: 7%;
+            width: 10%;
           }
           .item:nth-child(4) {
-            width: 30%;
+            width: 20%;
             min-width: 150px;
           }
           .item:nth-child(5) {
@@ -878,8 +878,8 @@ export default {
             min-width: 50px;
           }
           .item:nth-child(7) {
-            width: 1%;
-            max-width: 140px;
+            width: 10%;
+            // max-width: 140px;
             min-width: 140px;
           }
           .item:nth-child(8) {
@@ -892,6 +892,7 @@ export default {
           }
           .item:nth-child(10) {
             width: 15%;
+            min-width: 100px;
           }
           .item:nth-child(11) {
             width: 5%;
