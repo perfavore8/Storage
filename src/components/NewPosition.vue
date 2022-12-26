@@ -469,9 +469,7 @@ export default {
         wh: { name: "Основной склад", value: "wh" },
         count: 0,
         units: {
-          ...this.units_options.find(
-            (value) => value.value == val.fields.units
-          ),
+          ...this.units_options.find((value) => value.name == val.fields.units),
         },
         cost_price: val.fields.cost_price,
         category: {
