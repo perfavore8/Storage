@@ -54,8 +54,15 @@
                     "
                     class="input"
                     :class="{
-                      not_valid: row.article === '' && try_accept,
+                      not_valid:
+                        (row.article === '' || row.article.length < 3) &&
+                        try_accept,
                     }"
+                    :title="
+                      row.article.length < 3 && try_accept
+                        ? 'Минимум 3 символа'
+                        : null
+                    "
                     :disabled="!row.new"
                   />
                 </td>
@@ -81,8 +88,14 @@
                     "
                     class="input"
                     :class="{
-                      not_valid: row.name === '' && try_accept,
+                      not_valid:
+                        (row.name === '' || row.name.length < 3) && try_accept,
                     }"
+                    :title="
+                      row.name.length < 3 && try_accept
+                        ? 'Минимум 3 символа'
+                        : null
+                    "
                     :disabled="!row.new"
                   />
                 </td>
@@ -107,9 +120,11 @@
                       v-model="row.batch"
                       class="input"
                       :class="{
-                        not_valid:
-                          row.batch === '' && try_accept && row.type.value != 2,
+                        not_valid: row.batch === '' && try_accept,
                       }"
+                      :title="
+                        row.batch === '' && try_accept ? 'Пустое поле' : null
+                      "
                       :disabled="
                         row.type.value == 2 || row.batch_category?.value != -1
                       "
@@ -138,6 +153,11 @@
                         try_accept &&
                         row.type != 2,
                     }"
+                    :title="
+                      (row.count === '' || row.count == undefined) && try_accept
+                        ? 'Пустое поле'
+                        : null
+                    "
                   />
                 </td>
                 <td class="item">
@@ -162,6 +182,9 @@
                     :class="{
                       not_valid: row.cost_price === '' && try_accept,
                     }"
+                    :title="
+                      row.cost_price === '' && try_accept ? 'Пустое поле' : null
+                    "
                     :disabled="!row.new && !row.newBatch"
                   />
                 </td>
@@ -185,6 +208,9 @@
                     :class="{
                       not_valid: row.price.cost === '' && try_accept,
                     }"
+                    :title="
+                      row.price.cost === '' && try_accept ? 'Пустое поле' : null
+                    "
                     :disabled="!row.new && !row.newBatch"
                   />
                 </td>
@@ -380,7 +406,13 @@ export default {
           if (fields[1]) {
             isValid = isValid && this.validation(item[fields[0]][fields[1]]);
           } else {
-            isValid = isValid && this.validation(item[field]);
+            if (field == "name" || field == "article") {
+              isValid =
+                isValid &&
+                this.validation(item[field], [{ type: "length", value: 2 }]);
+            } else {
+              isValid = isValid && this.validation(item[field]);
+            }
           }
         });
       });
@@ -631,8 +663,13 @@ export default {
       });
       return res;
     },
-    validation(val) {
-      return val != undefined && val !== "";
+    validation(val, extraOptions) {
+      let res = val != undefined && val !== "";
+      if (extraOptions != undefined)
+        extraOptions.forEach((option) => {
+          if (option.type == "length") res = res && val.length > option.value;
+        });
+      return res;
     },
     option_select(option, idx, cat) {
       this.new_items[idx][cat] = { ...option };
