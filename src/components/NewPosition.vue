@@ -54,7 +54,7 @@
                     "
                     class="input"
                     :class="{
-                      not_valid: row.article == '' && try_accept,
+                      not_valid: row.article === '' && try_accept,
                     }"
                     :disabled="!row.new"
                   />
@@ -81,7 +81,7 @@
                     "
                     class="input"
                     :class="{
-                      not_valid: row.name == '' && try_accept,
+                      not_valid: row.name === '' && try_accept,
                     }"
                     :disabled="!row.new"
                   />
@@ -104,7 +104,7 @@
                       class="input"
                       :class="{
                         not_valid:
-                          row.batch == '' && try_accept && row.type.value != 2,
+                          row.batch === '' && try_accept && row.type.value != 2,
                       }"
                       :disabled="
                         row.type.value == 2 || row.batch_category.value != -1
@@ -130,7 +130,7 @@
                     min="0"
                     :class="{
                       not_valid:
-                        (row.count == '' || row.count == undefined) &&
+                        (row.count === '' || row.count == undefined) &&
                         try_accept &&
                         row.type != 2,
                     }"
@@ -156,7 +156,7 @@
                     class="input"
                     min="0"
                     :class="{
-                      not_valid: row.cost_price == '' && try_accept,
+                      not_valid: row.cost_price === '' && try_accept,
                     }"
                     :disabled="!row.new && !row.newBatch"
                   />
@@ -179,7 +179,7 @@
                     class="input"
                     min="0"
                     :class="{
-                      not_valid: row.price.cost == '' && try_accept,
+                      not_valid: row.price.cost === '' && try_accept,
                     }"
                     :disabled="!row.new && !row.newBatch"
                   />
@@ -342,6 +342,15 @@ export default {
       timer: 0,
       targetAutocomplete: null,
       copyCurrentItems: [],
+      fieldsForValidation: [
+        "article",
+        "name",
+        "batch",
+        "count",
+        "cost_price",
+        "price.cost",
+      ],
+      try_accept: false,
     };
   },
   computed: {
@@ -357,6 +366,20 @@ export default {
       const arr = [];
       this.new_items.forEach((val) => arr.push(val.batch_category));
       return arr;
+    },
+    isValid() {
+      let isValid = true;
+      this.new_items.forEach((item) => {
+        this.fieldsForValidation.forEach((field) => {
+          const fields = field.split(".");
+          if (fields[1]) {
+            isValid = isValid && this.validation(item[fields[0]][fields[1]]);
+          } else {
+            isValid = isValid && this.validation(item[field]);
+          }
+        });
+      });
+      return isValid;
     },
   },
   async mounted() {
@@ -574,6 +597,9 @@ export default {
       });
       return res;
     },
+    validation(val) {
+      return val != undefined && val !== "";
+    },
     option_select(option, idx, cat) {
       this.new_items[idx][cat] = { ...option };
     },
@@ -585,54 +611,58 @@ export default {
       this.copyCurrentItems = value;
     },
     async save() {
-      const params = { products: [] };
-      const paramsNew = { products: [] };
-      this.new_items.forEach((val) => {
-        const item = {
-          is_service: val.type.value - 1,
-          fields: {
-            name: val.name,
-            article: val.article,
-            batch: val.batch,
-            units: val.units.name,
-            cost_price: val.cost_price,
-            category: val.category.value,
-          },
-        };
-        if (!val.new) item.id = val.id;
-        item.fields[val.wh.value] = {
-          count: val.count,
-          reserve: 0,
-        };
-        item.fields[val.price_cat.value] = val.price;
-        val.new ? paramsNew.products.push(item) : params.products.push(item);
-      });
-      if (paramsNew.products.length) {
-        await this.$store.dispatch("add_product", paramsNew);
-      }
-      if (params.products.length) {
-        params.products.map((val) => {
-          val.fields[
-            this.new_items.filter(
-              (value) => value.name == val.fields.name
-            )[0].wh.value
-          ] = {
-            count:
-              this.new_items.filter((value) => value.name == val.fields.name)[0]
-                .count +
-              this.copyCurrentItems.filter(
-                (value) => value.fields.name == val.fields.name
-              )[0].fields[
-                this.new_items.filter(
-                  (value) => value.name == val.fields.name
-                )[0].wh.value
-              ].count,
+      this.try_accept = true;
+      if (this.isValid) {
+        const params = { products: [] };
+        const paramsNew = { products: [] };
+        this.new_items.forEach((val) => {
+          const item = {
+            is_service: val.type.value - 1,
+            fields: {
+              name: val.name,
+              article: val.article,
+              batch: val.batch,
+              units: val.units.name,
+              cost_price: val.cost_price,
+              category: val.category.value,
+            },
+          };
+          if (!val.new) item.id = val.id;
+          item.fields[val.wh.value] = {
+            count: val.count,
             reserve: 0,
           };
+          item.fields[val.price_cat.value] = val.price;
+          val.new ? paramsNew.products.push(item) : params.products.push(item);
         });
-        await this.$store.dispatch("update_product", params);
+        if (paramsNew.products.length) {
+          await this.$store.dispatch("add_product", paramsNew);
+        }
+        if (params.products.length) {
+          params.products.map((val) => {
+            val.fields[
+              this.new_items.filter(
+                (value) => value.name == val.fields.name
+              )[0].wh.value
+            ] = {
+              count:
+                this.new_items.filter(
+                  (value) => value.name == val.fields.name
+                )[0].count +
+                this.copyCurrentItems.filter(
+                  (value) => value.fields.name == val.fields.name
+                )[0].fields[
+                  this.new_items.filter(
+                    (value) => value.name == val.fields.name
+                  )[0].wh.value
+                ].count,
+              reserve: 0,
+            };
+          });
+          await this.$store.dispatch("update_product", params);
+        }
+        this.close();
       }
-      this.close();
     },
   },
 };
