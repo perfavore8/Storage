@@ -7,6 +7,7 @@ export default {
     tableConfig: {},
     pipelinesList: {},
     leadFieldsList: {},
+    leadFieldGroupsList: {},
     productLists: {},
     syncFields: {},
   },
@@ -29,6 +30,9 @@ export default {
     },
     updateLeadFieldsList(state, value) {
       state.leadFieldsList = { ...value };
+    },
+    updateLeadFieldGroupsList(state, value) {
+      state.leadFieldGroupsList = { ...value };
     },
     updateProductLists(state, value) {
       state.productLists = { ...value };
@@ -144,6 +148,16 @@ export default {
       });
       const json = await res.json();
       context.commit("updateLeadFieldsList", json);
+    },
+    async getLeadFieldGroupsList(context) {
+      const url = BaseURL + "account/lead-field-groups";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateLeadFieldGroupsList", json);
     },
     async getProductLists(context) {
       const url = BaseURL + "account/product-lists";
