@@ -12,7 +12,7 @@
           </thead>
           <tbody>
             <transition-group name="row">
-              <tr class="row" v-for="(row, idx) in new_items" :key="row">
+              <tr class="row" v-for="(row, idx) in new_items" :key="idx">
                 <td class="item">
                   <selector-vue
                     :options_props="options_type"
@@ -89,7 +89,11 @@
                 <td class="item">
                   <div class="select_input">
                     <selector-vue
-                      :options_props="batch_category_options"
+                      :options_props="
+                        row.new
+                          ? batch_category_options
+                          : row.batch_category_options
+                      "
                       @select="
                         (option, idx) =>
                           option_select(option, idx, 'batch_category')
@@ -107,7 +111,7 @@
                           row.batch === '' && try_accept && row.type.value != 2,
                       }"
                       :disabled="
-                        row.type.value == 2 || row.batch_category.value != -1
+                        row.type.value == 2 || row.batch_category?.value != -1
                       "
                     />
                   </div>
@@ -339,6 +343,7 @@ export default {
         value: "",
       },
       selected_field_autocomplete_list: [],
+      currentItemsBatchs: {},
       timer: 0,
       targetAutocomplete: null,
       copyCurrentItems: [],
@@ -435,7 +440,7 @@ export default {
     batch_categories: {
       handler() {
         this.new_items.map((item) => {
-          item.batch_category.value === -1
+          item.batch_category?.value === -1
             ? (item.newBatch = true)
             : (item.newBatch = false);
         });
@@ -478,7 +483,20 @@ export default {
       this.new_items.push(item);
     },
     pushCurrentItems() {
-      this.currentItems.forEach((val) => this.pushCurrentItem(val));
+      // this.currentItems.forEach((val) => this.pushCurrentItem(val));
+      this.currentItems.forEach(async (val) => {
+        const list = await this.$store.dispatch(
+          "autocomplete_article",
+          val?.fields?.article
+        );
+        const batchs = list.filter(
+          (val) =>
+            val.fields.name == val.fields.name &&
+            val.fields.article == val.fields.article
+        );
+        this.currentItemsBatchs[val.fields.article] = batchs;
+        this.pushCurrentItem(val, this.selected_field_autocomplete.idx);
+      });
     },
     pushCurrentItem(val, idx) {
       const item = {
@@ -488,6 +506,7 @@ export default {
         article: val.fields.article,
         name: val.fields.name,
         batch_category: { name: "", value: -2 },
+        batch_category_options: [{ name: "Новая", value: -1 }],
         batch: val.fields.batch,
         wh: { name: "Основной склад", value: "wh" },
         count: 0,
@@ -511,6 +530,15 @@ export default {
           this.searchParentsCat(val.category)
         ),
       };
+      this.currentItemsBatchs[val.fields.article]?.forEach((value) =>
+        item.batch_category_options.push({
+          name: value.fields.batch,
+          value: value.fields.batch,
+        })
+      );
+      item.batch_category = item.batch_category_options.find(
+        (value) => value.value == val.fields.batch
+      );
       if (idx != undefined) {
         Object.assign(this.new_items[idx], item);
         this.copyCurrentItems.push(val);
@@ -571,6 +599,12 @@ export default {
       };
     },
     select_current_product(item) {
+      const batchs = this.selected_field_autocomplete_list.filter(
+        (val) =>
+          val.fields.name == item.fields.name &&
+          val.fields.article == item.fields.article
+      );
+      this.currentItemsBatchs[item.fields.article] = batchs;
       this.pushCurrentItem(item, this.selected_field_autocomplete.idx);
       this.set_selected_field_autocomplete("", "", null);
     },
@@ -602,6 +636,13 @@ export default {
     },
     option_select(option, idx, cat) {
       this.new_items[idx][cat] = { ...option };
+      if (cat === "batch_category" && option.value != -1) {
+        const article = this.new_items[idx].article;
+        const item = this.currentItemsBatchs[article].find(
+          (val) => val.fields.batch == option.value
+        );
+        this.pushCurrentItem(item, idx);
+      }
     },
     close() {
       this.$emit("close");
