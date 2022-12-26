@@ -433,7 +433,7 @@ export default {
         count: 0,
         units: { name: "Не выбрано", value: -1 },
         cost_price: 0,
-        category: { name: "Basic category", value: 1 },
+        category: this.searchBaseCategory(),
         price_cat: { name: "Цена", value: "price" },
         price: {
           cost: 0,
@@ -445,11 +445,11 @@ export default {
         },
         wh_options: this.searchCatArr(
           this.wh_options,
-          this.searchParentsCat({ name: "Basic category", value: 1 })
+          this.searchParentsCat(this.searchBaseCategory())
         ),
         price_cat_options: this.searchCatArr(
           this.price_cat_options,
-          this.searchParentsCat({ name: "Basic category", value: 1 })
+          this.searchParentsCat(this.searchBaseCategory())
         ),
       };
       this.new_items.push(item);
@@ -534,6 +534,12 @@ export default {
       const zeroIdx = res.indexOf(0);
       res = res.slice(0, zeroIdx);
       return res;
+    },
+    searchBaseCategory() {
+      const baseCategory = this.$store.state.categories.fields_properties.find(
+        (val) => val.parent_id == 0
+      );
+      return { name: baseCategory.name, value: baseCategory.id };
     },
     set_selected_field_autocomplete(field, value, idx) {
       if (field == "") this.targetAutocomplete = null;
