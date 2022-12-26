@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" :class="{ blur: isDataLoading }">
     <teleport to="body">
       <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
     </teleport>
@@ -229,6 +229,9 @@ export default {
     },
     productsParams() {
       return this.$store.state.products.productsParams;
+    },
+    isDataLoading() {
+      return this.$store.state.products.isLoading;
     },
     ...mapGetters(["show_edit_modal"]),
   },

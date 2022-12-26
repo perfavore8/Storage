@@ -12,6 +12,7 @@ export default {
       filter: {},
       sort: {},
     },
+    isLoading: false,
   },
   getters: {},
   mutations: {
@@ -27,9 +28,13 @@ export default {
     updateProductsParams(state, params) {
       Object.assign(state.productsParams, params);
     },
+    updateIsLoading(state, value) {
+      state.isLoading = value;
+    },
   },
   actions: {
     async get_products(context, params) {
+      context.commit("updateIsLoading", true);
       const url = BaseURL + "product/list";
       const res = await fetch(url, {
         method: "POST",
@@ -43,6 +48,7 @@ export default {
       const json = await res.json();
       context.commit("update_meta", { links: json.links, meta: json.meta });
       context.commit("update_products", json.data);
+      context.commit("updateIsLoading", false);
     },
     async get_product(context, id) {
       const url = BaseURL + "product/get";

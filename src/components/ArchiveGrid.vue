@@ -1,5 +1,5 @@
 <template>
-  <div class="grid">
+  <div class="grid" :class="{ blur: isDataLoading }">
     <label v-if="archive_list.length == 0" class="text">
       Ничего не найдено
     </label>
@@ -102,6 +102,9 @@ export default {
     showGridBottom() {
       return this.meta.meta.total >= this.meta.meta.per_page;
     },
+    isDataLoading() {
+      return this.$store.state.products.isLoading;
+    },
   },
   watch: {},
   methods: {
@@ -180,5 +183,8 @@ export default {
 .text {
   margin: 0 auto;
   @include font(500, 18px);
+}
+.blur {
+  filter: blur(5px);
 }
 </style>
