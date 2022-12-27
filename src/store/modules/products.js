@@ -101,6 +101,20 @@ export default {
       console.log("add_product", json);
       return json;
     },
+    async exportXlsx(context, params) {
+      const url = BaseURL + "product/export/xlsx";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      console.log("exportXlsxw", json);
+      return json;
+    },
     async autocomplete_article(context, query) {
       const url = BaseURL + "product/autocomplete/article";
       const res = await fetch(url + "?query=" + query, {

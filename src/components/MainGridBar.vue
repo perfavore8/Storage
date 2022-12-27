@@ -34,7 +34,16 @@
           class="settings_btn"
           @click="openTableSettings()"
           title="Настройка таблицы"
-        ></button>
+        />
+        <template v-if="isTest">
+          <button
+            class="test_btn"
+            title="Экспорт таблицы в xlsx"
+            @click="exportXlsx()"
+          >
+            <span class="material-icons-round"> sim_card_download </span>
+          </button>
+        </template>
       </div>
     </th>
   </tr>
@@ -78,6 +87,12 @@ export default {
     oneC() {
       return this.$store.state.account.account?.config?.g_enabled;
     },
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
+    },
+    productsParams() {
+      return this.$store.state.products.productsParams;
+    },
     width() {
       let arr = [];
       this.fields.forEach((field) => {
@@ -113,6 +128,24 @@ export default {
       this.order = { code: code, prev_order: new_order };
       if (code.split(".").length > 1) code = code.split(".").join("->");
       this.$emit("sort", code, new_order);
+    },
+    exportXlsx() {
+      const { sort, filter } = this.productsParams;
+      const sortedTableConfig = [];
+      Object.entries(this.tableConfig)
+        .filter((val) => val[1].visible)
+        .sort((a, b) => {
+          if (a[1].sort > b[1].sort) return 1;
+          if (a[1].sort == b[1].sort) return 0;
+          if (a[1].sort < b[1].sort) return -1;
+        })
+        .forEach((val) => sortedTableConfig.push(val[0]));
+      const params = {
+        sort: sort,
+        filter: filter,
+        config: sortedTableConfig,
+      };
+      this.$store.dispatch("exportXlsx", params);
     },
     openTableSettings() {
       this.$store.commit("open_table_settings");
@@ -196,5 +229,15 @@ export default {
 }
 .settings_btn:hover {
   transform: rotate(90deg) scale(1.1);
+}
+.test_btn {
+  border: none;
+  background-color: transparent;
+  color: #757575;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+.test_btn:hover {
+  transform: scale(1.1);
 }
 </style>
