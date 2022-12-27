@@ -4,7 +4,9 @@
     <template v-if="isTasksInProgress">
       <TaskCard :task="task" v-for="task in tasks" :key="task.id" />
     </template>
-    <p v-else>Нет задач в процессе</p>
+    <div class="text" v-else>
+      <h4>Нет задач в процессе</h4>
+    </div>
   </div>
 </template>
 
@@ -58,6 +60,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/app.scss";
 .backdrop {
   background-color: transparent;
   position: fixed;
@@ -78,5 +81,19 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+.text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  @include font(400, 16px);
+  box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
+  background-color: rgb(241, 241, 241);
+  border-radius: 8px;
+  color: #757575;
+  h4 {
+    margin: 0;
+  }
 }
 </style>
