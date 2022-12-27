@@ -440,6 +440,7 @@ export default {
   border-color: #75757591;
 }
 .blur {
+  transition: filter 0.2s ease-out;
   filter: blur(5px);
 }
 .text {
