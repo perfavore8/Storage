@@ -473,7 +473,7 @@ export default {
       handler() {
         this.new_items.map((item) => {
           item.batch_category?.value === -1
-            ? (item.newBatch = true)
+            ? ((item.newBatch = true), (item.batch = ""))
             : (item.newBatch = false);
         });
       },
@@ -517,10 +517,15 @@ export default {
     pushCurrentItems() {
       // this.currentItems.forEach((val) => this.pushCurrentItem(val));
       this.currentItems.forEach(async (val) => {
-        const list = await this.$store.dispatch(
-          "autocomplete_article",
-          val?.fields?.article
-        );
+        let list = [];
+        if (val?.fields?.article.length > 2) {
+          list = await this.$store.dispatch(
+            "autocomplete_article",
+            val?.fields?.article
+          );
+        } else {
+          list = [val];
+        }
         const batchs = list.filter(
           (val) =>
             val.fields.name == val.fields.name &&
