@@ -503,10 +503,9 @@ export default {
       this.new_items.push(item);
     },
     pushCurrentItems() {
-      // this.currentItems.forEach((val) => this.pushCurrentItem(val));
       this.currentItems.forEach(async (val) => {
         let list = [];
-        if (val?.fields?.article.length > 2) {
+        if (val?.fields?.article.length > 0) {
           list = await this.$store.dispatch(
             "autocomplete_article",
             val?.fields?.article
