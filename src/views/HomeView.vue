@@ -424,7 +424,9 @@ export default {
       return today;
     },
     show_modals() {
-      return this.show_settings || this.disabled_for_modals;
+      return (
+        this.show_settings || this.showTaskCenter || this.disabled_for_modals
+      );
     },
     disabled_for_modals() {
       return (
