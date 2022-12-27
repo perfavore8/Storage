@@ -35,16 +35,14 @@
           @click="openTableSettings()"
           title="Настройка таблицы"
         />
-        <template v-if="isTest">
-          <button
-            class="test_btn"
-            title="Экспорт таблицы в xlsx"
-            :disabled="disableExportXlsx"
-            @click="exportXlsx()"
-          >
-            <span class="material-icons-round"> sim_card_download </span>
-          </button>
-        </template>
+        <button
+          class="test_btn"
+          title="Экспорт таблицы в xlsx"
+          :disabled="disableExportXlsx"
+          @click="exportXlsx()"
+        >
+          <span class="material-icons-round"> sim_card_download </span>
+        </button>
       </div>
     </th>
   </tr>
@@ -136,7 +134,7 @@ export default {
       this.$store.commit("openCloseTaskCenter", true);
       setTimeout(() => {
         this.$store.commit("openCloseTaskCenter", false);
-      }, 1500);
+      }, 5000);
       const { sort, filter } = this.productsParams;
       const sortedTableConfig = [];
       Object.entries(this.tableConfig)
