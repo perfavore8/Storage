@@ -129,7 +129,7 @@ export default {
       if (code.split(".").length > 1) code = code.split(".").join("->");
       this.$emit("sort", code, new_order);
     },
-    exportXlsx() {
+    async exportXlsx() {
       const { sort, filter } = this.productsParams;
       const sortedTableConfig = [];
       Object.entries(this.tableConfig)
@@ -145,7 +145,9 @@ export default {
         filter: filter,
         config: sortedTableConfig,
       };
-      this.$store.dispatch("exportXlsx", params);
+      const blob = await this.$store.dispatch("exportXlsx", params);
+      const file = window.URL.createObjectURL(blob);
+      window.location.assign(file);
     },
     openTableSettings() {
       this.$store.commit("open_table_settings");

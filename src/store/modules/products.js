@@ -111,7 +111,7 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      const json = await res.json();
+      const json = await res.blob();
       console.log("exportXlsxw", json);
       return json;
     },
