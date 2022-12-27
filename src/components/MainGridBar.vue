@@ -152,10 +152,11 @@ export default {
         filter: filter,
         config: sortedTableConfig,
       };
-      const blob = await this.$store.dispatch("exportXlsx", params);
-      const file = window.URL.createObjectURL(blob);
-      window.location.assign(file);
-      this.disableExportXlsx = false;
+      this.$store.dispatch("exportXlsx", params);
+      // const blob = await this.$store.dispatch("exportXlsx", params);
+      // const file = window.URL.createObjectURL(blob);
+      // window.location.assign(file);
+      // this.disableExportXlsx = false;
     },
     openTableSettings() {
       this.$store.commit("open_table_settings");
