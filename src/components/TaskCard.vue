@@ -12,6 +12,7 @@
       <div class="active_bar" :style="{ width: task.progress + '%' }" />
     </div>
     <p>{{ task.name }}</p>
+    <div ref="result"></div>
   </div>
 </template>
 
@@ -19,6 +20,26 @@
 export default {
   props: {
     task: Object,
+  },
+  computed: {
+    resultRef() {
+      return this.$refs.result;
+    },
+    result() {
+      return this.task.result;
+    },
+  },
+  mounted() {
+    if (this.result) {
+      this.resultRef.innerHTML = this.result;
+    }
+  },
+  watch: {
+    result() {
+      if (this.result) {
+        this.resultRef.innerHTML = this.result;
+      }
+    },
   },
 };
 </script>
