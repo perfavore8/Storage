@@ -133,6 +133,10 @@ export default {
     },
     async exportXlsx() {
       this.disableExportXlsx = true;
+      this.$store.commit("openCloseTaskCenter", true);
+      setTimeout(() => {
+        this.$store.commit("openCloseTaskCenter", false);
+      }, 1500);
       const { sort, filter } = this.productsParams;
       const sortedTableConfig = [];
       Object.entries(this.tableConfig)
