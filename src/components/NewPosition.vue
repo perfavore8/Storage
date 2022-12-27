@@ -57,9 +57,7 @@
                       not_valid: row.article === '' && try_accept,
                     }"
                     :title="
-                      row.article.length < 3 && try_accept
-                        ? 'Минимум 3 символа'
-                        : null
+                      row.article === '' && try_accept ? 'Пустое поле' : null
                     "
                     :disabled="!row.new"
                   />
@@ -89,9 +87,7 @@
                       not_valid: row.name === '' && try_accept,
                     }"
                     :title="
-                      row.name.length < 3 && try_accept
-                        ? 'Минимум 3 символа'
-                        : null
+                      row.name === '' && try_accept ? 'Пустое поле' : null
                     "
                     :disabled="!row.new"
                   />
@@ -306,7 +302,8 @@
             :key="item.id"
             @click="select_current_product(item)"
           >
-            {{ item.fields.name }}
+            {{ item.fields.name }} | {{ item.fields.article }} |
+            {{ item.fields.batch }}
           </li>
         </ul>
       </teleport>
