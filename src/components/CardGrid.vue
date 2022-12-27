@@ -21,7 +21,7 @@
       </transition>
       <!-- <card-grid-links ref="links" @emit_link="emit_link" /> -->
     </div>
-    <div class="grid">
+    <div class="grid" ref="grid">
       <label v-if="products.length == 0" class="text">
         Ничего не найдено
       </label>
@@ -111,6 +111,7 @@
       @changeCount="changeCount"
     />
   </div>
+  <button class="arrow" v-if="showArrow" @click="scrollUp()" />
 </template>
 
 <script>
@@ -219,8 +220,8 @@ export default {
     showGridBottom() {
       return this.meta.meta.total >= this.meta.meta.per_page;
     },
-    table() {
-      return this.$refs.table;
+    grid() {
+      return this.$refs.grid;
     },
     productsParams() {
       return this.$store.state.products.productsParams;
@@ -261,10 +262,7 @@ export default {
       window.scrollTo(0, 0);
     },
     handleScroll() {
-      const yDis =
-        Math.round(this.bar?.$el?.getBoundingClientRect()?.y) -
-          Math.round(this.table?.getBoundingClientRect()?.y) >
-        10;
+      const yDis = Math.round(this.grid?.getBoundingClientRect()?.y) < 0;
       yDis ? (this.showArrow = true) : (this.showArrow = false);
     },
     async clearFilters() {
@@ -490,5 +488,19 @@ export default {
 .rows-enter-from,
 .rows-leave-to {
   opacity: 0;
+}
+.arrow {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  opacity: 0.7;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  @include bg_image("@/assets/arrow_circle_up.svg");
 }
 </style>
