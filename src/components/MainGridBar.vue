@@ -39,6 +39,7 @@
           <button
             class="test_btn"
             title="Экспорт таблицы в xlsx"
+            :disabled="disableExportXlsx"
             @click="exportXlsx()"
           >
             <span class="material-icons-round"> sim_card_download </span>
@@ -76,6 +77,7 @@ export default {
       order: {
         code: "",
         prev_order: "",
+        disableExportXlsx: false,
       },
     };
   },
@@ -130,6 +132,7 @@ export default {
       this.$emit("sort", code, new_order);
     },
     async exportXlsx() {
+      this.disableExportXlsx = true;
       const { sort, filter } = this.productsParams;
       const sortedTableConfig = [];
       Object.entries(this.tableConfig)
@@ -148,6 +151,7 @@ export default {
       const blob = await this.$store.dispatch("exportXlsx", params);
       const file = window.URL.createObjectURL(blob);
       window.location.assign(file);
+      this.disableExportXlsx = false;
     },
     openTableSettings() {
       this.$store.commit("open_table_settings");
@@ -241,5 +245,8 @@ export default {
 }
 .test_btn:hover {
   transform: scale(1.1);
+}
+.test_btn:disabled {
+  color: #7575758a;
 }
 </style>
