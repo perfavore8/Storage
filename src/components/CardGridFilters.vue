@@ -181,6 +181,7 @@ export default {
           })[0],
         };
         item.type = val[1].type;
+        item.name = val[1].name;
         item.code = val[0];
 
         copyFields.push(item);
@@ -205,6 +206,7 @@ export default {
         const obj = {
           type: val.type,
           code: val.code,
+          name: val.name,
           option: "=",
           selector_options: preparation_data(val.data),
           value: value,
@@ -243,7 +245,7 @@ export default {
   .item {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
     flex-grow: 1;
     border: 1px solid #c9c9c9;
     border-radius: 5px;
