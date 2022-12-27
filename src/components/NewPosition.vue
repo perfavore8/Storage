@@ -54,9 +54,7 @@
                     "
                     class="input"
                     :class="{
-                      not_valid:
-                        (row.article === '' || row.article.length < 3) &&
-                        try_accept,
+                      not_valid: row.article === '' && try_accept,
                     }"
                     :title="
                       row.article.length < 3 && try_accept
@@ -88,8 +86,7 @@
                     "
                     class="input"
                     :class="{
-                      not_valid:
-                        (row.name === '' || row.name.length < 3) && try_accept,
+                      not_valid: row.name === '' && try_accept,
                     }"
                     :title="
                       row.name.length < 3 && try_accept
@@ -406,13 +403,7 @@ export default {
           if (fields[1]) {
             isValid = isValid && this.validation(item[fields[0]][fields[1]]);
           } else {
-            if (field == "name" || field == "article") {
-              isValid =
-                isValid &&
-                this.validation(item[field], [{ type: "length", value: 2 }]);
-            } else {
-              isValid = isValid && this.validation(item[field]);
-            }
+            isValid = isValid && this.validation(item[field]);
           }
         });
       });
