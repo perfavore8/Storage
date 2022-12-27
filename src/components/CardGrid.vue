@@ -25,77 +25,90 @@
       <label v-if="products.length == 0" class="text">
         Ничего не найдено
       </label>
-      <div class="card" v-for="(row, idx) in products" :key="row.id">
-        <div class="row" v-for="item in sortedFields" :key="item">
-          <div class="name">{{ item[1].name }}<span> :</span></div>
-          <div class="value">
-            <span v-if="item[0].split('.').length < 2">
-              {{
-                item[0] == "category"
-                  ? categories[row.fields[item[0]]]
-                  : item[1].type == 9
-                  ? !!row.fields[item[0]]
-                    ? "Да"
-                    : "Нет"
-                  : item[0] == "cost_price"
-                  ? row.fields[item[0]]
-                    ? Math.round(row.fields[item[0]] * 100) / 100
-                    : "0"
-                  : row.fields[item[0]]
-              }}
-            </span>
-            <span v-else>
-              {{
-                item[0].split(".")[1] == "cost"
-                  ? row.fields?.[item[0].split(".")[0]]?.[
-                      item[0].split(".")[1]
-                    ] == undefined
-                    ? "0"
+      <div
+        class="card"
+        :class="{ card__flip: flip[idx] }"
+        @click="flip[idx] = !flip[idx]"
+        v-for="(row, idx) in products"
+        :key="row.id"
+      >
+        <div class="bg_image">
+          <img :src="src[idx % 5]" class="img" />
+        </div>
+        <div class="back">
+          <div class="row" v-for="item in sortedFields" :key="item">
+            <div class="name">{{ item[1].name }}<span> :</span></div>
+            <div class="value">
+              <span v-if="item[0].split('.').length < 2">
+                {{
+                  item[0] == "category"
+                    ? categories[row.fields[item[0]]]
+                    : item[1].type == 9
+                    ? !!row.fields[item[0]]
+                      ? "Да"
+                      : "Нет"
+                    : item[0] == "cost_price"
+                    ? row.fields[item[0]]
+                      ? Math.round(row.fields[item[0]] * 100) / 100
+                      : "0"
+                    : row.fields[item[0]]
+                }}
+              </span>
+              <span v-else>
+                {{
+                  item[0].split(".")[1] == "cost"
+                    ? row.fields?.[item[0].split(".")[0]]?.[
+                        item[0].split(".")[1]
+                      ] == undefined
+                      ? "0"
+                      : row.fields?.[item[0].split(".")[0]]?.[
+                          item[0].split(".")[1]
+                        ] +
+                        " " +
+                        (row.fields?.[item[0].split(".")[0]]?.currency ==
+                          undefined ||
+                        row.fields?.[item[0].split(".")[0]]?.currency == null
+                          ? ""
+                          : row.fields?.[item[0].split(".")[0]]?.currency)
+                    : item[1].type == 9
+                    ? !!row.fields?.[item[0].split(".")[0]]?.[
+                        item[0].split(".")[1]
+                      ]
+                      ? "Да"
+                      : "Нет"
                     : row.fields?.[item[0].split(".")[0]]?.[
                         item[0].split(".")[1]
-                      ] +
-                      " " +
-                      (row.fields?.[item[0].split(".")[0]]?.currency ==
-                        undefined ||
-                      row.fields?.[item[0].split(".")[0]]?.currency == null
-                        ? ""
-                        : row.fields?.[item[0].split(".")[0]]?.currency)
-                  : item[1].type == 9
-                  ? !!row.fields?.[item[0].split(".")[0]]?.[
-                      item[0].split(".")[1]
-                    ]
-                    ? "Да"
-                    : "Нет"
-                  : row.fields?.[item[0].split(".")[0]]?.[item[0].split(".")[1]]
-              }}
-            </span>
-            &nbsp;
-            <button
-              class="edit_icon"
-              style="width: 16px; heigth: 16px"
-              v-if="item[0].split('.')[1] == 'cost'"
-              @click="openGridEditPrice(row, item[0].split('.')[0])"
-              title="Редактирование цены"
-            ></button>
+                      ]
+                }}
+              </span>
+              &nbsp;
+              <button
+                class="edit_icon"
+                style="width: 16px; heigth: 16px"
+                v-if="item[0].split('.')[1] == 'cost'"
+                @click="openGridEditPrice(row, item[0].split('.')[0])"
+                title="Редактирование цены"
+              ></button>
+            </div>
           </div>
-        </div>
-        <div class="card_footer">
-          <template v-if="!oneC">
-            <input
-              type="checkbox"
-              class="checkbox"
-              :id="row.id"
-              v-if="selectedProducts[idx] != undefined"
-              v-model="selectedProducts[idx].value"
-              @change="selectedProducts[idx].item = row"
+          <div class="card_footer">
+            <template v-if="!oneC">
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="row.id"
+                v-if="selectedProducts[idx] != undefined"
+                v-model="selectedProducts[idx].value"
+                @change="selectedProducts[idx].item = row"
+              />
+              <label :for="row.id"></label>
+            </template>
+            <div
+              class="edit_icon"
+              @click="open_edit_modal(row)"
+              title="Редактирование товара"
             />
-            <label :for="row.id"></label>
-          </template>
-          <div
-            class="edit_icon"
-            @click="open_edit_modal(row)"
-            title="Редактирование товара"
-          />
+          </div>
         </div>
       </div>
     </div>
@@ -143,6 +156,15 @@ export default {
       edit_data: {},
       selectedProducts: [],
       showArrow: false,
+      flip: [],
+      src: [
+        "https://spb.wadoo.ru/upload/iblock/370/370d7dd8a236c788f7f7758e5b342ed0.jpg",
+        "https://diamondelectric.ru/images/3809/3808559/ydarnaya_akkymylyatornaya_drelshyrypovert_bosch_gsb_180li_liion_1.jpg",
+        "https://redhome.by/image/cache/catalog/i/nk/ka/1023c718bea479e2011bcb8107182120-1000x1000.jpg",
+        "https://avatars.mds.yandex.net/i?id=26fb75009e3e6b974d28ce1f40bbe4d6-4599292-images-thumbs&n=13&exp=1",
+        "https://skladom.ru/images/detailed/282/SKRZYNKA-NARZEDZIOWA-NA-KOLKACH-QBRICK-TWO-BIG-SET.jpg",
+        "https://media.garwin.ru/images/products/09/2e/092e4949-c7e3-4315-9f24-8e0fce706885-w768p.webp",
+      ],
       // link: {
       //   path: null,
       //   selected_categoryes: null,
@@ -258,6 +280,9 @@ export default {
     },
   },
   methods: {
+    getRandomInt(max) {
+      return Math.floor(Math.random() * max);
+    },
     scrollUp() {
       window.scrollTo(0, 0);
     },
@@ -387,6 +412,37 @@ export default {
     border: 1px solid #c9c9c9;
     border-radius: 5px;
     padding: 20px;
+    position: relative;
+    transition: 1s ease-in-out;
+    transform-style: preserve-3d;
+    &__flip {
+      transform: rotateY(0.5turn);
+    }
+    .bg_image {
+      object-fit: cover;
+      background-color: #ebebeb;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      backface-visibility: hidden;
+      transition: 1s ease-in-out;
+      .img {
+        width: 100%;
+        border-radius: 16px;
+        max-height: 80%;
+        -webkit-box-reflect: below 10px;
+      }
+    }
+    .back {
+      backface-visibility: hidden;
+      object-fit: cover;
+      transform: rotateY(0.5turn);
+    }
     .row {
       display: flex;
       flex-direction: row;
