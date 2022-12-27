@@ -420,7 +420,7 @@ export default {
     }
     .bg_image {
       object-fit: cover;
-      background-color: #ebebeb;
+      background-color: #c4c4c433;
       position: absolute;
       top: 0;
       left: 0;
@@ -432,10 +432,10 @@ export default {
       backface-visibility: hidden;
       transition: 1s ease-in-out;
       .img {
-        width: 100%;
+        width: 90%;
         border-radius: 16px;
-        max-height: 80%;
-        -webkit-box-reflect: below 10px;
+        max-height: 90%;
+        box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
       }
     }
     .back {
