@@ -17,6 +17,7 @@ export default {
     showThirdPpartyIntegrations: false,
     showEditPrice: false,
     showTaskCenter: false,
+    showMoveProductsBetweenWhs: false,
   },
   getters: {
     show_edit_modal(state) {
@@ -69,6 +70,9 @@ export default {
     },
     showTaskCenter(state) {
       return state.showTaskCenter;
+    },
+    showMoveProductsBetweenWhs(state) {
+      return state.showMoveProductsBetweenWhs;
     },
   },
   mutations: {
@@ -132,6 +136,9 @@ export default {
     },
     openCloseTaskCenter(state, value) {
       state.showTaskCenter = value;
+    },
+    openCloseMoveProductsBetweenWhs(state, value) {
+      state.showMoveProductsBetweenWhs = value;
     },
   },
   actions: {},

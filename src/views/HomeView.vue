@@ -46,6 +46,14 @@
       </div>
     </transition>
     <transition name="modal_window">
+      <div v-if="showMoveProductsBetweenWhs" class="move_products_between_whs">
+        <MoveProductsBetweenWhs
+          :currentItems="currentItems"
+          @close="updateProducts"
+        />
+      </div>
+    </transition>
+    <transition name="modal_window">
       <div v-if="show_document_setting" class="document_setting">
         <document-setting @close="open_close_show_document_setting" />
       </div>
@@ -249,7 +257,8 @@
           show_document_setting ||
           showThirdPpartyIntegrations ||
           showSyncSettings ||
-          showEditPrice,
+          showEditPrice ||
+          showMoveProductsBetweenWhs,
       }"
     >
       <div class="filters" :class="{ blur: show_edit_modal }">
@@ -305,7 +314,12 @@
                 </button>
               </template>
               <template v-if="isTest">
-                <button class="button button_5 smallBtn">Перемещение</button>
+                <button
+                  class="button button_5 smallBtn"
+                  @click="openMoveProductsBetweenWhs()"
+                >
+                  Перемещение
+                </button>
               </template>
               <button class="button button_1 smallBtn" @click="archive_data()">
                 Архивировать
@@ -378,6 +392,7 @@ import ProductProperties from "@/components/ProductProperties.vue";
 import ThirdPpartyIntegrations from "@/components/ThirdPpartyIntegrations.vue";
 import TaskCenter from "@/components/TaskCenter.vue";
 import SyncSettings from "@/components/SyncSattings.vue";
+import MoveProductsBetweenWhs from "@/components/MoveProductsBetweenWhs.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed, nextTick } from "vue";
@@ -396,6 +411,7 @@ export default {
     ThirdPpartyIntegrations,
     SyncSettings,
     TaskCenter,
+    MoveProductsBetweenWhs,
     // SelectorVue,
   },
   provide() {
@@ -448,7 +464,8 @@ export default {
         this.show_document_setting ||
         this.showThirdPpartyIntegrations ||
         this.showSyncSettings ||
-        this.showEditPrice
+        this.showEditPrice ||
+        this.showMoveProductsBetweenWhs
       );
     },
     isServicePage() {
@@ -472,6 +489,7 @@ export default {
       "showSyncSettings",
       "showEditPrice",
       "showTaskCenter",
+      "showMoveProductsBetweenWhs",
     ]),
     totalCountProducts() {
       return this.$store.state.products.meta.meta.total;
@@ -610,6 +628,15 @@ export default {
       this.currentItems = [...arr.map((val) => val.item)];
       this.open_close_cancel_position(true);
     },
+    openMoveProductsBetweenWhs() {
+      const arr = JSON.parse(
+        JSON.stringify(
+          this.ref_main?.selectedProducts.filter((val) => val.value)
+        )
+      );
+      this.currentItems = [...arr.map((val) => val.item)];
+      this.openCloseMoveProductsBetweenWhs(true);
+    },
     dropCurrentItems() {
       this.currentItems = [];
     },
@@ -624,6 +651,9 @@ export default {
     },
     open_close_cancel_position(value) {
       this.$store.commit("open_close_cancel_position", value);
+    },
+    openCloseMoveProductsBetweenWhs(value) {
+      this.$store.commit("openCloseMoveProductsBetweenWhs", value);
     },
     open_close_settings() {
       this.$store.commit("open_close_settings");
