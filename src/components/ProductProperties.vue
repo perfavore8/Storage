@@ -134,7 +134,7 @@
                   class="del_btn"
                   v-show="!row.is_system"
                   @click="delete_field(row.id)"
-                ></button>
+                />
                 <button
                   class="btn btn_save btn_blue"
                   v-if="
@@ -598,7 +598,6 @@ export default {
               min-width: 34px;
             }
             .new_item_input {
-              // width: calc(100% - 26px) !important;
             }
             .del_btn {
               height: 34px;
