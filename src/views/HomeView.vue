@@ -347,11 +347,19 @@
           >
             <span class="material-icons-outlined"> sync </span>
           </button>
+          <button
+            class="table_settings_btn"
+            v-if="grid"
+            @click="openTableSettings()"
+            title="Настройка таблицы"
+          >
+            <span class="material-icons"> settings </span>
+          </button>
         </div>
       </div>
       <div class="grid">
-        <main-grid ref="main" v-if="!grid" :selectedWH="selectedWH"></main-grid>
-        <card-grid ref="card" v-if="grid" :selectedWH="selectedWH"></card-grid>
+        <main-grid ref="main" v-if="!grid" :selectedWH="selectedWH" />
+        <card-grid ref="card" v-else :selectedWH="selectedWH" />
       </div>
     </div>
   </div>
@@ -636,6 +644,9 @@ export default {
     },
     open_edit_stuff() {
       this.$store.commit("open_close_show_edit_stuff", true);
+    },
+    openTableSettings() {
+      this.$store.commit("open_table_settings");
     },
     open_product_category() {
       this.$store.commit("open_close_product_category", true);
@@ -1153,6 +1164,25 @@ export default {
 }
 .disabled {
   pointer-events: none;
+}
+.table_settings_btn {
+  position: absolute;
+  top: 69px;
+  right: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background-color: transparent;
+  color: #757575;
+  outline: none;
+  transition: all 0.15s ease-out;
+}
+.table_settings_btn:hover {
+  transform: rotate(90deg) scale(1.1);
 }
 .blur {
   filter: blur(5px);

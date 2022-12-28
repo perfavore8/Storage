@@ -34,7 +34,9 @@
           class="settings_btn"
           @click="openTableSettings()"
           title="Настройка таблицы"
-        />
+        >
+          <span class="material-icons"> settings </span>
+        </button>
         <button
           class="test_btn"
           title="Экспорт таблицы в xlsx"
@@ -227,14 +229,17 @@ export default {
   }
 }
 .settings_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   width: 18px;
   height: 18px;
   border: none;
   background-color: transparent;
+  color: #757575;
   outline: none;
   transition: all 0.15s ease-out;
-  @include bg_image("../assets/gear_1.svg");
 }
 .settings_btn:hover {
   transform: rotate(90deg) scale(1.1);
