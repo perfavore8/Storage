@@ -675,6 +675,10 @@ export default {
         this.$store.state.products.meta.meta.current_page
       );
       this.ref_main?.setSelectedProducts();
+      this.ref_card?.changePage(
+        this.$store.state.products.meta.meta.current_page
+      );
+      this.ref_card?.setSelectedProducts();
       this.dropCurrentItems();
     },
   },
