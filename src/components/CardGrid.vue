@@ -95,7 +95,7 @@
                 class="edit_icon"
                 style="width: 16px; heigth: 16px"
                 v-if="item[0].split('.')[1] == 'cost'"
-                @click="openGridEditPrice(row, item[0].split('.')[0])"
+                @click.stop="openGridEditPrice(row, item[0].split('.')[0])"
                 title="Редактирование цены"
               ></button>
             </div>
