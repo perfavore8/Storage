@@ -18,6 +18,7 @@
             ref="bar"
             :fields="all_fields"
             @sort="sort"
+            @changeAllSelectedProducts="changeAllSelectedProducts"
             :tableConfig="tableConfig"
             :sortedFields="sortedFields"
             class="main-grid-bar"
@@ -304,6 +305,9 @@ export default {
       this.selectedProducts = [];
       for (let i = 0; i < this.count; i++)
         this.selectedProducts.push({ value: false, item: {} });
+    },
+    changeAllSelectedProducts(newValue) {
+      this.selectedProducts.map((product) => (product.value = newValue));
     },
     async get_products(params) {
       if (this.isServicePage.value) params = { ...params, is_service: 1 };

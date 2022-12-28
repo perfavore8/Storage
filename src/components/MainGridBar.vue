@@ -1,6 +1,15 @@
 <template>
   <tr class="bar_row">
-    <th class="bar_item item" style="min-width: 17px" v-if="!oneC"></th>
+    <th class="bar_item item" style="min-width: 17px" v-if="!oneC">
+      <input
+        type="checkbox"
+        class="checkbox"
+        id="all"
+        v-model="allSelectedProducts"
+        @change="changeAllSelectedProducts()"
+      />
+      <label for="all"></label>
+    </th>
     <th
       class="bar_item item"
       :style="{
@@ -78,6 +87,7 @@ export default {
         code: "",
         prev_order: "",
         disableExportXlsx: false,
+        allSelectedProducts: false,
       },
     };
   },
@@ -157,6 +167,9 @@ export default {
       // const file = window.URL.createObjectURL(blob);
       // window.location.assign(file);
       // this.disableExportXlsx = false;
+    },
+    changeAllSelectedProducts() {
+      this.$emit("changeAllSelectedProducts", this.allSelectedProducts);
     },
     openTableSettings() {
       this.$store.commit("open_table_settings");
