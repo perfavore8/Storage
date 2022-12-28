@@ -1,12 +1,18 @@
 <template>
   <div class="bottom" :class="{ blur: blur }" v-if="show">
-    <button v-if="previous" @click="changePage(page - 1)" class="btn previous">
-      {{ "<" }}
-    </button>
-    <div class="span">{{ page }}</div>
-    <button v-if="next" @click="changePage(page + 1)" class="btn next">
-      {{ ">" }}
-    </button>
+    <template v-if="showBtns">
+      <button
+        v-if="previous"
+        @click="changePage(page - 1)"
+        class="btn previous"
+      >
+        {{ "<" }}
+      </button>
+      <div class="span">{{ page }}</div>
+      <button v-if="next" @click="changePage(page + 1)" class="btn next">
+        {{ ">" }}
+      </button>
+    </template>
     <selector-vue
       class="count"
       :options_props="count_values"
@@ -48,6 +54,7 @@ export default {
       type: Boolean,
       required: true,
     },
+    showBtns: Boolean,
   },
   emits: { changePage: null, changeCount: null },
   data() {

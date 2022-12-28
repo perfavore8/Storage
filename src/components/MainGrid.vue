@@ -114,7 +114,7 @@
       :blur="show_edit_modal"
       :show="products.length != 0"
       :count="count"
-      v-if="showGridBottom"
+      :showBtns="showGridBottom"
       @changePage="changePage"
       @changeCount="changeCount"
     />
