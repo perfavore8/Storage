@@ -80,6 +80,9 @@ $vv: calc(1vh + 1vw);
   background: rgb(105, 177, 104);
   box-shadow: 0 0 5px 2px rgb(105 177 104 / 25%);
 }
+.btn_green:disabled {
+  background-color: #4e964d80 !important;
+}
 .btn_yellow {
   background-color: #ffca2c;
 }
@@ -87,8 +90,8 @@ $vv: calc(1vh + 1vw);
   background-color: rgb(255, 191, 0);
   box-shadow: 0 0 5px 2px rgb(255 191 0 / 25%);
 }
-.btn_green:disabled {
-  background-color: #4e964d80 !important;
+.btn_yellow:disabled {
+  background-color: #ffca2c80 !important;
 }
 .btn:disabled {
   cursor: default !important;
