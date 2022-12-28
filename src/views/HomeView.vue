@@ -525,6 +525,7 @@ export default {
         : (document.body.style.overflowX = "auto");
     },
     selected_storage() {
+      this.$store.commit("updateIsLoading", true);
       this.grid ? this.ref_card.drop_page() : this.ref_main.drop_page();
     },
   },
