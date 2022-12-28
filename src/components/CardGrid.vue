@@ -33,7 +33,7 @@
         :key="row.id"
       >
         <div class="bg_image">
-          <img :src="src[idx % 5]" class="img" />
+          <img :src="src[idx % src.length]" class="img" />
         </div>
         <div class="back">
           <div class="row" v-for="item in sortedFields" :key="item">
@@ -161,9 +161,24 @@ export default {
         "https://spb.wadoo.ru/upload/iblock/370/370d7dd8a236c788f7f7758e5b342ed0.jpg",
         "https://diamondelectric.ru/images/3809/3808559/ydarnaya_akkymylyatornaya_drelshyrypovert_bosch_gsb_180li_liion_1.jpg",
         "https://redhome.by/image/cache/catalog/i/nk/ka/1023c718bea479e2011bcb8107182120-1000x1000.jpg",
-        "https://avatars.mds.yandex.net/i?id=26fb75009e3e6b974d28ce1f40bbe4d6-4599292-images-thumbs&n=13&exp=1",
         "https://skladom.ru/images/detailed/282/SKRZYNKA-NARZEDZIOWA-NA-KOLKACH-QBRICK-TWO-BIG-SET.jpg",
         "https://media.garwin.ru/images/products/09/2e/092e4949-c7e3-4315-9f24-8e0fce706885-w768p.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/52/525000874-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/52/525000719-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/64/643000059-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/64/643000055-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/50/507000318-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/50/507000694-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/50/507000656-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/70/700000627-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/70/700000504-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/70/700000626-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/51/515000914-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/35/351003750-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/35/351003527-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/45/453000554-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/45/453000555-0.webp",
+        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/40/405002166-0.webp",
       ],
       // link: {
       //   path: null,
@@ -308,7 +323,6 @@ export default {
     async changeCount(count) {
       this.setTrueIsConfirmFilters();
       await this.$store.dispatch("update_user", { per_page: count });
-      // this.changePage(this.meta.current_page);
       this.drop_page();
     },
     changePage(val) {
@@ -409,24 +423,30 @@ export default {
   }
   .card {
     width: 300px;
-    border: 1px solid #c9c9c9;
-    border-radius: 5px;
+    // border: 1px solid #c9c9c9;
+    border-radius: 8px;
     padding: 20px;
     position: relative;
     transition: 1s ease-in-out;
     transform-style: preserve-3d;
     &__flip {
       transform: rotateY(0.5turn);
+      // background: #c4c4c433;
+      box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
     }
     .bg_image {
+      box-sizing: border-box;
       object-fit: cover;
-      background-color: #c4c4c433;
+      // background-color: #c4c4c433;
+      box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
+      border-radius: 8px;
       position: absolute;
       top: 0;
       left: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 16px;
       height: 100%;
       width: 100%;
       backface-visibility: hidden;
@@ -435,7 +455,7 @@ export default {
         width: 90%;
         border-radius: 16px;
         max-height: 90%;
-        box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
+        // box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
       }
     }
     .back {
