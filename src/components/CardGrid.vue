@@ -114,7 +114,7 @@
             </template>
             <div
               class="edit_icon"
-              @click="open_edit_modal(row)"
+              @click.stop="open_edit_modal(row)"
               title="Редактирование товара"
             />
           </div>
