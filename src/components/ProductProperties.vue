@@ -389,7 +389,7 @@ export default {
       this.feel_data_fields_properties(val.value.id);
     },
     updateAllFields() {
-      this.copy_fields.forEach((field, idx) => {
+      this.copy_fields.map((field, idx) => {
         const needUpdate =
           field.changeName || field.changeData || field.changeLeadConfig;
         if (needUpdate)
@@ -398,6 +398,9 @@ export default {
             field.changeData ? "data" : null,
             field.changeLeadConfig ? "lead_config" : null,
           ]);
+        field.changeName = false;
+        field.changeData = false;
+        field.changeLeadConfig = false;
       });
     },
     async update_field(idx, params_names) {
