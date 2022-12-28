@@ -33,7 +33,16 @@
         :key="row.id"
       >
         <div class="bg_image">
-          <img :src="src[idx % src.length]" class="img" />
+          <img
+            :src="src[idx % src.length]"
+            class="img"
+            v-show="!isDataLoading"
+          />
+          <img
+            src="https://img2.freepng.ru/20180518/rpa/kisspng-parcel-computer-icons-package-tracking-mail-5aff95be3be2a8.2770409315266994542453.jpg"
+            class="img"
+            v-show="isDataLoading"
+          />
         </div>
         <div class="back">
           <div class="row" v-for="item in sortedFields" :key="item">
