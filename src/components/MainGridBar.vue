@@ -215,9 +215,11 @@ export default {
     }
   }
   .bar_item:first-child {
+    cursor: default;
     width: 17px !important;
   }
   .bar_item:last-child {
+    cursor: default;
     width: 20px !important;
     div {
       width: 100%;
