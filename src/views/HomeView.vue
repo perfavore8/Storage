@@ -1164,8 +1164,9 @@ export default {
   background: #ffeab2;
 }
 .button_5:hover {
-  background: #ffe9ac;
-  box-shadow: 0 0 5px 2px rgb(255 233 172 / 50%);
+  color: #000;
+  background: #ffd45c;
+  box-shadow: 0 0 5px 2px rgb(255 212 92 / 50%);
 }
 .disabled {
   pointer-events: none;
