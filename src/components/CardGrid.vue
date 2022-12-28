@@ -9,7 +9,7 @@
       @close="get_products(productsParams)"
     />
   </teleport>
-  <div class="wrapper" :class="{ blur: show_edit_modal }">
+  <div class="wrapper" :class="{ blur: show_edit_modal || isDataLoading }">
     <div class="header">
       <transition name="mdl">
         <card-grid-filters
@@ -21,7 +21,7 @@
       </transition>
       <!-- <card-grid-links ref="links" @emit_link="emit_link" /> -->
     </div>
-    <div class="grid" ref="grid" :class="{ blur: isDataLoading }">
+    <div class="grid" ref="grid">
       <label v-if="products.length == 0" class="text">
         Ничего не найдено
       </label>
