@@ -50,7 +50,15 @@
               <th class="item">Тип</th>
               <th class="item">Видимость в сделке</th>
               <th class="item">Редактирование в сделке</th>
-              <th class="item"></th>
+              <th class="item">
+                <button
+                  class="btn btn_save_all btn_yellow"
+                  v-if="showUpdateAllFieldsBtn"
+                  @click="updateAllFields()"
+                >
+                  Сохранить все поля
+                </button>
+              </th>
             </tr>
             <tr
               class="row"
@@ -279,6 +287,14 @@ export default {
     this.is_loading = false;
   },
   computed: {
+    showUpdateAllFieldsBtn() {
+      let res = false;
+      this.copy_fields.forEach((field) => {
+        res =
+          res || field.changeName || field.changeData || field.changeLeadConfig;
+      });
+      return res;
+    },
     height() {
       return document.documentElement.scrollHeight;
     },
@@ -371,6 +387,18 @@ export default {
       const value = JSON.parse(JSON.stringify(val));
       this.selected_fields_properties.push(value.value);
       this.feel_data_fields_properties(val.value.id);
+    },
+    updateAllFields() {
+      this.copy_fields.forEach((field, idx) => {
+        const needUpdate =
+          field.changeName || field.changeData || field.changeLeadConfig;
+        if (needUpdate)
+          this.update_field(idx, [
+            field.changeName ? "name" : null,
+            field.changeData ? "data" : null,
+            field.changeLeadConfig ? "lead_config" : null,
+          ]);
+      });
     },
     async update_field(idx, params_names) {
       const params = {};
@@ -547,12 +575,24 @@ export default {
             .item {
               padding-bottom: 20px;
             }
+            .item:last-child {
+              position: relative;
+            }
           }
           .load {
             filter: blur(5px);
             user-select: none;
           }
           .row {
+            .btn_save_all {
+              white-space: nowrap;
+              position: absolute;
+              left: -80%;
+              top: -75%;
+              height: min-content;
+              width: min-content;
+              @include font(400, 12px);
+            }
             .item {
               padding: 10px;
               border: 1px solid #c9c9c9;
