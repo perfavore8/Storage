@@ -160,6 +160,7 @@ export default {
   },
   unmounted() {
     window.removeEventListener("scroll", this.handleScroll);
+    this.$store.commit("open_close_buttons", false);
   },
   async mounted() {
     this.$store.dispatch("get_fields_properties");

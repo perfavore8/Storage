@@ -21,7 +21,7 @@
       </transition>
       <!-- <card-grid-links ref="links" @emit_link="emit_link" /> -->
     </div>
-    <div class="grid" ref="grid">
+    <div class="grid" ref="grid" :class="{ blur: isDataLoading }">
       <label v-if="products.length == 0" class="text">
         Ничего не найдено
       </label>
@@ -194,6 +194,7 @@ export default {
   },
   unmounted() {
     window.removeEventListener("scroll", this.handleScroll);
+    this.$store.commit("open_close_buttons", false);
   },
   async mounted() {
     this.$store.dispatch("get_fields_properties");
