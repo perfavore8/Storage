@@ -164,7 +164,9 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("get_account");
-    this.copyConfing = this.$store.state.account.account.config;
+    this.copyConfing = JSON.parse(
+      JSON.stringify(this.$store.state.account.account.config)
+    );
     await this.$store.dispatch("getPipelinesList");
     this.copyPipelinesList = this.pipelinesList;
     await this.$store.dispatch("getLeadFieldsList");
@@ -209,7 +211,12 @@ export default {
   },
   methods: {
     save() {
-      this.$store.dispatch("update_account", this.copyConfing);
+      const res = {};
+      const config = this.$store.state.account.account.config;
+      Object.entries(this.copyConfing).forEach((item) => {
+        if (config[item[0]] !== item[1]) res[item[0]] = item[1];
+      });
+      this.$store.dispatch("update_account", res);
       this.close();
     },
     close() {
