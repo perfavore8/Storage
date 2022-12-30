@@ -113,10 +113,13 @@
                       v-model="row.batch"
                       class="input"
                       :class="{
-                        not_valid: row.batch === '' && try_accept,
+                        not_valid:
+                          row.batch === '' && try_accept && row.type.value != 2,
                       }"
                       :title="
-                        row.batch === '' && try_accept ? 'Пустое поле' : null
+                        row.batch === '' && try_accept && row.type.value != 2
+                          ? 'Пустое поле'
+                          : null
                       "
                       :disabled="
                         row.type.value == 2 || row.batch_category?.value != -1
@@ -375,6 +378,12 @@ export default {
         "cost_price",
         "price.cost",
       ],
+      fieldsServiceForValidation: [
+        "article",
+        "name",
+        "cost_price",
+        "price.cost",
+      ],
       try_accept: false,
     };
   },
@@ -394,8 +403,13 @@ export default {
     },
     isValid() {
       let isValid = true;
+      const list = [this.fieldsForValidation, this.fieldsServiceForValidation];
       this.new_items.forEach((item) => {
-        this.fieldsForValidation.forEach((field) => {
+        const isService = item.type.value == 2;
+        console.log(isService);
+        let list2 = [];
+        isService ? (list2 = list[1]) : (list2 = list[0]);
+        list2.forEach((field) => {
           const fields = field.split(".");
           if (fields[1]) {
             isValid = isValid && this.validation(item[fields[0]][fields[1]]);
