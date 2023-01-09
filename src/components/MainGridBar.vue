@@ -86,9 +86,9 @@ export default {
       order: {
         code: "",
         prev_order: "",
-        disableExportXlsx: false,
-        allSelectedProducts: false,
       },
+      disableExportXlsx: false,
+      allSelectedProducts: false,
     };
   },
   computed: {
@@ -170,6 +170,9 @@ export default {
     },
     changeAllSelectedProducts() {
       this.$emit("changeAllSelectedProducts", this.allSelectedProducts);
+    },
+    dropAllSelectedProducts() {
+      this.allSelectedProducts = false;
     },
     openTableSettings() {
       this.$store.commit("open_table_settings");

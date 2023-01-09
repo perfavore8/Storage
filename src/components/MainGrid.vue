@@ -173,6 +173,7 @@ export default {
     await this.$store.dispatch("get_all_fields");
     await this.get_products(this.productsParams);
     this.setSelectedProducts();
+    this.bar?.dropAllSelectedProducts();
   },
 
   computed: {
@@ -318,6 +319,7 @@ export default {
         params = { ...params, warehouse: this.selectedWH.value };
       await this.$store.dispatch("get_products", params);
       this.setSelectedProducts();
+      this.bar?.dropAllSelectedProducts();
     },
     drop_page() {
       this.changePage(1);
