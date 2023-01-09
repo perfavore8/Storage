@@ -307,7 +307,10 @@ export default {
         this.selectedProducts.push({ value: false, item: {} });
     },
     changeAllSelectedProducts(newValue) {
-      this.selectedProducts.map((product) => (product.value = newValue));
+      this.selectedProducts.map((product, idx) => {
+        product.value = newValue;
+        newValue ? (product.item = this.products[idx]) : (product.item = {});
+      });
     },
     async get_products(params) {
       if (this.isServicePage.value) params = { ...params, is_service: 1 };
