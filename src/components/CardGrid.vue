@@ -306,9 +306,6 @@ export default {
     },
   },
   methods: {
-    getRandomInt(max) {
-      return Math.floor(Math.random() * max);
-    },
     scrollUp() {
       window.scrollTo(0, 0);
     },
