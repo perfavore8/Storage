@@ -3,16 +3,17 @@
     <button @click="open_selector()">
       <div class="arrow" :class="{ rotate_arrow: show_selector }"></div>
     </button>
-    <multi-selector
-      class="selector"
-      id="selector123"
-      v-if="show_selector"
-      :options_props="[{ name: 'Все', value: -1 }, ...selector_options]"
-      @select="option_select_multi"
-      :selected_options="filterValue"
-      @focusout="handleFocusOut"
-      tabindex="1"
-    />
+    <template v-if="show_selector">
+      <div class="backdrop" @click="closeSelector()" />
+      <multi-selector
+        class="selector"
+        id="selector123"
+        :options_props="[{ name: 'Все', value: -1 }, ...selector_options]"
+        @select="option_select_multi"
+        :selected_options="filterValue"
+        tabindex="1"
+      />
+    </template>
   </div>
 </template>
 
@@ -101,6 +102,9 @@ export default {
         });
       }, 150);
     },
+    closeSelector() {
+      this.show_selector = false;
+    },
   },
 };
 </script>
@@ -142,10 +146,20 @@ export default {
   }
   .multi_selector {
     width: min-content;
+    overflow: hidden;
     :deep(.item) {
       width: max-content;
       min-width: calc(100% - 24px);
     }
   }
+}
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  z-index: 998;
 }
 </style>
