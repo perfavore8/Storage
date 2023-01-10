@@ -280,12 +280,12 @@
                 <input
                   type="checkbox"
                   class="checkbox"
-                  v-model="grid"
+                  v-model="isGrid"
                   id="grid"
                 />
                 <label for="grid">
                   <transition name="modal" mode="out-in">
-                    <span class="material-icons-round icon" v-if="grid">
+                    <span class="material-icons-round icon" v-if="isGrid">
                       format_list_bulleted
                     </span>
                     <span class="material-icons-round icon" v-else>
@@ -363,7 +363,7 @@
           </button>
           <button
             class="table_settings_btn"
-            v-if="grid"
+            v-if="isGrid"
             @click="openTableSettings()"
             title="Настройка таблицы"
           >
@@ -372,7 +372,7 @@
         </div>
       </div>
       <div class="grid">
-        <main-grid ref="main" v-if="!grid" :selectedWH="selectedWH" />
+        <main-grid ref="main" v-if="!isGrid" :selectedWH="selectedWH" />
         <card-grid ref="card" v-else :selectedWH="selectedWH" />
       </div>
     </div>
@@ -426,7 +426,7 @@ export default {
       paginatedParams: [],
       selectedWH: { name: "Все склады", value: "whs" },
       whs: [],
-      grid: false,
+      isGrid: false,
       currentItems: [],
       whsFull: true,
       showWhsArrow: true,
@@ -521,6 +521,17 @@ export default {
         this.account?.config?.amo_product_list == "-1"
       );
     },
+    filteredSelectedProducts() {
+      let arr = [];
+      this.isGrid
+        ? (arr = [
+            ...this.ref_card?.selectedProducts.filter((val) => val.value),
+          ])
+        : (arr = [
+            ...this.ref_main?.selectedProducts.filter((val) => val.value),
+          ]);
+      return arr;
+    },
   },
   async mounted() {
     await this.$store.dispatch("get_account");
@@ -544,15 +555,19 @@ export default {
     },
     selected_storage() {
       this.$store.commit("updateIsLoading", true);
-      this.grid ? this.ref_card.drop_page() : this.ref_main.drop_page();
+      this.isGrid ? this.ref_card.drop_page() : this.ref_main.drop_page();
     },
   },
   methods: {
     confirmFilters() {
-      this.ref_main?.confirmFilters();
+      this.isGrid
+        ? this.ref_card?.confirmFilters()
+        : this.ref_main?.confirmFilters();
     },
     clearFilters() {
-      this.ref_main?.clearFilters();
+      this.isGrid
+        ? this.ref_card?.clearFilters()
+        : this.ref_main?.clearFilters();
     },
     setShowWhsArrow() {
       nextTick(() => {
@@ -599,42 +614,30 @@ export default {
       const params = {
         products: [],
       };
-      this.ref_main?.selectedProducts
-        .filter((val) => val.value)
-        ?.forEach((val) => {
-          val.item.is_archive = 1;
-          params.products.push(val.item);
-        });
+      this.filteredSelectedProducts?.forEach((val) => {
+        val.item.is_archive = 1; // может быть не работает
+        params.products.push(val.item);
+      });
       await this.$store.dispatch("update_product", params);
-      this.ref_main?.changePage(
-        this.$store.state.products.meta.meta.current_page
-      );
+      const currentPage = this.$store.state.products.meta.meta.current_page;
+      this.isGrid
+        ? this.ref_card?.changePage(currentPage)
+        : this.ref_main?.changePage(currentPage);
+    },
+    setCurrentItems() {
+      const arr = JSON.parse(JSON.stringify(this.filteredSelectedProducts));
+      this.currentItems = [...arr.map((val) => val.item)];
     },
     addCurrentProducts() {
-      const arr = JSON.parse(
-        JSON.stringify(
-          this.ref_main?.selectedProducts.filter((val) => val.value)
-        )
-      );
-      this.currentItems = [...arr.map((val) => val.item)];
+      this.setCurrentItems();
       this.open_close_new_position(true);
     },
     openCancelPosition() {
-      const arr = JSON.parse(
-        JSON.stringify(
-          this.ref_main?.selectedProducts.filter((val) => val.value)
-        )
-      );
-      this.currentItems = [...arr.map((val) => val.item)];
+      this.setCurrentItems();
       this.open_close_cancel_position(true);
     },
     openMoveProductsBetweenWhs() {
-      const arr = JSON.parse(
-        JSON.stringify(
-          this.ref_main?.selectedProducts.filter((val) => val.value)
-        )
-      );
-      this.currentItems = [...arr.map((val) => val.item)];
+      this.setCurrentItems();
       this.openCloseMoveProductsBetweenWhs(true);
     },
     dropCurrentItems() {
@@ -702,14 +705,17 @@ export default {
       setTimeout(() => {
         this.isUpdateProducts = false;
       }, 2250);
-      this.ref_main?.changePage(
-        this.$store.state.products.meta.meta.current_page
-      );
-      this.ref_main?.setSelectedProducts();
-      this.ref_card?.changePage(
-        this.$store.state.products.meta.meta.current_page
-      );
-      this.ref_card?.setSelectedProducts();
+      if (this.isGrid) {
+        this.ref_card?.changePage(
+          this.$store.state.products.meta.meta.current_page
+        );
+        this.ref_card?.setSelectedProducts();
+      } else {
+        this.ref_main?.changePage(
+          this.$store.state.products.meta.meta.current_page
+        );
+        this.ref_main?.setSelectedProducts();
+      }
       this.dropCurrentItems();
     },
   },
