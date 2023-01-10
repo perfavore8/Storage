@@ -20,6 +20,23 @@
         />
       </transition>
       <!-- <card-grid-links ref="links" @emit_link="emit_link" /> -->
+      <div class="sort">
+        <span>Сортировать по:</span>
+        <SelectorVue
+          :options_props="sortedFieldsForSort"
+          :selected_option="selectedSort.value"
+          @select="selectSort"
+        />
+        <button
+          class="bar_item_icon"
+          :class="{
+            bar_item_icon_up: selectedSort?.order === 0,
+            bar_item_icon_down: selectedSort?.order === 1,
+          }"
+          @click="selectOrder()"
+        ></button>
+        <button class="btn btn_blue" @click="sort()">Применить</button>
+      </div>
     </div>
     <div class="grid" ref="grid">
       <label v-if="products.length == 0" class="text">
@@ -141,17 +158,19 @@ import EditItem from "@/components/EditItem.vue";
 import GridBottom from "@/components/GridBottom.vue";
 import CardGridFilters from "@/components/CardGridFilters.vue";
 import GridEditPrice from "@/components/GridEditPrice.vue";
+import SelectorVue from "@/components/SelectorVue.vue";
 // import CardGridLinks from "@/components/CardGridLinks.vue";
 import { mapGetters } from "vuex";
 import { nextTick } from "@vue/runtime-core";
 export default {
-  name: "Main_grid",
+  name: "CardGrid",
   components: {
     EditItem,
     GridBottom,
     CardGridFilters,
     // CardGridLinks,
     GridEditPrice,
+    SelectorVue,
   },
   props: {
     selectedWH: {
@@ -196,6 +215,8 @@ export default {
       //   show_categoryes: null,
       //   categoryes: null,
       // },
+      orderList: ["desc", "asc"],
+      selectedSort: { value: { name: "Не выбрано", value: -1 }, order: 1 },
     };
   },
   created() {
@@ -226,6 +247,13 @@ export default {
           if (a[1].sort < b[1].sort) return -1;
         })
         .filter((val) => val[1].visible);
+    },
+    sortedFieldsForSort() {
+      const arr = [{ name: "Не выбрано", value: -1 }];
+      this.sortedFields
+        .filter((field) => field[1].sortable && field[1].type != 9)
+        .forEach((field) => arr.push({ name: field[1].name, value: field[0] }));
+      return arr;
     },
     tableConfig() {
       return this.$store.state.account.tableConfig;
@@ -372,7 +400,24 @@ export default {
     setTrueIsConfirmFilters() {
       nextTick(() => this.filters?.setTrueIsConfirmFilters());
     },
-    sort(code, order) {
+    selectSort(option) {
+      this.selectedSort.value = option;
+    },
+    selectOrder() {
+      this.selectedSort.order
+        ? (this.selectedSort.order = 0)
+        : (this.selectedSort.order = 1);
+    },
+    sort() {
+      let code;
+      let order;
+      if (this.selectedSort.value.value != -1) {
+        code = this.selectedSort.value.value;
+        order = this.orderList[this.selectedSort.order];
+      } else {
+        code = "";
+        order = "";
+      }
       this.setTrueIsConfirmFilters();
       const params = {
         page: 1,
@@ -398,6 +443,27 @@ export default {
   flex-direction: column;
   gap: 15px;
   margin-bottom: 30px;
+  .sort {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    @include font(400, 16px);
+    .bar_item_icon {
+      height: 20px;
+      width: 20px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+      &_up {
+        @include bg_image("@/assets/sort_up.svg");
+      }
+      &_down {
+        @include bg_image("@/assets/sort_down.svg");
+      }
+    }
+  }
   .btns {
     display: flex;
     justify-content: flex-end;
