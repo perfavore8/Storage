@@ -387,7 +387,7 @@ export default {
   // height: 550px;
   // display: block;
   .main-grid-bar {
-    z-index: 1005;
+    z-index: 105;
     position: sticky;
     top: -1px;
   }

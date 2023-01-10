@@ -140,7 +140,7 @@ export default {
   }
   .selector {
     position: absolute;
-    z-index: 999;
+    z-index: 50;
     margin-top: 30px;
     max-width: 224px;
   }
@@ -160,6 +160,6 @@ export default {
   bottom: 0;
   left: 0;
   background-color: transparent;
-  z-index: 998;
+  z-index: 49;
 }
 </style>
