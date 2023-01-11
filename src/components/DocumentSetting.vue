@@ -268,7 +268,7 @@ export default {
       this.disable_fields_templates = false;
     },
     close() {
-      this.$emit("close", false);
+      this.$store.commit("open_close_document_setting", false);
     },
     lead_fields_select(option) {
       Object.assign(this.lead_fields, option);
