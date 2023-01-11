@@ -20,6 +20,44 @@ export default {
     showMoveProductsBetweenWhs: false,
   },
   getters: {
+    show_modals(state, getters) {
+      return (
+        state.show_settings ||
+        state.showTaskCenter ||
+        getters.disabled_for_modals
+      );
+    },
+    disabled_for_modals(state) {
+      return (
+        state.show_edit_modal ||
+        state.show_table_settings ||
+        state.show_edit_stuff ||
+        state.show_product_category ||
+        state.show_product_properties ||
+        state.show_new_position ||
+        state.show_cancel_position ||
+        state.show_document_setting ||
+        state.showThirdPpartyIntegrations ||
+        state.showSyncSettings ||
+        state.showEditPrice ||
+        state.showMoveProductsBetweenWhs
+      );
+    },
+    home_blur(state) {
+      return (
+        state.show_table_settings ||
+        state.show_edit_stuff ||
+        state.show_new_position ||
+        state.show_cancel_position ||
+        state.show_product_category ||
+        state.show_product_properties ||
+        state.show_document_setting ||
+        state.showThirdPpartyIntegrations ||
+        state.showSyncSettings ||
+        state.showEditPrice ||
+        state.showMoveProductsBetweenWhs
+      );
+    },
     show_edit_modal(state) {
       return state.show_edit_modal;
     },
@@ -116,10 +154,10 @@ export default {
     open_close_cancel_position(state, value) {
       state.show_cancel_position = value;
     },
-    open_close_show_document_setting(state, value) {
+    open_close_document_setting(state, value) {
       state.show_document_setting = value;
     },
-    open_close_show_product_properties(state, value) {
+    open_close_product_properties(state, value) {
       state.show_product_properties = value;
     },
     open_close_product_category(state, value) {

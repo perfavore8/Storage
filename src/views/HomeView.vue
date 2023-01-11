@@ -7,57 +7,11 @@
         (account?.is_old_data_load_start && !account?.is_old_data_loaded),
     }"
   >
-    <div v-if="show_table_settings" class="table_setings">
-      <table-settings :selectedWH="selectedWH" />
-    </div>
-    <transition name="modal_window">
-      <div v-if="show_edit_stuff" class="edit_staff">
-        <edit-stuff />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_product_category" class="product_category">
-        <product-category />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="showThirdPpartyIntegrations" class="thirdPpartyIntegrations">
-        <ThirdPpartyIntegrations />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="showSyncSettings" class="SyncSettings">
-        <SyncSettings />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_product_properties" class="product_properties">
-        <product-properties />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_new_position" class="new_position">
-        <new-position :currentItems="currentItems" @close="updateProducts" />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_cancel_position" class="cancel_position">
-        <cancel-position :currentItems="currentItems" @close="updateProducts" />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="showMoveProductsBetweenWhs" class="move_products_between_whs">
-        <MoveProductsBetweenWhs
-          :currentItems="currentItems"
-          @close="updateProducts"
-        />
-      </div>
-    </transition>
-    <transition name="modal_window">
-      <div v-if="show_document_setting" class="document_setting">
-        <document-setting @close="open_close_show_document_setting" />
-      </div>
-    </transition>
+    <HomeModals
+      :selectedWH="selectedWH"
+      :currentItems="currentItems"
+      @updateProducts="updateProducts"
+    />
     <div
       class="header"
       :class="{
@@ -76,7 +30,6 @@
             >
               {{ page.name }}
             </button>
-            <!-- {{ $route }} -->
           </div>
           <div
             class="old"
@@ -222,7 +175,7 @@
                 <a>
                   <div
                     class="modal_container"
-                    @click="open_close_show_document_setting(true)"
+                    @click="open_close_document_setting(true)"
                   >
                     Документы
                   </div>
@@ -247,18 +200,7 @@
     <div
       class="wrapper"
       :class="{
-        blur:
-          show_table_settings ||
-          show_edit_stuff ||
-          show_new_position ||
-          show_cancel_position ||
-          show_product_category ||
-          show_product_properties ||
-          show_document_setting ||
-          showThirdPpartyIntegrations ||
-          showSyncSettings ||
-          showEditPrice ||
-          showMoveProductsBetweenWhs,
+        blur: home_blur,
       }"
     >
       <div class="filters" :class="{ blur: show_edit_modal }">
@@ -382,17 +324,8 @@
 <script>
 import MainGrid from "@/components/MainGrid.vue";
 import CardGrid from "@/components/CardGrid.vue";
-import TableSettings from "@/components/TableSettings.vue";
-import EditStuff from "@/components/EditStuff.vue";
-import NewPosition from "@/components/NewPosition.vue";
-import CancelPosition from "@/components/CancelPosition";
-import DocumentSetting from "@/components/DocumentSetting.vue";
-import ProductCategory from "@/components/ProductCategory.vue";
-import ProductProperties from "@/components/ProductProperties.vue";
-import ThirdPpartyIntegrations from "@/components/ThirdPpartyIntegrations.vue";
 import TaskCenter from "@/components/TaskCenter.vue";
-import SyncSettings from "@/components/SyncSattings.vue";
-import MoveProductsBetweenWhs from "@/components/MoveProductsBetweenWhs.vue";
+import HomeModals from "@/components/HomeModals.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed, nextTick } from "vue";
@@ -400,18 +333,9 @@ import { computed, nextTick } from "vue";
 export default {
   components: {
     MainGrid,
-    TableSettings,
-    EditStuff,
-    NewPosition,
-    CancelPosition,
     CardGrid,
-    DocumentSetting,
-    ProductCategory,
-    ProductProperties,
-    ThirdPpartyIntegrations,
-    SyncSettings,
     TaskCenter,
-    MoveProductsBetweenWhs,
+    HomeModals,
     // SelectorVue,
   },
   provide() {
@@ -447,49 +371,19 @@ export default {
       const today = year + "-" + month + "-" + day;
       return today;
     },
-    show_modals() {
-      return (
-        this.show_settings || this.showTaskCenter || this.disabled_for_modals
-      );
-    },
-    disabled_for_modals() {
-      return (
-        this.show_edit_modal ||
-        this.show_table_settings ||
-        this.show_edit_stuff ||
-        this.show_product_category ||
-        this.show_product_properties ||
-        this.show_new_position ||
-        this.show_cancel_position ||
-        this.show_document_setting ||
-        this.showThirdPpartyIntegrations ||
-        this.showSyncSettings ||
-        this.showEditPrice ||
-        this.showMoveProductsBetweenWhs
-      );
-    },
     isServicePage() {
       return this.selectedWH.value === "services";
     },
     ...mapGetters([
+      "home_blur",
+      "show_modals",
+      "disabled_for_modals",
       "catalog",
       "show_edit_modal",
       "show_settings",
-      "show_table_settings",
       "show_buttons",
-      "show_filter",
-      "show_edit_stuff",
       "show_sync",
-      "show_new_position",
-      "show_cancel_position",
-      "show_document_setting",
-      "show_product_category",
-      "show_product_properties",
-      "showThirdPpartyIntegrations",
-      "showSyncSettings",
-      "showEditPrice",
       "showTaskCenter",
-      "showMoveProductsBetweenWhs",
     ]),
     totalCountProducts() {
       return this.$store.state.products.meta.meta.total;
@@ -549,8 +443,7 @@ export default {
     },
     show_modals() {
       this.show_modals
-        ? (window.scrollBy(-99999, -99999),
-          (document.body.style.overflowX = "hidden"))
+        ? (window.scrollTo(0, 0), (document.body.style.overflowX = "hidden"))
         : (document.body.style.overflowX = "auto");
     },
     selected_storage() {
@@ -692,10 +585,10 @@ export default {
       this.$store.commit("openCloseSyncSettings", true);
     },
     open_product_properties() {
-      this.$store.commit("open_close_show_product_properties", true);
+      this.$store.commit("open_close_product_properties", true);
     },
-    open_close_show_document_setting(val) {
-      this.$store.commit("open_close_show_document_setting", val);
+    open_close_document_setting(val) {
+      this.$store.commit("open_close_document_setting", val);
     },
     route(page_name) {
       this.$router.push("/" + page_name);
@@ -1246,15 +1139,6 @@ export default {
 }
 .btns-enter-from,
 .btns-leave-to {
-  opacity: 0;
-}
-.modal_window-enter-active,
-.modal_window-leave-active {
-  transition: opacity 0.2s ease-in-out;
-  z-index: 999;
-}
-.modal_window-enter-from,
-.modal_window-leave-to {
   opacity: 0;
 }
 
