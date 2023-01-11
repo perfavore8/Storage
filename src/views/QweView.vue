@@ -30,6 +30,9 @@ export default {
       const j = this.i + 180;
       return `hsl(${j}, 100%, 50%)`;
     },
+    fontSize() {
+      return (this.i + 40) / 6.5 + "px";
+    },
   },
 };
 </script>
@@ -44,6 +47,7 @@ export default {
   justify-content: center;
   background-color: v-bind(color);
   color: v-bind(colorNext);
-  @include font(700, 50px);
+  @include font(700, v-bind(fontSize));
+  transition: font-size 0.1s ease-in;
 }
 </style>
