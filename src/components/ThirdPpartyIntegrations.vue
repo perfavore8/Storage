@@ -24,7 +24,7 @@
           >
             <button
               class="btn btn_dark_blue"
-              :disabled="account?.g_install || true"
+              :disabled="(account?.g_install || true) && !isTest"
             >
               {{ account?.g_install ? "Установлено" : "Установить" }}
             </button>
@@ -34,7 +34,10 @@
             1С интеграция»
           </small>
           <a @click="route('genezis')">
-            <button class="btn btn_dark_blue" :disabled="!account?.g_install">
+            <button
+              class="btn btn_dark_blue"
+              :disabled="!account?.g_install && !isTest"
+            >
               Настройки
             </button>
           </a>
@@ -81,6 +84,9 @@ export default {
     },
     account() {
       return this.$store.state.account.account;
+    },
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
     },
   },
   methods: {
