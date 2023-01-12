@@ -68,36 +68,11 @@
               </template>
             </div>
           </div>
-          <transition name="btns">
-            <div class="buttons" v-if="show_buttons && !oneC">
-              <template v-if="!isServicePage">
-                <button
-                  class="button button_2 smallBtn"
-                  @click="addCurrentProducts()"
-                  :disabled="oneC"
-                >
-                  Добавить
-                </button>
-                <button
-                  class="button button_3 smallBtn"
-                  @click="openCancelPosition()"
-                >
-                  Списать
-                </button>
-              </template>
-              <template v-if="isTest">
-                <button
-                  class="button button_5 smallBtn"
-                  @click="openMoveProductsBetweenWhs()"
-                >
-                  Перемещение
-                </button>
-              </template>
-              <button class="button button_1 smallBtn" @click="archive_data()">
-                Архивировать
-              </button>
-            </div>
-          </transition>
+          <HomeBtns
+            :isServicePage="isServicePage"
+            @archive_data="archive_data"
+            @setCurrentItems="setCurrentItems"
+          />
         </div>
         <div class="filters_right">
           <div class="btns" v-if="filter_value">
@@ -159,6 +134,7 @@ import NavBar from "@/components/NavBar.vue";
 import HomeImportOldData from "@/components/HomeImportOldData.vue";
 import HomeWhs from "@/components/HomeWhs.vue";
 import HomeMenu from "@/components/HomeMenu.vue";
+import HomeBtns from "@/components/HomeBtns.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
@@ -172,6 +148,7 @@ export default {
     HomeImportOldData,
     HomeWhs,
     HomeMenu,
+    HomeBtns,
     // SelectorVue,
   },
   provide() {
@@ -212,7 +189,6 @@ export default {
       "show_modals",
       "disabled_for_modals",
       "show_edit_modal",
-      "show_buttons",
     ]),
     totalCountProducts() {
       return this.$store.state.products.meta.meta.total;
@@ -287,7 +263,7 @@ export default {
         products: [],
       };
       this.filteredSelectedProducts?.forEach((val) => {
-        val.item.is_archive = 1; // может быть не работает
+        val.item.is_archive = 1;
         params.products.push(val.item);
       });
       await this.$store.dispatch("update_product", params);
@@ -300,32 +276,11 @@ export default {
       const arr = JSON.parse(JSON.stringify(this.filteredSelectedProducts));
       this.currentItems = [...arr.map((val) => val.item)];
     },
-    addCurrentProducts() {
-      this.setCurrentItems();
-      this.open_close_new_position(true);
-    },
-    openCancelPosition() {
-      this.setCurrentItems();
-      this.open_close_cancel_position(true);
-    },
-    openMoveProductsBetweenWhs() {
-      this.setCurrentItems();
-      this.openCloseMoveProductsBetweenWhs(true);
-    },
     dropCurrentItems() {
       this.currentItems = [];
     },
     open_close_new_position(value) {
       this.$store.commit("open_close_new_position", value);
-    },
-    open_close_cancel_position(value) {
-      this.$store.commit("open_close_cancel_position", value);
-    },
-    openCloseMoveProductsBetweenWhs(value) {
-      this.$store.commit("openCloseMoveProductsBetweenWhs", value);
-    },
-    close_sync() {
-      this.$store.commit("close_sync");
     },
     openTableSettings() {
       this.$store.commit("open_table_settings");
@@ -606,33 +561,6 @@ export default {
 .smallBtn {
   @include font(400, 14px, 18px);
 }
-.button_1 {
-  width: 112px;
-  height: 34px;
-  background: #6c757d;
-}
-.button_1:hover {
-  background: #5f676d;
-  box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-}
-.button_2 {
-  width: 112px;
-  height: 34px;
-  background: #1b3546f1;
-}
-.button_2:hover {
-  background: #1b3546d9;
-  box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
-}
-.button_3 {
-  width: 112px;
-  height: 34px;
-  background: #ea9197;
-}
-.button_3:hover {
-  background: rgb(226, 101, 109);
-  box-shadow: 0 0 5px 2px rgb(226 101 109 / 25%);
-}
 .button_4 {
   width: 124px !important;
   height: 34px;
@@ -648,17 +576,6 @@ export default {
 }
 .button_4:disabled:hover {
   box-shadow: none;
-}
-.button_5 {
-  width: 112px;
-  height: 34px;
-  color: #2a2a2a;
-  background: #ffeab2;
-}
-.button_5:hover {
-  color: #000;
-  background: #ffd45c;
-  box-shadow: 0 0 5px 2px rgb(255 212 92 / 50%);
 }
 .disabled {
   pointer-events: none;
@@ -694,14 +611,6 @@ export default {
 }
 .modal-enter-from,
 .modal-leave-to {
-  opacity: 0;
-}
-.btns-enter-active,
-.btns-leave-active {
-  transition: opacity 0.15s ease-out;
-}
-.btns-enter-from,
-.btns-leave-to {
   opacity: 0;
 }
 </style>
