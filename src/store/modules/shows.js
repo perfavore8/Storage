@@ -139,7 +139,7 @@ export default {
     open_close_buttons(state, value) {
       state.show_buttons = value;
     },
-    open_close_show_edit_stuff(state, value) {
+    open_close_edit_stuff(state, value) {
       state.show_edit_stuff = value;
     },
     close_sync(state) {

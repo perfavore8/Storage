@@ -25,121 +25,7 @@
         </div>
         <HomeWhs ref="homeWhs" v-model:selectedWH="selectedWH" />
       </div>
-      <div class="header_right">
-        <div class="ref">
-          <button
-            class="ref_2_logo btn"
-            @click="openTaskCenter()"
-            title="Список задач"
-          >
-            <span class="material-icons"> splitscreen </span>
-          </button>
-          <transition name="modal">
-            <teleport to="body">
-              <div class="tasks">
-                <TaskCenter @close="closeTaskCenter()" v-if="showTaskCenter" />
-              </div>
-            </teleport>
-          </transition>
-        </div>
-
-        <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
-          <button
-            class="ref_2_logo btn"
-            @click="open_close_sync()"
-            title="Синхронизация товаров"
-          >
-            <transition name="modal">
-              <span class="material-icons" v-if="show_sync"> cloud_sync </span>
-              <span class="material-icons-outlined" v-else> cloud_sync </span>
-            </transition>
-          </button>
-          <transition name="modal">
-            <teleport to="body">
-              <template v-if="show_sync">
-                <div class="backdrop" @click="open_close_sync()" />
-                <div
-                  class="modal_settings modal_sync"
-                  @click.stop="open_close_sync()"
-                >
-                  <a>
-                    <div class="modal_container" @click="syncAmoGs()">
-                      Синхронизировать товары amoCRM -> GoСклад
-                    </div>
-                  </a>
-                  <template v-if="isTest">
-                    <a>
-                      <div class="modal_container" @click="syncGsAmo()">
-                        Синхронизировать товары GoСклад -> amoCRM
-                      </div>
-                    </a>
-                  </template>
-                </div>
-              </template>
-            </teleport>
-          </transition>
-        </div>
-        <button
-          class="settings_btn"
-          :class="{ settings_btn_rotate: show_settings }"
-          @click="open_close_settings()"
-          title="Настройки"
-        >
-          <span class="material-icons"> settings </span>
-        </button>
-        <transition name="modal">
-          <teleport to="body">
-            <template v-if="show_settings">
-              <div class="backdrop" @click="close_settings()" />
-              <div class="modal_settings" @click="close_settings()">
-                <a>
-                  <div class="modal_container" @click="open_edit_stuff()">
-                    Общие настройки
-                  </div>
-                </a>
-                <a>
-                  <div class="modal_container" @click="open_product_category()">
-                    Категории товаров
-                  </div>
-                </a>
-
-                <a>
-                  <div
-                    class="modal_container"
-                    @click="open_product_properties()"
-                  >
-                    Свойства товаров
-                  </div>
-                </a>
-                <a v-if="!oneC">
-                  <div class="modal_container" @click="openSyncSettings()">
-                    Настройки синхронизации товаров
-                  </div>
-                </a>
-                <a>
-                  <div
-                    class="modal_container"
-                    @click="open_close_document_setting(true)"
-                  >
-                    Документы
-                  </div>
-                </a>
-                <a>
-                  <div
-                    class="modal_container"
-                    @click="openThirdPpartyIntegrations()"
-                  >
-                    Интеграции
-                  </div>
-                </a>
-                <a>
-                  <div class="modal_container">Настройки аккаунта</div>
-                </a>
-              </div>
-            </template>
-          </teleport>
-        </transition>
-      </div>
+      <HomeMenu />
     </div>
     <div
       class="wrapper"
@@ -268,11 +154,11 @@
 <script>
 import MainGrid from "@/components/MainGrid.vue";
 import CardGrid from "@/components/CardGrid.vue";
-import TaskCenter from "@/components/TaskCenter.vue";
 import HomeModals from "@/components/HomeModals.vue";
 import NavBar from "@/components/NavBar.vue";
 import HomeImportOldData from "@/components/HomeImportOldData.vue";
 import HomeWhs from "@/components/HomeWhs.vue";
+import HomeMenu from "@/components/HomeMenu.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
@@ -281,11 +167,11 @@ export default {
   components: {
     MainGrid,
     CardGrid,
-    TaskCenter,
     HomeModals,
     NavBar,
     HomeImportOldData,
     HomeWhs,
+    HomeMenu,
     // SelectorVue,
   },
   provide() {
@@ -326,10 +212,7 @@ export default {
       "show_modals",
       "disabled_for_modals",
       "show_edit_modal",
-      "show_settings",
       "show_buttons",
-      "show_sync",
-      "showTaskCenter",
     ]),
     totalCountProducts() {
       return this.$store.state.products.meta.meta.total;
@@ -351,12 +234,6 @@ export default {
     },
     isTest() {
       return this.$store.state.account?.account?.id == 1;
-    },
-    is_empty_amo_product_list() {
-      return (
-        !this.account?.config?.amo_product_list ||
-        this.account?.config?.amo_product_list == "-1"
-      );
     },
     filteredSelectedProducts() {
       let arr = [];
@@ -438,12 +315,6 @@ export default {
     dropCurrentItems() {
       this.currentItems = [];
     },
-    syncAmoGs() {
-      this.$store.dispatch("syncAmoGs");
-    },
-    syncGsAmo() {
-      this.$store.dispatch("syncGsAmo");
-    },
     open_close_new_position(value) {
       this.$store.commit("open_close_new_position", value);
     },
@@ -453,44 +324,11 @@ export default {
     openCloseMoveProductsBetweenWhs(value) {
       this.$store.commit("openCloseMoveProductsBetweenWhs", value);
     },
-    open_close_settings() {
-      this.$store.commit("open_close_settings");
-    },
-    close_settings() {
-      this.$store.commit("close_settings");
-    },
     close_sync() {
       this.$store.commit("close_sync");
     },
-    open_close_sync() {
-      this.$store.commit("open_close_sync");
-    },
-    openTaskCenter() {
-      this.$store.commit("openCloseTaskCenter", true);
-    },
-    closeTaskCenter() {
-      this.$store.commit("openCloseTaskCenter", false);
-    },
-    open_edit_stuff() {
-      this.$store.commit("open_close_show_edit_stuff", true);
-    },
     openTableSettings() {
       this.$store.commit("open_table_settings");
-    },
-    open_product_category() {
-      this.$store.commit("open_close_product_category", true);
-    },
-    openThirdPpartyIntegrations() {
-      this.$store.commit("openCloseThirdPpartyIntegrations", true);
-    },
-    openSyncSettings() {
-      this.$store.commit("openCloseSyncSettings", true);
-    },
-    open_product_properties() {
-      this.$store.commit("open_close_product_properties", true);
-    },
-    open_close_document_setting(val) {
-      this.$store.commit("open_close_document_setting", val);
     },
     updateProducts() {
       this.isUpdateProducts = true;
@@ -539,63 +377,6 @@ export default {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-    }
-  }
-
-  &_right {
-    display: flex;
-    flex-direction: row;
-    gap: 25px;
-    position: relative;
-    .ref {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      max-height: 18px;
-      gap: 8px;
-      position: relative;
-      .ref_1_logo {
-        width: 18px;
-        height: 18px;
-        @include bg_image("../assets/export.svg");
-        transform: rotate(180deg);
-      }
-      .ref_2_logo {
-        width: 33px;
-        height: 33px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: transparent;
-        color: #757575;
-        cursor: pointer;
-        transition: all 0.2s ease-out;
-        > span {
-          position: absolute;
-        }
-      }
-    }
-    .links {
-      cursor: pointer;
-      text-decoration-line: underline;
-      @include font(400, 18px, 30px);
-    }
-    .settings_btn {
-      cursor: pointer;
-      width: 24px;
-      height: 24px;
-      border: none;
-      background-color: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #757575;
-      outline: none;
-      transition: all 0.15s ease-out;
-    }
-    .settings_btn:hover,
-    .settings_btn_rotate {
-      transform: rotate(90deg) scale(1.1);
     }
   }
 }
@@ -922,70 +703,5 @@ export default {
 .btns-enter-from,
 .btns-leave-to {
   opacity: 0;
-}
-
-.modal_sync {
-  position: absolute !important;
-  top: 44px !important;
-  right: 82px !important;
-  width: 400px !important;
-  margin: 0 !important;
-  z-index: 99999;
-  a {
-    padding-bottom: 0 !important;
-  }
-}
-.modal_settings {
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 358px;
-  border: 1px solid #c9c9c9;
-  border-radius: 4px;
-  background: white;
-  overflow: hidden;
-  position: absolute;
-  top: 48px;
-  right: 64px;
-  a {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    transition: background-color 0.15s ease-in-out;
-  }
-  a:hover {
-    background-color: #f5f5f5;
-  }
-}
-.modal_settings:last-child {
-  a {
-    padding-bottom: 10px;
-  }
-}
-.modal_container {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  text-align: left;
-  // height: 30px;
-  cursor: pointer;
-  padding: 5px 15px;
-  @include font(400, 16px, 22px);
-}
-.backdrop {
-  background-color: transparent;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 50;
-}
-.tasks {
-  position: absolute;
-  top: 48px;
-  right: 64px;
-  width: fit-content;
 }
 </style>

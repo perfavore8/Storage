@@ -220,7 +220,7 @@ export default {
       this.close();
     },
     close() {
-      this.$store.commit("open_close_show_edit_stuff", false);
+      this.$store.commit("open_close_edit_stuff", false);
     },
     optionSelectLeadsDeals(option, code) {
       if (option.value == -1) {

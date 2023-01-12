@@ -510,7 +510,7 @@ export default {
       this.new_fields[idx].data.splice(i, 1);
     },
     close_product_properties() {
-      this.$store.commit("open_close_show_product_properties", false);
+      this.$store.commit("open_close_product_properties", false);
     },
   },
 };
