@@ -165,3 +165,12 @@ $vv: calc(1vh + 1vw);
   outline: 0;
   box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
 }
+
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
