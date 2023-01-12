@@ -75,24 +75,10 @@
           />
         </div>
         <div class="filters_right">
-          <div class="btns" v-if="filter_value">
-            <button class="btn btn_blue" @click="confirmFilters()">
-              Применить
-            </button>
-            <button class="btn btn_grey" @click="clearFilters()">
-              Очистить
-            </button>
-          </div>
-          <div class="filter_group">
-            <input
-              type="checkbox"
-              v-model="filter_value"
-              name="filter"
-              id="filter"
-              class="checkbox"
-            />
-            <label for="filter">Фильтр</label>
-          </div>
+          <HomeFilter
+            @confirmFilters="confirmFilters"
+            @clearFilters="clearFilters"
+          />
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
@@ -135,6 +121,7 @@ import HomeImportOldData from "@/components/HomeImportOldData.vue";
 import HomeWhs from "@/components/HomeWhs.vue";
 import HomeMenu from "@/components/HomeMenu.vue";
 import HomeBtns from "@/components/HomeBtns.vue";
+import HomeFilter from "@/components/HomeFilter.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
@@ -149,6 +136,7 @@ export default {
     HomeWhs,
     HomeMenu,
     HomeBtns,
+    HomeFilter,
     // SelectorVue,
   },
   provide() {
@@ -158,7 +146,6 @@ export default {
   },
   data() {
     return {
-      filter_value: false,
       paginatedData: [],
       paginatedParams: [],
       selectedWH: { name: "Все склады", value: "whs" },
@@ -229,9 +216,6 @@ export default {
     this.$refs?.oldData?.importOldData("start");
   },
   watch: {
-    filter_value() {
-      this.$store.commit("open_close_filter", this.filter_value);
-    },
     show_modals() {
       this.show_modals
         ? (window.scrollTo(0, 0), (document.body.style.overflowX = "hidden"))
@@ -472,77 +456,6 @@ export default {
           }
         }
         animation: rotating 0.75s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
-      }
-      .btns {
-        display: flex;
-        flex-direction: row;
-        justify-self: end;
-        .btn:first-child {
-          background-color: #0d6efd;
-          border-radius: 5px 0 0 5px;
-        }
-        .btn:first-child:hover {
-          background-color: #0256d4;
-
-          box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
-        }
-        .btn:last-child {
-          background-color: #6c757d;
-          border-radius: 0 5px 5px 0;
-        }
-        .btn:last-child:hover {
-          background-color: #5f676d;
-          box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-        }
-      }
-
-      .filter_group {
-        display: flex;
-        flex-direction: row;
-        margin-top: 8px;
-        max-height: 20px;
-
-        .checkbox {
-          position: absolute;
-          z-index: -1;
-          opacity: 0;
-          margin: 10px 0 0 20px;
-        }
-        .checkbox + label {
-          position: relative;
-          padding: 0 0 0 63px;
-          cursor: pointer;
-          color: #3f3f3f;
-          @include font(400, 16px, 19px);
-        }
-        .checkbox + label:before {
-          content: "";
-          position: absolute;
-          top: -5px;
-          left: 0;
-          width: 54px;
-          height: 23px;
-          border-radius: 20px;
-          background: #c4c4c4;
-          transition: 0.15s ease-out;
-        }
-        .checkbox + label:after {
-          content: "";
-          position: absolute;
-          top: -1px;
-          left: 4px;
-          width: 17px;
-          height: 17px;
-          border-radius: 50%;
-          background: #fff;
-          transition: 0.15s ease-out;
-        }
-        .checkbox:checked + label:before {
-          background: #757575;
-        }
-        .checkbox:checked + label:after {
-          left: 35px;
-        }
       }
     }
   }
