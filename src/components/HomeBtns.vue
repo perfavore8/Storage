@@ -74,10 +74,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
-.btns {
+.buttons {
   display: flex;
   flex-direction: row;
-  justify-self: end;
+  gap: 18px;
 }
 .smallBtn {
   display: flex;

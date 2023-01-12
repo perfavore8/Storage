@@ -417,11 +417,6 @@ export default {
           }
         }
       }
-      .buttons {
-        display: flex;
-        flex-direction: row;
-        gap: 18px;
-      }
     }
     &_right {
       position: relative;
