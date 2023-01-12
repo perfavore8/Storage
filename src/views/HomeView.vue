@@ -23,39 +23,13 @@
           <NavBar />
           <HomeImportOldData ref="oldData" @importComplete="importComplete" />
         </div>
-        <div class="whs">
-          <div
-            class="radio_btns"
-            :class="{ whs_full: whsFull }"
-            ref="radio_btns"
-          >
-            <div class="radio_btn" v-for="page in whs" :key="page">
-              <input
-                type="radio"
-                :value="page.value"
-                :id="page.name"
-                name="selected_storage"
-                :checked="selectedWH.value == page.value"
-                @change="selectWH(page)"
-              />
-              <label :for="page.name">{{ page.name }}</label>
-            </div>
-          </div>
-          <button
-            @click="whsFull = !whsFull"
-            class="arrow btn"
-            :class="{ rotate_arrow: whsFull }"
-            v-if="showWhsArrow"
-          >
-            <span class="material-icons-outlined"> expand_more </span>
-          </button>
-        </div>
+        <HomeWhs ref="homeWhs" v-model:selectedWH="selectedWH" />
       </div>
       <div class="header_right">
         <div class="ref">
           <button
             class="ref_2_logo btn"
-            @click.stop="openTaskCenter()"
+            @click="openTaskCenter()"
             title="Список задач"
           >
             <span class="material-icons"> splitscreen </span>
@@ -72,7 +46,7 @@
         <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
           <button
             class="ref_2_logo btn"
-            @click.stop="open_close_sync()"
+            @click="open_close_sync()"
             title="Синхронизация товаров"
           >
             <transition name="modal">
@@ -108,7 +82,7 @@
         <button
           class="settings_btn"
           :class="{ settings_btn_rotate: show_settings }"
-          @click.stop="open_close_settings()"
+          @click="open_close_settings()"
           title="Настройки"
         >
           <span class="material-icons"> settings </span>
@@ -298,9 +272,10 @@ import TaskCenter from "@/components/TaskCenter.vue";
 import HomeModals from "@/components/HomeModals.vue";
 import NavBar from "@/components/NavBar.vue";
 import HomeImportOldData from "@/components/HomeImportOldData.vue";
+import HomeWhs from "@/components/HomeWhs.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
-import { computed, nextTick } from "vue";
+import { computed } from "vue";
 
 export default {
   components: {
@@ -310,6 +285,7 @@ export default {
     HomeModals,
     NavBar,
     HomeImportOldData,
+    HomeWhs,
     // SelectorVue,
   },
   provide() {
@@ -323,11 +299,8 @@ export default {
       paginatedData: [],
       paginatedParams: [],
       selectedWH: { name: "Все склады", value: "whs" },
-      whs: [],
       isGrid: false,
       currentItems: [],
-      whsFull: true,
-      showWhsArrow: true,
       isUpdateProducts: false,
     };
   },
@@ -352,7 +325,6 @@ export default {
       "home_blur",
       "show_modals",
       "disabled_for_modals",
-      "catalog",
       "show_edit_modal",
       "show_settings",
       "show_buttons",
@@ -374,11 +346,8 @@ export default {
     ref_card() {
       return this.$refs.card;
     },
-    refRadioBtns() {
-      return this.$refs.radio_btns;
-    },
-    storeWhs() {
-      return this.$store.state.account.account.whs;
+    ref_homeWhs() {
+      return this.$refs.homeWhs;
     },
     isTest() {
       return this.$store.state.account?.account?.id == 1;
@@ -403,15 +372,10 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("get_account");
-    this.getWHS();
-    this.setShowWhsArrow();
+    this.ref_homeWhs?.changeStoreWhs();
     this.$refs?.oldData?.importOldData("start");
   },
   watch: {
-    storeWhs() {
-      this.getWHS();
-      this.setShowWhsArrow();
-    },
     filter_value() {
       this.$store.commit("open_close_filter", this.filter_value);
     },
@@ -436,25 +400,8 @@ export default {
         ? this.ref_card?.clearFilters()
         : this.ref_main?.clearFilters();
     },
-    setShowWhsArrow() {
-      nextTick(() => {
-        this.showWhsArrow =
-          this.refRadioBtns?.getBoundingClientRect().height > 30;
-        this.showWhsArrow ? null : (this.whsFull = false);
-      });
-    },
-    getWHS() {
-      this.whs = [];
-      this.$store.state.account.account.whs.forEach((val) =>
-        this.whs.push({ name: val.name, value: val.code })
-      );
-      this.whs.push({ name: "Услуги", value: "services" });
-    },
-    selectWH(value) {
-      this.selectedWH = value;
-    },
     importComplete() {
-      this.getWHS();
+      this.ref_homeWhs?.changeStoreWhs();
       this.clearFilters();
       this.updateProducts();
     },
@@ -593,76 +540,6 @@ export default {
       flex-direction: row;
       justify-content: space-between;
     }
-    .whs {
-      margin-top: 24px;
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-      width: 100%;
-      .arrow {
-        margin-top: 1px;
-        cursor: pointer;
-        width: 32px;
-        height: 24px;
-        background-color: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s ease-in-out;
-        > span {
-          color: #757575;
-          font-size: x-large;
-        }
-      }
-      .rotate_arrow {
-        transform: rotateX(180deg);
-      }
-    }
-    .whs_full {
-      height: 100% !important;
-    }
-    .radio_btns {
-      height: 24px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: row;
-      gap: 16px;
-      flex-wrap: wrap;
-      width: 100%;
-      .radio_btn {
-        > input {
-          display: none;
-        }
-        > label {
-          display: inline-block;
-          cursor: pointer;
-          position: relative;
-          padding-left: 25px;
-          margin-right: 0;
-          line-height: 18px;
-          user-select: none;
-          color: #3f3f3f;
-          @include font(400, 16px);
-        }
-        > label:before {
-          content: "";
-          display: inline-block;
-          width: 14px;
-          height: 14px;
-          position: absolute;
-          left: 0;
-          bottom: 5px;
-          background: #ffffff;
-          border: 1px solid #c9c9c9;
-          border-radius: 50%;
-          @include bg_image("../assets/Ellipse_2.svg", 0);
-          transition: background-size 0.15s ease-in-out;
-        }
-        > input:checked + label:before {
-          @include bg_image("../assets/Ellipse_2.svg", 40%);
-        }
-      }
-    }
   }
 
   &_right {
@@ -722,6 +599,7 @@ export default {
     }
   }
 }
+
 .wrapper {
   .filters {
     display: flex;
