@@ -20,17 +20,7 @@
     >
       <div class="header_left">
         <div class="header_row">
-          <div class="btns">
-            <button
-              class="btns_btn"
-              :class="{ selected_catalog: $route.path === '/' + page.value }"
-              @click="route(page.value)"
-              v-for="page in catalog"
-              :key="page"
-            >
-              {{ page.name }}
-            </button>
-          </div>
+          <NavBar />
           <div
             class="old"
             v-if="account?.is_exist_old_data && !account?.is_old_data_loaded"
@@ -326,6 +316,7 @@ import MainGrid from "@/components/MainGrid.vue";
 import CardGrid from "@/components/CardGrid.vue";
 import TaskCenter from "@/components/TaskCenter.vue";
 import HomeModals from "@/components/HomeModals.vue";
+import NavBar from "@/components/NavBar.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed, nextTick } from "vue";
@@ -336,6 +327,7 @@ export default {
     CardGrid,
     TaskCenter,
     HomeModals,
+    NavBar,
     // SelectorVue,
   },
   provide() {
@@ -590,9 +582,6 @@ export default {
     open_close_document_setting(val) {
       this.$store.commit("open_close_document_setting", val);
     },
-    route(page_name) {
-      this.$router.push("/" + page_name);
-    },
     updateProducts() {
       this.isUpdateProducts = true;
       setTimeout(() => {
@@ -653,40 +642,6 @@ export default {
           text-align: left;
           @include font(400, 16px);
         }
-      }
-    }
-    .btns {
-      display: flex;
-      flex-direction: row;
-      gap: 12px;
-      flex-wrap: wrap;
-      .btns_btn {
-        // height: 30px;
-        padding: calc(0.1 * $vv) calc(0.4 * $vv);
-        height: min-content;
-        cursor: pointer;
-        text-align: center;
-        vertical-align: center;
-        box-sizing: border-box;
-        border: 1px solid #1b3546;
-        border-radius: 4px;
-        color: #1b3546;
-        background: transparent;
-
-        transition: all 0.15s ease-out;
-        @include font(400, 18px);
-      }
-      .btns_btn:hover {
-        border-color: #396f93;
-        color: #396f93;
-      }
-      .selected_catalog {
-        transition: all 0.15s ease-out;
-        background: #1b3546;
-        color: white;
-      }
-      .selected_catalog:hover {
-        color: hsl(204, 44%, 95%);
       }
     }
     .whs {
