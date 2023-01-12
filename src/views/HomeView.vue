@@ -21,27 +21,7 @@
       <div class="header_left">
         <div class="header_row">
           <NavBar />
-          <div
-            class="old"
-            v-if="account?.is_exist_old_data && !account?.is_old_data_loaded"
-          >
-            <template v-if="account?.is_old_data_load_start">
-              <p>
-                Внимание! Идет загурзка данных аккаунта. Это может занять
-                несколько минут
-              </p>
-            </template>
-            <template v-else>
-              <p>
-                Внимание, обнаружены данные вашего аккаунта предыдущей версии
-                склада. Для загрузки данных нажмите на кнопку ЗАГРУЗИТЬ.
-                Загрузка может занять некоторое время.
-              </p>
-              <button class="btn btn_yellow" @click="importOldData('click')">
-                Загрузить
-              </button>
-            </template>
-          </div>
+          <HomeImportOldData ref="oldData" @importComplete="importComplete" />
         </div>
         <div class="whs">
           <div
@@ -317,6 +297,7 @@ import CardGrid from "@/components/CardGrid.vue";
 import TaskCenter from "@/components/TaskCenter.vue";
 import HomeModals from "@/components/HomeModals.vue";
 import NavBar from "@/components/NavBar.vue";
+import HomeImportOldData from "@/components/HomeImportOldData.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed, nextTick } from "vue";
@@ -328,6 +309,7 @@ export default {
     TaskCenter,
     HomeModals,
     NavBar,
+    HomeImportOldData,
     // SelectorVue,
   },
   provide() {
@@ -423,7 +405,7 @@ export default {
     await this.$store.dispatch("get_account");
     this.getWHS();
     this.setShowWhsArrow();
-    this.importOldData("start");
+    this.$refs?.oldData?.importOldData("start");
   },
   watch: {
     storeWhs() {
@@ -471,29 +453,10 @@ export default {
     selectWH(value) {
       this.selectedWH = value;
     },
-    async importOldData(a) {
-      if (
-        this.account?.is_exist_old_data &&
-        !this.account?.is_old_data_loaded
-      ) {
-        if (!this.account?.is_old_data_load_start && a == "click")
-          await this.$store.dispatch("importOldData");
-        if (this.account?.is_old_data_load_start || a == "click") {
-          this.$store.dispatch("get_account");
-          const interval = setInterval(async () => {
-            await this.$store.dispatch("get_account");
-            if (
-              this.account?.is_old_data_loaded ??
-              !this.account?.is_old_data_load_start
-            ) {
-              clearInterval(interval);
-              this.getWHS();
-              this.clearFilters();
-              this.updateProducts();
-            }
-          }, 5000);
-        }
-      }
+    importComplete() {
+      this.getWHS();
+      this.clearFilters();
+      this.updateProducts();
     },
     async archive_data() {
       const params = {
@@ -629,20 +592,6 @@ export default {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      .old {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        width: 65%;
-        margin-right: 5%;
-        p {
-          margin: 0;
-          text-align: left;
-          @include font(400, 16px);
-        }
-      }
     }
     .whs {
       margin-top: 24px;
