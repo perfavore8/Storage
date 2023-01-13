@@ -2,16 +2,7 @@
   <div class="app">
     <div class="header">
       <div class="top">
-        <div class="btns">
-          <button
-            class="btns_btn"
-            @click="route(page.value)"
-            v-for="page in catalog"
-            :key="page"
-          >
-            {{ page.name }}
-          </button>
-        </div>
+        <NavBar />
       </div>
       <div class="bottom">
         <button
@@ -33,10 +24,20 @@
     <div class="content">
       <div v-if="selectedTab == 1">
         <div class="autorization" v-if="account?.config?.g_enabled">
-          Genezis активирован.
-          <button class="btn btn_yellow" @click="unAutorization()">
-            Выключить
-          </button>
+          <div class="row">
+            Genezis активирован.
+            <button class="btn btn_yellow" @click="unAutorization()">
+              Выключить
+            </button>
+          </div>
+          <GenezisSettings
+            v-for="field in genezisSettingsData"
+            :key="field.label"
+            :label="field.label"
+            :leadsDeals="field.leadsDeals"
+            :needSave="needSave"
+          />
+          <BtnsSaveClose @save="save" :show_close="false" />
         </div>
         <div class="autorization" v-else>
           Genezis не активирован.
@@ -59,11 +60,63 @@
 
 <script>
 import { mapGetters } from "vuex";
+import NavBar from "@/components/NavBar.vue";
+import GenezisSettings from "@/components/GenezisSettings.vue";
+import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import { nextTick } from "@vue/runtime-core";
 export default {
   name: "InstructionsView",
+  components: { NavBar, GenezisSettings, BtnsSaveClose },
   data() {
     return {
       selectedTab: 1,
+      needSave: false,
+      genezisSettingsData: [
+        {
+          label: "Привязка полей компании",
+          leadsDeals: [
+            {
+              name: "Название",
+              code: "g_company_field_name",
+            },
+            {
+              name: "Инн",
+              code: "g_company_field_inn",
+            },
+            {
+              name: "КПП",
+              code: "g_company_field_kpp",
+            },
+
+            {
+              name: "ОГРН",
+              code: "g_company_field_ogrn",
+            },
+          ],
+        },
+        {
+          label: "Привязка полей аккаунта",
+          leadsDeals: [
+            {
+              name: "Название",
+              code: "g_company_field_account_name",
+            },
+            {
+              name: "Корреспондентский счет",
+              code: "g_company_field_account_correspondent",
+            },
+            {
+              name: "Бик банка",
+              code: "g_company_field_account_bic",
+            },
+
+            {
+              name: "Расчетный счет",
+              code: "g_company_field_account_settlement",
+            },
+          ],
+        },
+      ],
     };
   },
   mounted() {
@@ -83,6 +136,10 @@ export default {
     async autorization() {
       await this.$store.dispatch("genezisEnableDisable", "enable");
       this.$store.dispatch("get_account");
+    },
+    save() {
+      this.needSave = true;
+      nextTick(() => (this.needSave = false));
     },
     route(page_name) {
       this.$router.push("/" + page_name);
@@ -157,10 +214,16 @@ export default {
   margin-top: 20px;
   .autorization {
     display: flex;
-    flex-direction: row;
-    gap: 8px;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    gap: 16px;
+    .row {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
   }
   .frame {
     width: 100%;
