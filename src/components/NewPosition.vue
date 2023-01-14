@@ -176,7 +176,10 @@
                     class="input"
                     min="0"
                     :class="{
-                      not_valid: row.cost_price === '' && try_accept,
+                      not_valid:
+                        (row.cost_price === '' ||
+                          row.cost_price === undefined) &&
+                        try_accept,
                     }"
                     :title="
                       row.cost_price === '' && try_accept ? 'Пустое поле' : null
@@ -406,7 +409,6 @@ export default {
       const list = [this.fieldsForValidation, this.fieldsServiceForValidation];
       this.new_items.forEach((item) => {
         const isService = item.type.value == 2;
-        console.log(isService);
         let list2 = [];
         isService ? (list2 = list[1]) : (list2 = list[0]);
         list2.forEach((field) => {

@@ -12,14 +12,14 @@
         <button class="btn button_3 smallBtn" @click="openCancelPosition()">
           Списать
         </button>
-      </template>
-      <template v-if="isTest">
-        <button
-          class="btn button_5 smallBtn"
-          @click="openMoveProductsBetweenWhs()"
-        >
-          Перемещение
-        </button>
+        <template v-if="isTest">
+          <button
+            class="btn button_5 smallBtn"
+            @click="openMoveProductsBetweenWhs()"
+          >
+            Перемещение
+          </button>
+        </template>
       </template>
       <button class="btn button_1 smallBtn" @click="archive_data()">
         Архивировать
@@ -36,7 +36,6 @@ export default {
     isServicePage: Boolean,
   },
   emits: ["setCurrentItems", "archive_data"],
-  inject: ["isServicePage"],
   setup(props, context) {
     const show_buttons = computed(() => store.state.shows.show_buttons);
     const oneC = computed(() => store.state.account.account?.config?.g_enabled);
