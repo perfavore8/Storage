@@ -54,10 +54,15 @@
                     "
                     class="input"
                     :class="{
-                      not_valid: row.article === '' && try_accept,
+                      not_valid:
+                        (row.article === '' || row.article === undefined) &&
+                        try_accept,
                     }"
                     :title="
-                      row.article === '' && try_accept ? 'Пустое поле' : null
+                      (row.article === '' || row.article === undefined) &&
+                      try_accept
+                        ? 'Пустое поле'
+                        : null
                     "
                     :disabled="!row.new"
                   />
@@ -84,10 +89,14 @@
                     "
                     class="input"
                     :class="{
-                      not_valid: row.name === '' && try_accept,
+                      not_valid:
+                        (row.name === '' || row.name === undefined) &&
+                        try_accept,
                     }"
                     :title="
-                      row.name === '' && try_accept ? 'Пустое поле' : null
+                      (row.name === '' || row.name === undefined) && try_accept
+                        ? 'Пустое поле'
+                        : null
                     "
                     :disabled="!row.new"
                   />
@@ -114,10 +123,14 @@
                       class="input"
                       :class="{
                         not_valid:
-                          row.batch === '' && try_accept && row.type.value != 2,
+                          (row.batch === '' || row.batch === undefined) &&
+                          try_accept &&
+                          row.type.value != 2,
                       }"
                       :title="
-                        row.batch === '' && try_accept && row.type.value != 2
+                        (row.batch === '' || row.batch === undefined) &&
+                        try_accept &&
+                        row.type.value != 2
                           ? 'Пустое поле'
                           : null
                       "
@@ -182,7 +195,10 @@
                         try_accept,
                     }"
                     :title="
-                      row.cost_price === '' && try_accept ? 'Пустое поле' : null
+                      (row.cost_price === '' || row.cost_price === undefined) &&
+                      try_accept
+                        ? 'Пустое поле'
+                        : null
                     "
                     :disabled="!row.new && !row.newBatch"
                   />
@@ -205,10 +221,16 @@
                     class="input"
                     min="0"
                     :class="{
-                      not_valid: row.price.cost === '' && try_accept,
+                      not_valid:
+                        (row.price.cost === '' ||
+                          row.price.cost === undefined) &&
+                        try_accept,
                     }"
                     :title="
-                      row.price.cost === '' && try_accept ? 'Пустое поле' : null
+                      (row.price.cost === '' || row.price.cost === undefined) &&
+                      try_accept
+                        ? 'Пустое поле'
+                        : null
                     "
                     :disabled="!row.new && !row.newBatch"
                   />
