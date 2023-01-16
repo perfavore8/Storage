@@ -66,7 +66,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .filter {
-  max-width: 100px;
+  max-width: 80%;
   min-width: 50px;
   display: flex;
   flex-direction: row;
