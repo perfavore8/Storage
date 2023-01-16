@@ -15,6 +15,7 @@
         <button
           class="btn"
           :class="{ btn_grey: selectedTab == 2 }"
+          v-if="account?.config?.g_enabled && account?.g_url"
           @click="selectedTab = 2"
         >
           Настройки «Генезис: 1С интеграция»
@@ -199,14 +200,15 @@ export default {
     justify-content: center;
     .btn {
       border: 1px solid #6c757d;
+      border-radius: 0;
     }
     .btn:first-child {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
     }
     .btn:last-child {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
     }
   }
 }
