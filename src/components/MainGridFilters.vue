@@ -223,10 +223,9 @@ export default {
     get_categories_options() {
       this.$store.state.categories.fields_properties.forEach((val) => {
         let spaces = "";
-        for (let i = 1; i < val.level; i++) spaces = spaces + "    ";
+        for (let i = 1; i < val.level; i++) spaces = spaces + "-    ";
         this.categories_options.push({
-          // name: spaces + val.name,
-          name: val.name,
+          name: spaces + val.name,
           value: val.id,
         });
       });

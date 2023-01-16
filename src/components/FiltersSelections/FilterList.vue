@@ -80,7 +80,11 @@ export default {
       };
       const arr = [{ name: "Все", value: -1 }, ...this.selector_options];
       this.option_value.value.forEach((val, idx) =>
-        val ? res.value.push(arr[idx]?.name) : null
+        val
+          ? this.item.type == 12
+            ? res.value.push(arr[idx]?.value)
+            : res.value.push(arr[idx]?.name)
+          : null
       );
       this.$emit("change_filter_value", res, this.idx);
     },
@@ -145,9 +149,10 @@ export default {
     max-width: 224px;
   }
   .multi_selector {
-    width: min-content;
-    overflow: hidden;
+    width: fit-content;
+    max-width: none;
     :deep(.item) {
+      white-space: pre;
       width: max-content;
       min-width: calc(100% - 24px);
     }
