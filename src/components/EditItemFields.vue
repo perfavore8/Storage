@@ -64,7 +64,6 @@
       @change_value="change_value"
       v-if="field.type == 8"
     />
-    {{ new_edit_data.fields[field.code] }}
     <edit-flag
       :item="field.name"
       :selected_option="new_edit_data.fields[field.code]"
