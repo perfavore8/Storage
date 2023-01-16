@@ -11,7 +11,6 @@
     />
   </div>
 </template>
-
 <script>
 import { nextTick } from "vue";
 export default {
@@ -60,12 +59,24 @@ export default {
   },
   methods: {
     change_value() {
+      const split = this.selected_option?.split(" ");
+      let date = this.selected_option;
+      if (split) {
+        split[0] = split[0].split(".").reverse().join("-");
+        date = split.join("T");
+      }
       nextTick(() => {
-        this.copy_selected_option = this.selected_option;
+        this.copy_selected_option = date;
       });
     },
     option_select(value) {
-      this.$emit("change_value", value, this.idx);
+      const split = value?.split("T");
+      let date = value;
+      if (split) {
+        split[0] = split[0].split("-").reverse().join(".");
+        date = split.join(" ");
+      }
+      this.$emit("change_value", date, this.idx);
     },
   },
 };
