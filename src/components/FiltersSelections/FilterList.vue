@@ -8,7 +8,7 @@
       <multi-selector
         class="selector"
         id="selector123"
-        :options_props="[{ name: 'Все', value: -1 }, ...selector_options]"
+        :options_props="[{ name: 'Все', value: '' }, ...selector_options]"
         @select="option_select_multi"
         :selected_options="filterValue"
         tabindex="1"
@@ -78,7 +78,7 @@ export default {
       const res = {
         value: [],
       };
-      const arr = [{ name: "Все", value: -1 }, ...this.selector_options];
+      const arr = [{ name: "Все", value: "" }, ...this.selector_options];
       this.option_value.value.forEach((val, idx) =>
         val
           ? this.item.type == 12
