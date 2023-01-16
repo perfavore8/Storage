@@ -185,8 +185,8 @@ export default {
           item.fields[val.fields.whToCancel.value].count =
             item.fields[val.fields.whToCancel.value].count -
             item.fields.countToCancel;
-          item.fields[val.fields.whToCancel.value].reserve +=
-            item.fields.countToCancel;
+          // item.fields[val.fields.whToCancel.value].reserve +=
+          //   item.fields.countToCancel;
           delete item.fields.countToCancel;
           delete item.fields.rison;
           delete item.fields.whToCancel;
