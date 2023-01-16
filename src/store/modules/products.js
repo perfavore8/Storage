@@ -101,6 +101,20 @@ export default {
       console.log("add_product", json);
       return json;
     },
+    async transfer_product(context, params) {
+      const url = BaseURL + "product/transfer";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      console.log("transfer_product", json);
+      return json;
+    },
     async exportXlsx(context, params) {
       const url = BaseURL + "product/export/xlsx";
       const res = await fetch(url, {
