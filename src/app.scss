@@ -43,11 +43,12 @@ $vv: calc(1vh + 1vw);
 }
 .btn_blue {
   color: #fff !important;
-  background-color: #0d6efd;
+  // background-color: #0d6efd;
+  background-color: #41a0da;
 }
 .btn_blue:hover {
-  background-color: #0256d4;
-  box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
+  background-color: #2685c0;
+  box-shadow: 0 0 5px 2px rgb(38 133 192 / 25%);
 }
 .btn_blue:disabled {
   background-color: #0d6efd80 !important;
