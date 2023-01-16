@@ -195,8 +195,9 @@ export default {
     // overflow-x: hidden;
     background-color: white;
     border: 1px solid #ced4da;
-    border-top: 0;
-    border-radius: 0 0 4px 4px;
+    // border-top: 0;
+    // border-radius: 0 0 4px 4px;
+    border-radius: 4px;
     width: 100%;
     z-index: 5;
     p {
