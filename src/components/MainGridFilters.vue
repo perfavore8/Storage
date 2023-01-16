@@ -125,7 +125,7 @@ export default {
       this.isConfirmFilters = true;
       const filter = {};
       this.filtersValue
-        .filter((val) => val.value != null)
+        .filter((val) => val.value != null && val.value !== "")
         .forEach((val) => {
           if (val.type == 1 || val.type == 2)
             filter[val.code] = {
