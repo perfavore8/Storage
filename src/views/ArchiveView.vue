@@ -40,7 +40,6 @@ export default {
 
   display: flex;
   flex-direction: column;
-  user-select: none;
   text-align: center;
 }
 .header {

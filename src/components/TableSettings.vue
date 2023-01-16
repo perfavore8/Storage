@@ -117,7 +117,6 @@ export default {
   position: absolute;
   top: 1.75rem;
   left: calc(50% - 233px);
-  user-select: none;
   height: auto;
   max-height: calc(100vh - 3.5rem);
   max-width: 600px;

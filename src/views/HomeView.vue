@@ -299,7 +299,6 @@ export default {
   // padding: 0 30px;
   display: flex;
   flex-direction: column;
-  user-select: none;
   text-align: center;
 }
 .header {

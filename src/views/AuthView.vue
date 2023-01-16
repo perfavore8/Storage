@@ -75,7 +75,6 @@ export default {
   flex-direction: column;
   align-items: center;
   // justify-content: center;
-  user-select: none;
   text-align: center;
   @include font(400, 16px);
   .container {

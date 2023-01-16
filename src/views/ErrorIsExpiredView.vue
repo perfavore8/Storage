@@ -29,7 +29,6 @@ export default {};
   min-width: 100vw;
   display: flex;
   flex-direction: column;
-  user-select: none;
   text-align: center;
 }
 h1 {
