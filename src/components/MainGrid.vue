@@ -10,8 +10,7 @@
         @close="get_products(productsParams)"
       />
     </teleport>
-    <label v-if="products.length == 0" class="text"> Ничего не найдено </label>
-    <div class="main" v-else>
+    <div class="main">
       <table class="table" :class="{ blur: show_edit_modal }" ref="table">
         <thead>
           <main-grid-bar
@@ -30,7 +29,7 @@
             :sortedFields="sortedFields"
           />
         </thead>
-        <tbody>
+        <tbody v-if="products.length">
           <tr class="row" v-for="(row, idx) in products" :key="row.id">
             <td class="item" v-if="!oneC">
               <input
@@ -107,6 +106,9 @@
           </tr>
         </tbody>
       </table>
+      <label v-if="products.length == 0" class="text">
+        Ничего не найдено
+      </label>
     </div>
     <grid-bottom
       :previous="meta.links.prev != null"
@@ -417,6 +419,8 @@ export default {
   filter: blur(5px);
 }
 .text {
+  position: relative;
+  top: 20px;
   margin: 0 auto;
   @include font(500, 18px);
 }
