@@ -41,7 +41,7 @@
                 <td class="item">
                   <div class="select_input">
                     <selector-vue
-                      :options_props="row.fields?.whs_options"
+                      :options_props="calcWhsOptions[row.id]"
                       @select="(...el) => option_select('cancel', ...el)"
                       :selected_option="row.fields?.whToCancel"
                       :class="{
@@ -55,7 +55,7 @@
                 <td class="item">
                   <div class="select_input">
                     <selector-vue
-                      :options_props="row.fields?.whs_options"
+                      :options_props="calcWhsOptions[row.id]"
                       @select="(...el) => option_select('move', ...el)"
                       :selected_option="row.fields?.whToMove"
                       :class="{
@@ -160,6 +160,28 @@ export default {
       this.itemsForMove.forEach((item) => list.push(item.fields.countToMove));
       return list;
     },
+    allow_add_reserve() {
+      return this.$store.state.account.account.config.allow_add_reserve;
+    },
+    calcWhsOptions() {
+      const obj = {};
+      this.itemsForMove.forEach((item) => {
+        const whs_options = [];
+        item.fields.whs_options.forEach((wh) => {
+          const a = {};
+          if (item.fields[wh.value]) {
+            const count = this.allow_add_reserve
+              ? item.fields[wh.value].count
+              : item.fields[wh.value].count - item.fields[wh.value].reserve;
+            a.name = wh.name + " | " + count;
+            a.value = wh.value;
+          }
+          whs_options.push(a);
+        });
+        obj[item.id] = whs_options;
+      });
+      return obj;
+    },
   },
   watch: {
     itemsCountToMove: {
@@ -212,21 +234,14 @@ export default {
         this.itemsForMove.forEach((itemMove) => {
           const item = {
             id: itemMove.id,
-            fields: itemMove.fields,
+            wh_from: itemMove.fields.whToCancel.value,
+            wh_to: itemMove.fields.whToMove.value,
+            count: itemMove.fields.countToMove,
+            comment: itemMove.fields.rison,
           };
-          item.fields[itemMove.fields.whToCancel.value].count =
-            item.fields[itemMove.fields.whToCancel.value].count -
-            item.fields.countToMove;
-          item.fields[itemMove.fields.whToMove.value].count +=
-            item.fields.countToMove;
-          delete item.fields.countToMove;
-          delete item.fields.rison;
-          delete item.fields.whToCancel;
-          delete item.fields.whToMove;
-          delete item.fields.whs_options;
           params.products.push(item);
         });
-        await this.$store.dispatch("update_product", params);
+        await this.$store.dispatch("transfer_product", params);
         this.close_modal();
       }
     },
@@ -322,6 +337,16 @@ export default {
             text-align: left;
             .v-select {
               width: 100%;
+              :deep(.title) {
+                // width: 100% !important;
+              }
+              :deep(.options) {
+                width: fit-content;
+                text-align: left;
+                p {
+                  width: calc(100% - 24px) !important;
+                }
+              }
             }
           }
           .item:nth-child(1) {
