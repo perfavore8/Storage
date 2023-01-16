@@ -337,9 +337,6 @@ export default {
             text-align: left;
             .v-select {
               width: 100%;
-              :deep(.title) {
-                // width: 100% !important;
-              }
               :deep(.options) {
                 width: fit-content;
                 text-align: left;
