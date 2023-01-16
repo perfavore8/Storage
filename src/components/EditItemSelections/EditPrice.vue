@@ -30,7 +30,7 @@
         "
       />
       <edit-flag
-        :item="'НДС'"
+        :item="'С НДС'"
         :selected_option="copy_selected_option?.is_nds"
         :idx="idx + 'is_nds'"
         :disabled="disabled"
@@ -46,6 +46,7 @@
             @change_value="
               (option) => option_select(option, 'is_manager_can_change_nds')
             "
+            v-if="false"
           />
           <edit-flag
             :item="'НДС включен в цену'"
