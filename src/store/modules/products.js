@@ -134,7 +134,9 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
+          // "Content-Type":
+          //   "multipart/form-data; boundary=----WebKitFormBoundaryv3IGZSqGIQ5PqKpG",
           Authorization: TOKEN,
         },
         body: file,
