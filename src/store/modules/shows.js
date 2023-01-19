@@ -14,6 +14,7 @@ export default {
     show_product_properties: false,
     show_product_category: false,
     showSyncSettings: false,
+    showImportStuff: false,
     showThirdPpartyIntegrations: false,
     showEditPrice: false,
     showTaskCenter: false,
@@ -27,21 +28,8 @@ export default {
         getters.disabled_for_modals
       );
     },
-    disabled_for_modals(state) {
-      return (
-        state.show_edit_modal ||
-        state.show_table_settings ||
-        state.show_edit_stuff ||
-        state.show_product_category ||
-        state.show_product_properties ||
-        state.show_new_position ||
-        state.show_cancel_position ||
-        state.show_document_setting ||
-        state.showThirdPpartyIntegrations ||
-        state.showSyncSettings ||
-        state.showEditPrice ||
-        state.showMoveProductsBetweenWhs
-      );
+    disabled_for_modals(state, getters) {
+      return state.show_edit_modal || getters.home_blur;
     },
     home_blur(state) {
       return (
@@ -55,7 +43,8 @@ export default {
         state.showThirdPpartyIntegrations ||
         state.showSyncSettings ||
         state.showEditPrice ||
-        state.showMoveProductsBetweenWhs
+        state.showMoveProductsBetweenWhs ||
+        state.showImportStuff
       );
     },
     show_edit_modal(state) {
@@ -102,6 +91,9 @@ export default {
     },
     showSyncSettings(state) {
       return state.showSyncSettings;
+    },
+    showImportStuff(state) {
+      return state.showImportStuff;
     },
     showEditPrice(state) {
       return state.showEditPrice;
@@ -168,6 +160,9 @@ export default {
     },
     openCloseSyncSettings(state, value) {
       state.showSyncSettings = value;
+    },
+    openCloseImportStuff(state, value) {
+      state.showImportStuff = value;
     },
     openCloseEditPrice(state, value) {
       state.showEditPrice = value;
