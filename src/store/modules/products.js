@@ -129,6 +129,20 @@ export default {
       console.log("exportXlsxw", json);
       return json;
     },
+    async importStuff(context, file) {
+      const url = BaseURL + "product/import/preprocessing";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: file,
+      });
+      const json = await res.json();
+      console.log("importStuff", json);
+      return json;
+    },
     async autocomplete_article(context, query) {
       const url = BaseURL + "product/autocomplete/article";
       const res = await fetch(url + "?query=" + query, {
