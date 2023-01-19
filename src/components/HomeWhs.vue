@@ -50,6 +50,7 @@ export default {
     const refRadioBtns = ref(null);
     const showWhsArrow = ref(true);
     const whsFull = ref(true);
+    // будет открыт список или нет
     const setShowWhsArrow = () => {
       const height = 30; //                 высота свернутого списка в пикселях
       nextTick(() => {
