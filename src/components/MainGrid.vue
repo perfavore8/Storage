@@ -239,10 +239,18 @@ export default {
     isDataLoading() {
       return this.$store.state.products.isLoading;
     },
+    isServicePageValue() {
+      return this.isServicePage.value;
+    },
     ...mapGetters(["show_edit_modal"]),
   },
 
   watch: {
+    isServicePageValue() {
+      this.$store.commit("updateProductsParams", {
+        is_service: this.isServicePageValue ? 1 : 0,
+      });
+    },
     products: {
       handler: function () {
         this.updateKey += 1;
