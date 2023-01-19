@@ -25,6 +25,11 @@
     </div>
   </transition>
   <transition name="modal_window">
+    <div v-if="showImportStuff" class="import_stuff">
+      <ImportStuff />
+    </div>
+  </transition>
+  <transition name="modal_window">
     <div v-if="show_product_properties" class="product_properties">
       <product-properties />
     </div>
@@ -65,6 +70,7 @@ import ProductProperties from "@/components/ProductProperties.vue";
 import ThirdPpartyIntegrations from "@/components/ThirdPpartyIntegrations.vue";
 import SyncSettings from "@/components/SyncSattings.vue";
 import MoveProductsBetweenWhs from "@/components/MoveProductsBetweenWhs.vue";
+import ImportStuff from "@/components/ImportStuff.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -78,6 +84,7 @@ export default {
     ThirdPpartyIntegrations,
     SyncSettings,
     MoveProductsBetweenWhs,
+    ImportStuff,
   },
   props: {
     selectedWH: Object,
@@ -98,6 +105,7 @@ export default {
       "showSyncSettings",
       "showEditPrice",
       "showMoveProductsBetweenWhs",
+      "showImportStuff",
     ]),
   },
 
