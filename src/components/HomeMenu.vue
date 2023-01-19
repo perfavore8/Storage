@@ -17,6 +17,33 @@
       </transition>
     </div>
 
+    <div class="ref" v-if="isTest">
+      <button
+        class="ref_2_logo btn"
+        @click="openImportXlsl()"
+        title="Настройки импорта"
+      >
+        <transition name="modal">
+          <span class="material-icons-round" v-if="showImportXlsx">
+            upload_file
+          </span>
+          <span class="material-icons" v-else> upload_file </span>
+        </transition>
+      </button>
+      <template v-if="showImportXlsx">
+        <div class="backdrop" @click="closeImportXlsl()" />
+        <div class="import_file">
+          <label for="xlsx">Загрузить файл</label>
+          <input
+            type="file"
+            accept=".xlsx"
+            id="xlsx"
+            @change="(ev) => getFile(ev)"
+          />
+        </div>
+      </template>
+    </div>
+
     <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
       <button
         class="ref_2_logo btn"
@@ -115,7 +142,7 @@
 
 <script>
 import TaskCenter from "@/components/TaskCenter.vue";
-import { computed } from "@vue/runtime-core";
+import { computed, ref } from "@vue/runtime-core";
 import store from "@/store";
 export default {
   components: {
@@ -134,6 +161,19 @@ export default {
         account.value?.config?.amo_product_list == "-1"
     );
 
+    const showImportXlsx = ref(false);
+
+    const openImportXlsl = () => (showImportXlsx.value = true);
+    const closeImportXlsl = () => (showImportXlsx.value = false);
+    const getFile = async (ev) => {
+      const file = ev.target.files[0];
+      const payload = new FormData();
+      payload.append("import", file, "import.xlsx");
+      console.log(file);
+      console.log(payload);
+      await store.dispatch("importStuff", payload);
+      store.commit("openCloseImportStuff", true);
+    };
     const openTaskCenter = () => store.commit("openCloseTaskCenter", true);
     const closeTaskCenter = () => store.commit("openCloseTaskCenter", false);
     const open_close_sync = () => store.commit("open_close_sync");
@@ -171,6 +211,10 @@ export default {
       openSyncSettings,
       open_product_properties,
       open_close_document_setting,
+      getFile,
+      showImportXlsx,
+      openImportXlsl,
+      closeImportXlsl,
     };
   },
 };
@@ -212,11 +256,32 @@ export default {
         position: absolute;
       }
     }
-  }
-  .links {
-    cursor: pointer;
-    text-decoration-line: underline;
-    @include font(400, 18px, 30px);
+    .import_file {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      top: 200%;
+      right: -40px;
+      position: absolute;
+      width: min-content;
+      height: min-content;
+      > label {
+        @include font(500, 14px);
+        border: 1px solid #c9c9c9;
+        border-radius: 4px;
+        background: white;
+        padding: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      > input {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+      }
+    }
   }
   .settings_btn {
     cursor: pointer;
@@ -293,7 +358,7 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 50;
+  z-index: 800;
 }
 .tasks {
   position: absolute;
