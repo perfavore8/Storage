@@ -10,7 +10,7 @@
     <main>
       <div class="template">
         <SelectorVue :options_props="[]" :selected_option="{}" />
-        <input type="text" />
+        <input class="input" type="text" />
       </div>
       <table class="table">
         <thead>
