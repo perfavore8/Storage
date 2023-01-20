@@ -21,35 +21,7 @@
           v-if="templates.selected.showTemplateName"
         />
       </div>
-      <!-- <table class="table">
-        <thead>
-          <tr class="row title">
-            <td class="item" v-for="i in 10" :key="i">h{{ i }}</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="row">
-            <td class="item" v-for="i in 10" :key="i">i{{ i }}</td>
-          </tr>
-          <tr class="row">
-            <td class="item" v-for="i in 10" :key="i">i{{ i }}</td>
-          </tr>
-          <tr class="row">
-            <td class="item" v-for="i in 10" :key="i">
-              <SelectorVue
-                :options_props="[
-                  { name: '1', value: 1 },
-                  { name: '2', value: 2 },
-                  { name: '3', value: 3 },
-                  { name: '4', value: 4 },
-                ]"
-                :selected_option="{ name: '1', value: 1 }"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table> -->
-      <div class="table">
+      <div class="table" ref="gridRef">
         <div class="item title" v-for="i in gridCount" :key="i">h{{ i }}</div>
 
         <div class="item" v-for="i in gridCount" :key="i">i{{ i }}</div>
@@ -57,7 +29,7 @@
         <div class="item" v-for="i in gridCount" :key="i">i{{ i }}</div>
 
         <div class="item" v-for="i in gridCount" :key="i">
-          <SelectorVue
+          <ImportStuffSelector
             :options_props="[
               { name: '1', value: 1 },
               { name: '2', value: 2 },
@@ -65,6 +37,7 @@
               { name: '4', value: 4 },
             ]"
             :selected_option="{ name: '1', value: 1 }"
+            @toggleShowOPtions="toggleShowOPtions"
           />
         </div>
       </div>
@@ -78,10 +51,10 @@
 <script>
 import store from "@/store";
 import BtnsSaveClose from "./BtnsSaveClose.vue";
-import SelectorVue from "./SelectorVue.vue";
-import { reactive } from "@vue/reactivity";
+import ImportStuffSelector from "./ImportStuffSelector.vue";
+import { reactive, ref } from "@vue/reactivity";
 export default {
-  components: { SelectorVue, BtnsSaveClose },
+  components: { ImportStuffSelector, BtnsSaveClose },
   setup() {
     const gridCount = 10;
     const templates = reactive({
@@ -111,11 +84,21 @@ export default {
     const selectTempate = (option) => (templates.selected = option);
 
     const close = () => store.commit("openCloseImportStuff");
+
+    const gridRef = ref(null);
+
+    const toggleShowOPtions = (value) => {
+      value
+        ? (gridRef.value.style.overflowX = "hidden")
+        : (gridRef.value.style.overflowX = "scroll");
+    };
     return {
       gridCount,
       templates,
       selectTempate,
       close,
+      toggleShowOPtions,
+      gridRef,
     };
   },
 };
@@ -187,6 +170,7 @@ export default {
       // max-width: 100vw;
       overflow-x: scroll;
       overflow-y: visible;
+      // overflow: scroll;
       .title {
         @include font(700, 16px);
         background-color: rgba(0, 0, 0, 0.1) !important;
