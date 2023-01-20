@@ -168,7 +168,8 @@ export default {
     const getFile = async (ev) => {
       const file = ev.target.files[0];
       const payload = new FormData();
-      payload.append("import", file, "import.xlsx");
+      payload.append("file", file);
+      payload.append("name", file.name);
       console.log(file);
       console.log(payload);
       await store.dispatch("importStuff", payload);
