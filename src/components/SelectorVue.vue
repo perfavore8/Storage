@@ -19,7 +19,10 @@
         <p
           v-for="option in options"
           :key="option.value"
-          :class="{ optgroup: option.value === 'optgroup' }"
+          :class="{
+            optgroup: option.value === 'optgroup',
+            selected: option.value == selected_option.value,
+          }"
           @click="select_option(option)"
         >
           <template v-if="option.optgroup">
@@ -219,6 +222,9 @@ export default {
       background-color: #3261a7;
     }
   }
+}
+.selected {
+  background-color: rgb(13 110 253 / 20%);
 }
 .disabled {
   background-color: #e9ecef !important;
