@@ -183,8 +183,6 @@ export default {
       border-collapse: collapse;
       width: 100%;
       display: grid;
-      grid-template-rows: auto auto auto auto;
-      // grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
       grid-template-columns: repeat(v-bind(gridCount), auto);
       // max-width: 100vw;
       overflow-x: scroll;
