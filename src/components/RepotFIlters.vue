@@ -234,6 +234,7 @@ export default {
     },
     clearAllFields() {
       this.fields.map((val) => (val.selected = []));
+      this.apply();
     },
     apply() {
       const preparationDate = (date) => {
@@ -247,12 +248,14 @@ export default {
         date:
           preparationDate(this.dateStart) + "-" + preparationDate(this.dateEnd),
       };
+      if (filter.date == "-") delete filter.date;
       this.fields.forEach((val) => {
         const list = [];
         val.selected.forEach((value) => list.push(value.value));
         if (
-          (this.isClient && val.clientShow) ||
-          (!this.isClient && val.salesShow)
+          ((this.isClient && val.clientShow) ||
+            (!this.isClient && val.salesShow)) &&
+          list != 0
         )
           filter[val.name] = list;
       });

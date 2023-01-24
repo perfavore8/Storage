@@ -13,12 +13,14 @@
         {{ ">" }}
       </button>
     </template>
-    <selector-vue
-      class="count"
-      :options_props="count_values"
-      :selected_option="{ name: count, value: -1 }"
-      @select="change_count"
-    />
+    <template v-if="showSelector">
+      <selector-vue
+        class="count"
+        :options_props="count_values"
+        :selected_option="{ name: count, value: -1 }"
+        @select="change_count"
+      />
+    </template>
   </div>
 </template>
 
@@ -55,6 +57,7 @@ export default {
       required: true,
     },
     showBtns: Boolean,
+    showSelector: Boolean,
   },
   emits: { changePage: null, changeCount: null },
   data() {

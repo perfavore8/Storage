@@ -31,15 +31,17 @@
         @updateOpenedRows="updateOpenedRows"
         @updateSelectedReport="updateSelectedReport"
       />
-      <!-- <grid-bottom
+      <GridBottom
         :previous="reports.prev_page_url != null"
         :next="reports.next_page_url != null"
         :page="reports.current_page"
         :show="reports.data?.length != 0"
-        :count="15"
+        :count="count"
+        :showBtns="showGridBottom"
+        :showSelector="false"
         @changePage="changePage"
         @changeCount="changeCount"
-      /> -->
+      />
     </div>
   </div>
 </template>
@@ -49,10 +51,10 @@ import { mapGetters } from "vuex";
 import ReportGrid from "@/components/ReportGrid.vue";
 import RepotFIlters from "@/components/RepotFIlters.vue";
 import NavBar from "@/components/NavBar.vue";
-// import GridBottom from "@/components/GridBottom.vue";
+import GridBottom from "@/components/GridBottom.vue";
 export default {
   name: "AnalyticsView",
-  components: { ReportGrid, RepotFIlters, NavBar },
+  components: { ReportGrid, RepotFIlters, NavBar, GridBottom },
   data() {
     return {
       openSelectedReportModal: false,
@@ -71,6 +73,9 @@ export default {
     ...mapGetters(["catalog"]),
     refFilters() {
       return this.$refs.filters;
+    },
+    showGridBottom() {
+      return this.reports.total >= this.reports.per_page;
     },
   },
   mounted() {
