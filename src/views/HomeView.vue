@@ -434,22 +434,28 @@ export default {
         background-color: transparent;
         color: #757575;
         transform: scaleX(-1);
-        transition: all 0.2s ease-out;
+        > span {
+          transition: all 0.2s ease-out;
+        }
       }
       .sync_icon:hover {
-        transform: rotateZ(90deg) scaleX(-1);
+        > span {
+          transform: rotateZ(-90deg);
+        }
       }
       .sync_icon:disabled,
       .sync_icon:disabled:hover {
         @keyframes rotating {
           from {
-            transform: rotate(0deg) scaleX(-1);
+            transform: rotate(0deg);
           }
           to {
-            transform: rotate(360deg) scaleX(-1);
+            transform: rotate(-360deg);
           }
         }
-        animation: rotating 0.75s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+        > span {
+          animation: rotating 0.75s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+        }
       }
     }
   }
