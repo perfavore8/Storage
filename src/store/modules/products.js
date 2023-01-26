@@ -35,7 +35,7 @@ export default {
       state.isLoading = value;
     },
     updateImportStuff(state, value) {
-      state.importStuff.data = [...value];
+      Object.assign(state.importStuff, value);
     },
   },
   actions: {
