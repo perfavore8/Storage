@@ -48,7 +48,7 @@
       </div>
     </main>
     <footer class="footer">
-      <BtnsSaveClose @close="close" />
+      <BtnsSaveClose @close="close" @save="save" />
     </footer>
   </div>
 </template>
@@ -127,7 +127,7 @@ export default {
     };
 
     const selectStuffField = (option, idx) => {
-      if (templates.selected.value !== 0 && templates.selected.value !== 1) {
+      if (isSavedTemplate.value) {
         templates.newTemplateName = templates.selected.name;
         const fields = templates.selected.selectedFields;
         templates.selected = templates.list.find((item) => item.value == 1);
@@ -135,6 +135,10 @@ export default {
       }
       templates.selected.selectedFields[idx] = option;
     };
+
+    const isSavedTemplate = computed(
+      () => templates.selected.value !== 0 && templates.selected.value !== 1
+    );
 
     const {
       selectedImportStuffFields,
@@ -148,6 +152,21 @@ export default {
     templates.list.find((item) => item.value == 0).selectedFields =
       selectedImportStuffFields;
 
+    const save = () => {
+      templates.selected.selectedFields.map((field) => delete field.value);
+      const params = {
+        file: importStuff.value.file,
+        isNewTempate: templates.selected.value == 1,
+        templateName: templates.newTemplateName
+          ? templates.newTemplateName
+          : templates.selected.name,
+        selectedFields: templates.selected.selectedFields,
+      };
+      console.log(params.selectedFields);
+      store.dispatch("importStart", params);
+      close();
+    };
+
     return {
       gridCount,
       templates,
@@ -159,6 +178,7 @@ export default {
       selectStuffField,
       selectedImportStuffFields,
       importStuffFields,
+      save,
     };
   },
 };
