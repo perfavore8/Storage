@@ -172,7 +172,9 @@ export default {
       payload.append("name", file.name);
       await store.dispatch("importStuff", payload);
       store.commit("openCloseImportStuff", true);
+      closeImportXlsl();
     };
+
     const openTaskCenter = () => store.commit("openCloseTaskCenter", true);
     const closeTaskCenter = () => store.commit("openCloseTaskCenter", false);
     const open_close_sync = () => store.commit("open_close_sync");
@@ -190,6 +192,7 @@ export default {
       store.commit("open_close_product_properties", true);
     const open_close_document_setting = (val) =>
       store.commit("open_close_document_setting", val);
+
     return {
       showTaskCenter,
       show_sync,
