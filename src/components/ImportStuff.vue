@@ -36,8 +36,13 @@
         <div class="item" v-for="i in gridCount" :key="i">
           <ImportStuffSelector
             :options_props="importStuffFields"
-            :selected_option="selectedImportStuffFields[i - 1]"
+            :selected_option="
+              templates.selected.selectedFields
+                ? templates.selected.selectedFields[i - 1]
+                : {}
+            "
             @toggleShowOptions="toggleShowOptions"
+            @select="(option) => selectStuffField(option, i - 1)"
           />
         </div>
       </div>
@@ -114,6 +119,10 @@ export default {
         : (gridRef.value.style.overflowX = "scroll");
     };
 
+    const selectStuffField = (option, idx) => {
+      templates.selected.selectedFields[idx] = option;
+    };
+
     const {
       selectedImportStuffFields,
       importStuffFields,
@@ -134,6 +143,7 @@ export default {
       toggleShowOptions,
       gridRef,
       tableData,
+      selectStuffField,
       selectedImportStuffFields,
       importStuffFields,
     };
