@@ -36,7 +36,7 @@
         <div class="item" v-for="i in gridCount" :key="i">
           <ImportStuffSelector
             :options_props="importStuffFields"
-            :selected_option="selectedImportStuffFields[i]"
+            :selected_option="selectedImportStuffFields[i - 1]"
             @toggleShowOptions="toggleShowOptions"
           />
         </div>
