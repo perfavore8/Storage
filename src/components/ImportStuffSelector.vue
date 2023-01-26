@@ -95,6 +95,11 @@ export default {
     );
 
     const show_options = ref(false);
+
+    watch(show_options, () =>
+      context.emit("toggleShowOptions", show_options.value)
+    );
+
     const hide_select = () => {
       show_options.value = false;
     };
@@ -102,7 +107,6 @@ export default {
       if (!props.disabled) {
         calcOptionsPosition();
         show_options.value = !show_options.value;
-        context.emit("toggleShowOPtions", show_options.value);
       }
     };
     const handleFocusOut = () => {

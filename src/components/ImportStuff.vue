@@ -22,11 +22,16 @@
         />
       </div>
       <div class="table" ref="gridRef">
-        <div class="item title" v-for="i in gridCount" :key="i">h{{ i }}</div>
-
-        <div class="item" v-for="i in gridCount" :key="i">i{{ i }}</div>
-
-        <div class="item" v-for="i in gridCount" :key="i">i{{ i }}</div>
+        <template v-for="(row, i) in tableData">
+          <div
+            class="item"
+            :class="{ title: i == 0 }"
+            v-for="item in row"
+            :key="item"
+          >
+            {{ item }}
+          </div>
+        </template>
 
         <div class="item" v-for="i in gridCount" :key="i">
           <ImportStuffSelector
@@ -37,7 +42,7 @@
               { name: '4', value: 4 },
             ]"
             :selected_option="{ name: '1', value: 1 }"
-            @toggleShowOPtions="toggleShowOPtions"
+            @toggleShowOptions="toggleShowOptions"
           />
         </div>
       </div>
@@ -53,10 +58,10 @@ import store from "@/store";
 import BtnsSaveClose from "./BtnsSaveClose.vue";
 import ImportStuffSelector from "./ImportStuffSelector.vue";
 import { reactive, ref } from "@vue/reactivity";
+import { computed } from "@vue/runtime-core";
 export default {
   components: { ImportStuffSelector, BtnsSaveClose },
   setup() {
-    const gridCount = 10;
     const templates = reactive({
       newTemplateName: "",
       selected: {},
@@ -87,7 +92,13 @@ export default {
 
     const gridRef = ref(null);
 
-    const toggleShowOPtions = (value) => {
+    const importStuff = computed(() => store.state.products.importStuff);
+    const tableData = computed(() => {
+      return importStuff.value.data;
+    });
+    const gridCount = tableData.value[0].length;
+
+    const toggleShowOptions = (value) => {
       value
         ? (gridRef.value.style.overflowX = "hidden")
         : (gridRef.value.style.overflowX = "scroll");
@@ -97,8 +108,9 @@ export default {
       templates,
       selectTempate,
       close,
-      toggleShowOPtions,
+      toggleShowOptions,
       gridRef,
+      tableData,
     };
   },
 };
