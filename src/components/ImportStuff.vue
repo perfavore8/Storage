@@ -35,13 +35,8 @@
 
         <div class="item" v-for="i in gridCount" :key="i">
           <ImportStuffSelector
-            :options_props="[
-              { name: '1', value: 1 },
-              { name: '2', value: 2 },
-              { name: '3', value: 3 },
-              { name: '4', value: 4 },
-            ]"
-            :selected_option="{ name: '1', value: 1 }"
+            :options_props="importStuffFields"
+            :selected_option="selectedImportStuffFields[i]"
             @toggleShowOptions="toggleShowOptions"
           />
         </div>
@@ -57,24 +52,33 @@
 import store from "@/store";
 import BtnsSaveClose from "./BtnsSaveClose.vue";
 import ImportStuffSelector from "./ImportStuffSelector.vue";
+import SelectorVue from "./SelectorVue.vue";
+import { useImportStuffFields } from "@/composables/importStuffFields";
 import { reactive, ref } from "@vue/reactivity";
-import { computed } from "@vue/runtime-core";
+import { computed, watch } from "@vue/runtime-core";
 export default {
-  components: { ImportStuffSelector, BtnsSaveClose },
+  components: { SelectorVue, ImportStuffSelector, BtnsSaveClose },
   setup() {
     const templates = reactive({
       newTemplateName: "",
-      selected: {},
+      selected: {
+        name: "Без шаблона",
+        value: 0,
+        showTemplateName: false,
+        selectedFields: [],
+      },
       list: [
         {
           name: "Без шаблона",
           value: 0,
           showTemplateName: false,
+          selectedFields: [],
         },
         {
           name: "Новый шаблон",
           value: 1,
           showTemplateName: true,
+          selectedFields: [],
         },
         {
           name: "Шаблон 1",
@@ -83,6 +87,12 @@ export default {
         },
       ],
     });
+
+    watch(templates, () =>
+      templates.selected?.showTemplateName
+        ? null
+        : (templates.newTemplateName = "")
+    );
 
     templates.selected = templates.list[0];
 
@@ -103,6 +113,19 @@ export default {
         ? (gridRef.value.style.overflowX = "hidden")
         : (gridRef.value.style.overflowX = "scroll");
     };
+
+    const {
+      selectedImportStuffFields,
+      importStuffFields,
+      fillSelectedImportStuffFields,
+    } = useImportStuffFields();
+    fillSelectedImportStuffFields(gridCount);
+
+    templates.list.find((item) => item.value == 1).selectedFields =
+      selectedImportStuffFields;
+    templates.list.find((item) => item.value == 0).selectedFields =
+      selectedImportStuffFields;
+
     return {
       gridCount,
       templates,
@@ -111,6 +134,8 @@ export default {
       toggleShowOptions,
       gridRef,
       tableData,
+      selectedImportStuffFields,
+      importStuffFields,
     };
   },
 };
