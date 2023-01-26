@@ -8,8 +8,8 @@ export function useImportStuffFields() {
 
   const getFields = async () => {
     importStuffFields.push(
-      { name: "Не импортировать поле", value: -1 },
-      { name: "Создать новое поле", value: 0 }
+      { name: "Не импортировать поле", value: -1, code: "not to import" },
+      { name: "Создать новое поле", value: 0, code: "new field" }
     );
     await store.dispatch("get_types");
     const types = store.state.fields.types;
