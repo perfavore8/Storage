@@ -89,6 +89,13 @@ export default {
           name: "Шаблон 1",
           value: 2,
           showTemplateName: false,
+          selectedFields: [
+            { name: "Не импортировать поле", value: -1 },
+            { name: "Не импортировать поле", value: -1 },
+            { name: "Не импортировать поле", value: -1 },
+            { name: "Не импортировать поле", value: -1 },
+            { name: "Не импортировать поле", value: -1 },
+          ],
         },
       ],
     });
@@ -120,6 +127,12 @@ export default {
     };
 
     const selectStuffField = (option, idx) => {
+      if (templates.selected.value !== 0 && templates.selected.value !== 1) {
+        templates.newTemplateName = templates.selected.name;
+        const fields = templates.selected.selectedFields;
+        templates.selected = templates.list.find((item) => item.value == 1);
+        templates.selected.selectedFields = fields;
+      }
       templates.selected.selectedFields[idx] = option;
     };
 
