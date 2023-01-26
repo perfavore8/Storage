@@ -13,6 +13,9 @@ export default {
       sort: {},
     },
     isLoading: false,
+    importStuff: {
+      data: [],
+    },
   },
   getters: {},
   mutations: {
@@ -30,6 +33,9 @@ export default {
     },
     updateIsLoading(state, value) {
       state.isLoading = value;
+    },
+    updateImportStuff(state, value) {
+      state.importStuff.data = [...value];
     },
   },
   actions: {
@@ -134,14 +140,12 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          // "Content-Type": "application/json",
-          // "Content-Type":
-          //   "multipart/form-data; boundary=----WebKitFormBoundaryv3IGZSqGIQ5PqKpG",
           Authorization: TOKEN,
         },
         body: file,
       });
       const json = await res.json();
+      context.commit("updateImportStuff", json);
       console.log("importStuff", json);
       return json;
     },
