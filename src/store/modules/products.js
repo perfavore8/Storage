@@ -169,5 +169,18 @@ export default {
       const json = await res.json();
       return json;
     },
+    async importStart(context, params) {
+      const url = BaseURL + "product/import/start";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params),
+      });
+      console.log("importStart", res);
+      return res;
+    },
   },
 };
