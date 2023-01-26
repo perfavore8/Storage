@@ -230,7 +230,7 @@ export default {
     ],
     catalog: [
       {
-        name: "заказы",
+        name: "Заказы",
         value: "orders",
         isTest: true,
       },
