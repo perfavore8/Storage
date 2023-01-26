@@ -77,7 +77,7 @@ export default {
   setup(props, context) {
     const options = ref([]);
     onMounted(() => {
-      window.addEventListener("scroll", () => calcOptionsPosition());
+      window.addEventListener("scroll", calcOptionsPosition);
       nextTick(() => {
         set_options();
       });
@@ -121,7 +121,7 @@ export default {
     };
 
     onUnmounted(() =>
-      window.removeEventListener("scroll", () => calcOptionsPosition())
+      window.removeEventListener("scroll", calcOptionsPosition)
     );
 
     const calcOptionsPosition = () => {
