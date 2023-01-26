@@ -170,8 +170,6 @@ export default {
       const payload = new FormData();
       payload.append("file", file);
       payload.append("name", file.name);
-      console.log(file);
-      console.log(payload);
       await store.dispatch("importStuff", payload);
       store.commit("openCloseImportStuff", true);
     };
