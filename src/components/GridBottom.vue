@@ -56,8 +56,16 @@ export default {
       type: Boolean,
       required: true,
     },
-    showBtns: Boolean,
-    showSelector: Boolean,
+    showBtns: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    showSelector: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   emits: { changePage: null, changeCount: null },
   data() {
