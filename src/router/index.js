@@ -38,6 +38,11 @@ const routes = [
     component: () => import("../views/GenezisView.vue"),
   },
   {
+    path: "/orders",
+    name: "orders",
+    component: () => import("../views/OrdersView.vue"),
+  },
+  {
     path: "/Error_is_not_installed",
     name: "Error_is_not_installed",
     component: () => import("../views/ErrorIsNotInstalledView.vue"),

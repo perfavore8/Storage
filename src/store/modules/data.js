@@ -230,6 +230,10 @@ export default {
     ],
     catalog: [
       {
+        name: "заказы",
+        value: "orders",
+      },
+      {
         name: "Остатки",
         value: "",
       },
