@@ -232,6 +232,7 @@ export default {
       {
         name: "заказы",
         value: "orders",
+        isTest: true,
       },
       {
         name: "Остатки",
