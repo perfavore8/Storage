@@ -1,35 +1,75 @@
 <template>
-  <div class="wrapper">
+  <!-- <div class="row">
+    <img :src="i" v-for="i in src" :key="i" />
+  </div> -->
+  <div class="wrapper" v-if="true">
     <div class="main">
       <table class="table" ref="table">
         <thead>
-          <main-grid-bar
-            ref="bar"
-            :fields="all_fields"
-            @sort="sort"
-            @changeAllSelectedProducts="changeAllSelectedProducts"
-            :tableConfig="tableConfig"
-            :sortedFields="sortedFields"
-            class="main-grid-bar"
-          />
-        </thead>
-        <tbody v-if="products.length">
-          <tr class="row" v-for="(row, idx) in products" :key="row.id">
-            <td class="item">
+          <tr class="bar_row">
+            <th class="bar_item item" style="min-width: 17px">
               <input
                 type="checkbox"
                 class="checkbox"
-                :id="row.id"
-                v-if="selectedProducts[idx] != undefined"
-                v-model="selectedProducts[idx].value"
-                @change="selectedProducts[idx].item = row"
+                id="all"
+                v-model="allSelectedProducts"
+                @change="changeAllSelectedProducts()"
               />
-              <label :for="row.id"></label>
-            </td>
-            <template v-for="item in sortedFields" :key="item">
-              <td class="item">{{ row.fields[item[0]] }}</td>
-            </template>
+              <label for="all"></label>
+            </th>
+            <th class="bar_item item" style="max-width: 17px"></th>
+            <th
+              class="bar_item item"
+              :style="{
+                minWidth:
+                  (collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) /
+                    collsCount +
+                  '%',
+              }"
+              v-for="title in products.titiles"
+              :key="title"
+            >
+              <div class="bar_item_group">
+                <label>{{ title.name }}</label>
+              </div>
+            </th>
           </tr>
+        </thead>
+        <tbody v-if="products.list.length">
+          <template v-for="(row, idx) in products.list" :key="row">
+            <tr class="row" @click="row.isOpen = !row.isOpen">
+              <td class="item">
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  :id="row"
+                  v-if="selectedProducts[idx] != undefined"
+                  v-model="selectedProducts[idx].value"
+                />
+                <label :for="row"></label>
+              </td>
+              <td class="item">
+                <img :src="row.img" class="img" />
+              </td>
+              <template v-for="title in products.titiles" :key="title">
+                <td class="item">
+                  {{ row[title.code] }}
+                </td>
+              </template>
+            </tr>
+            <tr
+              class="row hidden"
+              v-for="row2 in row.list"
+              :key="row2"
+              v-show="row.isOpen"
+            >
+              <td class="item"></td>
+              <td class="item"></td>
+              <template v-for="title in products.titiles" :key="title">
+                <td class="item">{{ row2[title.code] }}</td>
+              </template>
+            </tr>
+          </template>
         </tbody>
       </table>
       <label v-if="products.length == 0" class="text">
@@ -48,80 +88,105 @@
       @changeCount="changeCount"
     /> -->
   </div>
-  <div class="arrow" v-if="showArrow" @click="scrollUp()"></div>
 </template>
 
 <script>
 // import GridBottom from "@/components/GridBottom.vue";
-import MainGridBar from "@/components/MainGridBar.vue";
-import { nextTick } from "vue";
+// import { nextTick } from "vue";
 export default {
   name: "Main_grid",
   components: {
     // GridBottom,
-    MainGridBar,
   },
 
   data() {
     return {
       selectedProducts: [],
       showArrow: false,
+      allSelectedProducts: false,
+      src: [
+        "https://www.logobank.ru/images/ph/ru/v/vtb_new_logo_2018.png",
+        "https://www.logobank.ru/images/ph/ru/k/kamaz.png",
+        "https://www.logobank.ru/images/ph/en/s2/logo_stone_island-600x607.png",
+        "https://www.logobank.ru/images/ph/en/t/tele2.png",
+        "https://www.logobank.ru/images/ph/en/v/versace.png",
+        "https://www.logobank.ru/images/ph/en/n/nike.png",
+        "https://www.logobank.ru/images/ph/ru/0-9/1kanal.png",
+        "https://www.logobank.ru/images/ph/en/a/apple.png",
+      ],
+      products: {
+        titiles: [
+          {
+            name: "Ответственные",
+            code: "otv",
+          },
+          {
+            name: "Дата создания",
+            code: "date",
+          },
+          {
+            name: "Сумма заказа",
+            code: "sum",
+          },
+          {
+            name: "Список позиций",
+            code: "poz",
+          },
+        ],
+        list: [
+          {
+            isOpen: false,
+            otv: "Егор Кондратенко",
+            date: "22.12.2022",
+            sum: "123123 RUB",
+            poz: "Заготовка обсадная 127х9,199999999999999, гр.пр. М, треугольная удлиненная  ",
+            img: "https://www.logobank.ru/images/ph/ru/v/vtb_new_logo_2018.png",
+            list: [
+              {
+                otv: "Егор Кондратенко",
+                sum: "123123 RUB",
+                poz: "Заготовка обсадная 127х9,199999999999999, гр.пр. М, треугольная удлиненная  ",
+              },
+            ],
+          },
+          {
+            isOpen: false,
+            otv: "Ефим Ефимович, Александр Заболотный",
+            date: "22.12.2022",
+            sum: "3500 RUB",
+            poz: "Треники, Стол",
+            img: "https://www.logobank.ru/images/ph/en/a/apple.png",
+            list: [
+              {
+                otv: "Ефим Ефимович",
+                sum: "500 RUB",
+                poz: "Треники",
+              },
+              {
+                otv: "Александр Заболотный",
+                sum: "3000 RUB",
+                poz: "Стол",
+              },
+            ],
+          },
+        ],
+      },
     };
   },
-  created() {
-    window.addEventListener("scroll", this.handleScroll);
-  },
-  unmounted() {
-    window.removeEventListener("scroll", this.handleScroll);
-  },
-  async mounted() {
+  mounted() {
     this.setSelectedProducts();
-    this.bar?.dropAllSelectedProducts();
   },
 
   computed: {
-    sortedFields() {
-      const list = Object.entries(this.tableConfig);
-      return list
-        .sort((a, b) => {
-          if (a[1].sort > b[1].sort) return 1;
-          if (a[1].sort == b[1].sort) return 0;
-          if (a[1].sort < b[1].sort) return -1;
-        })
-        .filter((val) => val[1].visible);
+    collsCount() {
+      return this.products.titiles.length;
     },
-  },
-
-  watch: {
-    products: {
-      handler: function () {
-        nextTick(() => {
-          if (!this.filters?.isConfirmFilters) this.filters?.clearFilters();
-          this.filters?.setFalseIsConfirmFilters();
-        });
-      },
-      deep: true,
+    count() {
+      return this.products.list.length;
     },
   },
 
   methods: {
-    scrollUp() {
-      window.scrollTo(0, 0);
-    },
-    handleScroll() {
-      const yDis =
-        Math.round(this.bar?.$el?.getBoundingClientRect()?.y) -
-          Math.round(this.table?.getBoundingClientRect()?.y) >
-        10;
-      yDis ? (this.showArrow = true) : (this.showArrow = false);
-    },
-    async clearFilters() {
-      await this.filters?.clearFilters();
-      this.filters?.confirmFilters();
-    },
-    confirmFilters() {
-      this.filters?.confirmFilters();
-    },
     async changeCount(count) {
       this.setTrueIsConfirmFilters();
       await this.$store.dispatch("update_user", { per_page: count });
@@ -139,52 +204,13 @@ export default {
       for (let i = 0; i < this.count; i++)
         this.selectedProducts.push({ value: false, item: {} });
     },
-    changeAllSelectedProducts(newValue) {
+    changeAllSelectedProducts() {
       this.selectedProducts.map((product, idx) => {
-        product.value = newValue;
-        newValue ? (product.item = this.products[idx]) : (product.item = {});
+        product.value = this.allSelectedProducts;
+        this.allSelectedProducts
+          ? (product.item = this.products[idx])
+          : (product.item = {});
       });
-    },
-    async get_products(params) {
-      if (this.isServicePage.value) params = { ...params, is_service: 1 };
-      if (this.selectedWH.value != "whs" && !this.isServicePage.value)
-        params = { ...params, warehouse: this.selectedWH.value };
-      await this.$store.dispatch("get_products", params);
-      this.setSelectedProducts();
-      this.bar?.dropAllSelectedProducts();
-    },
-    drop_page() {
-      this.changePage(1);
-    },
-    open_edit_modal(row) {
-      this.setTrueIsConfirmFilters();
-      this.edit_data = { ...row };
-      this.$store.commit("open_edit_modal", row.fields.category);
-    },
-    openGridEditPrice(item, code) {
-      this.editPrice = {
-        name: item.fields.name,
-        price:
-          item.fields?.[code]?.cost == undefined ? 0 : item.fields[code].cost,
-        product_id: item.id,
-        price_field_code: code,
-      };
-      this.$store.commit("openCloseEditPrice", true);
-    },
-    setTrueIsConfirmFilters() {
-      nextTick(() => this.filters?.setTrueIsConfirmFilters());
-    },
-    sort(code, order) {
-      this.setTrueIsConfirmFilters();
-      const params = {
-        page: 1,
-        sort: {
-          by: code,
-          order: order,
-        },
-      };
-      this.$store.commit("updateProductsParams", params);
-      this.get_products(this.productsParams);
     },
   },
 };
@@ -192,6 +218,58 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+.img {
+  object-fit: cover;
+  width: 24px;
+  padding: 4px;
+  border: 1px solid #aeaeae;
+  border-radius: 50%;
+  object-fit: scale-down;
+}
+
+.bar_row {
+  height: 66px;
+  .item {
+    padding: 10px;
+    padding-left: 15px;
+    border: 1px solid #c9c9c9;
+    @include font(400, 14px, 17px);
+    color: #3f3f3f;
+    text-align: start;
+    min-width: 50px;
+  }
+  .bar_item {
+    background: #e5e5e5;
+    @include font(500, 16px, 19px);
+    color: #000000;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+    label {
+      cursor: inherit;
+    }
+
+    .bar_item_group {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+  .bar_item:first-child {
+    cursor: default;
+    width: 17px !important;
+  }
+}
+.row {
+  cursor: pointer;
+}
+.hidden {
+  background-color: #dde8f0;
+  cursor: default;
+}
 .item {
   padding: 10px;
   padding-left: 15px;
@@ -200,15 +278,6 @@ export default {
   color: #3f3f3f;
   text-align: start;
   min-width: 50px;
-}
-.edit_icon {
-  border: none;
-  outline: none;
-  background-color: transparent;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  @include bg_image("@/assets/edit.svg");
 }
 .table {
   border-collapse: collapse;
@@ -230,23 +299,10 @@ export default {
 .item:first-child {
   width: 17px !important;
   text-align: center;
-  .filter {
-    display: none;
-  }
 }
-.item:last-child {
+.item:nth-child(2) {
   width: 20px !important;
   text-align: center;
-  .edit_icon {
-    margin: 0 auto;
-  }
-  .filter {
-    display: none;
-  }
-}
-.blur {
-  transition: filter 0.2s ease-out;
-  filter: blur(5px);
 }
 .text {
   position: relative;
@@ -261,16 +317,5 @@ export default {
 .rows-enter-from,
 .rows-leave-to {
   opacity: 0;
-}
-.arrow {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  z-index: 2;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  opacity: 0.7;
-  @include bg_image("@/assets/arrow_circle_up.svg");
 }
 </style>
