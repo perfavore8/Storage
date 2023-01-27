@@ -82,7 +82,7 @@ export default {
             value: 1,
           },
           {
-            name: "Закрытsй",
+            name: "Закрытый",
             value: 2,
           },
           {
