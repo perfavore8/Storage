@@ -63,6 +63,17 @@ $vv: calc(1vh + 1vw);
 .btn_dark_blue:disabled {
   background-color: #1b354680 !important;
 }
+.btn_light_dark_blue {
+  color: #fff;
+  background: hsl(210, 42%, 42%);
+}
+.btn_light_dark_blue:hover {
+  background: #3b6691;
+  box-shadow: 0 0 5px 2px rgb(59 102 145 / 25%);
+}
+.btn_light_dark_blue:disabled {
+  background-color: hsl(210, 42%, 30%, 0.5) !important;
+}
 .btn_pink {
   background: #ea9197;
 }
