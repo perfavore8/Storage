@@ -3,25 +3,25 @@
     <div class="buttons" v-if="show_buttons && !oneC">
       <template v-if="!isServicePage">
         <button
-          class="btn button_2 smallBtn"
+          class="btn btn_light_dark_blue smallBtn"
           @click="addCurrentProducts()"
           :disabled="oneC"
         >
           Добавить
         </button>
-        <button class="btn button_3 smallBtn" @click="openCancelPosition()">
+        <button class="btn btn_pink smallBtn" @click="openCancelPosition()">
           Списать
         </button>
         <template v-if="isTest">
           <button
-            class="btn button_5 smallBtn"
+            class="btn btn_light_yellow smallBtn"
             @click="openMoveProductsBetweenWhs()"
           >
             Перемещение
           </button>
         </template>
       </template>
-      <button class="btn button_1 smallBtn" @click="archive_data()">
+      <button class="btn btn_grey smallBtn" @click="archive_data()">
         Архивировать
       </button>
     </div>
@@ -83,46 +83,9 @@ export default {
   align-items: center;
   justify-content: center;
   color: #ffffff;
+  width: 112px;
+  height: 34px;
   @include font(400, 14px, 18px);
-}
-.button_1 {
-  width: 112px;
-  height: 34px;
-  background: #6c757d;
-}
-.button_1:hover {
-  background: #5f676d;
-  box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-}
-.button_2 {
-  width: 112px;
-  height: 34px;
-  background: #1b3546f1;
-}
-.button_2:hover {
-  background: #1b3546d9;
-  box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
-}
-.button_3 {
-  width: 112px;
-  height: 34px;
-  background: #ea9197;
-}
-.button_3:hover {
-  background: rgb(226, 101, 109);
-  box-shadow: 0 0 5px 2px rgb(226 101 109 / 25%);
-}
-
-.button_5 {
-  width: 112px;
-  height: 34px;
-  color: #2a2a2a;
-  background: #ffeab2;
-}
-.button_5:hover {
-  color: #000;
-  background: #ffd45c;
-  box-shadow: 0 0 5px 2px rgb(255 212 92 / 50%);
 }
 
 .btns-enter-active,
