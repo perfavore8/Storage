@@ -7,6 +7,7 @@
     </div>
     <div class="wrapper">
       <OrdersFilters />
+      <OrdersGrid />
     </div>
   </div>
 </template>
@@ -14,8 +15,9 @@
 <script>
 import NavBar from "@/components/NavBar.vue";
 import OrdersFilters from "@/components/OrdersFilters.vue";
+import OrdersGrid from "@/components/OrdersGrid.vue";
 export default {
-  components: { NavBar, OrdersFilters },
+  components: { NavBar, OrdersFilters, OrdersGrid },
   setup() {},
 };
 </script>
