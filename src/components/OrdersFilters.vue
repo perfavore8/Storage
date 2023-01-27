@@ -104,12 +104,13 @@ export default {
   display: flex;
   flex-direction: row;
   // justify-content: space-around;
+  // justify-content: center;
   flex-wrap: wrap;
-  gap: 5px;
-  padding: 30px;
+  gap: 8px;
+  padding: 16px;
   border: 1px solid #c9c9c9;
   border-radius: 5px;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.03);
   .item {
     display: flex;
     flex-direction: column;
@@ -117,10 +118,10 @@ export default {
     flex-grow: 1;
     border: 1px solid #c9c9c9;
     border-radius: 5px;
-    padding: 10px;
+    padding: 10px 0;
     background-color: #fff;
     gap: 10px;
-    max-width: 300px;
+    max-width: 200px;
     .title {
       @include font(500, 16px, 19px);
     }

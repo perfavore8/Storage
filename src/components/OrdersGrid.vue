@@ -49,7 +49,10 @@
                 <label :for="row"></label>
               </td>
               <td class="item">
-                <img :src="row.img" class="img" />
+                <div class="stat">
+                  <img :src="row.img" class="img" />
+                  <span>{{ row.stat }}</span>
+                </div>
               </td>
               <template v-for="title in products.titiles" :key="title">
                 <td class="item">
@@ -129,10 +132,10 @@ export default {
             name: "Сумма заказа",
             code: "sum",
           },
-          {
-            name: "Статус заказа",
-            code: "stat",
-          },
+          // {
+          //   name: "Статус заказа",
+          //   code: "stat",
+          // },
           {
             name: "Список позиций",
             code: "poz",
@@ -232,6 +235,13 @@ export default {
   border: 1px solid #aeaeae;
   border-radius: 50%;
   object-fit: scale-down;
+}
+.stat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  @include font(500, 16px);
+  gap: 8px;
 }
 
 .bar_row {
