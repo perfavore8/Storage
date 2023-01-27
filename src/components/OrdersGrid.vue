@@ -69,6 +69,7 @@
                 <td class="item">{{ row2[title.code] }}</td>
               </template>
             </tr>
+            <tr v-if="row.isOpen" class="space" />
           </template>
         </tbody>
       </table>
@@ -265,6 +266,10 @@ export default {
 }
 .row {
   cursor: pointer;
+}
+.space {
+  height: 16px;
+  border: none;
 }
 .hidden {
   background-color: #dde8f0;
