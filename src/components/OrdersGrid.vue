@@ -130,6 +130,10 @@ export default {
             code: "sum",
           },
           {
+            name: "Статус заказа",
+            code: "stat",
+          },
+          {
             name: "Список позиций",
             code: "poz",
           },
@@ -140,6 +144,7 @@ export default {
             otv: "Егор Кондратенко",
             date: "22.12.2022",
             sum: "123123 RUB",
+            stat: "Открытый",
             poz: "Заготовка обсадная 127х9,199999999999999, гр.пр. М, треугольная удлиненная  ",
             img: "https://www.logobank.ru/images/ph/ru/v/vtb_new_logo_2018.png",
             list: [
@@ -155,6 +160,7 @@ export default {
             otv: "Ефим Ефимович, Александр Заболотный",
             date: "22.12.2022",
             sum: "3500 RUB",
+            stat: "Закрытый",
             poz: "Треники, Стол",
             img: "https://www.logobank.ru/images/ph/en/a/apple.png",
             list: [
