@@ -6,14 +6,14 @@
     <div class="content">
       <div class="btns">
         <button
-          @click="clients()"
+          @click="changeReportType()"
           class="btn"
           :class="{ selected_report: isClient }"
         >
           Отчет по клиентам
         </button>
         <button
-          @click="sales()"
+          @click="changeReportType()"
           class="btn"
           :class="{ selected_report: !isClient }"
         >
@@ -234,12 +234,14 @@ export default {
         });
       }
     },
+    changeReportType() {
+      this.isClient = !this.isClient;
+      this.page = 1;
+      this.refFilters?.clearAllFields();
+    },
     async clients() {
       this.isLoading = true;
       this.openedRows = [];
-      if (!this.isClient)
-        this.refFilters?.clearAllFields(),
-          this.page == 1 ? null : this.changePage(1);
       this.isClient = true;
       this.title = [
         { name: "Компания", code: "company", type: 0 },
@@ -256,9 +258,6 @@ export default {
     async sales() {
       this.isLoading = true;
       this.openedRows = [];
-      if (this.isClient)
-        this.refFilters?.clearAllFields(),
-          this.page == 1 ? null : this.changePage(1);
       this.isClient = false;
       this.title = [
         { name: "Название", code: "name", type: 0 },
