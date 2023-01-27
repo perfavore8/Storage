@@ -104,6 +104,17 @@ $vv: calc(1vh + 1vw);
 .btn_yellow:disabled {
   background-color: #ffca2c80 !important;
 }
+.btn_light_yellow {
+  color: #000 !important;
+  background-color: #ffeab2;
+}
+.btn_light_yellow:hover {
+  background-color: #ffd45c;
+  box-shadow: 0 0 5px 2px rgb(255 212 92 / 50%);
+}
+.btn_light_yellow:disabled {
+  background-color: hsl(44, 100%, 75%, 0.5) !important;
+}
 .btn:disabled {
   cursor: default !important;
 }
