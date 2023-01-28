@@ -42,11 +42,11 @@
                 <input
                   type="checkbox"
                   class="checkbox"
-                  :id="row"
+                  :id="row + idx"
                   v-if="selectedProducts[idx] != undefined"
                   v-model="selectedProducts[idx].value"
                 />
-                <label :for="row"></label>
+                <label :for="row + idx"></label>
               </td>
               <td class="item">
                 <div class="stat">
