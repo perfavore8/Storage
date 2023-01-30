@@ -52,7 +52,7 @@
           :disabled="disableExportXlsx"
           @click="exportXlsx()"
         >
-          <span class="material-icons-round"> sim_card_download </span>
+          <span class="material-icons-outlined"> upload_file </span>
         </button>
       </div>
     </th>

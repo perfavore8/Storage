@@ -25,9 +25,11 @@
       >
         <transition name="modal">
           <span class="material-icons-round" v-if="showImportXlsx">
-            upload_file
+            sim_card_download
           </span>
-          <span class="material-icons" v-else> upload_file </span>
+          <span class="material-icons-outlined" v-else>
+            sim_card_download
+          </span>
         </transition>
       </button>
       <template v-if="showImportXlsx">
