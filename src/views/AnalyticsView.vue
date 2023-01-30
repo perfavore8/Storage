@@ -105,7 +105,7 @@ export default {
           this.openedRows.push(val[query]);
           if (this.isClient) {
             await this.$store.dispatch("getCustomersResponsible", {
-              filter: {},
+              filter: this.filter,
               company: val.company,
             });
             this.reports.data.map((report) => {
@@ -124,7 +124,7 @@ export default {
             });
           } else {
             await this.$store.dispatch("getSalesProducts", {
-              filter: {},
+              filter: this.filter,
               product: val.name,
             });
             this.reports.data.map((report) => {
@@ -153,7 +153,7 @@ export default {
           .list.length
       ) {
         await this.$store.dispatch("getCustomersProducts", {
-          filter: {},
+          filter: this.filter,
           company: value.company,
         });
       }
@@ -277,6 +277,7 @@ export default {
     },
     getFilter(value) {
       this.filter = value;
+      this.page = 1;
       this.isClient ? this.clients() : this.sales();
     },
   },
