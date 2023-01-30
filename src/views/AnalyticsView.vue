@@ -115,9 +115,9 @@ export default {
                   this.$store.state.analytics.customersResponsible;
                 report.otv.list.map((item) => {
                   item["prib"] = item.sum - item.cost_sum;
-                  item.sum = Math.round(item.sum * 100) / 100 + " р.";
-                  item.cost_sum = Math.round(item.cost_sum * 100) / 100 + " р.";
-                  item.prib = Math.round(item.prib * 100) / 100 + " р.";
+                  item.sum = this.round(item.sum);
+                  item.cost_sum = this.round(item.cost_sum);
+                  item.prib = this.round(item.prib);
                   item.otv = item.user;
                 });
               }
@@ -133,9 +133,9 @@ export default {
                 report.poz.list = this.$store.state.analytics.salesProducts;
                 report.poz.list.map((item) => {
                   item["prib"] = item.sum - item.cost_sum;
-                  item.sum = Math.round(item.sum * 100) / 100 + " р.";
-                  item.cost_sum = Math.round(item.cost_sum * 100) / 100 + " р.";
-                  item.prib = Math.round(item.prib * 100) / 100 + " р.";
+                  item.sum = this.round(item.sum);
+                  item.cost_sum = this.round(item.cost_sum);
+                  item.prib = this.round(item.prib);
                   item.poz = item.user;
                 });
               }
@@ -165,9 +165,9 @@ export default {
             ];
             report.poz.list.map((val) => {
               val["prib"] = val.sum - val.cost_sum;
-              val.sum = Math.round(val.sum * 100) / 100 + " р.";
-              val.cost_sum = Math.round(val.cost_sum * 100) / 100 + " р.";
-              val.prib = Math.round(val.prib * 100) / 100 + " р.";
+              val.sum = this.round(val.sum);
+              val.cost_sum = this.round(val.cost_sum);
+              val.prib = this.round(val.prib);
             });
           }
         });
@@ -198,9 +198,9 @@ export default {
             ],
           };
           val["prib"] = val.sum - val.cost_sum;
-          val.sum = Math.round(val.sum * 100) / 100 + " р.";
-          val.cost_sum = Math.round(val.cost_sum * 100) / 100 + " р.";
-          val.prib = Math.round(val.prib * 100) / 100 + " р.";
+          val.sum = this.round(val.sum);
+          val.cost_sum = this.round(val.cost_sum);
+          val.prib = this.round(val.prib);
         });
       } else {
         await this.$store.dispatch("getSales", {
@@ -215,12 +215,9 @@ export default {
         this.salesTotal = this.$store.state.analytics.salesTotal;
         this.salesTotal["prib"] =
           this.salesTotal.sum - this.salesTotal.cost_sum;
-        this.salesTotal.sum =
-          Math.round(this.salesTotal.sum * 100) / 100 + " р.";
-        this.salesTotal.cost_sum =
-          Math.round(this.salesTotal.cost_sum * 100) / 100 + " р.";
-        this.salesTotal.prib =
-          Math.round(this.salesTotal.prib * 100) / 100 + " р.";
+        this.salesTotal.sum = this.round(this.salesTotal.sum);
+        this.salesTotal.cost_sum = this.round(this.salesTotal.cost_sum);
+        this.salesTotal.prib = this.round(this.salesTotal.prib);
         this.salesTotal.leads = this.salesTotal?.leads?.split(",").length;
         this.salesTotal["name"] = "Общее";
         this.salesTotal["poz"] = "";
@@ -231,9 +228,9 @@ export default {
           };
           val["prib"] = val.sum - val.cost_sum;
           val.leads = val.leads.split(",");
-          val.sum = Math.round(val.sum * 100) / 100 + " р.";
-          val.cost_sum = Math.round(val.cost_sum * 100) / 100 + " р.";
-          val.prib = Math.round(val.prib * 100) / 100 + " р.";
+          val.sum = this.round(val.sum);
+          val.cost_sum = this.round(val.cost_sum);
+          val.prib = this.round(val.prib);
         });
       }
     },
@@ -282,6 +279,10 @@ export default {
       this.filter = value;
       this.page = 1;
       this.isClient ? this.clients() : this.sales();
+    },
+    round(number) {
+      number = Number(number);
+      return Math.round(number * 100) / 100 + " р.";
     },
   },
 };
