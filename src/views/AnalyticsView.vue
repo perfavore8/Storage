@@ -149,26 +149,29 @@ export default {
         this.reports.data.map((report) => (report.poz.value = false));
       }
       if (
-        !this.reports.data.filter((val) => val.company == value.company)[0]?.poz
-          .list.length
+        !this.reports.data.find((val) => val.company == value.company)?.poz.list
+          .length
       ) {
         await this.$store.dispatch("getCustomersProducts", {
           filter: this.filter,
           company: value.company,
         });
+
+        this.reports.data.map((report) => {
+          if (report.company == value.company && report.poz && value.value) {
+            report.poz.value = value.value;
+            report.poz.list = [
+              ...this.$store.state.analytics.customersProducts,
+            ];
+            report.poz.list.map((val) => {
+              val["prib"] = val.sum - val.cost_sum;
+              val.sum = Math.round(val.sum * 100) / 100 + " р.";
+              val.cost_sum = Math.round(val.cost_sum * 100) / 100 + " р.";
+              val.prib = Math.round(val.prib * 100) / 100 + " р.";
+            });
+          }
+        });
       }
-      this.reports.data.map((report) => {
-        if (report.company == value.company && report.poz) {
-          report.poz.value = value.value;
-          report.poz.list = this.$store.state.analytics.customersProducts;
-          report.poz.list.map((val) => {
-            val["prib"] = val.sum - val.cost_sum;
-            val.sum = Math.round(val.sum * 100) / 100 + " р.";
-            val.cost_sum = Math.round(val.cost_sum * 100) / 100 + " р.";
-            val.prib = Math.round(val.prib * 100) / 100 + " р.";
-          });
-        }
-      });
 
       this.selectedReport = { ...value };
     },

@@ -101,10 +101,10 @@ export default {
       return this.$store.state.account.account.subdomain;
     },
     buttonInTitle() {
-      return this.title?.filter((val) => val?.type == 1)[0];
+      return this.title?.find((val) => val?.type == 1);
     },
     modalInTitle() {
-      return this.title?.filter((val) => val?.type == 2)[0];
+      return this.title?.find((val) => val?.type == 2);
     },
     openedRows() {
       return this.copyReports.filter(
@@ -112,10 +112,10 @@ export default {
       );
     },
     selectedReport() {
-      const item = this.copyReports.filter((val) => {
+      const item = this.copyReports.find((val) => {
         if (val[this.modalInTitle?.code])
           return val[this.modalInTitle?.code].value;
-      })[0];
+      });
       let props = { value: false };
       if (item) {
         props = {
