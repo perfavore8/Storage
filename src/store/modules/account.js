@@ -189,6 +189,16 @@ export default {
       const json = await res.json();
       return json;
     },
+    async importStuffTemplates() {
+      const url = BaseURL + "account/import-templates";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      return json;
+    },
     async update_account(context, params) {
       const url = BaseURL + "account/update";
       const res = await fetch(url, {
