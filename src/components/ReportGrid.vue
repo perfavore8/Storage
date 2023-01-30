@@ -7,6 +7,15 @@
       </tr>
     </thead>
     <tbody>
+      <template v-if="!isClient">
+        <tr class="space"></tr>
+        <tr class="row title">
+          <td class="item" v-for="tit in title" :key="tit">
+            {{ salesTotal[tit.code] }}
+          </td>
+        </tr>
+        <tr class="space"></tr>
+      </template>
       <template v-for="(report, idx) in copyReports" :key="report">
         <tr class="row" :class="{ row_odd: idx % 2 == 0 }">
           <td
