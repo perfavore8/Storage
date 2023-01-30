@@ -64,6 +64,12 @@ import { computed, onMounted, watch } from "@vue/runtime-core";
 export default {
   components: { SelectorVue, ImportStuffSelector, BtnsSaveClose },
   setup() {
+    const {
+      selectedImportStuffFields,
+      importStuffFields,
+      fillSelectedImportStuffFields,
+    } = useImportStuffFields();
+
     const templates = reactive({
       newTemplateName: "",
       selected: {
@@ -107,6 +113,10 @@ export default {
     );
 
     templates.selected = templates.list[0];
+    templates.list.find((item) => item.value == 1).selectedFields =
+      selectedImportStuffFields;
+    templates.list.find((item) => item.value == 0).selectedFields =
+      selectedImportStuffFields;
 
     const selectTempate = (option) => (templates.selected = option);
 
@@ -122,7 +132,9 @@ export default {
       });
     });
 
-    const close = () => store.commit("openCloseImportStuff");
+    const isSavedTemplate = computed(
+      () => templates.selected.value !== 0 && templates.selected.value !== 1
+    );
 
     const gridRef = ref(null);
 
@@ -131,6 +143,7 @@ export default {
       return importStuff.value.data;
     });
     const gridCount = tableData.value[0].length;
+    fillSelectedImportStuffFields(gridCount);
 
     const toggleShowOptions = (value) => {
       value
@@ -148,21 +161,7 @@ export default {
       templates.selected.selectedFields[idx] = option;
     };
 
-    const isSavedTemplate = computed(
-      () => templates.selected.value !== 0 && templates.selected.value !== 1
-    );
-
-    const {
-      selectedImportStuffFields,
-      importStuffFields,
-      fillSelectedImportStuffFields,
-    } = useImportStuffFields();
-    fillSelectedImportStuffFields(gridCount);
-
-    templates.list.find((item) => item.value == 1).selectedFields =
-      selectedImportStuffFields;
-    templates.list.find((item) => item.value == 0).selectedFields =
-      selectedImportStuffFields;
+    const close = () => store.commit("openCloseImportStuff");
 
     const save = () => {
       templates.selected.selectedFields.map((field) => {
