@@ -60,7 +60,7 @@ import ImportStuffSelector from "./ImportStuffSelector.vue";
 import SelectorVue from "./SelectorVue.vue";
 import { useImportStuffFields } from "@/composables/importStuffFields";
 import { reactive, ref } from "@vue/reactivity";
-import { computed, watch } from "@vue/runtime-core";
+import { computed, onMounted, watch } from "@vue/runtime-core";
 export default {
   components: { SelectorVue, ImportStuffSelector, BtnsSaveClose },
   setup() {
@@ -109,6 +109,18 @@ export default {
     templates.selected = templates.list[0];
 
     const selectTempate = (option) => (templates.selected = option);
+
+    onMounted(async () => {
+      const { templates: importStuffTemplates } = await store.dispatch(
+        "importStuffTemplates"
+      );
+      importStuffTemplates.map((template) => {
+        template.showTemplateName = false;
+        template.value = Math.round(Math.random() * 100000);
+        template.selectedFields?.map((field) => (field.value = field.code));
+        templates.list.push(template);
+      });
+    });
 
     const close = () => store.commit("openCloseImportStuff");
 
@@ -165,7 +177,6 @@ export default {
           : templates.selected.name,
         selectedFields: templates.selected.selectedFields,
       };
-      console.log(params.selectedFields);
       store.dispatch("importStart", params);
       close();
     };
