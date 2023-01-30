@@ -153,7 +153,10 @@ export default {
       selectedImportStuffFields;
 
     const save = () => {
-      templates.selected.selectedFields.map((field) => delete field.value);
+      templates.selected.selectedFields.map((field) => {
+        delete field.value;
+        delete field.optgroup;
+      });
       const params = {
         file: importStuff.value.file,
         isNewTempate: templates.selected.value == 1,
