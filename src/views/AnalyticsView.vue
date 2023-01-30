@@ -201,11 +201,11 @@ export default {
         });
       } else {
         await this.$store.dispatch("getSales", {
-          params: this.filter,
+          filter: this.filter,
           page: this.page,
         });
         await this.$store.dispatch("getSalesTotal", {
-          params: this.filter,
+          filter: this.filter,
           page: this.page,
         });
         this.reports = this.$store.state.analytics.sales;
