@@ -305,8 +305,6 @@ export default {
 }
 
 .modal_sync {
-  position: absolute !important;
-  top: 44px !important;
   right: 82px !important;
   width: 400px !important;
   margin: 0 !important;
