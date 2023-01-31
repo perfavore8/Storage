@@ -26,10 +26,11 @@
         :reportsData="reports"
         :isClient="isClient"
         :isLoading="isLoading"
-        :salesTotal="salesTotal"
+        :total="total"
         @updateOpenSelectedReportModal="updateOpenSelectedReportModal"
         @updateOpenedRows="updateOpenedRows"
         @updateSelectedReport="updateSelectedReport"
+        ref="grid"
       />
       <GridBottom
         :previous="reports.prev_page_url != null"
@@ -52,6 +53,7 @@ import ReportGrid from "@/components/ReportGrid.vue";
 import RepotFIlters from "@/components/RepotFIlters.vue";
 import NavBar from "@/components/NavBar.vue";
 import GridBottom from "@/components/GridBottom.vue";
+import { nextTick } from "@vue/runtime-core";
 export default {
   name: "AnalyticsView",
   components: { ReportGrid, RepotFIlters, NavBar, GridBottom },
@@ -65,7 +67,7 @@ export default {
       openedRows: [],
       selectedReport: {},
       filter: {},
-      salesTotal: {},
+      total: {},
       page: 1,
     };
   },
@@ -77,6 +79,9 @@ export default {
     showGridBottom() {
       return this.reports.total >= this.reports.per_page;
     },
+    refGrid() {
+      return this.$refs.grid;
+    },
   },
   mounted() {
     this.clients();
@@ -85,6 +90,16 @@ export default {
   methods: {
     updateOpenSelectedReportModal(value) {
       this.openSelectedReportModal = value;
+    },
+    calcTotal() {
+      this.total["prib"] = this.total.sum - this.total.cost_sum;
+      this.total.sum = this.round(this.total.sum);
+      this.total.cost_sum = this.round(this.total.cost_sum);
+      this.total.prib = this.round(this.total.prib);
+      this.total.leads = this.total?.leads?.split(",").length;
+      this.total["name"] = "Общее";
+      this.total["company"] = "Общее";
+      this.total["poz"] = "";
     },
     async updateOpenedRows(value) {
       let query = "";
@@ -181,7 +196,12 @@ export default {
           filter: this.filter,
           page: this.page,
         });
+        await this.$store.dispatch("getCustomersTotal", {
+          filter: this.filter,
+          page: this.page,
+        });
         this.reports = this.$store.state.analytics.customers;
+        this.total = this.$store.state.analytics.customersTotal;
         this.reports.data.map((val) => {
           val["otv"] = {
             value: false,
@@ -212,15 +232,7 @@ export default {
           page: this.page,
         });
         this.reports = this.$store.state.analytics.sales;
-        this.salesTotal = this.$store.state.analytics.salesTotal;
-        this.salesTotal["prib"] =
-          this.salesTotal.sum - this.salesTotal.cost_sum;
-        this.salesTotal.sum = this.round(this.salesTotal.sum);
-        this.salesTotal.cost_sum = this.round(this.salesTotal.cost_sum);
-        this.salesTotal.prib = this.round(this.salesTotal.prib);
-        this.salesTotal.leads = this.salesTotal?.leads?.split(",").length;
-        this.salesTotal["name"] = "Общее";
-        this.salesTotal["poz"] = "";
+        this.total = this.$store.state.analytics.salesTotal;
         this.reports.data.map((val) => {
           val["poz"] = {
             value: false,
@@ -233,6 +245,8 @@ export default {
           val.prib = this.round(val.prib);
         });
       }
+      this.calcTotal();
+      nextTick(() => this.refGrid?.calcShowTopTitle());
     },
     changeReportType() {
       this.isClient = !this.isClient;
