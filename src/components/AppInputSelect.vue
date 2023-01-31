@@ -82,6 +82,7 @@ export default {
     const selectItem = (item) => {
       context.emit("select", item);
       closeList();
+      inputValue.value = "";
     };
 
     return {
