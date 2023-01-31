@@ -7,6 +7,7 @@ export default {
     customers: {},
     customersResponsible: [],
     customersProducts: [],
+    customersTotal: {},
     sales: {},
     salesProducts: [],
     salesTotal: {},
@@ -24,6 +25,9 @@ export default {
     },
     updateCustomersProducts(state, value) {
       if (value) state.customersProducts = [...value];
+    },
+    updateCustomersTotal(state, value) {
+      if (value) state.customersTotal = { ...value };
     },
     updateSales(state, value) {
       if (value) state.sales = { ...value };
@@ -126,6 +130,19 @@ export default {
       });
       const json = await res.json();
       context.commit("updateSalesTotal", json);
+    },
+    async getCustomersTotal(context, params) {
+      const url = BaseURL + "analytics/customers/total";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      context.commit("updateCustomersTotal", json);
     },
   },
 };
