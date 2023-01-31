@@ -23,8 +23,8 @@ import { watch } from "@vue/runtime-core";
 export default {
   props: {
     list: Array,
-    countLettersReq: { type: Number, default: () => 0 }, // кол-во символов для отправки запроса
-    requestDelay: { type: Number, default: () => 300 }, // <--  миллисекунды
+    countLettersReq: { type: Number, required: false, default: () => 0 }, // кол-во символов для отправки запроса
+    requestDelay: { type: Number, required: false, default: () => 300 }, // <--  миллисекунды
   },
   setup(props, context) {
     const inputValue = ref("");
