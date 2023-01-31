@@ -258,7 +258,7 @@ export default {
   }
 }
 .blur {
-  filter: blur(5px);
-  transition: all 0.5s ease-out;
+  filter: blur(8px);
+  transition: all 0.2s;
 }
 </style>
