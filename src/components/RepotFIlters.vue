@@ -5,49 +5,20 @@
         <input type="date" v-model="dateStart" />
         <input type="date" v-model="dateEnd" />
       </div>
-      <div
+      <AppInputSelect
+        :list="selected_field_autocomplete_list"
+        :countLettersReq="field.minLength"
+        :placeholder="field.placeholder"
+        @changeInputValue="(value) => changeInputValue(value, field.name)"
+        @select="(item) => selectField(item, field.name)"
+        @focusin="selected_field_autocomplete = field.name"
+        @focusout="selected_field_autocomplete = null"
         v-for="field in fields"
         :key="field.id"
-        class="field"
         v-show="
           (isClient && field.clientShow) || (!isClient && field.salesShow)
         "
-      >
-        <div
-          :ref="
-            (el) =>
-              selected_field_autocomplete.field == field.name
-                ? (targetAutocomplete = el)
-                : null
-          "
-          v-if="
-            (isClient && field?.clientShow) || (!isClient && field?.salesShow)
-          "
-          class="ref"
-        >
-          <input
-            type="text"
-            class="input"
-            v-model="field.value"
-            :placeholder="field.placeholder"
-            @focusin="
-              set_selected_field_autocomplete(
-                field.name,
-                field.value,
-                field.minLength
-              )
-            "
-            @focusout="set_selected_field_autocomplete('', '', field.minLength)"
-            @input="
-              set_selected_field_autocomplete(
-                field.name,
-                field.value,
-                field.minLength
-              )
-            "
-          />
-        </div>
-      </div>
+      />
     </div>
     <div class="btns">
       <button class="btn btn_blue" @click="apply()">Применить</button>
@@ -73,35 +44,12 @@
       </div>
     </div>
   </div>
-  <teleport
-    :to="targetAutocomplete"
-    v-if="selected_field_autocomplete_list.length || isLoading"
-  >
-    <ul class="autocomplete_teleport" v-if="!isLoading">
-      <li
-        v-for="item in selected_field_autocomplete_list"
-        :key="item"
-        @click="selectField(item, selected_field_autocomplete.field)"
-        class="item"
-      >
-        {{ item.value }}
-      </li>
-    </ul>
-    <ul class="autocomplete_teleport" v-else>
-      <li
-        v-for="item in autocompletePlaceholderList"
-        :key="item"
-        class="placeholder"
-      >
-        {{ item }}
-      </li>
-    </ul>
-  </teleport>
 </template>
 
 <script>
-import { nextTick } from "@vue/runtime-core";
+import AppInputSelect from "./AppInputSelect.vue";
 export default {
+  components: { AppInputSelect },
   props: {
     isClient: {
       type: Boolean,
@@ -111,12 +59,7 @@ export default {
   data() {
     return {
       isLoading: false,
-      selected_field_autocomplete: {
-        idx: null,
-        field: "",
-        value: "",
-        minLength: 0,
-      },
+      selected_field_autocomplete: null,
       selected_field_autocomplete_list: [],
       autocompletePlaceholderList: ["...", "...", "...", "..."],
       dateStart: "",
@@ -176,51 +119,32 @@ export default {
     };
   },
   watch: {
-    selected_field_autocomplete: {
-      async handler() {
-        clearTimeout(this.timer);
-        const verify = () => {
-          const complete = this.selected_field_autocomplete;
-          return (
-            complete.field !== "" &&
-            complete.value.length >= complete.minLength &&
-            complete.value.split("").at(-1) != " " &&
-            complete.value.split("")[0] != " "
-          );
-        };
-        nextTick(() => {
-          if (verify()) this.isLoading = true;
-        });
-        this.timer = setTimeout(async () => {
-          this.selected_field_autocomplete_list = [];
-          if (verify()) {
-            const complete = this.selected_field_autocomplete;
-            await this.$store.dispatch("getAutocompleteAnalytics", {
-              field: complete.field,
-              value: { query: complete.value },
-            });
-            const list = this.$store.state.analytics.autocomplete;
-            if (list != undefined)
-              this.selected_field_autocomplete_list = [...list];
-          }
-          this.isLoading = false;
-        }, 500);
-      },
-      deep: true,
+    selected_field_autocomplete() {
+      this.selected_field_autocomplete_list = [];
     },
   },
   methods: {
-    set_selected_field_autocomplete(field, value, minLength) {
-      setTimeout(() => {
-        // if (field == "") this.targetAutocomplete = null;
-        this.selected_field_autocomplete = {
-          field: field,
-          value: value,
-          minLength: minLength,
-        };
-      }, 200);
+    async changeInputValue(value, name) {
+      const verify = (value) => {
+        return value.split("").at(-1) != " " && value.split("")[0] != " ";
+      };
+      this.selected_field_autocomplete_list = [];
+      console.log(verify(value), value, name);
+      if (verify(value) && this.selected_field_autocomplete == name) {
+        await this.$store.dispatch("getAutocompleteAnalytics", {
+          field: name,
+          value: { query: value },
+        });
+        const list = this.$store.state.analytics.autocomplete;
+        console.log(list);
+        if (list != undefined) {
+          list.map((item) => (item.name = item.value));
+          this.selected_field_autocomplete_list = [...list];
+        }
+      }
     },
     selectField(item, field) {
+      console.log(item, field);
       this.fields.forEach((val) => {
         if (
           val.name === field &&
@@ -365,74 +289,6 @@ export default {
         height: 6px;
         width: 6px;
         @include bg_image("@/assets/cross.svg", 100%);
-      }
-    }
-  }
-}
-.autocomplete_teleport {
-  position: absolute;
-  top: 40px;
-  left: 0;
-  border-radius: 4px;
-  list-style: none;
-  max-height: 400px;
-  min-height: 40px;
-  overflow-y: scroll;
-  scrollbar-width: 0;
-  overflow: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  margin: 0;
-  padding: 0;
-  scrollbar-width: 0;
-  background-color: white;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  z-index: 5;
-
-  box-sizing: border-box;
-  .item {
-    box-sizing: border-box;
-    cursor: pointer;
-    height: 40px;
-    width: 100%;
-    padding: 6px 12px;
-    transition: background-color 0.15s ease-out;
-    white-space: pre;
-  }
-  .item:hover {
-    background-color: rgb(13 110 253 / 25%);
-  }
-  .item:last-child {
-    border-radius: 0 0 4px 4px;
-  }
-  .item:first-child {
-    border-radius: 4px 4px 0 0;
-  }
-  .item:active {
-    background-color: #3261a7;
-  }
-  .placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    padding: 8px;
-    height: 34px;
-    width: 200px;
-    margin: 3px;
-    @include font(700, 24px);
-    color: rgb(100, 100, 100);
-    background-color: #edf0f2;
-    border-radius: 8px;
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-
-    @keyframes pulse {
-      0%,
-      100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.3;
       }
     }
   }
