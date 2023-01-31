@@ -7,7 +7,7 @@
       </tr>
     </thead>
     <tbody>
-      <template v-if="!isClient">
+      <template v-if="!isClient && showTopTitle">
         <tr class="space"></tr>
         <tr class="row title">
           <td class="item" v-for="tit in title" :key="tit">
@@ -67,7 +67,7 @@
         <tr class="space" v-if="report[buttonInTitle.code]?.value"></tr>
       </template>
       <tr class="space"></tr>
-      <tr class="row title" v-if="!isClient">
+      <tr class="row title" v-if="!isClient" ref="total">
         <td class="item" v-for="tit in title" :key="tit">
           {{ salesTotal[tit.code] }}
         </td>
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import { nextTick } from "@vue/runtime-core";
 import ReportGridModal from "./ReportGridModal.vue";
 export default {
   components: { ReportGridModal },
@@ -100,10 +101,12 @@ export default {
     return {
       copyReports: [],
       count: 421,
+      showTopTitle: false,
     };
   },
   mounted() {
     this.copy();
+    nextTick(() => this.calcShowTopTitle());
   },
   computed: {
     accountSubdomain() {
@@ -181,8 +184,17 @@ export default {
       },
       deep: true,
     },
+    isClient() {
+      nextTick(() => this.calcShowTopTitle());
+    },
   },
   methods: {
+    calcShowTopTitle() {
+      this.showTopTitle =
+        document.body.clientWidth <
+        this.$refs.total?.getBoundingClientRect()?.y;
+      // console.log(this.refTitle.getBoundingClientRect()?.y);
+    },
     copy() {
       if (this.reportsData.data)
         this.copyReports = JSON.parse(JSON.stringify(this.reportsData.data));
