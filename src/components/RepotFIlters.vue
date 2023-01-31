@@ -129,14 +129,12 @@ export default {
         return value.split("").at(-1) != " " && value.split("")[0] != " ";
       };
       this.selected_field_autocomplete_list = [];
-      console.log(verify(value), value, name);
       if (verify(value) && this.selected_field_autocomplete == name) {
         await this.$store.dispatch("getAutocompleteAnalytics", {
           field: name,
           value: { query: value },
         });
         const list = this.$store.state.analytics.autocomplete;
-        console.log(list);
         if (list != undefined) {
           list.map((item) => (item.name = item.value));
           this.selected_field_autocomplete_list = [...list];
@@ -144,7 +142,6 @@ export default {
       }
     },
     selectField(item, field) {
-      console.log(item, field);
       this.fields.forEach((val) => {
         if (
           val.name === field &&
