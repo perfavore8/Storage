@@ -7,11 +7,11 @@
       </tr>
     </thead>
     <tbody>
-      <template v-if="!isClient && showTopTitle">
+      <template v-if="showTopTitle">
         <tr class="space"></tr>
         <tr class="row title">
           <td class="item" v-for="tit in title" :key="tit">
-            {{ salesTotal[tit.code] }}
+            {{ total[tit.code] }}
           </td>
         </tr>
         <tr class="space"></tr>
@@ -67,9 +67,9 @@
         <tr class="space" v-if="report[buttonInTitle.code]?.value"></tr>
       </template>
       <tr class="space"></tr>
-      <tr class="row title" v-if="!isClient" ref="total">
+      <tr class="row title" ref="total">
         <td class="item" v-for="tit in title" :key="tit">
-          {{ salesTotal[tit.code] }}
+          {{ total[tit.code] }}
         </td>
       </tr>
     </tbody>
@@ -86,14 +86,13 @@
 </template>
 
 <script>
-import { nextTick } from "@vue/runtime-core";
 import ReportGridModal from "./ReportGridModal.vue";
 export default {
   components: { ReportGridModal },
   props: {
     title: { type: Array, required: true },
     reportsData: { type: Object, required: true },
-    salesTotal: { type: Object, required: false },
+    total: { type: Object, required: false },
     isClient: { type: Boolean, required: true },
     isLoading: { type: Boolean, required: true },
   },
@@ -101,12 +100,11 @@ export default {
     return {
       copyReports: [],
       count: 421,
-      showTopTitle: false,
+      showTopTitle: true,
     };
   },
   mounted() {
     this.copy();
-    nextTick(() => this.calcShowTopTitle());
   },
   computed: {
     accountSubdomain() {
@@ -184,16 +182,12 @@ export default {
       },
       deep: true,
     },
-    isClient() {
-      nextTick(() => this.calcShowTopTitle());
-    },
   },
   methods: {
     calcShowTopTitle() {
       this.showTopTitle =
         document.body.clientWidth <
         this.$refs.total?.getBoundingClientRect()?.y;
-      // console.log(this.refTitle.getBoundingClientRect()?.y);
     },
     copy() {
       if (this.reportsData.data)
