@@ -186,7 +186,7 @@ export default {
   methods: {
     calcShowTopTitle() {
       this.showTopTitle =
-        document.body.clientWidth <
+        document.body.clientHeight <
         this.$refs.total?.getBoundingClientRect()?.y;
     },
     copy() {
