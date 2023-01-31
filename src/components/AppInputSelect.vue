@@ -31,22 +31,20 @@ export default {
 
     const timer = ref(null);
 
-    watch(
-      inputValue,
-      () => {
-        clearTimeout(timer.value);
-        if (inputValue.value.length >= props.countLettersReq) {
-          timer.value = setTimeout(() => {
-            context.emit("changeInputValue", inputValue.value);
-          }, props.requestDelay);
-        }
-      },
-      { immediate: true }
-    );
+    const changeInputValue = () => {
+      clearTimeout(timer.value);
+      if (inputValue.value.length >= props.countLettersReq) {
+        timer.value = setTimeout(() => {
+          context.emit("changeInputValue", inputValue.value);
+        }, props.requestDelay);
+      }
+    };
+
+    watch(inputValue, () => changeInputValue());
 
     const showList = ref(false);
     const closeList = () => (showList.value = false);
-    const openList = () => (showList.value = true);
+    const openList = () => ((showList.value = true), changeInputValue());
 
     const selectItem = (item) => {
       context.emit("select", item);
