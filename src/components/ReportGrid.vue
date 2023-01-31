@@ -143,6 +143,7 @@ export default {
   },
   watch: {
     openSelectedReportModal() {
+      if (this.openSelectedReportModal) window.scrollTo(0, 0);
       this.$emit("updateOpenSelectedReportModal", this.openSelectedReportModal);
     },
     reportsData: {
