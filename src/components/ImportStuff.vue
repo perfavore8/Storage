@@ -8,18 +8,27 @@
       <button class="btn cross" @click="close()"></button>
     </header>
     <main class="main">
-      <div class="template">
-        <SelectorVue
-          :options_props="templates.list"
-          :selected_option="templates.selected"
-          @select="selectTempate"
-        />
-        <input
-          class="input"
-          type="text"
-          v-model="templates.newTemplateName"
-          v-if="templates.selected.showTemplateName"
-        />
+      <div class="top">
+        <div class="template">
+          <SelectorVue
+            :options_props="templates.list"
+            :selected_option="templates.selected"
+            @select="selectTempate"
+          />
+          <input
+            class="input"
+            type="text"
+            v-model="templates.newTemplateName"
+            v-if="templates.selected.showTemplateName"
+          />
+        </div>
+        <div class="compare" v-if="isAnyCompares">
+          <SelectorVue
+            :options_props="addOrUpdateFields.list"
+            :selected_option="addOrUpdateFields.selected"
+            @select="addOrUpdateFields.select"
+          />
+        </div>
       </div>
       <div class="table" ref="gridRef">
         <template v-for="(row, i) in tableData">
@@ -44,6 +53,17 @@
             @toggleShowOptions="toggleShowOptions"
             @select="(option) => selectStuffField(option, i - 1)"
           />
+          <template
+            v-if="templates.selected.selectedFields[i - 1].value !== -1"
+          >
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="'ImportStuff' + i"
+              v-model="templates.selected.compares[i - 1]"
+            />
+            <label :for="'ImportStuff' + i"> Сравнивать поле </label>
+          </template>
         </div>
       </div>
     </main>
@@ -76,6 +96,7 @@ export default {
         name: "Без шаблона",
         value: 0,
         showTemplateName: false,
+        compares: [],
         selectedFields: [],
       },
       list: [
@@ -83,18 +104,21 @@ export default {
           name: "Без шаблона",
           value: 0,
           showTemplateName: false,
+          compares: [],
           selectedFields: [],
         },
         {
           name: "Новый шаблон",
           value: 1,
           showTemplateName: true,
+          compares: [],
           selectedFields: [],
         },
         {
           name: "Шаблон 1",
           value: 2,
           showTemplateName: false,
+          compares: [],
           selectedFields: [
             { name: "Не импортировать поле", value: -1, code: "not to import" },
             { name: "Не импортировать поле", value: -1, code: "not to import" },
@@ -151,22 +175,31 @@ export default {
         : (gridRef.value.style.overflowX = "scroll");
     };
 
-    const selectStuffField = (option, idx) => {
+    const checkIsSavedTemplate = () => {
       if (isSavedTemplate.value) {
         templates.newTemplateName = templates.selected.name;
         const fields = templates.selected.selectedFields;
         templates.selected = templates.list.find((item) => item.value == 1);
         templates.selected.selectedFields = fields;
       }
+    };
+
+    const selectStuffField = (option, idx) => {
+      checkIsSavedTemplate();
       templates.selected.selectedFields[idx] = option;
     };
 
     const close = () => store.commit("openCloseImportStuff");
 
     const save = () => {
-      templates.selected.selectedFields.map((field) => {
-        delete field.value;
-        delete field.optgroup;
+      const selectedFields = [];
+      templates.selected.selectedFields.forEach((field, idx) => {
+        const item = {
+          name: field.name,
+          code: field.code,
+          copare: templates.selected.compares[idx] ? true : false,
+        };
+        selectedFields.push(item);
       });
       const params = {
         file: importStuff.value.file,
@@ -174,11 +207,28 @@ export default {
         templateName: templates.newTemplateName
           ? templates.newTemplateName
           : templates.selected.name,
-        selectedFields: templates.selected.selectedFields,
+        selectedFields: selectedFields,
       };
+      if (isAnyCompares)
+        params["addOrUpdateFields"] = addOrUpdateFields.selected;
       store.dispatch("importStart", params);
       close();
     };
+
+    const isAnyCompares = computed(() =>
+      templates.selected.compares.some((val) => val)
+    );
+    watch(isAnyCompares, checkIsSavedTemplate);
+
+    const addOrUpdateFields = reactive({
+      selected: { name: "только добавлять", value: "add" },
+      list: [
+        { name: "только добавлять", value: "add" },
+        { name: "только обновлять", value: "update" },
+        { name: "добавлять и обновлять", value: "add&update" },
+      ],
+      select: (option) => (addOrUpdateFields.selected = option),
+    });
 
     return {
       gridCount,
@@ -192,6 +242,8 @@ export default {
       selectedImportStuffFields,
       importStuffFields,
       save,
+      isAnyCompares,
+      addOrUpdateFields,
     };
   },
 };
@@ -247,12 +299,19 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    .template {
+    .top {
       display: flex;
       flex-direction: row;
-      gap: 16px;
-      .input {
-        width: 50%;
+      justify-content: space-between;
+      .template {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        .input {
+          width: 50%;
+        }
+      }
+      .compare {
       }
     }
     .table {
@@ -277,6 +336,13 @@ export default {
         > .v-select {
           min-width: 100px;
           width: fit-content;
+        }
+        > .checkbox + label {
+          margin-top: 8px;
+        }
+        > .checkbox {
+          left: 50vw;
+          top: 50vh;
         }
       }
     }
