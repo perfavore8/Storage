@@ -96,7 +96,8 @@ export default {
       this.total.sum = this.round(this.total.sum);
       this.total.cost_sum = this.round(this.total.cost_sum);
       this.total.prib = this.round(this.total.prib);
-      this.total.leads = this.total?.leads?.split(",").length;
+      if (!this.isClient)
+        this.total.leads = this.total?.leads?.split(",").length;
       this.total["name"] = "Общее";
       this.total["company"] = "Общее";
       this.total["poz"] = "";
