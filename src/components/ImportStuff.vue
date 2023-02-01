@@ -223,9 +223,9 @@ export default {
     const addOrUpdateFields = reactive({
       selected: { name: "только добавлять", value: "add" },
       list: [
-        { name: "только добавлять", value: "add" },
-        { name: "только обновлять", value: "update" },
-        { name: "добавлять и обновлять", value: "add&update" },
+        { name: "только добавлять", value: "only add" },
+        { name: "только обновлять", value: "only update" },
+        { name: "добавлять и обновлять", value: "add and update" },
       ],
       select: (option) => (addOrUpdateFields.selected = option),
     });
