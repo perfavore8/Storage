@@ -34,22 +34,15 @@
         </template>
 
         <div class="item" v-for="i in gridCount" :key="i">
-          <input
-            type="text"
-            class="input"
-            :class="{
-              not_valid: selectedFields[i - 1].name === '',
-            }"
-            :title="selectedFields[i - 1].name === '' ? 'Пустое поле' : null"
-            v-model="selectedFields[i - 1].name"
-            v-if="selectedFields[i - 1].value === 0"
-          />
           <ImportStuffSelector
             :options_props="importStuffFields"
-            :selected_option="selectedFields ? selectedFields[i - 1] : {}"
+            :selected_option="
+              templates.selected.selectedFields
+                ? templates.selected.selectedFields[i - 1]
+                : {}
+            "
             @toggleShowOptions="toggleShowOptions"
             @select="(option) => selectStuffField(option, i - 1)"
-            v-else
           />
         </div>
       </div>
@@ -187,8 +180,6 @@ export default {
       close();
     };
 
-    const selectedFields = computed(() => templates.selected.selectedFields);
-
     return {
       gridCount,
       templates,
@@ -201,7 +192,6 @@ export default {
       selectedImportStuffFields,
       importStuffFields,
       save,
-      selectedFields,
     };
   },
 };
@@ -287,16 +277,6 @@ export default {
         > .v-select {
           min-width: 100px;
           width: fit-content;
-        }
-        > .input {
-          min-width: 100px;
-          width: fit-content;
-        }
-        .not_valid {
-          border: 1px solid #ff0000 !important;
-        }
-        .not_valid:focus {
-          box-shadow: 0 0 0 4px rgb(255 0 0 / 25%) !important;
         }
       }
     }
