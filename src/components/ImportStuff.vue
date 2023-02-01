@@ -210,7 +210,7 @@ export default {
         selectedFields: selectedFields,
       };
       if (isAnyCompares)
-        params["addOrUpdateFields"] = addOrUpdateFields.selected;
+        params["addOrUpdateFields"] = addOrUpdateFields.selected.value;
       store.dispatch("importStart", params);
       close();
     };
