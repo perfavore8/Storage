@@ -7,10 +7,11 @@ export function useImportStuffFields() {
   const importStuffFields = reactive([]);
 
   const getFields = async () => {
-    importStuffFields.push(
-      { name: "Не импортировать поле", value: -1, code: "not to import" },
-      { name: "Создать новое поле", value: 0, code: "new field" }
-    );
+    importStuffFields.push({
+      name: "Не импортировать поле",
+      value: -1,
+      code: "not to import",
+    });
     await store.dispatch("get_types");
     const types = store.state.fields.types;
     const fields = Object.entries(await store.dispatch("importStuffFields"));
