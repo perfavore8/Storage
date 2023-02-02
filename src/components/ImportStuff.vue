@@ -211,17 +211,22 @@ export default {
           copare: templates.selected.compares[idx] ? true : false,
         };
         if (field.isList) item["add"] = field.listAdd;
-        selectedFields.push(item);
+        if (field.value !== -1) {
+          selectedFields.push(item);
+        } else {
+          selectedFields.push({});
+        }
       });
       const params = {
         file: importStuff.value.file,
-        isNewTempate: templates.selected.value == 1,
-        templateName: templates.newTemplateName
-          ? templates.newTemplateName
-          : templates.selected.name,
+        isNewTemplate: templates.selected.value == 1,
         selectedFields: selectedFields,
       };
-      if (isAnyCompares)
+      if (templates.selected.value !== 0)
+        params["templateName"] = templates.newTemplateName
+          ? templates.newTemplateName
+          : templates.selected.name;
+      if (isAnyCompares.value)
         params["addOrUpdateFields"] = addOrUpdateFields.selected.value;
       store.dispatch("importStart", params);
       close();
@@ -235,9 +240,9 @@ export default {
     const addOrUpdateFields = reactive({
       selected: { name: "только добавлять", value: "add" },
       list: [
-        { name: "только добавлять", value: "only add" },
-        { name: "только обновлять", value: "only update" },
-        { name: "добавлять и обновлять", value: "add and update" },
+        { name: "только добавлять", value: "add" },
+        { name: "только обновлять", value: "update" },
+        { name: "добавлять и обновлять", value: "add_update" },
       ],
       select: (option) => (addOrUpdateFields.selected = option),
     });
