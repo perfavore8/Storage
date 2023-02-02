@@ -17,9 +17,13 @@ export function useImportStuffFields() {
     const fields = Object.entries(await store.dispatch("importStuffFields"));
     fields.forEach((field) => {
       importStuffFields.push({ name: types[field[0]], value: "optgroup" });
-      field[1].map(
-        (item) => ((item.value = item.code), (item.optgroup = true))
-      );
+      const isList = field[0] == 5 || field[0] == 6;
+      field[1].map((item) => {
+        item.value = item.code;
+        item.optgroup = true;
+        item.isList = isList;
+        if (isList) item.listAdd = false;
+      });
       importStuffFields.push(...field[1]);
     });
   };

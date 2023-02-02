@@ -59,10 +59,21 @@
             <input
               type="checkbox"
               class="checkbox"
-              :id="'ImportStuff' + i"
+              :id="'ImportStuffCompares' + i"
               v-model="templates.selected.compares[i - 1]"
             />
-            <label :for="'ImportStuff' + i"> Сравнивать поле </label>
+            <label :for="'ImportStuffCompares' + i"> Сравнивать поле </label>
+          </template>
+          <template v-if="templates.selected.selectedFields[i - 1].isList">
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="'ImportStuffListAdd' + i"
+              v-model="templates.selected.selectedFields[i - 1].listAdd"
+            />
+            <label :for="'ImportStuffListAdd' + i">
+              Добавлять новые значения
+            </label>
           </template>
         </div>
       </div>
@@ -199,6 +210,7 @@ export default {
           code: field.code,
           copare: templates.selected.compares[idx] ? true : false,
         };
+        if (field.isList) item["add"] = field.listAdd;
         selectedFields.push(item);
       });
       const params = {
