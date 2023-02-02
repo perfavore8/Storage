@@ -13,7 +13,7 @@
           <SelectorVue
             :options_props="templates.list"
             :selected_option="templates.selected"
-            @select="selectTempate"
+            @select="selectTemplate"
           />
           <input
             class="input"
@@ -25,7 +25,7 @@
         <div class="compare" v-if="isAnyCompares">
           <SelectorVue
             :options_props="addOrUpdateFields.list"
-            :selected_option="addOrUpdateFields.selected"
+            :selected_option="templates.selected.addOrUpdateFields.selected"
             @select="addOrUpdateFields.select"
           />
         </div>
@@ -91,7 +91,7 @@ import ImportStuffSelector from "./ImportStuffSelector.vue";
 import SelectorVue from "./SelectorVue.vue";
 import { useImportStuffFields } from "@/composables/importStuffFields";
 import { reactive, ref } from "@vue/reactivity";
-import { computed, onMounted, watch } from "@vue/runtime-core";
+import { computed, nextTick, onMounted, watch } from "@vue/runtime-core";
 export default {
   components: { SelectorVue, ImportStuffSelector, BtnsSaveClose },
   setup() {
@@ -109,6 +109,9 @@ export default {
         showTemplateName: false,
         compares: [],
         selectedFields: [],
+        addOrUpdateFields: {
+          selected: { name: "только добавлять", value: "add" },
+        },
       },
       list: [
         {
@@ -117,6 +120,9 @@ export default {
           showTemplateName: false,
           compares: [],
           selectedFields: [],
+          addOrUpdateFields: {
+            selected: { name: "только добавлять", value: "add" },
+          },
         },
         {
           name: "Новый шаблон",
@@ -124,20 +130,10 @@ export default {
           showTemplateName: true,
           compares: [],
           selectedFields: [],
+          addOrUpdateFields: {
+            selected: { name: "только добавлять", value: "add" },
+          },
         },
-        // {
-        //   name: "Шаблон 1",
-        //   value: 2,
-        //   showTemplateName: false,
-        //   compares: [],
-        //   selectedFields: [
-        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
-        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
-        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
-        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
-        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
-        //   ],
-        // },
       ],
     });
 
@@ -153,16 +149,41 @@ export default {
     templates.list.find((item) => item.value == 0).selectedFields =
       selectedImportStuffFields;
 
-    const selectTempate = (option) => (templates.selected = option);
+    const isChangeTemplate = ref("false");
+
+    const selectTemplate = (option) => {
+      isChangeTemplate.value = true;
+      templates.selected = JSON.parse(JSON.stringify(option));
+      nextTick(() => (isChangeTemplate.value = false));
+    };
 
     onMounted(async () => {
-      const { templates: importStuffTemplates } = await store.dispatch(
-        "importStuffTemplates"
-      );
+      const importStuffTemplates = await store.dispatch("importStuffTemplates");
       importStuffTemplates.map((template) => {
+        template.addOrUpdateFields = {
+          selected: addOrUpdateFields.searchOptionByValue(template.mode),
+        };
         template.showTemplateName = false;
         template.value = Math.round(Math.random() * 100000);
-        template.selectedFields?.map((field) => (field.value = field.code));
+        template.selectedFields = template.fields;
+        template.compares = [];
+        template.selectedFields?.map((field) => {
+          if (
+            (field.name === "" && field.code === "") ||
+            (field.name === null && field.code === null)
+          ) {
+            field.name = "Не импортировать поле";
+            field.value = -1;
+            field.code = "not to import";
+          } else {
+            field.value = field.code;
+            if (field.add != undefined) {
+              field.listAdd = field.add;
+              field.isList = true;
+            }
+          }
+          template.compares.push(field.compare);
+        });
         templates.list.push(template);
       });
     });
@@ -187,11 +208,14 @@ export default {
     };
 
     const checkIsSavedTemplate = () => {
-      if (isSavedTemplate.value) {
+      if (isSavedTemplate.value && !isChangeTemplate.value) {
         templates.newTemplateName = templates.selected.name;
-        const fields = templates.selected.selectedFields;
+        const template = templates.selected;
         templates.selected = templates.list.find((item) => item.value == 1);
-        templates.selected.selectedFields = fields;
+        templates.selected.compares = [...template.compares];
+        templates.selected.selectedFields = [...template.selectedFields];
+        templates.selected.addOrUpdateFields.selected =
+          template.addOrUpdateFields.selected;
       }
     };
 
@@ -208,13 +232,13 @@ export default {
         const item = {
           name: field.name,
           code: field.code,
-          copare: templates.selected.compares[idx] ? true : false,
+          compare: templates.selected.compares[idx] ? true : false,
         };
         if (field.isList) item["add"] = field.listAdd;
         if (field.value !== -1) {
           selectedFields.push(item);
         } else {
-          selectedFields.push({});
+          selectedFields.push({ name: "", code: "" });
         }
       });
       const params = {
@@ -227,7 +251,8 @@ export default {
           ? templates.newTemplateName
           : templates.selected.name;
       if (isAnyCompares.value)
-        params["addOrUpdateFields"] = addOrUpdateFields.selected.value;
+        params["addOrUpdateFields"] =
+          templates.selected.addOrUpdateFields.selected.value;
       store.dispatch("importStart", params);
       close();
     };
@@ -235,22 +260,35 @@ export default {
     const isAnyCompares = computed(() =>
       templates.selected.compares.some((val) => val)
     );
-    watch(isAnyCompares, checkIsSavedTemplate);
+    watch(templates.selected.compares, checkIsSavedTemplate);
+
+    const listAddList = computed(() => {
+      const arr = [];
+      templates.selected.selectedFields.forEach((field) =>
+        arr.push(field.listAdd)
+      );
+      return arr;
+    });
+    watch(listAddList, checkIsSavedTemplate);
 
     const addOrUpdateFields = reactive({
-      selected: { name: "только добавлять", value: "add" },
       list: [
         { name: "только добавлять", value: "add" },
         { name: "только обновлять", value: "update" },
         { name: "добавлять и обновлять", value: "add_update" },
       ],
-      select: (option) => (addOrUpdateFields.selected = option),
+      select: (option) => (
+        (templates.selected.addOrUpdateFields.selected = option),
+        checkIsSavedTemplate()
+      ),
+      searchOptionByValue: (value) =>
+        addOrUpdateFields.list.find((el) => el.value == value),
     });
 
     return {
       gridCount,
       templates,
-      selectTempate,
+      selectTemplate,
       close,
       toggleShowOptions,
       gridRef,
