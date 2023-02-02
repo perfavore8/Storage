@@ -125,19 +125,19 @@ export default {
           compares: [],
           selectedFields: [],
         },
-        {
-          name: "Шаблон 1",
-          value: 2,
-          showTemplateName: false,
-          compares: [],
-          selectedFields: [
-            { name: "Не импортировать поле", value: -1, code: "not to import" },
-            { name: "Не импортировать поле", value: -1, code: "not to import" },
-            { name: "Не импортировать поле", value: -1, code: "not to import" },
-            { name: "Не импортировать поле", value: -1, code: "not to import" },
-            { name: "Не импортировать поле", value: -1, code: "not to import" },
-          ],
-        },
+        // {
+        //   name: "Шаблон 1",
+        //   value: 2,
+        //   showTemplateName: false,
+        //   compares: [],
+        //   selectedFields: [
+        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
+        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
+        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
+        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
+        //     { name: "Не импортировать поле", value: -1, code: "not to import" },
+        //   ],
+        // },
       ],
     });
 
