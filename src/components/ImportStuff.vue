@@ -50,7 +50,7 @@
             @toggleShowOptions="toggleShowOptions"
             @select="(option) => selectStuffField(option, i - 1)"
           />
-          <template v-if="selectedFields[i - 1].value !== -1">
+          <template v-if="selectedFields[i - 1]?.value !== -1">
             <input
               type="checkbox"
               class="checkbox"
@@ -60,7 +60,7 @@
             />
             <label :for="'ImportStuffCompares' + i"> Сравнивать поле </label>
           </template>
-          <template v-if="selectedFields[i - 1].isList">
+          <template v-if="selectedFields[i - 1]?.isList">
             <input
               type="checkbox"
               class="checkbox"
@@ -190,6 +190,15 @@ export default {
           }
           template.compares.push(field.compare);
         });
+        const count = gridCount - template.selectedFields.length;
+        if (count > 0) {
+          for (let i = 0; i < count; i++)
+            template.selectedFields.push({
+              name: "Не импортировать поле",
+              value: -1,
+              code: "not to import",
+            });
+        }
         templates.list.push(template);
       });
     });
