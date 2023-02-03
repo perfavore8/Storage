@@ -252,14 +252,12 @@ export default {
         isNewTemplate:
           templates.selected.value == 1 && templates.newTemplateName !== "",
         selectedFields: selectedFields,
+        addOrUpdateFields: templates.selected.addOrUpdateFields.selected.value,
       };
       if (templates.selected.value !== 0 && templates.newTemplateName !== "")
         params["templateName"] = templates.newTemplateName
           ? templates.newTemplateName
           : templates.selected.name;
-      if (isAnyCompares.value)
-        params["addOrUpdateFields"] =
-          templates.selected.addOrUpdateFields.selected.value;
       store.dispatch("importStart", params);
       close();
     };
