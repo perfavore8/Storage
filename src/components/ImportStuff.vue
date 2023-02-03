@@ -76,7 +76,11 @@
       </div>
     </main>
     <footer class="footer">
-      <BtnsSaveClose @close="close" @save="save" />
+      <BtnsSaveClose
+        @close="close"
+        @save="save"
+        :disabledSave="noOneSelectedFields"
+      />
     </footer>
   </div>
 </template>
@@ -141,6 +145,9 @@ export default {
     );
 
     const selectedFields = computed(() => templates.selected.selectedFields);
+    const noOneSelectedFields = computed(() =>
+      selectedFields.value.every((el) => el.value === -1)
+    );
 
     templates.selected = templates.list[0];
     templates.list.find((item) => item.value == 1).selectedFields =
@@ -291,6 +298,7 @@ export default {
       addOrUpdateFields,
       checkIsSavedTemplate,
       selectedFields,
+      noOneSelectedFields,
     };
   },
 };
@@ -381,6 +389,8 @@ export default {
         padding: 12px 16px;
         border: 1px solid #c9c9c9;
         text-align: left;
+        display: flex;
+        flex-direction: column;
         > .v-select {
           min-width: 100px;
           width: fit-content;
