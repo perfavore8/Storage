@@ -61,6 +61,7 @@
               class="checkbox"
               :id="'ImportStuffCompares' + i"
               v-model="templates.selected.compares[i - 1]"
+              @change="checkIsSavedTemplate()"
             />
             <label :for="'ImportStuffCompares' + i"> Сравнивать поле </label>
           </template>
@@ -70,6 +71,7 @@
               class="checkbox"
               :id="'ImportStuffListAdd' + i"
               v-model="templates.selected.selectedFields[i - 1].listAdd"
+              @change="checkIsSavedTemplate()"
             />
             <label :for="'ImportStuffListAdd' + i">
               Добавлять новые значения
@@ -260,16 +262,6 @@ export default {
     const isAnyCompares = computed(() =>
       templates.selected.compares.some((val) => val)
     );
-    watch(templates.selected.compares, checkIsSavedTemplate);
-
-    const listAddList = computed(() => {
-      const arr = [];
-      templates.selected.selectedFields.forEach((field) =>
-        arr.push(field.listAdd)
-      );
-      return arr;
-    });
-    watch(listAddList, checkIsSavedTemplate);
 
     const addOrUpdateFields = reactive({
       list: [
@@ -299,6 +291,7 @@ export default {
       save,
       isAnyCompares,
       addOrUpdateFields,
+      checkIsSavedTemplate,
     };
   },
 };
