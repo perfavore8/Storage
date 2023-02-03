@@ -17,7 +17,7 @@
       </transition>
     </div>
 
-    <div class="ref" v-if="isTest">
+    <div class="ref">
       <button
         class="ref_2_logo btn"
         @click="openImportXlsl()"
