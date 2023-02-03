@@ -20,6 +20,7 @@
             type="text"
             v-model="templates.newTemplateName"
             v-if="templates.selected.showTemplateName"
+            title="Чтобы не сохранять шаблон оставте поле пустым"
           />
         </div>
         <div class="compare" v-if="isAnyCompares">
@@ -245,10 +246,11 @@ export default {
       });
       const params = {
         file: importStuff.value.file,
-        isNewTemplate: templates.selected.value == 1,
+        isNewTemplate:
+          templates.selected.value == 1 && templates.newTemplateName !== "",
         selectedFields: selectedFields,
       };
-      if (templates.selected.value !== 0)
+      if (templates.selected.value !== 0 && templates.newTemplateName !== "")
         params["templateName"] = templates.newTemplateName
           ? templates.newTemplateName
           : templates.selected.name;
@@ -351,6 +353,7 @@ export default {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      gap: 16px;
       .template {
         display: flex;
         flex-direction: row;
