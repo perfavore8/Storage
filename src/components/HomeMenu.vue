@@ -172,7 +172,8 @@ export default {
       const payload = new FormData();
       payload.append("file", file);
       payload.append("name", file.name);
-      await store.dispatch("importStuff", payload);
+      const res = await store.dispatch("importStuff", payload);
+      if (res.error) alert(res.error);
       store.commit("openCloseImportStuff", true);
       closeImportXlsl();
     };
