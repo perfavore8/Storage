@@ -1,6 +1,11 @@
 <template>
   <div class="filters">
-    <div class="item" v-for="(filter, idx) in filtersValue" :key="idx">
+    <div
+      class="item"
+      :class="{ item_wide: filter.type == 14 }"
+      v-for="(filter, idx) in filtersValue"
+      :key="idx"
+    >
       <div class="title">
         {{ filter.name }}
       </div>
@@ -47,10 +52,21 @@
         :list="filter.selector_options"
         :countLettersReq="filter.minLength"
         @changeInputValue="(value) => changeInputValue(value, filter)"
-        @select="(item) => selectField(item, filter.name)"
+        @select="(item) => selectField(item, filter)"
         @focusin="filter.inFocus = true"
         @focusout="filter.inFocus = false"
       />
+      <div class="selected" v-if="filter.value.length">
+        <div
+          v-for="(item, idx) in filter.value"
+          :key="item.value"
+          class="item"
+          @click="deleteField(filter, idx)"
+        >
+          {{ item.value }}
+          <div class="icon" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -141,17 +157,13 @@ export default {
         }
       }
     };
-    const selectField = (item, field) => {
-      this.fields.forEach((val) => {
-        if (
-          val.name === field &&
-          !val.selected.filter((val) => val.value == item.value).length
-        )
-          val.selected.push(item);
-      });
+    const selectField = (item, filter) => {
+      filter.value.push(item);
     };
 
-    return { filtersValue, changeInputValue, selectField };
+    const deleteField = (filter, idx) => filter.value.splice(idx, 1);
+
+    return { filtersValue, changeInputValue, selectField, deleteField };
   },
 };
 </script>
@@ -180,12 +192,44 @@ export default {
     background-color: #fff;
     gap: 10px;
     max-width: 200px;
+    &_wide {
+      max-width: 400px;
+    }
     .title {
       @include font(500, 16px, 19px);
     }
     .input-select {
       margin: 0 auto;
       width: 80%;
+    }
+  }
+}
+.selected {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 5px;
+  span {
+    @include font(700, 16px);
+  }
+  .item {
+    cursor: pointer;
+    @include font(400, 12px);
+    color: white;
+    background-color: #6c757d;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    width: min-content;
+    white-space: nowrap;
+
+    .icon {
+      height: 6px;
+      width: 6px;
+      @include bg_image("@/assets/cross.svg", 100%);
     }
   }
 }
