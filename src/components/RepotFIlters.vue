@@ -58,10 +58,8 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
       selected_field_autocomplete: null,
       selected_field_autocomplete_list: [],
-      autocompletePlaceholderList: ["...", "...", "...", "..."],
       dateStart: "",
       dateEnd: "",
       fields: [

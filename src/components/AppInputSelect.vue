@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="input-select">
     <input
       type="text"
       class="input"
@@ -99,7 +99,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
-.wrapper {
+.input-select {
   position: relative;
   .backdrop {
     position: fixed;
