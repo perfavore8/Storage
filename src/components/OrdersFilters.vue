@@ -158,7 +158,8 @@ export default {
       }
     };
     const selectField = (item, filter) => {
-      filter.value.push(item);
+      if (!filter.value.some((el) => el.value == item.value))
+        filter.value.push(item);
     };
 
     const deleteField = (filter, idx) => filter.value.splice(idx, 1);
@@ -185,13 +186,13 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    flex-grow: 1;
     border: 1px solid #c9c9c9;
     border-radius: 5px;
     padding: 10px 0;
     background-color: #fff;
     gap: 10px;
     max-width: 200px;
+    padding: 8px 16px;
     &_wide {
       max-width: 400px;
     }
