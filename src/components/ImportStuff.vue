@@ -8,6 +8,9 @@
       <button class="btn cross" @click="close()"></button>
     </header>
     <main class="main">
+      <small class="small">
+        Максимальное количество товаров в файле: {{ max_import_product }}
+      </small>
       <div class="top">
         <div class="template">
           <SelectorVue
@@ -289,6 +292,10 @@ export default {
         addOrUpdateFields.list.find((el) => el.value == value),
     });
 
+    const max_import_product = computed(
+      () => store.state.account?.account?.max_import_product
+    );
+
     return {
       gridCount,
       templates,
@@ -306,6 +313,7 @@ export default {
       checkIsSavedTemplate,
       selectedFields,
       noOneSelectedFields,
+      max_import_product,
     };
   },
 };
@@ -361,6 +369,9 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    .small {
+      @include font(300, 14px);
+    }
     .top {
       display: flex;
       flex-direction: row;
