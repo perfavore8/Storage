@@ -46,17 +46,11 @@
         <div class="item" v-for="i in gridCount" :key="i">
           <ImportStuffSelector
             :options_props="importStuffFields"
-            :selected_option="
-              templates.selected.selectedFields
-                ? templates.selected.selectedFields[i - 1]
-                : {}
-            "
+            :selected_option="selectedFields ? selectedFields[i - 1] : {}"
             @toggleShowOptions="toggleShowOptions"
             @select="(option) => selectStuffField(option, i - 1)"
           />
-          <template
-            v-if="templates.selected.selectedFields[i - 1].value !== -1"
-          >
+          <template v-if="selectedFields[i - 1].value !== -1">
             <input
               type="checkbox"
               class="checkbox"
@@ -66,12 +60,12 @@
             />
             <label :for="'ImportStuffCompares' + i"> Сравнивать поле </label>
           </template>
-          <template v-if="templates.selected.selectedFields[i - 1].isList">
+          <template v-if="selectedFields[i - 1].isList">
             <input
               type="checkbox"
               class="checkbox"
               :id="'ImportStuffListAdd' + i"
-              v-model="templates.selected.selectedFields[i - 1].listAdd"
+              v-model="selectedFields[i - 1].listAdd"
               @change="checkIsSavedTemplate()"
             />
             <label :for="'ImportStuffListAdd' + i">
@@ -113,7 +107,7 @@ export default {
         compares: [],
         selectedFields: [],
         addOrUpdateFields: {
-          selected: { name: "только добавлять", value: "add" },
+          selected: { name: "Только добавлять", value: "add" },
         },
       },
       list: [
@@ -124,7 +118,7 @@ export default {
           compares: [],
           selectedFields: [],
           addOrUpdateFields: {
-            selected: { name: "только добавлять", value: "add" },
+            selected: { name: "Только добавлять", value: "add" },
           },
         },
         {
@@ -134,7 +128,7 @@ export default {
           compares: [],
           selectedFields: [],
           addOrUpdateFields: {
-            selected: { name: "только добавлять", value: "add" },
+            selected: { name: "Только добавлять", value: "add" },
           },
         },
       ],
@@ -145,6 +139,8 @@ export default {
         ? null
         : (templates.newTemplateName = "")
     );
+
+    const selectedFields = computed(() => templates.selected.selectedFields);
 
     templates.selected = templates.list[0];
     templates.list.find((item) => item.value == 1).selectedFields =
@@ -267,9 +263,9 @@ export default {
 
     const addOrUpdateFields = reactive({
       list: [
-        { name: "только добавлять", value: "add" },
-        { name: "только обновлять", value: "update" },
-        { name: "добавлять и обновлять", value: "add_update" },
+        { name: "Только добавлять", value: "add" },
+        { name: "Только обновлять", value: "update" },
+        { name: "Добавлять и обновлять", value: "add_update" },
       ],
       select: (option) => (
         (templates.selected.addOrUpdateFields.selected = option),
@@ -294,6 +290,7 @@ export default {
       isAnyCompares,
       addOrUpdateFields,
       checkIsSavedTemplate,
+      selectedFields,
     };
   },
 };
