@@ -4,7 +4,12 @@
       <slot name="close">Отмена</slot>
     </button>
     <slot name="other_btns"></slot>
-    <button class="btn btn_blue" @click="save()" v-if="show_save">
+    <button
+      class="btn btn_blue"
+      @click="save()"
+      v-if="show_save"
+      :disabled="disabledSave"
+    >
       <slot name="save">Сохранить</slot>
     </button>
   </div>
@@ -25,6 +30,13 @@ export default {
       required: false,
       default() {
         return true;
+      },
+    },
+    disabledSave: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
       },
     },
   },
