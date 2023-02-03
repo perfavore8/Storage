@@ -152,6 +152,8 @@ export default {
       this.fields[idx1].selected.splice(idx2, 1);
     },
     clearAllFields() {
+      this.dateStart = "";
+      this.dateEnd = "";
       this.fields.map((val) => (val.selected = []));
       this.apply();
     },
