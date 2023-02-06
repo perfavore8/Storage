@@ -1,53 +1,53 @@
 <template>
-  <div class="box">
-    <h1>Why are you here???</h1>
+  <div class="wrapper">
+    <div class="item"><ChartsBar /></div>
+    <div class="item"><ChartsBubble /></div>
+    <div class="item"><ChartsDoughnut /></div>
+    <div class="item"><ChartsLine /></div>
+    <div class="item"><ChartsPie /></div>
+    <div class="item"><ChartsPolarArea /></div>
+    <div class="item"><ChartsRadar /></div>
+    <div class="item"><ChartsScatter /></div>
   </div>
 </template>
 
 <script>
+import ChartsBar from "@/components/Charts/ChartsBar.vue";
+import ChartsBubble from "@/components/Charts/ChartsBubble.vue";
+import ChartsDoughnut from "@/components/Charts/ChartsDoughnut.vue";
+import ChartsLine from "@/components/Charts/ChartsLine.vue";
+import ChartsPie from "@/components/Charts/ChartsPie.vue";
+import ChartsPolarArea from "@/components/Charts/ChartsPolarArea.vue";
+import ChartsRadar from "@/components/Charts/ChartsRadar.vue";
+import ChartsScatter from "@/components/Charts/ChartsScatter.vue";
 export default {
-  data() {
-    return {
-      i: 0,
-      interval: null,
-    };
-  },
-
-  mounted() {
-    this.interval = setInterval(() => {
-      this.i == 359 ? (this.i = 0) : this.i++;
-    }, 15);
-  },
-  unmounted() {
-    clearInterval(this.interval);
-  },
-
-  computed: {
-    color() {
-      return `hsl(${this.i}, 100%, 50%)`;
-    },
-    colorNext() {
-      const j = this.i + 180;
-      return `hsl(${j}, 100%, 50%)`;
-    },
-    fontSize() {
-      return (this.i + 40) / 6.5 + "px";
-    },
+  components: {
+    ChartsBar,
+    ChartsBubble,
+    ChartsDoughnut,
+    ChartsLine,
+    ChartsPie,
+    ChartsPolarArea,
+    ChartsRadar,
+    ChartsScatter,
   },
 };
 </script>
 
-<style lang="scss">
-@import "@/app.scss";
-.box {
-  width: 100vw;
-  height: 100vh;
+<style lang="scss" scoped>
+.wrapper {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
-  background-color: v-bind(color);
-  color: v-bind(colorNext);
-  @include font(700, v-bind(fontSize));
-  transition: font-size 0.1s ease-in;
+  gap: 10%;
+  .item {
+    max-width: 80%;
+    min-width: 34vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 60px;
+  }
 }
 </style>
