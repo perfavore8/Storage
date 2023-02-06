@@ -7,8 +7,26 @@
   background-image: url($url);
 }
 
-@mixin _600 {
-  @media (max-width: 600px) {
+@mixin _mobile {
+  @media (max-width: 641px) {
+    @content;
+  }
+}
+@mixin _tablet {
+  @media (max-width: 769px) {
+    @content;
+  }
+}
+@mixin _laptop {
+  @media (max-width: 1281px) {
+    @content;
+  }
+}
+@mixin _2k {
+  @media (min-width: 2501px) {
+    @content;
+  }
+  @media (min-height: 1401px) {
     @content;
   }
 }
