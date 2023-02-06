@@ -12,14 +12,12 @@
         <button class="btn btn_pink smallBtn" @click="openCancelPosition()">
           Списать
         </button>
-        <template v-if="isTest">
-          <button
-            class="btn btn_light_yellow smallBtn"
-            @click="openMoveProductsBetweenWhs()"
-          >
-            Перемещение
-          </button>
-        </template>
+        <button
+          class="btn btn_light_yellow smallBtn"
+          @click="openMoveProductsBetweenWhs()"
+        >
+          Перемещение
+        </button>
       </template>
       <button class="btn btn_grey smallBtn" @click="archive_data()">
         Архивировать
