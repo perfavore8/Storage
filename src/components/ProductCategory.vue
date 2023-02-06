@@ -215,9 +215,9 @@ export default {
       Object.assign(this.all_old, list);
     },
     add_new() {
-      const parent = this.copy_fields_properties.filter(
+      const parent = this.copy_fields_properties.find(
         (val) => val.id === this.selected_category_id
-      )[0];
+      );
       if (parent.level + 1 <= 10 && this.fields_cat_name != "") {
         this.$store.dispatch("add_fields_properties", {
           name: this.fields_cat_name,
@@ -227,9 +227,9 @@ export default {
       }
     },
     async rename(id) {
-      const item = [...this.copy_fields_properties].filter(
+      const item = [...this.copy_fields_properties].find(
         (val) => val.id === id
-      )[0];
+      );
       const params = {
         id: item.id,
         parent_id: "",
