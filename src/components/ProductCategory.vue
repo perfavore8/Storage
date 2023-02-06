@@ -27,21 +27,25 @@
               />
             </teleport>
             <teleport :to="target" v-if="target !== null">
-              <div @focusout="reset_fields_cat_name()">
+              <div
+                class="backdrop"
+                @click.stop="reset_fields_cat_name()"
+                style="z-index: 99"
+              />
+              <div
+                class="add_teleport"
+                style="z-index: 100"
+                title="Добавлние новой подкатегории"
+              >
                 <input
                   type="text"
                   class="input_teleport"
                   v-model="fields_cat_name"
                   ref="input"
-                  @keyup.enter="add_new(fields_cat_name, item)"
+                  @keyup.enter="add_new()"
                   @keyup.esc="reset_fields_cat_name()"
                 />
-                <button
-                  class="button_teleport"
-                  @click="add_new(fields_cat_name, item)"
-                >
-                  ок
-                </button>
+                <button class="button_teleport" @click="add_new()">ок</button>
               </div>
             </teleport>
           </div>
@@ -119,7 +123,9 @@
                     (el) =>
                       item.id === selected_category_id ? (target = el) : null
                   "
-                  title="Добавлние новой подкатегории"
+                  :title="
+                    target === null ? 'Добавлние новой подкатегории' : null
+                  "
                 >
                   <div class="add btn"></div>
                 </button>
@@ -256,11 +262,9 @@ export default {
       });
     },
     reset_fields_cat_name() {
-      setTimeout(() => {
-        this.selected_category_id = null;
-        this.fields_cat_name = "";
-        this.target = null;
-      }, 100);
+      this.selected_category_id = null;
+      this.fields_cat_name = "";
+      this.target = null;
     },
     calculate_width(level) {
       let width = 100;
@@ -378,50 +382,52 @@ export default {
             outline: none;
             position: relative;
             cursor: pointer;
-            .input_teleport {
-              z-index: 2;
-              box-sizing: border-box;
+            .add_teleport {
               position: absolute;
               top: 90%;
-              left: -59px;
-              width: 100px;
-              border-radius: 0.25rem;
-              padding: 4px 8px;
-              padding-right: 34px;
-              background-color: white;
-              border: 1px solid #ced4da;
-              outline: none;
-              appearance: none;
-              transition: all 0.2s ease-in-out;
-              @include font(400, 16px, 20px);
-            }
-            .input_teleport:focus {
-              color: #212529;
-              background-color: white;
-              border-color: #86b7fe;
-              box-shadow: 0 0 0 1px rgb(13 110 253 / 25%);
-            }
-            .button_teleport {
-              z-index: 2;
-              cursor: pointer;
-              position: absolute;
-              top: calc(90% + 1px);
-              right: 0;
-              border: none;
-              border-left: 1px solid rgba(0, 0, 0, 0.125);
-              border-radius: 0 0.25rem 0.25rem 0;
-              outline: none;
-              width: 30px;
-              height: 28px;
-              padding: 0;
-              background-color: transparent;
+              left: -150%;
               display: flex;
-              justify-content: center;
+              flex-direction: row;
               align-items: center;
-              @include font(400, 16px);
-            }
-            .button_teleport:active {
-              background-color: rgba(0, 0, 0, 0.125);
+              justify-content: center;
+              height: 30px;
+              .input_teleport {
+                box-sizing: border-box;
+                width: 100px;
+                height: 100%;
+                border-radius: 0.25rem 0 0 0.25rem;
+                padding: 4px 8px;
+                background-color: white;
+                border: 1px solid #ced4da;
+                outline: none;
+                appearance: none;
+                transition: all 0.2s ease-in-out;
+                @include font(400, 16px, 20px);
+              }
+              .input_teleport:focus {
+                color: #212529;
+                background-color: white;
+                border-color: #86b7fe;
+                box-shadow: 0 0 0 1px rgb(13 110 253 / 25%);
+              }
+              .button_teleport {
+                cursor: pointer;
+                border: 1px solid #ced4da;
+                border-left: none;
+                border-radius: 0 0.25rem 0.25rem 0;
+                outline: none;
+                width: 30px;
+                height: 100%;
+                padding: 0;
+                background-color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                @include font(400, 16px);
+              }
+              .button_teleport:active {
+                background-color: rgba(0, 0, 0, 0.125);
+              }
             }
           }
           .btn {
@@ -534,5 +540,14 @@ export default {
   border-radius: 6px;
   box-sizing: border-box;
   @include font(400, 16px, 20px);
+}
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  background-color: transparent;
 }
 </style>
