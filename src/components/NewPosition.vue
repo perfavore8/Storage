@@ -750,6 +750,13 @@ export default {
         }
         if (params.products.length) {
           params.products.map((val) => {
+            let oldCount = this.copyCurrentItems.filter(
+              (value) => value.fields.name == val.fields.name
+            )[0].fields[
+              this.new_items.filter((value) => value.name == val.fields.name)[0]
+                .wh.value
+            ]?.count;
+            oldCount ? null : (oldCount = 0);
             val.fields[
               this.new_items.filter(
                 (value) => value.name == val.fields.name
@@ -758,14 +765,7 @@ export default {
               count:
                 this.new_items.filter(
                   (value) => value.name == val.fields.name
-                )[0].count +
-                this.copyCurrentItems.filter(
-                  (value) => value.fields.name == val.fields.name
-                )[0].fields[
-                  this.new_items.filter(
-                    (value) => value.name == val.fields.name
-                  )[0].wh.value
-                ].count,
+                )[0].count + oldCount,
               reserve: 0,
             };
           });
