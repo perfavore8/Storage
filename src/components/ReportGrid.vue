@@ -2,6 +2,7 @@
   <div class="top">
     <p class="count">Найдено: {{ reportsData.total }}</p>
     <button
+      v-if="isTest"
       class="btn small_btn btn_light_dark_blue"
       @click="toggleReportChart()"
     >
@@ -123,6 +124,9 @@ export default {
     this.copy();
   },
   computed: {
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
+    },
     accountSubdomain() {
       return this.$store.state.account.account.subdomain;
     },
