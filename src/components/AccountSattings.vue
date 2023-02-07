@@ -41,13 +41,17 @@ export default {
     });
 
     const divideRight = ref(false);
-    onMounted(() => {
-      if (account.value?.config?.divideRight)
-        divideRight.value = account.value?.config?.divideRight;
+    onMounted(async () => {
+      await store.dispatch("get_account");
+      if (account.value?.config?.divide_right !== undefined)
+        divideRight.value = Boolean(account.value?.config?.divide_right);
     });
 
-    const save = () => {
-      store.dispatch("update_account", { divideRight: divideRight.value });
+    const save = async () => {
+      await store.dispatch("update_account", {
+        divide_right: divideRight.value,
+      });
+      await store.dispatch("get_account");
       close();
     };
 
