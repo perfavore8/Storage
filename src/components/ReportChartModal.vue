@@ -1,9 +1,16 @@
 <template>
   <teleport to="body">
     <div class="wrapper">
-      <div class="backdrop" />
+      <div class="backdrop" @click="close()" />
       <div class="container">
-        <ChartsDoughnut :propsData="ChartsDoughnut" />
+        <ChartsDoughnut
+          :propsData="ChartsDoughnutMoney"
+          :title="ChartsDoughnutMoney.name"
+        />
+        <ChartsDoughnut
+          :propsData="ChartsDoughnutCompanies"
+          :title="ChartsDoughnutCompanies.name"
+        />
       </div>
     </div>
   </teleport>
@@ -19,15 +26,15 @@ export default {
     reportsData: Object,
     total: Object,
   },
-  setup(props) {
+  setup(props, context) {
     const { getRandomColor } = useColor();
 
-    const ChartsDoughnut = reactive({
+    const ChartsDoughnutMoney = reactive({
       title: [
         { code: "sum", name: "Оборот" },
-        { code: "cost_sum", name: "Себестоимость" },
         { code: "prib", name: "Прибыль" },
       ],
+      name: "Отчет по деньгам",
       labels: [],
       datasets: [
         {
@@ -36,19 +43,53 @@ export default {
         },
       ],
       fillData: () => {
-        ChartsDoughnut.title.forEach((val) => {
-          ChartsDoughnut.labels.push(val.name);
-          ChartsDoughnut.datasets[0].data.push(
+        ChartsDoughnutMoney.title.forEach((val) => {
+          ChartsDoughnutMoney.labels.push(val.name);
+          ChartsDoughnutMoney.datasets[0].data.push(
             Number(props.total[val.code].split(" ")[0])
           );
-          ChartsDoughnut.datasets[0].backgroundColor.push(getRandomColor());
+          ChartsDoughnutMoney.datasets[0].backgroundColor.push(
+            getRandomColor()
+          );
         });
       },
     });
 
-    ChartsDoughnut.fillData();
+    ChartsDoughnutMoney.fillData();
 
-    return { ChartsDoughnut };
+    const ChartsDoughnutCompanies = reactive({
+      dataCode: [
+        { code: "sum", name: "Оборот", color: "" },
+        { code: "prib", name: "Прибыль", color: "" },
+      ],
+      titleCode: "company",
+      name: "Отчет по клиентам",
+      labels: [],
+      datasets: [],
+      fillData: () => {
+        ChartsDoughnutCompanies.dataCode.map((val) => {
+          val.color = getRandomColor();
+          ChartsDoughnutCompanies.labels.push(val.name);
+        });
+        props.reportsData.data.forEach((val) => {
+          const dataset = {
+            label: val[ChartsDoughnutCompanies.titleCode],
+            backgroundColor: [],
+            data: [],
+          };
+          ChartsDoughnutCompanies.dataCode.forEach((code) => {
+            dataset.data.push(val[code.code].split(" ")[0]);
+            dataset.backgroundColor.push(code.color);
+          });
+          ChartsDoughnutCompanies.datasets.push(dataset);
+        });
+      },
+    });
+    ChartsDoughnutCompanies.fillData();
+
+    const close = () => context.emit("close");
+
+    return { ChartsDoughnutMoney, ChartsDoughnutCompanies, close };
   },
 };
 </script>
@@ -74,12 +115,19 @@ export default {
     bottom: 0;
     left: 0;
     background-color: transparent;
+    backdrop-filter: blur(4px);
     z-index: 49;
   }
   .container {
+    display: flex;
+    flex-direction: row;
     background-color: #fff;
     z-index: 50;
     white-space: pre;
+    padding: 40px;
+    padding-bottom: 80px;
+    border: 1px solid #aeaeae;
+    border-radius: 8px;
   }
 }
 </style>

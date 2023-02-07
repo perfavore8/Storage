@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper4">
-    <h3>ChartsLine</h3>
+    <h3>{{ title }}</h3>
     <Line :data="data" :options="options" />
   </div>
 </template>
@@ -33,30 +33,27 @@ export default {
   components: {
     Line,
   },
-  setup() {
+  props: {
+    propsData: Object,
+    animations: { type: Object, required: false },
+    title: {
+      type: String,
+      required: false,
+      default: () => {
+        return "ChartsLine";
+      },
+    },
+  },
+  setup(props) {
     const data = reactive({
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [
-        {
-          label: "Data One",
-          backgroundColor: "#f87979",
-          data: [40, 39, 10, 40, 39, 80, 40],
-        },
-      ],
+      labels: props.propsData?.labels,
+      datasets: props.propsData?.datasets,
     });
 
     const options = reactive({
       responsive: true,
       maintainAspectRatio: false,
-      animations: {
-        tension: {
-          duration: 1000,
-          easing: "linear",
-          from: 0.5,
-          to: 0.2,
-          loop: true,
-        },
-      },
+      animations: props.animations,
       scales: {
         y: {
           // defining min and max so hiding the dataset does not change scale range
