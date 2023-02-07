@@ -35,7 +35,7 @@ export default {
   },
   props: {
     propsData: Object,
-    animations: { type: Object, required: false },
+    propsOptions: { type: Object, required: false },
     title: {
       type: String,
       required: false,
@@ -53,7 +53,6 @@ export default {
     const options = reactive({
       responsive: true,
       maintainAspectRatio: false,
-      animations: props.animations,
       scales: {
         y: {
           // defining min and max so hiding the dataset does not change scale range
@@ -62,6 +61,8 @@ export default {
         },
       },
     });
+
+    Object.assign(options, props.propsOptions);
 
     return { data, options };
   },
@@ -76,5 +77,6 @@ export default {
   align-items: center;
   width: 100%;
   max-height: 80%;
+  max-height: 400px;
 }
 </style>

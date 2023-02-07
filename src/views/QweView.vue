@@ -4,7 +4,7 @@
     <div class="item"><ChartsBubble /></div>
     <div class="item"><ChartsDoughnut :propsData="dataDoughnut" /></div>
     <div class="item">
-      <ChartsLine :propsData="dataLine" :animations="dataLine.animations" />
+      <ChartsLine :propsData="dataLine" :propsOptions="dataLine.options" />
     </div>
     <div class="item"><ChartsPie /></div>
     <div class="item"><ChartsPolarArea /></div>
@@ -54,13 +54,15 @@ export default {
           data: [40, 39, 10, 40, 39, 80, 40],
         },
       ],
-      animations: {
-        tension: {
-          duration: 1000,
-          easing: "linear",
-          from: 0.5,
-          to: 0.2,
-          loop: true,
+      options: {
+        animations: {
+          tension: {
+            duration: 1000,
+            easing: "linear",
+            from: 0.5,
+            to: 0.2,
+            loop: true,
+          },
         },
       },
     });
