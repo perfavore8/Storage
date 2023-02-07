@@ -125,7 +125,10 @@ export default {
   },
   computed: {
     isTest() {
-      return this.$store.state.account?.account?.id == 1;
+      return (
+        this.$store.state.account?.account?.id == 1 ||
+        this.$route.query.test === "salesUp"
+      );
     },
     accountSubdomain() {
       return this.$store.state.account.account.subdomain;
