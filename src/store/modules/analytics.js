@@ -143,6 +143,7 @@ export default {
       });
       const json = await res.json();
       context.commit("updateCustomersTotal", json);
+      return json;
     },
   },
 };
