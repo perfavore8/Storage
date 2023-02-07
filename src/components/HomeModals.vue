@@ -35,6 +35,11 @@
     </div>
   </transition>
   <transition name="modal_window">
+    <div v-if="showAccountSattings" class="AccountSattings">
+      <AccountSattings />
+    </div>
+  </transition>
+  <transition name="modal_window">
     <div v-if="show_new_position" class="new_position">
       <new-position :currentItems="currentItems" @close="updateProducts" />
     </div>
@@ -71,6 +76,7 @@ import ThirdPpartyIntegrations from "@/components/ThirdPpartyIntegrations.vue";
 import SyncSettings from "@/components/SyncSattings.vue";
 import MoveProductsBetweenWhs from "@/components/MoveProductsBetweenWhs.vue";
 import ImportStuff from "@/components/ImportStuff.vue";
+import AccountSattings from "@/components/AccountSattings.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -85,6 +91,7 @@ export default {
     SyncSettings,
     MoveProductsBetweenWhs,
     ImportStuff,
+    AccountSattings,
   },
   props: {
     selectedWH: Object,
@@ -102,6 +109,7 @@ export default {
       "show_product_category",
       "show_product_properties",
       "showThirdPpartyIntegrations",
+      "showAccountSattings",
       "showSyncSettings",
       "showEditPrice",
       "showMoveProductsBetweenWhs",

@@ -133,7 +133,9 @@
               </div>
             </a>
             <a>
-              <div class="modal_container">Настройки аккаунта</div>
+              <div class="modal_container" @click="openAccountSattings()">
+                Настройки аккаунта
+              </div>
             </a>
           </div>
         </template>
@@ -190,6 +192,8 @@ export default {
       store.commit("open_close_product_category", true);
     const openThirdPpartyIntegrations = () =>
       store.commit("openCloseThirdPpartyIntegrations", true);
+    const openAccountSattings = () =>
+      store.commit("openCloseAccountSattings", true);
     const openSyncSettings = () => store.commit("openCloseSyncSettings", true);
     const open_product_properties = () =>
       store.commit("open_close_product_properties", true);
@@ -213,6 +217,7 @@ export default {
       open_edit_stuff,
       open_product_category,
       openThirdPpartyIntegrations,
+      openAccountSattings,
       openSyncSettings,
       open_product_properties,
       open_close_document_setting,
