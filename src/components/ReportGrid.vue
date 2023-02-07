@@ -1,5 +1,13 @@
 <template>
-  <p class="count">Найдено: {{ reportsData.total }}</p>
+  <div class="top">
+    <p class="count">Найдено: {{ reportsData.total }}</p>
+    <button
+      class="btn small_btn btn_light_dark_blue"
+      @click="toggleReportChart()"
+    >
+      Сформировать отчет
+    </button>
+  </div>
   <table class="table" :class="{ blur: openSelectedReportModal || isLoading }">
     <thead>
       <tr class="row title">
@@ -83,12 +91,18 @@
       @close="closeReportGridModal"
     />
   </Teleport>
+  <ReportChartModal
+    v-if="showReportChartModal"
+    :reportsData="reportsData"
+    :total="total"
+  />
 </template>
 
 <script>
 import ReportGridModal from "./ReportGridModal.vue";
+import ReportChartModal from "./ReportChartModal.vue";
 export default {
-  components: { ReportGridModal },
+  components: { ReportGridModal, ReportChartModal },
   props: {
     title: { type: Array, required: true },
     reportsData: { type: Object, required: true },
@@ -101,6 +115,7 @@ export default {
       copyReports: [],
       count: 421,
       showTopTitle: true,
+      showReportChartModal: false,
     };
   },
   mounted() {
@@ -199,18 +214,28 @@ export default {
         (val) => (val[this.modalInTitle?.code].value = false)
       );
     },
+    toggleReportChart(val) {
+      val === undefined
+        ? (this.showReportChartModal = !this.showReportChartModal)
+        : (this.showReportChartModal = val);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/app.scss";
-.count {
-  color: #757575;
-  @include font(400, 16px);
-  margin: 0;
+.top {
   display: flex;
-  align-self: start;
+  flex-direction: row;
+  justify-content: space-between;
+  .count {
+    color: #757575;
+    @include font(400, 16px);
+    margin: 0;
+    display: flex;
+    align-self: start;
+  }
 }
 .table {
   @include font(400, 16px);
