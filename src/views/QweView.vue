@@ -3,7 +3,9 @@
     <div class="item"><ChartsBar /></div>
     <div class="item"><ChartsBubble /></div>
     <div class="item"><ChartsDoughnut :propsData="dataDoughnut" /></div>
-    <div class="item"><ChartsLine /></div>
+    <div class="item">
+      <ChartsLine :propsData="dataLine" :animations="dataLine.animations" />
+    </div>
     <div class="item"><ChartsPie /></div>
     <div class="item"><ChartsPolarArea /></div>
     <div class="item"><ChartsRadar /></div>
@@ -43,8 +45,27 @@ export default {
         },
       ],
     });
+    const dataLine = reactive({
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [
+        {
+          label: "Data One",
+          backgroundColor: "#f87979",
+          data: [40, 39, 10, 40, 39, 80, 40],
+        },
+      ],
+      animations: {
+        tension: {
+          duration: 1000,
+          easing: "linear",
+          from: 0.5,
+          to: 0.2,
+          loop: true,
+        },
+      },
+    });
 
-    return { dataDoughnut };
+    return { dataDoughnut, dataLine };
   },
 };
 </script>
