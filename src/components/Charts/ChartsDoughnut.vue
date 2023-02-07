@@ -1,5 +1,8 @@
 <template>
-  <Doughnut :data="data" :options="options" />
+  <div class="wrapper3">
+    <h3>{{ title }}</h3>
+    <Doughnut :data="data" :options="options" />
+  </div>
 </template>
 
 <script>
@@ -14,7 +17,16 @@ export default {
   components: {
     Doughnut,
   },
-  props: { propsData: Object },
+  props: {
+    propsData: Object,
+    title: {
+      type: String,
+      required: false,
+      default: () => {
+        return "ChartsDoughnut";
+      },
+    },
+  },
   setup(props) {
     const data = reactive({
       labels: props.propsData?.labels,
@@ -32,4 +44,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.wrapper3 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  max-height: 80%;
+  max-height: 400px;
+}
+</style>
