@@ -1,8 +1,5 @@
 <template>
-  <div class="wrapper3">
-    <h3>ChartsDoughnut</h3>
-    <Doughnut :data="data" :options="options" />
-  </div>
+  <Doughnut :data="data" :options="options" />
 </template>
 
 <script>
@@ -17,15 +14,11 @@ export default {
   components: {
     Doughnut,
   },
-  setup() {
+  props: { propsData: Object },
+  setup(props) {
     const data = reactive({
-      labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
-      datasets: [
-        {
-          backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
-          data: [40, 20, 80, 10],
-        },
-      ],
+      labels: props.propsData?.labels,
+      datasets: props.propsData?.datasets,
       hoverOffset: 16,
     });
 
@@ -39,13 +32,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.wrapper3 {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-  width: 100%;
-  max-height: 80%;
-}
-</style>
+<style lang="scss" scoped></style>
