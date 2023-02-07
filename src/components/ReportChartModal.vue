@@ -192,8 +192,8 @@ export default {
           tension: {
             duration: 1000,
             easing: "linear",
-            from: 0.2,
-            to: 0.5,
+            from: 0.5,
+            to: 0.2,
           },
         },
       },
