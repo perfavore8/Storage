@@ -132,7 +132,7 @@
                 Интеграции
               </div>
             </a>
-            <a>
+            <a v-if="isTest">
               <div class="modal_container" @click="openAccountSattings()">
                 Настройки аккаунта
               </div>
