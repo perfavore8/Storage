@@ -95,6 +95,7 @@
     v-if="showReportChartModal"
     :reportsData="reportsData"
     :total="total"
+    @close="toggleReportChart(false)"
   />
 </template>
 
