@@ -5,7 +5,7 @@
       :class="{ selected_catalog: $route.path === '/' + page.value }"
       @click="route(page.value)"
       v-for="page in catalog"
-      v-show="!(page.isTest && !isTest)"
+      v-show="!(page.isTest && !isTest) && !(page.isAdmin && !isAdmin)"
       :key="page"
     >
       {{ page.name }}
@@ -19,6 +19,11 @@ import store from "@/store";
 import router from "@/router";
 
 const isTest = computed(() => store.state.account?.account?.id == 1);
+const isAdmin = computed(() =>
+  store.state.account?.user?.isAdmin === undefined
+    ? true
+    : store.state.account?.user?.isAdmin
+);
 const catalog = computed(() => store.state.data.catalog);
 const route = (page_name) => router.push("/" + page_name);
 </script>
