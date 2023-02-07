@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="item"><ChartsBar /></div>
     <div class="item"><ChartsBubble /></div>
-    <div class="item"><ChartsDoughnut /></div>
+    <div class="item"><ChartsDoughnut :propsData="dataDoughnut" /></div>
     <div class="item"><ChartsLine /></div>
     <div class="item"><ChartsPie /></div>
     <div class="item"><ChartsPolarArea /></div>
@@ -20,6 +20,7 @@ import ChartsPie from "@/components/Charts/ChartsPie.vue";
 import ChartsPolarArea from "@/components/Charts/ChartsPolarArea.vue";
 import ChartsRadar from "@/components/Charts/ChartsRadar.vue";
 import ChartsScatter from "@/components/Charts/ChartsScatter.vue";
+import { reactive } from "@vue/reactivity";
 export default {
   components: {
     ChartsBar,
@@ -30,6 +31,20 @@ export default {
     ChartsPolarArea,
     ChartsRadar,
     ChartsScatter,
+  },
+
+  setup() {
+    const dataDoughnut = reactive({
+      labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
+      datasets: [
+        {
+          backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
+          data: [40, 20, 80, 10],
+        },
+      ],
+    });
+
+    return { dataDoughnut };
   },
 };
 </script>
