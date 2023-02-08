@@ -1,10 +1,10 @@
 <template>
   <div class="wrapper1">
-    <h3>ChartsBar</h3>
+    <h3>{{ title }}</h3>
     <Bar
       id="my-chart-id1"
-      :options="chartOptions"
-      :data="chartData"
+      :options="options"
+      :data="data"
       style="position: relative"
     />
   </div>
@@ -21,7 +21,6 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import { reactive } from "@vue/reactivity";
 
 ChartJS.register(
   Title,
@@ -37,29 +36,18 @@ export default {
   components: {
     Bar,
   },
-
-  setup() {
-    const chartData = reactive({
-      labels: ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s"],
-      datasets: [
-        {
-          label: "Data One",
-          data: [40, 20, 10, 82, 73, 27, 23, 17, 52, 12, 54, 64, 56],
-          fill: false,
-          backgroundColor: "rgb(75, 192, 192)",
-        },
-      ],
-    });
-    const chartOptions = reactive({
-      responsive: true,
-      plugins: {
-        customCanvasBackgroundColor: {
-          color: "lightGreen",
-        },
+  props: {
+    data: { type: Object, required: true },
+    options: { type: Object, required: true },
+    title: {
+      type: String,
+      required: false,
+      default() {
+        return "ChartsBar";
       },
-    });
-    return { chartData, chartOptions };
+    },
   },
+  setup() {},
 };
 </script>
 

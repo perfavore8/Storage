@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper">
-    <div class="item"><ChartsBar /></div>
+    <div class="item">
+      <ChartsBar :data="bar.data" :options="bar.options" />
+    </div>
     <div class="item"><ChartsBubble /></div>
     <div class="item"><ChartsDoughnut :propsData="dataDoughnut" /></div>
     <div class="item">
@@ -67,7 +69,29 @@ export default {
       },
     });
 
-    return { dataDoughnut, dataLine };
+    const bar = reactive({
+      data: {
+        labels: ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s"],
+        datasets: [
+          {
+            label: "Data One",
+            data: [40, 20, 10, 82, 73, 27, 23, 17, 52, 12, 54, 64, 56],
+            fill: false,
+            backgroundColor: "rgb(75, 192, 192)",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          customCanvasBackgroundColor: {
+            color: "lightGreen",
+          },
+        },
+      },
+    });
+
+    return { dataDoughnut, dataLine, bar };
   },
 };
 </script>
