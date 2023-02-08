@@ -35,7 +35,7 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-  width: 80%;
+  width: 70%;
   margin: 0 auto;
 }
 </style>
