@@ -5,7 +5,7 @@
     </div>
     <div class="content">
       <div class="top">
-        <div class="btns">
+        <div class="btns" v-if="!isChartsView">
           <button
             @click="changeReportType()"
             class="btn"
@@ -23,33 +23,54 @@
         </div>
         <button class="add_new_button" v-if="isTest"></button>
       </div>
-      <ReportFIlters
-        :isClient="isClient"
-        ref="filters"
-        @getFilter="getFilter"
-      />
-      <ReportGrid
-        :title="title"
-        :reportsData="reports"
-        :isClient="isClient"
-        :isLoading="isLoading"
-        :total="total"
-        @updateOpenSelectedReportModal="updateOpenSelectedReportModal"
-        @updateOpenedRows="updateOpenedRows"
-        @updateSelectedReport="updateSelectedReport"
-        ref="grid"
-      />
-      <GridBottom
-        :previous="reports.prev_page_url != null"
-        :next="reports.next_page_url != null"
-        :page="reports.current_page"
-        :show="reports.data?.length != 0"
-        :count="count"
-        :showBtns="showGridBottom"
-        :showSelector="false"
-        @changePage="changePage"
-        @changeCount="changeCount"
-      />
+      <div class="row">
+        <div class="type" v-if="isTest">
+          <input
+            type="checkbox"
+            class="checkbox"
+            v-model="isChartsView"
+            id="view"
+          />
+          <label for="view">
+            <transition name="modal" mode="out-in">
+              <span class="material-icons-round" v-if="isChartsView">
+                font_download
+              </span>
+              <span class="material-icons-round a" v-else> poll </span>
+            </transition>
+          </label>
+        </div>
+        <ReportFIlters
+          v-if="!isChartsView"
+          :isClient="isClient"
+          ref="filters"
+          @getFilter="getFilter"
+        />
+      </div>
+      <template v-if="!isChartsView">
+        <ReportGrid
+          :title="title"
+          :reportsData="reports"
+          :isClient="isClient"
+          :isLoading="isLoading"
+          :total="total"
+          @updateOpenSelectedReportModal="updateOpenSelectedReportModal"
+          @updateOpenedRows="updateOpenedRows"
+          @updateSelectedReport="updateSelectedReport"
+          ref="grid"
+        />
+        <GridBottom
+          :previous="reports.prev_page_url != null"
+          :next="reports.next_page_url != null"
+          :page="reports.current_page"
+          :show="reports.data?.length != 0"
+          :count="count"
+          :showBtns="showGridBottom"
+          :showSelector="false"
+          @changePage="changePage"
+          @changeCount="changeCount"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -76,6 +97,7 @@ export default {
       filter: {},
       total: {},
       page: 1,
+      isChartsView: false,
     };
   },
   computed: {
@@ -378,9 +400,62 @@ export default {
       @include bg_image("@/assets/plus.svg", 50%);
     }
   }
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    min-height: 56px;
+    .type {
+      width: 2%;
+      display: flex;
+      align-items: center;
+      .checkbox {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+      }
+      .checkbox + label {
+        display: inline-flex;
+        align-items: center;
+        user-select: none;
+        position: relative;
+      }
+      .checkbox + label::before {
+        content: "";
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        flex-shrink: 0;
+        flex-grow: 0;
+        border-radius: 0.25em;
+        position: absolute;
+        border: none;
+
+        // @include bg_image("@/assets/grid.svg", 100%);
+        cursor: pointer;
+        background: transparent !important;
+      }
+      span {
+        font-size: 28px;
+        color: #757575;
+      }
+      .a {
+        font-size: 31px;
+      }
+    }
+  }
 }
 .blur {
   filter: blur(5px);
   pointer-events: none;
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
 }
 </style>
