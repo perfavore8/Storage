@@ -110,7 +110,7 @@ export default {
       filter: {},
       total: {},
       page: 1,
-      isChartsView: true,
+      isChartsView: false,
     };
   },
   computed: {
