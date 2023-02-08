@@ -72,12 +72,16 @@
           @changeCount="changeCount"
         />
       </template>
+      <template v-else>
+        <ReportCharts />
+      </template>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import ReportCharts from "@/components/ReportCharts.vue";
 import ReportGrid from "@/components/ReportGrid.vue";
 import ReportFIlters from "@/components/ReportFIlters.vue";
 import ReportChartsFilter from "@/components/ReportChartsFilter.vue";
@@ -87,6 +91,7 @@ import { nextTick } from "@vue/runtime-core";
 export default {
   name: "AnalyticsView",
   components: {
+    ReportCharts,
     ReportGrid,
     ReportFIlters,
     ReportChartsFilter,
