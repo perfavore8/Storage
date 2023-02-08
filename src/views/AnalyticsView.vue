@@ -4,21 +4,24 @@
       <NavBar />
     </div>
     <div class="content">
-      <div class="btns">
-        <button
-          @click="changeReportType()"
-          class="btn"
-          :class="{ selected_report: isClient }"
-        >
-          Отчет по клиентам
-        </button>
-        <button
-          @click="changeReportType()"
-          class="btn"
-          :class="{ selected_report: !isClient }"
-        >
-          Отчет по продажам
-        </button>
+      <div class="top">
+        <div class="btns">
+          <button
+            @click="changeReportType()"
+            class="btn"
+            :class="{ selected_report: isClient }"
+          >
+            Отчет по клиентам
+          </button>
+          <button
+            @click="changeReportType()"
+            class="btn"
+            :class="{ selected_report: !isClient }"
+          >
+            Отчет по продажам
+          </button>
+        </div>
+        <button class="add_new_button" v-if="isTest"></button>
       </div>
       <ReportFIlters
         :isClient="isClient"
@@ -85,6 +88,9 @@ export default {
     },
     refGrid() {
       return this.$refs.grid;
+    },
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
     },
   },
   mounted() {
@@ -330,32 +336,46 @@ export default {
   flex-direction: column;
   gap: 20px;
   margin-bottom: 20px;
-  .btns {
+  .top {
     display: flex;
     flex-direction: row;
-    .btn {
-      border: 1px solid #6c757d;
+    gap: 5%;
+    .btns {
+      display: flex;
+      flex-direction: row;
+      .btn {
+        border: 1px solid #6c757d;
+        border-radius: 4px;
+        color: #6c757d;
+        background: white;
+      }
+      .btn:hover {
+        border-color: #5f676d;
+        color: #5f676d;
+      }
+      .selected_report {
+        transition: all 0.15s ease-out;
+        background: #6c757d;
+        color: white;
+      }
+      .selected_report:hover {
+        color: hsl(204, 44%, 95%);
+      }
+      .btn:first-child {
+        border-radius: 5px 0 0 5px;
+      }
+      .btn:last-child {
+        border-radius: 0 5px 5px 0;
+      }
+    }
+    .add_new_button {
+      cursor: pointer;
+      width: 34px;
+      height: 34px;
+      background: #4e964d;
+      border: none;
       border-radius: 4px;
-      color: #6c757d;
-      background: white;
-    }
-    .btn:hover {
-      border-color: #5f676d;
-      color: #5f676d;
-    }
-    .selected_report {
-      transition: all 0.15s ease-out;
-      background: #6c757d;
-      color: white;
-    }
-    .selected_report:hover {
-      color: hsl(204, 44%, 95%);
-    }
-    .btn:first-child {
-      border-radius: 5px 0 0 5px;
-    }
-    .btn:last-child {
-      border-radius: 0 5px 5px 0;
+      @include bg_image("@/assets/plus.svg", 50%);
     }
   }
 }
