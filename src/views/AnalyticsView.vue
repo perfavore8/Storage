@@ -46,6 +46,7 @@
           ref="filters"
           @getFilter="getFilter"
         />
+        <ReportChartsFilter v-else ref="ChartsFilters" @getFilter="getFilter" />
       </div>
       <template v-if="!isChartsView">
         <ReportGrid
@@ -79,12 +80,19 @@
 import { mapGetters } from "vuex";
 import ReportGrid from "@/components/ReportGrid.vue";
 import ReportFIlters from "@/components/ReportFIlters.vue";
+import ReportChartsFilter from "@/components/ReportChartsFilter.vue";
 import NavBar from "@/components/NavBar.vue";
 import GridBottom from "@/components/GridBottom.vue";
 import { nextTick } from "@vue/runtime-core";
 export default {
   name: "AnalyticsView",
-  components: { ReportGrid, ReportFIlters, NavBar, GridBottom },
+  components: {
+    ReportGrid,
+    ReportFIlters,
+    ReportChartsFilter,
+    NavBar,
+    GridBottom,
+  },
   data() {
     return {
       openSelectedReportModal: false,
@@ -97,7 +105,7 @@ export default {
       filter: {},
       total: {},
       page: 1,
-      isChartsView: false,
+      isChartsView: true,
     };
   },
   computed: {
