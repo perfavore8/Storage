@@ -333,7 +333,6 @@ export default {
   .btns {
     display: flex;
     flex-direction: row;
-    margin: 0 auto;
     .btn {
       border: 1px solid #6c757d;
       border-radius: 4px;
