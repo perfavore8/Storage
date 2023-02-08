@@ -20,7 +20,11 @@
           Отчет по продажам
         </button>
       </div>
-      <RepotFIlters :isClient="isClient" ref="filters" @getFilter="getFilter" />
+      <ReportFIlters
+        :isClient="isClient"
+        ref="filters"
+        @getFilter="getFilter"
+      />
       <ReportGrid
         :title="title"
         :reportsData="reports"
@@ -50,13 +54,13 @@
 <script>
 import { mapGetters } from "vuex";
 import ReportGrid from "@/components/ReportGrid.vue";
-import RepotFIlters from "@/components/RepotFIlters.vue";
+import ReportFIlters from "@/components/ReportFIlters.vue";
 import NavBar from "@/components/NavBar.vue";
 import GridBottom from "@/components/GridBottom.vue";
 import { nextTick } from "@vue/runtime-core";
 export default {
   name: "AnalyticsView",
-  components: { ReportGrid, RepotFIlters, NavBar, GridBottom },
+  components: { ReportGrid, ReportFIlters, NavBar, GridBottom },
   data() {
     return {
       openSelectedReportModal: false,
