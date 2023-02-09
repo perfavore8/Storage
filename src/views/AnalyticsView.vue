@@ -374,7 +374,7 @@ export default {
   .top {
     display: flex;
     flex-direction: row;
-    gap: 5%;
+    gap: 8px;
     .btns {
       display: flex;
       flex-direction: row;
