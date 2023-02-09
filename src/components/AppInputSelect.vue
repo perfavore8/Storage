@@ -14,6 +14,7 @@
           <ul class="list">
             <li
               class="item"
+              :class="{ selected: item.value === selected?.value }"
               v-for="item in list"
               :key="item.value"
               @click="selectItem(item)"
@@ -44,6 +45,7 @@ import { watch } from "@vue/runtime-core";
 export default {
   props: {
     list: Array,
+    selected: { type: Object, required: false },
     countLettersReq: { type: Number, required: false, default: () => 0 }, // кол-во символов для отправки запроса
     requestDelay: { type: Number, required: false, default: () => 300 }, // <--  миллисекунды
     placeholder: { type: String, required: false },
@@ -161,6 +163,9 @@ export default {
     }
     .item:active {
       background-color: #3261a7;
+    }
+    .selected {
+      background-color: rgb(13 110 253 / 20%);
     }
   }
   .placeholder {
