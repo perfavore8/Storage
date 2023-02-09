@@ -310,6 +310,7 @@ export default {
   padding: 0 30px;
   left: 0;
   width: calc(100vw - 80px);
+  z-index: 200;
   &_left {
     .header_row {
       display: flex;
