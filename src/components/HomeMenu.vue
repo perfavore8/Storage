@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <div class="ref">
+    <div class="ref ref_center">
       <button
         class="ref_2_logo btn"
         @click="openTaskCenter()"
@@ -9,15 +9,13 @@
         <span class="material-icons"> splitscreen </span>
       </button>
       <transition name="modal">
-        <teleport to="body">
-          <div class="tasks">
-            <TaskCenter @close="closeTaskCenter()" v-if="showTaskCenter" />
-          </div>
-        </teleport>
+        <div class="tasks">
+          <TaskCenter @close="closeTaskCenter()" v-if="showTaskCenter" />
+        </div>
       </transition>
     </div>
 
-    <div class="ref">
+    <div class="ref ref_center">
       <button
         class="ref_2_logo btn"
         @click="openImportXlsl()"
@@ -57,43 +55,41 @@
           <span class="material-icons-outlined" v-else> cloud_sync </span>
         </transition>
       </button>
-      <transition name="modal">
-        <teleport to="body">
-          <template v-if="show_sync">
-            <div class="backdrop" @click="open_close_sync()" />
-            <div
-              class="modal_settings modal_sync"
-              @click.stop="open_close_sync()"
-            >
+      <template v-if="show_sync">
+        <div class="backdrop" @click="open_close_sync()" />
+        <transition name="modal">
+          <div
+            class="modal_settings modal_sync"
+            @click.stop="open_close_sync()"
+          >
+            <a>
+              <div class="modal_container" @click="syncAmoGs()">
+                Синхронизировать товары amoCRM -> GoСклад
+              </div>
+            </a>
+            <template v-if="isTest">
               <a>
-                <div class="modal_container" @click="syncAmoGs()">
-                  Синхронизировать товары amoCRM -> GoСклад
+                <div class="modal_container" @click="syncGsAmo()">
+                  Синхронизировать товары GoСклад -> amoCRM
                 </div>
               </a>
-              <template v-if="isTest">
-                <a>
-                  <div class="modal_container" @click="syncGsAmo()">
-                    Синхронизировать товары GoСклад -> amoCRM
-                  </div>
-                </a>
-              </template>
-            </div>
-          </template>
-        </teleport>
-      </transition>
+            </template>
+          </div>
+        </transition>
+      </template>
     </div>
-    <button
-      class="settings_btn"
-      :class="{ settings_btn_rotate: show_settings }"
-      @click="open_close_settings()"
-      title="Настройки"
-    >
-      <span class="material-icons"> settings </span>
-    </button>
-    <transition name="modal">
-      <teleport to="body">
-        <template v-if="show_settings">
-          <div class="backdrop" @click="close_settings()" />
+    <div class="ref">
+      <button
+        class="settings_btn"
+        :class="{ settings_btn_rotate: show_settings }"
+        @click="open_close_settings()"
+        title="Настройки"
+      >
+        <span class="material-icons"> settings </span>
+      </button>
+      <template v-if="show_settings">
+        <div class="backdrop" @click="close_settings()" />
+        <transition name="modal">
           <div class="modal_settings" @click="close_settings()">
             <a>
               <div class="modal_container" @click="open_edit_stuff()">
@@ -138,9 +134,9 @@
               </div>
             </a>
           </div>
-        </template>
-      </teleport>
-    </transition>
+        </transition>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -239,11 +235,14 @@ export default {
   height: fit-content;
   gap: 25px;
   position: relative;
+  .ref_center {
+    justify-content: center;
+  }
   .ref {
     display: flex;
     flex-direction: row;
     align-items: center;
-    max-height: 18px;
+    height: 18px;
     gap: 8px;
     position: relative;
     .ref_1_logo {
@@ -272,7 +271,6 @@ export default {
       justify-content: center;
       z-index: 999;
       top: 200%;
-      right: -40px;
       position: absolute;
       width: min-content;
       height: min-content;
@@ -292,28 +290,65 @@ export default {
         z-index: -1;
       }
     }
-  }
-  .settings_btn {
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-    border: none;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #757575;
-    outline: none;
-    transition: all 0.15s ease-out;
-  }
-  .settings_btn:hover,
-  .settings_btn_rotate {
-    transform: rotate(90deg) scale(1.1);
+    .settings_btn {
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #757575;
+      outline: none;
+      transition: all 0.15s ease-out;
+    }
+    .settings_btn:hover,
+    .settings_btn_rotate {
+      transform: rotate(90deg) scale(1.1);
+    }
+    .modal_settings {
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      width: 358px;
+      border: 1px solid #c9c9c9;
+      border-radius: 4px;
+      background: white;
+      overflow: hidden;
+      position: absolute;
+      top: 200%;
+      right: 0;
+      a {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        transition: background-color 0.15s ease-in-out;
+        .modal_container {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          text-align: left;
+          // height: 30px;
+          cursor: pointer;
+          padding: 5px 15px;
+          @include font(400, 16px, 22px);
+        }
+      }
+      a:hover {
+        background-color: #f5f5f5;
+      }
+    }
+    .tasks {
+      position: absolute;
+      top: 100%;
+      width: fit-content;
+    }
   }
 }
 
 .modal_sync {
-  right: 82px !important;
   width: 400px !important;
   margin: 0 !important;
   z-index: 99999;
@@ -321,43 +356,11 @@ export default {
     padding-bottom: 0 !important;
   }
 }
-.modal_settings {
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 358px;
-  border: 1px solid #c9c9c9;
-  border-radius: 4px;
-  background: white;
-  overflow: hidden;
-  position: absolute;
-  top: 48px;
-  right: 64px;
-  a {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    transition: background-color 0.15s ease-in-out;
-  }
-  a:hover {
-    background-color: #f5f5f5;
-  }
-}
+
 .modal_settings:last-child {
   a {
     padding-bottom: 10px;
   }
-}
-.modal_container {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  text-align: left;
-  // height: 30px;
-  cursor: pointer;
-  padding: 5px 15px;
-  @include font(400, 16px, 22px);
 }
 .backdrop {
   background-color: transparent;
@@ -367,11 +370,5 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 800;
-}
-.tasks {
-  position: absolute;
-  top: 48px;
-  right: 64px;
-  width: fit-content;
 }
 </style>
