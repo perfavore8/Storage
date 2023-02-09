@@ -138,6 +138,18 @@ export default {
         @include bg_image("../assets/Ellipse_2.svg", 40%);
       }
     }
+    > .input-select {
+      :deep(.input) {
+        border-radius: 0;
+        border-bottom-width: 2px;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+      }
+      :deep(.input:focus) {
+        box-shadow: 0 5px 5px rgb(13 110 253 / 25%);
+      }
+    }
   }
 }
 </style>
