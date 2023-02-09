@@ -1,7 +1,7 @@
 <template>
   <div class="whs">
-    <div class="radio_btns" :class="{ whs_full: whsFull }" ref="refRadioBtns">
-      <div class="radio_btn" v-for="wh in whs" :key="wh">
+    <div class="radio_btns">
+      <div class="radio_btn" v-for="wh in systemWhs" :key="wh">
         <input
           type="radio"
           :value="wh.value"
@@ -12,71 +12,78 @@
         />
         <label :for="wh.name">{{ wh.name }}</label>
       </div>
+      <AppInputSelect
+        :list="sortedCustomWhs"
+        :selected="selectWH"
+        :requestDelay="0"
+        :placeholder="
+          customWhs.includes(selectedWH) ? selectedWH.name : 'Выберите склад'
+        "
+        @changeInputValue="changeInputValueWhs"
+        @select="selectWH"
+      />
     </div>
-    <button
-      @click="whsFull = !whsFull"
-      class="arrow btn"
-      :class="{ rotate_arrow: whsFull }"
-      v-if="showWhsArrow"
-    >
-      <span class="material-icons-outlined"> expand_more </span>
-    </button>
   </div>
 </template>
 
 <script>
+import AppInputSelect from "./AppInputSelect.vue";
 import { ref } from "@vue/reactivity";
 import store from "@/store";
-import { computed, nextTick, watch } from "@vue/runtime-core";
+import { computed, watch } from "@vue/runtime-core";
 export default {
+  components: { AppInputSelect },
   props: {
     selectedWH: Object,
   },
   setup(props, context) {
     const whs = ref([]);
+    const systemWhs = ref([]);
+    const customWhs = ref([]);
 
     const storeWhs = computed(() => store.state.account.account.whs);
     watch(storeWhs, () => changeStoreWhs());
-    const changeStoreWhs = () => (getWHS(), setShowWhsArrow());
+    const changeStoreWhs = () => getWHS();
 
     const getWHS = () => {
       whs.value = [];
+      systemWhs.value = [];
+      customWhs.value = [];
 
       const { system, custom } = store.state.account.account.whs2;
 
       system.forEach((wh) => {
+        systemWhs.value.push({ name: wh.name, value: wh.code });
         whs.value.push({ name: wh.name, value: wh.code });
       });
 
+      systemWhs.value.push({ name: "Услуги", value: "services" });
       whs.value.push({ name: "Услуги", value: "services" });
 
       custom.forEach((wh) => {
+        customWhs.value.push({ name: wh.name, value: wh.code });
         whs.value.push({ name: wh.name, value: wh.code });
-      });
-    };
-
-    const refRadioBtns = ref(null);
-    const showWhsArrow = ref(true);
-    const whsFull = ref(true);
-    // будет открыт список или нет
-    const setShowWhsArrow = () => {
-      const height = 30; //                 высота свернутого списка в пикселях
-      nextTick(() => {
-        showWhsArrow.value =
-          refRadioBtns.value?.getBoundingClientRect().height > height;
-        showWhsArrow.value ? (whsFull.value = true) : (whsFull.value = false);
       });
     };
 
     const selectWH = (wh) => context.emit("update:selectedWH", wh);
 
+    const inputValueWhs = ref("");
+    const changeInputValueWhs = (value) => (inputValueWhs.value = value);
+    const sortedCustomWhs = computed(() =>
+      customWhs.value.filter((wh) =>
+        wh?.name?.toLowerCase()?.includes(inputValueWhs.value?.toLowerCase())
+      )
+    );
+
     return {
-      whsFull,
-      showWhsArrow,
       whs,
       changeStoreWhs,
       selectWH,
-      refRadioBtns,
+      systemWhs,
+      customWhs,
+      changeInputValueWhs,
+      sortedCustomWhs,
     };
   },
 };
@@ -90,33 +97,11 @@ export default {
   flex-direction: row;
   gap: 20px;
   width: 100%;
-  .arrow {
-    margin-top: 1px;
-    cursor: pointer;
-    width: 32px;
-    height: 24px;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease-in-out;
-    > span {
-      color: #757575;
-      font-size: x-large;
-    }
-  }
-  .rotate_arrow {
-    transform: rotateX(180deg);
-  }
-
-  .whs_full {
-    height: 100% !important;
-  }
   .radio_btns {
     height: 24px;
-    overflow: hidden;
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 16px;
     flex-wrap: wrap;
     width: 100%;
