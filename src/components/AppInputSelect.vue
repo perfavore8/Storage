@@ -50,6 +50,7 @@ export default {
     requestDelay: { type: Number, required: false, default: () => 300 }, // <--  миллисекунды
     placeholder: { type: String, required: false },
   },
+  emits: ["changeInputValue", "focusIn", "select"],
   setup(props, context) {
     const inputValue = ref("");
 
