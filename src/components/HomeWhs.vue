@@ -41,10 +41,18 @@ export default {
 
     const getWHS = () => {
       whs.value = [];
-      store.state.account.account.whs.forEach((val) =>
-        whs.value.push({ name: val.name, value: val.code })
-      );
+
+      const { system, custom } = store.state.account.account.whs2;
+
+      system.forEach((wh) => {
+        whs.value.push({ name: wh.name, value: wh.code });
+      });
+
       whs.value.push({ name: "Услуги", value: "services" });
+
+      custom.forEach((wh) => {
+        whs.value.push({ name: wh.name, value: wh.code });
+      });
     };
 
     const refRadioBtns = ref(null);
