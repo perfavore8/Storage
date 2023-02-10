@@ -92,8 +92,15 @@
           </div>
           <h6>Привязка полей сделок</h6>
           <div class="steps">
-            <div class="label_input" v-for="item in leadsDeals" :key="item">
-              <label> Поле "{{ item?.name }}" </label>
+            <div
+              class="label_input"
+              v-for="(item, idx) in leadsDeals"
+              :key="item"
+            >
+              <label>
+                Поле "{{ item?.name }}"
+                <span v-if="idx != 0">(число)</span>
+              </label>
               <SelectorVue
                 :options_props="leadsDealsList"
                 @select="(event) => optionSelectLeadsDeals(event, item?.code)"
