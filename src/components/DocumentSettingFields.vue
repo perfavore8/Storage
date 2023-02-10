@@ -91,7 +91,7 @@ export default {
 @import "@/app.scss";
 .app_fileds {
   pointer-events: all;
-  z-index: 60;
+  z-index: 260;
   width: 100%;
   position: absolute;
   top: 0;

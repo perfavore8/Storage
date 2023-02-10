@@ -322,7 +322,7 @@ export default {
 @import "@/app.scss";
 .app {
   pointer-events: all;
-  z-index: 50;
+  z-index: 250;
   width: 100%;
   height: max-content;
   min-height: 100vh;
