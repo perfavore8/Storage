@@ -1,4 +1,5 @@
 <template>
+  <NotificationCenter />
   <div class="wrapper">
     <div class="item">
       <ChartsBar :data="bar.data" :options="bar.options" />
@@ -24,6 +25,7 @@ import ChartsPie from "@/components/Charts/ChartsPie.vue";
 import ChartsPolarArea from "@/components/Charts/ChartsPolarArea.vue";
 import ChartsRadar from "@/components/Charts/ChartsRadar.vue";
 import ChartsScatter from "@/components/Charts/ChartsScatter.vue";
+import NotificationCenter from "@/components/NotificationCenter.vue";
 import { reactive } from "@vue/reactivity";
 export default {
   components: {
@@ -35,6 +37,7 @@ export default {
     ChartsPolarArea,
     ChartsRadar,
     ChartsScatter,
+    NotificationCenter,
   },
 
   setup() {
