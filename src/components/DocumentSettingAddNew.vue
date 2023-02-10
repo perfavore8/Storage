@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="app_new"
-    :style="{ minHeight: height + 'px' }"
-    @click.self="close_modal()"
-  >
+  <div class="app_new">
+    <div class="backdrop" @click="close_modal()" />
     <div class="container">
       <div class="header"><slot name="title"></slot></div>
       <div class="content">
@@ -123,9 +120,6 @@ export default {
     nextTick(() => this.add_cur_doc());
   },
   computed: {
-    height() {
-      return document.documentElement.scrollHeight;
-    },
     leadFieldsList() {
       const list = [];
       Object.entries(this.$store.state.account.leadFieldsList).map((val) => {
@@ -265,14 +259,17 @@ export default {
 @import "@/app.scss";
 .app_new {
   pointer-events: all;
-  z-index: 260;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
   background: transparent;
   @include font(400, 16px);
+  .backdrop {
+    z-index: 259;
+  }
   .container {
+    z-index: 260;
     width: 500px;
     background-color: #fff;
     background: #f5f5f5;

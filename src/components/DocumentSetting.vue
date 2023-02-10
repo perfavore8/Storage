@@ -6,7 +6,6 @@
     @close="close_add_new"
     @save_new_doc="save_new_doc"
     @save_cur_doc="save_cur_doc"
-    :style="{ minHeight: height + 'px' }"
   >
     <template v-slot:title>
       <span v-if="selected_doc_id === null">
@@ -21,12 +20,8 @@
     v-if="showFields"
     @close="close_fields"
   ></document-setting-fields>
-  <div
-    class="app"
-    ref="app"
-    @click="show_settings ? close_settings() : null"
-    @click.self="close()"
-  >
+  <div class="app" ref="app" @click="show_settings ? close_settings() : null">
+    <div class="backdrop" @click="close()" />
     <div class="container">
       <div class="header">
         <div class="left">
@@ -180,9 +175,6 @@ export default {
     };
   },
   computed: {
-    height() {
-      return document.documentElement.scrollHeight;
-    },
     documents_templates() {
       return this.$store.state.documents.templates;
     },
@@ -322,7 +314,6 @@ export default {
 @import "@/app.scss";
 .app {
   pointer-events: all;
-  z-index: 250;
   width: 100%;
   height: max-content;
   min-height: 100vh;
@@ -330,7 +321,11 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
+  .backdrop {
+    z-index: 240;
+  }
   .container {
+    z-index: 250;
     max-width: 1200px;
     background-color: #fff;
     background: #f5f5f5;

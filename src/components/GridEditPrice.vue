@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="wrapper"
-    @click.self="close()"
-    :style="{ minHeight: height + 'px' }"
-  >
+  <div class="wrapper">
+    <div class="backdrop" @click="close()" />
     <div class="container" v-if="!isAccept">
       <div class="header">
         <label>Изменение цены "{{ copyEditPrice?.name }}"</label>
@@ -100,7 +97,6 @@ export default {
 @import "@/app.scss";
 .wrapper {
   pointer-events: all;
-  z-index: 9999;
   width: 100%;
   height: max-content;
   min-height: 100vh;
@@ -109,7 +105,11 @@ export default {
   left: 0;
   background: transparent;
   @include font(400, 16px);
+  .backdrop {
+    z-index: 259;
+  }
   .container {
+    z-index: 260;
     width: 500px;
     background-color: #fff;
     background-clip: padding-box;

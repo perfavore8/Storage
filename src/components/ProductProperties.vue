@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="wrapper"
-    @click.self="close_product_properties()"
-    :style="{ minHeight: height + 'px' }"
-  >
+  <div class="wrapper">
+    <div class="backdrop" @click="close_product_properties()" />
     <div class="bgc">
       <div class="container">
         <div class="header">
@@ -295,9 +292,6 @@ export default {
       });
       return res;
     },
-    height() {
-      return document.documentElement.scrollHeight;
-    },
     types() {
       const arr = [];
       Object.entries(this.$store.state.fields.types).forEach((val) => {
@@ -520,7 +514,6 @@ export default {
 @import "@/app.scss";
 .wrapper {
   pointer-events: all;
-  z-index: 9999999;
   width: 100%;
   height: max-content;
   min-height: 100vh;
@@ -528,7 +521,11 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
+  .backdrop {
+    z-index: 259;
+  }
   .bgc {
+    z-index: 260;
     width: 80%;
     background-color: #fff;
     background-clip: padding-box;

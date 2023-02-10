@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="wrapper"
-    @click.self="close()"
-    :style="{ minHeight: height + 'px' }"
-  >
+  <div class="wrapper">
+    <div class="backdrop" @click="close()" />
     <div class="bgc">
       <div class="container">
         <div class="header">
@@ -230,9 +227,6 @@ export default {
     this.searchAutosyncProducts();
   },
   computed: {
-    height() {
-      return document.documentElement.scrollHeight;
-    },
     account() {
       return this.$store.state.account.account;
     },
@@ -417,7 +411,6 @@ export default {
 @import "@/app.scss";
 .wrapper {
   pointer-events: all;
-  z-index: 9999999;
   width: 100%;
   height: max-content;
   min-height: 100vh;
@@ -425,7 +418,11 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
+  .backdrop {
+    z-index: 259;
+  }
   .bgc {
+    z-index: 260;
     width: 80%;
     background-color: #fff;
     background-clip: padding-box;

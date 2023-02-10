@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="app_fileds"
-    :style="{ minHeight: height + 'px' }"
-    @click.self="close()"
-  >
+  <div class="app_fileds">
+    <div class="backdrop" @click="close()" />
     <div class="container">
       <div class="header">
         <div class="left">
@@ -70,11 +67,7 @@ export default {
     });
     if (this.tpl_fields[0].name) this.select_catalog(this.tpl_fields[0]);
   },
-  computed: {
-    height() {
-      return document.documentElement.scrollHeight;
-    },
-  },
+  computed: {},
   methods: {
     select_catalog(field) {
       this.selected_catalog = field.name;
@@ -91,13 +84,16 @@ export default {
 @import "@/app.scss";
 .app_fileds {
   pointer-events: all;
-  z-index: 260;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
   background: transparent;
+  .backdrop {
+    z-index: 259;
+  }
   .container {
+    z-index: 260;
     width: 60%;
     max-width: 900px;
     background-color: #fff;

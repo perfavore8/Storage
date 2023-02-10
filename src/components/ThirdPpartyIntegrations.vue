@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="wrapper"
-    @click.self="close()"
-    :style="{ minHeight: height + 'px' }"
-  >
+  <div class="wrapper">
+    <div class="backdrop" @click="close()" />
     <div class="container">
       <div class="header">
         <label>Интеграции</label>
@@ -76,9 +73,6 @@
 <script>
 export default {
   computed: {
-    height() {
-      return document.documentElement.scrollHeight;
-    },
     oneC() {
       return this.$store.state.account.account?.config?.g_enabled;
     },
@@ -104,7 +98,6 @@ export default {
 @import "@/app.scss";
 .wrapper {
   pointer-events: all;
-  z-index: 9999999;
   width: 100%;
   height: max-content;
   min-height: 100vh;
@@ -113,7 +106,11 @@ export default {
   left: 0;
   background: transparent;
   @include font(400, 16px);
+  .backdrop {
+    z-index: 259;
+  }
   .container {
+    z-index: 260;
     max-width: 1140px;
     background-color: #fff;
     background-clip: padding-box;

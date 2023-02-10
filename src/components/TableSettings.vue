@@ -1,5 +1,6 @@
 <template>
-  <div class="modal" :style="{ minHeight: height + 'px' }">
+  <div class="modal">
+    <div class="backdrop" @click="close()" />
     <div class="wrapper">
       <div class="modal-header">
         <div class="head-text">Настройка таблицы</div>
@@ -52,9 +53,6 @@ export default {
     };
   },
   computed: {
-    height() {
-      return document.documentElement.scrollHeight;
-    },
     tableConfig() {
       return this.$store.state.account.tableConfig;
     },
@@ -101,15 +99,19 @@ export default {
 @import "@/app.scss";
 .modal {
   pointer-events: all;
-  z-index: 1100;
   width: 100%;
   min-height: 100vh;
+  min-width: 100vw;
   position: absolute;
   top: 0;
   left: 0;
   background: transparent;
 }
+.backdrop {
+  z-index: 199;
+}
 .wrapper {
+  z-index: 200;
   box-shadow: 0 0 7px 6px rgb(206 212 218 / 50%);
   display: flex;
   flex-direction: column;

@@ -2,9 +2,8 @@
   <div
     class="wrapper"
     :class="{ opened_close_remove_modal: del_modal_config.show }"
-    @click.self="close_product_category()"
-    :style="{ minHeight: height + 'px' }"
   >
+    <div class="backdrop" @click="close_product_category()" />
     <div class="bgc">
       <div class="container">
         <div class="header">
@@ -178,9 +177,6 @@ export default {
       .then(() => this.get_all_old());
   },
   computed: {
-    height() {
-      return document.documentElement.scrollHeight;
-    },
     copy_fields_properties() {
       return this.$store.state.categories.fields_properties;
     },
@@ -298,7 +294,6 @@ export default {
 @import "@/app.scss";
 .wrapper {
   pointer-events: all;
-  z-index: 1000;
   width: 100%;
   height: max-content;
   min-height: 100vh;
@@ -306,7 +301,11 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
+  .backdrop {
+    z-index: 259;
+  }
   .bgc {
+    z-index: 260;
     width: 80%;
     background-color: #fff;
     background-clip: padding-box;
