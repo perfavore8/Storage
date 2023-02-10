@@ -3,6 +3,7 @@
     <input
       type="text"
       class="input"
+      :class="{ input_uderline: input_uderline }"
       v-model="inputValue"
       @click="openList()"
       :placeholder="placeholder"
@@ -49,6 +50,7 @@ export default {
     countLettersReq: { type: Number, required: false, default: () => 0 }, // кол-во символов для отправки запроса
     requestDelay: { type: Number, required: false, default: () => 300 }, // <--  миллисекунды
     placeholder: { type: String, required: false },
+    input_uderline: { type: Boolean, required: false, default: () => false }, // стиль интпута
   },
   emits: ["changeInputValue", "focusIn", "select"],
   setup(props, context) {
