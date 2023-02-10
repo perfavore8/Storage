@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper">
+    <div class="backdrop" @click="close_modal()" />
     <div class="container">
       <div class="header"><label>Списание товаров</label></div>
       <div class="content">
@@ -213,13 +214,17 @@ export default {
 @import "@/app.scss";
 .wrapper {
   pointer-events: all;
-  z-index: 9999999;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
   background: transparent;
+  .backdrop {
+    z-index: 259;
+  }
   .container {
+    position: relative;
+    z-index: 260;
     max-width: 1140px;
     background-color: #fff;
     background-clip: padding-box;

@@ -110,6 +110,7 @@ export default {
     z-index: 259;
   }
   .container {
+    position: relative;
     z-index: 260;
     max-width: 1140px;
     background-color: #fff;

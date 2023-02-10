@@ -1,5 +1,6 @@
 <template>
-  <div class="wrapper" @click.self="close()">
+  <div class="wrapper">
+    <div class="backdrop" @click="close()" />
     <div class="container">
       <div class="header"><label>Добавление товаров</label></div>
       <div class="content">
@@ -784,7 +785,6 @@ export default {
   padding: 30px;
   box-sizing: border-box;
   pointer-events: all;
-  z-index: 1001;
   width: 100%;
   height: 100%;
   position: absolute;
@@ -792,7 +792,12 @@ export default {
   left: 0;
   background: transparent;
   overflow-x: scroll;
+  .backdrop {
+    z-index: 259;
+  }
   .container {
+    position: relative;
+    z-index: 260;
     width: calc(100% - 60px);
     width: fit-content;
     min-width: 1400px;

@@ -275,11 +275,9 @@ export default {
     },
     open_modal() {
       this.$refs.app.style.pointerEvents = "none";
-      this.$refs.app.style.filter = "blur(5px)";
     },
     close_modal() {
       this.$refs.app.style.pointerEvents = "all";
-      this.$refs.app.style.filter = "none";
     },
     open_add_new() {
       this.showAddNew = true;
@@ -325,6 +323,7 @@ export default {
     z-index: 240;
   }
   .container {
+    position: relative;
     z-index: 250;
     max-width: 1200px;
     background-color: #fff;

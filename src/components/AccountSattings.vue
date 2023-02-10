@@ -1,6 +1,6 @@
 <template>
-  <div class="backdrop" @click="close()" />
   <div class="wrapper">
+    <div class="backdrop" @click="close()" />
     <div class="container">
       <div class="header">
         <label>Настройки аккаунта</label>
@@ -76,9 +76,12 @@ export default {
   left: 0;
   background: transparent;
   @include font(400, 16px);
+  .backdrop {
+    z-index: 259;
+  }
   .container {
     position: relative;
-    z-index: 800;
+    z-index: 260;
     max-width: 1140px;
     background-color: #fff;
     background-clip: padding-box;
@@ -154,14 +157,5 @@ export default {
       padding: 15px 50px;
     }
   }
-}
-.backdrop {
-  background-color: transparent;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 799;
 }
 </style>

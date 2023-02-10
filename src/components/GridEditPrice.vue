@@ -109,6 +109,7 @@ export default {
     z-index: 259;
   }
   .container {
+    position: relative;
     z-index: 260;
     width: 500px;
     background-color: #fff;

@@ -267,8 +267,10 @@ export default {
   @include font(400, 16px);
   .backdrop {
     z-index: 259;
+    backdrop-filter: blur(5px);
   }
   .container {
+    position: relative;
     z-index: 260;
     width: 500px;
     background-color: #fff;

@@ -305,6 +305,7 @@ export default {
     z-index: 259;
   }
   .bgc {
+    position: relative;
     z-index: 260;
     width: 80%;
     background-color: #fff;
