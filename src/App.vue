@@ -12,6 +12,7 @@ body {
   box-sizing: border-box;
   width: fit-content;
   overflow: auto;
+  font-family: "Inter";
 }
 *::-webkit-scrollbar {
   width: 8px;
