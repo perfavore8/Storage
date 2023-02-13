@@ -257,7 +257,8 @@ export default {
         : this.ref_main?.changePage(currentPage);
     },
     setCurrentItems() {
-      const arr = JSON.parse(JSON.stringify(this.filteredSelectedProducts));
+      let arr = JSON.parse(JSON.stringify(this.filteredSelectedProducts));
+      arr = arr.filter((val) => val.item !== undefined);
       this.currentItems = [...arr.map((val) => val.item)];
     },
     dropCurrentItems() {
