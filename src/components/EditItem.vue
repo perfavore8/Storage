@@ -121,6 +121,7 @@ export default {
       this.$store.commit("close_edit_modal");
     },
     async save() {
+      this.dataPreparation();
       await this.$store.dispatch("update_product", {
         products: [this.new_edit_data],
       });
@@ -133,6 +134,18 @@ export default {
       });
       this.$store.dispatch("get_products", this.productsParams);
       this.close();
+    },
+    dataPreparation() {
+      const arr = [];
+      const new_edit_data_keys = Object.keys(this.new_edit_data?.fields);
+      const fields_with_parents_codes = [];
+      this.$store.state.fields.fields_with_parents.forEach((field) =>
+        fields_with_parents_codes.push(field.code)
+      );
+      new_edit_data_keys.forEach((field) => {
+        if (!fields_with_parents_codes.includes(field)) arr.push(field);
+      });
+      arr.forEach((val) => delete this.new_edit_data?.fields[val]);
     },
     option_select_cat(value) {
       this.selectedCategory = value;
