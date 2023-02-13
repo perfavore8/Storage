@@ -42,7 +42,7 @@
                 <td class="item">
                   <div class="select_input">
                     <selector-vue
-                      :options_props="whs_options"
+                      :options_props="calcWhsOptions[row.id]"
                       @select="option_select"
                       :selected_option="row.fields.whToCancel"
                       :idx="idx"
@@ -117,14 +117,15 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("get_all_fields");
-    this.fillWhs();
     nextTick(() => {
       this.items_to_cancel = [...this.currentItems];
       this.items_to_cancel.map((val) => {
         val.fields.countToCancel = 0;
         val.fields.rison = "";
+        val.fields.whs_options = [];
         val.fields.whToCancel = { name: "Не выбрано", value: -1 };
       });
+      this.fillWhs();
     });
   },
   computed: {
@@ -137,6 +138,29 @@ export default {
         list.push(val.fields.countToCancel)
       );
       return list;
+    },
+    calcWhsOptions() {
+      const obj = {};
+      this.items_to_cancel.forEach((item) => {
+        const whs_options = [];
+        if (item.fields.whs_options)
+          item.fields.whs_options.forEach((wh) => {
+            const a = {};
+            if (item.fields[wh.value]) {
+              const count = this.allow_add_reserve
+                ? item.fields[wh.value].count
+                : item.fields[wh.value].count - item.fields[wh.value].reserve;
+              a.name = wh.name + " | " + count;
+              a.value = wh.value;
+            }
+            whs_options.push(a);
+          });
+        obj[item.id] = whs_options;
+      });
+      return obj;
+    },
+    allow_add_reserve() {
+      return this.$store.state.account.account.config.allow_add_reserve;
     },
   },
   watch: {
@@ -162,6 +186,33 @@ export default {
         .forEach((val) =>
           this.whs_options.push({ name: val.name, value: val.code })
         );
+      this.items_to_cancel.map((item) => {
+        item.fields.whs_options = this.searchCatArr(
+          this.whs_options,
+          this.searchParentsCat(item.fields.category)
+        );
+      });
+    },
+    searchCatArr(arr, categories) {
+      const res = [];
+      arr.forEach((val) => {
+        if (
+          categories.includes(
+            this.fields.find((value) => val.value == value.code).category_id
+          )
+        )
+          res.push(val);
+      });
+      return res;
+    },
+    searchParentsCat(cat) {
+      let res = [];
+      this.$store.state.categories.fields_properties.forEach((val) => {
+        if (val.id == cat) res = [...val.levels];
+      });
+      const zeroIdx = res.indexOf(0);
+      res = res.slice(0, zeroIdx);
+      return res;
     },
     async save() {
       this.try_accept = true;
@@ -190,6 +241,7 @@ export default {
           //   item.fields.countToCancel;
           delete item.fields.countToCancel;
           delete item.fields.rison;
+          delete item.fields.whs_options;
           delete item.fields.whToCancel;
           params.products.push(item);
         });
@@ -269,6 +321,10 @@ export default {
             text-align: left;
             .v-select {
               width: 100%;
+              :deep(.options) {
+                width: fit-content;
+                text-align: left;
+              }
             }
           }
           .item:nth-child(1) {
