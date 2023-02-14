@@ -1,5 +1,6 @@
 export default {
   state: {
+    isNavBarDisabled: false,
     catalog: [
       {
         name: "Заказы",
@@ -26,6 +27,14 @@ export default {
       return state.catalog;
     },
   },
-  mutations: {},
+  mutations: {
+    toggleIsNavBarDisabled(state, value) {
+      if (value !== undefined) {
+        state.isNavBarDisabled = value;
+      } else {
+        state.isNavBarDisabled = !state.isNavBarDisabled;
+      }
+    },
+  },
   actions: {},
 };
