@@ -428,8 +428,8 @@ export default {
     }
     .add_new_button {
       cursor: pointer;
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       background: #4e964d;
       border: none;
       border-radius: 4px;
