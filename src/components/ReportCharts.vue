@@ -1,14 +1,29 @@
 <template>
   <div class="wrapper">
-    <ChartsBar :data="bar.data" :options="bar.options" :title="bar.title" />
+    <ChartsBar
+      v-if="chartType === 'bar'"
+      :data="bar.data"
+      :options="bar.options"
+      :title="bar.title"
+    />
+    <ChartsDoughnut
+      v-else-if="chartType === 'doughnut'"
+      :data="doughnut.data"
+      :options="doughnut.options"
+      :title="doughnut.title"
+    />
   </div>
 </template>
 
 <script>
 import ChartsBar from "@/components/Charts/ChartsBar.vue";
+import ChartsDoughnut from "@/components/Charts/ChartsDoughnut.vue";
 import { reactive } from "@vue/reactivity";
 export default {
-  components: { ChartsBar },
+  components: { ChartsBar, ChartsDoughnut },
+  props: {
+    chartType: String,
+  },
   setup() {
     const bar = reactive({
       title: "",
@@ -27,8 +42,23 @@ export default {
         responsive: true,
       },
     });
+    const doughnut = reactive({
+      title: "",
+      data: {
+        labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
+        datasets: [
+          {
+            backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
+            data: [40, 20, 80, 10],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+      },
+    });
 
-    return { bar };
+    return { bar, doughnut };
   },
 };
 </script>
