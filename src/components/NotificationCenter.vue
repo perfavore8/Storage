@@ -83,6 +83,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .center {
+  z-index: 9999999;
   position: fixed;
   left: 0;
   bottom: 0;
