@@ -1,7 +1,7 @@
 <template>
   <tr class="row">
     <td class="item">{{ doc.name }}</td>
-    <td class="item">{{ doc.file }}</td>
+    <td class="item file">{{ doc.file }}</td>
     <td class="item">
       <a :href="getHref(doc.file, doc.type)" target="blank"> Шаблон </a>
     </td>
@@ -54,6 +54,11 @@ export default {
   background-color: rgba(0, 0, 0, 0.05);
 }
 .row {
+  .file {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
   .item {
     padding: 10px 5px;
     border: 1px solid #c9c9c9;

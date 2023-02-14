@@ -482,9 +482,7 @@ export default {
                 text-align: left;
                 padding-bottom: 20px !important;
               }
-            }
-            .title:last-child {
-              .item {
+              .item:last-child {
                 max-width: 101px;
                 width: 0.1%;
               }
