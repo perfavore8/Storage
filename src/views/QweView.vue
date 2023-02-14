@@ -5,7 +5,12 @@
       <ChartsBar :data="bar.data" :options="bar.options" />
     </div>
     <div class="item"><ChartsBubble /></div>
-    <div class="item"><ChartsDoughnut :propsData="dataDoughnut" /></div>
+    <div class="item">
+      <ChartsDoughnut
+        :data="dataDoughnut.data"
+        :options="dataDoughnut.options"
+      />
+    </div>
     <div class="item">
       <ChartsLine :propsData="dataLine" :propsOptions="dataLine.options" />
     </div>
@@ -42,13 +47,18 @@ export default {
 
   setup() {
     const dataDoughnut = reactive({
-      labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
-      datasets: [
-        {
-          backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
-          data: [40, 20, 80, 10],
-        },
-      ],
+      data: {
+        labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
+        datasets: [
+          {
+            backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
+            data: [40, 20, 80, 10],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+      },
     });
     const dataLine = reactive({
       labels: ["January", "February", "March", "April", "May", "June", "July"],

@@ -8,7 +8,6 @@
 <script>
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "vue-chartjs";
-import { reactive } from "@vue/reactivity";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -18,7 +17,8 @@ export default {
     Doughnut,
   },
   props: {
-    propsData: Object,
+    data: { type: Object, required: true },
+    options: { type: Object, required: true },
     title: {
       type: String,
       required: false,
@@ -27,20 +27,7 @@ export default {
       },
     },
   },
-  setup(props) {
-    const data = reactive({
-      labels: props.propsData?.labels,
-      datasets: props.propsData?.datasets,
-      hoverOffset: 16,
-    });
-
-    const options = reactive({
-      responsive: true,
-      maintainAspectRatio: false,
-    });
-
-    return { data, options };
-  },
+  setup() {},
 };
 </script>
 
