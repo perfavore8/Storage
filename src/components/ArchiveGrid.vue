@@ -81,10 +81,12 @@ export default {
     };
   },
   async mounted() {
+    this.$store.commit("toggleIsNavBarDisabled", true);
     this.$store.dispatch("get_account");
     this.$store.dispatch("get_products", { is_archive: 1 });
     await this.$store.dispatch("getTableConfig", "");
     this.$store.dispatch("get_all_fields");
+    this.$store.commit("toggleIsNavBarDisabled", false);
   },
   computed: {
     tableConfig() {

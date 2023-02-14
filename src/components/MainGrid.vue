@@ -167,6 +167,7 @@ export default {
     this.$store.commit("open_close_buttons", false);
   },
   async mounted() {
+    this.$store.commit("toggleIsNavBarDisabled", true);
     this.$store.dispatch("get_fields_properties");
     await this.$store.dispatch(
       "getTableConfig",
@@ -176,6 +177,7 @@ export default {
     await this.get_products(this.productsParams);
     this.setSelectedProducts();
     this.bar?.dropAllSelectedProducts();
+    this.$store.commit("toggleIsNavBarDisabled", false);
   },
 
   computed: {

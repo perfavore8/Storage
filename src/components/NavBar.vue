@@ -6,6 +6,7 @@
       @click="route(page.value)"
       v-for="page in catalog"
       v-show="!(page.isTest && !isTest) && !(page.isAdmin && !isAdmin)"
+      :disabled="isNavBarDisabled"
       :key="page"
     >
       {{ page.name }}
@@ -25,6 +26,7 @@ const isAdmin = computed(() =>
     : store.state.account?.user?.isAdmin
 );
 const catalog = computed(() => store.state.data.catalog);
+const isNavBarDisabled = computed(() => store.state.data.isNavBarDisabled);
 const route = (page_name) => router.push("/" + page_name);
 </script>
 
@@ -55,6 +57,11 @@ const route = (page_name) => router.push("/" + page_name);
     border-color: #396f93;
     color: #396f93;
   }
+  .btns_btn:disabled {
+    cursor: default;
+    border-color: #7e888f;
+    color: #7e888f;
+  }
   .selected_catalog {
     transition: all 0.15s ease-out;
     background: #1b3546;
@@ -62,6 +69,10 @@ const route = (page_name) => router.push("/" + page_name);
   }
   .selected_catalog:hover {
     color: hsl(204, 44%, 95%);
+  }
+  .selected_catalog:disabled {
+    border-color: #1b3546;
+    color: white;
   }
 }
 </style>
