@@ -23,32 +23,44 @@
         </div>
         <button class="add_new_button" v-if="isTest"></button>
       </div>
-      <div class="row">
-        <div class="type" v-if="isTest">
-          <input
-            type="checkbox"
-            class="checkbox"
-            v-model="isChartsView"
-            id="view"
-          />
-          <label for="view">
-            <transition name="modal" mode="out-in">
-              <span class="material-icons-round" v-if="isChartsView">
-                font_download
+      <div class="filters">
+        <div class="row">
+          <div class="type" v-if="isTest">
+            <button
+              class="btn"
+              :class="{ selected: view.selected.value === item.value }"
+              v-for="(item, idx) in view.list"
+              :key="item.value"
+              @click="view.select(item)"
+            >
+              <span
+                class="material-icons-round"
+                v-if="
+                  (view.list.indexOf(
+                    view.list.find((val) => val.value === view.selected.value)
+                  ) +
+                    1) %
+                    view.list.length ==
+                  idx
+                "
+              >
+                {{ item.class }}
               </span>
-              <span class="material-icons-round a" v-else> poll </span>
-            </transition>
-          </label>
+            </button>
+          </div>
+          <ReportFIlters
+            :isClient="isClient"
+            ref="filters"
+            @getFilter="getFilter"
+          />
         </div>
-        <ReportFIlters
-          v-if="!isChartsView"
-          :isClient="isClient"
-          ref="filters"
+        <ReportChartsFilter
+          v-if="isChartsView"
+          ref="ChartsFilters"
           @getFilter="getFilter"
         />
-        <ReportChartsFilter v-else ref="ChartsFilters" @getFilter="getFilter" />
       </div>
-      <template v-if="!isChartsView">
+      <template v-if="this.view.selected.value === 'table'">
         <ReportGrid
           :title="title"
           :reportsData="reports"
@@ -73,7 +85,7 @@
         />
       </template>
       <template v-else>
-        <ReportCharts />
+        <ReportCharts :chartType="view.selected.value" />
       </template>
     </div>
   </div>
@@ -110,7 +122,15 @@ export default {
       filter: {},
       total: {},
       page: 1,
-      isChartsView: false,
+      view: {
+        selected: { name: "table", value: "table", class: "font_download" },
+        list: [
+          { name: "table", value: "table", class: "font_download" },
+          { name: "bar", value: "bar", class: "poll" },
+          { name: "doughnut", value: "doughnut", class: "donut_small" },
+        ],
+        select: (option) => (this.view.selected = option),
+      },
     };
   },
   computed: {
@@ -126,6 +146,9 @@ export default {
     },
     isTest() {
       return this.$store.state.account?.account?.id == 1;
+    },
+    isChartsView() {
+      return this.view.selected.value !== "table";
     },
   },
   mounted() {
@@ -413,6 +436,11 @@ export default {
       @include bg_image("@/assets/plus.svg", 50%);
     }
   }
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
   .row {
     display: flex;
     flex-direction: row;
@@ -420,7 +448,7 @@ export default {
     gap: 16px;
     min-height: 56px;
     .type {
-      width: 2%;
+      // width: 2%;
       display: flex;
       align-items: center;
       .checkbox {
@@ -455,6 +483,23 @@ export default {
       }
       .a {
         font-size: 31px;
+      }
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        white-space: nowrap;
+        border-radius: 6px;
+        background-color: transparent;
+        span {
+          color: #757575;
+        }
+      }
+      .btn:hover {
+        span {
+          color: #6b6b6b;
+        }
       }
     }
   }
