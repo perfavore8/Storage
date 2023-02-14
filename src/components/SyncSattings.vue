@@ -37,7 +37,10 @@
                   количество товара на GoСклад учитываться не будет.
                 </label>
                 <SelectorVue
-                  :options_props="copyLeadFieldGroupsList"
+                  :options_props="[
+                    { name: 'Не выбрано', value: -1 },
+                    ...copyLeadFieldGroupsList,
+                  ]"
                   @select="
                     (event) => optionSelectSync(event, 'amo_leads_group_hide')
                   "
