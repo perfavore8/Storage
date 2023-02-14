@@ -19,10 +19,6 @@ export default {
         name: "Архив",
         value: "archive",
       },
-      // {
-      //   name: "Инструкции",
-      //   value: "instructions",
-      // },
     ],
   },
   getters: {
