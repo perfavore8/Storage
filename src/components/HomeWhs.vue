@@ -13,7 +13,7 @@
         <label :for="wh.name">{{ wh.name }}</label>
       </div>
       <AppInputSelect
-        v-if="customWhs"
+        v-if="customWhs.length"
         :list="sortedCustomWhs"
         :selected="selectWH"
         :requestDelay="0"
