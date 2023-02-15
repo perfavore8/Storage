@@ -92,17 +92,32 @@ export default {
         },
         colors: [
           function ({ value }) {
-            if (value < 40) {
-              return "#7E36AF";
-            } else {
-              return "#D9534F";
+            if (value > 50) {
+              return "#00E396";
             }
+            if (value > 35) {
+              return "#FEB019";
+            }
+            return "#FF4560";
           },
         ],
+        legend: {
+          position: "bottom",
+        },
         tooltip: {
           y: {
             formatter: function (val) {
-              return "$ " + val + " thousands";
+              const words = ["тысяча", "тысячи", "тысяч"];
+              return (
+                "₽ " +
+                val +
+                " " +
+                words[
+                  val % 100 > 4 && val % 100 < 20
+                    ? 2
+                    : [2, 0, 1, 1, 1, 2][val % 10 < 5 ? Math.abs(val) % 10 : 5]
+                ]
+              );
             },
           },
         },
@@ -131,9 +146,18 @@ export default {
                 position: "bottom",
                 fontSize: "12px",
               },
+              dataLabels: {
+                style: {
+                  fontSize: "10px",
+                },
+              },
             },
           },
         ],
+        stroke: {
+          show: false,
+        },
+        labels: ["Feb", "Mar", "Apr", "May", "Jun"],
         legend: {
           fontSize: "16px",
         },
@@ -153,7 +177,17 @@ export default {
   justify-content: center;
 
   .vue-apexcharts {
-    width: max-content;
+    :deep(.apexcharts-legend-series) {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      padding: 0 5px;
+      margin: 0 !important;
+      line-height: 1.5;
+    }
+    :deep(.legend-mouseover-inactive) {
+      opacity: 0.5;
+    }
   }
 }
 </style>
