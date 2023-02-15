@@ -1,4 +1,5 @@
 <template>
+  <ReportCreateModal v-if="showReportCreate" />
   <div class="app" :class="{ blur: openSelectedReportModal }">
     <div class="header">
       <NavBar />
@@ -21,7 +22,11 @@
             Отчет по продажам
           </button>
         </div>
-        <button class="add_new_button" v-if="isTest"></button>
+        <button
+          class="add_new_button"
+          v-if="isTest"
+          @click="openReportCreate()"
+        ></button>
       </div>
       <div class="filters">
         <div class="row">
@@ -93,6 +98,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import ReportCreateModal from "@/components/ReportCreateModal.vue";
 import ReportCharts from "@/components/ReportCharts.vue";
 import ReportGrid from "@/components/ReportGrid.vue";
 import ReportFIlters from "@/components/ReportFIlters.vue";
@@ -103,6 +109,7 @@ import { nextTick } from "@vue/runtime-core";
 export default {
   name: "AnalyticsView",
   components: {
+    ReportCreateModal,
     ReportCharts,
     ReportGrid,
     ReportFIlters,
@@ -134,7 +141,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["catalog"]),
+    ...mapGetters(["catalog", "showReportCreate"]),
     refFilters() {
       return this.$refs.filters;
     },
@@ -156,6 +163,9 @@ export default {
     this.$store.dispatch("get_account");
   },
   methods: {
+    openReportCreate() {
+      this.$store.commit("toggleReportCreate", true);
+    },
     updateOpenSelectedReportModal(value) {
       this.openSelectedReportModal = value;
     },
