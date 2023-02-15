@@ -1,13 +1,6 @@
 <template>
   <div class="top">
     <p class="count">Найдено: {{ reportsData.total }}</p>
-    <button
-      v-if="isTest"
-      class="btn small_btn btn_light_dark_blue"
-      @click="toggleReportChart()"
-    >
-      Сформировать отчет
-    </button>
   </div>
   <table class="table" :class="{ blur: openSelectedReportModal || isLoading }">
     <thead>
@@ -92,19 +85,12 @@
       @close="closeReportGridModal"
     />
   </Teleport>
-  <ReportChartModal
-    v-if="showReportChartModal"
-    :reportsData="reportsData"
-    :total="total"
-    @close="toggleReportChart(false)"
-  />
 </template>
 
 <script>
 import ReportGridModal from "./ReportGridModal.vue";
-import ReportChartModal from "./ReportChartModal.vue";
 export default {
-  components: { ReportGridModal, ReportChartModal },
+  components: { ReportGridModal },
   props: {
     title: { type: Array, required: true },
     reportsData: { type: Object, required: true },
@@ -115,9 +101,7 @@ export default {
   data() {
     return {
       copyReports: [],
-      count: 421,
       showTopTitle: true,
-      showReportChartModal: false,
     };
   },
   mounted() {
@@ -221,11 +205,6 @@ export default {
       this.copyReports.map(
         (val) => (val[this.modalInTitle?.code].value = false)
       );
-    },
-    toggleReportChart(val) {
-      val === undefined
-        ? (this.showReportChartModal = !this.showReportChartModal)
-        : (this.showReportChartModal = val);
     },
   },
 };
