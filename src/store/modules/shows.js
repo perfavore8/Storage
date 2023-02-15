@@ -20,6 +20,7 @@ export default {
     showEditPrice: false,
     showTaskCenter: false,
     showMoveProductsBetweenWhs: false,
+    showReportCreate: false,
   },
   getters: {
     show_modals(state, getters) {
@@ -109,6 +110,9 @@ export default {
     showMoveProductsBetweenWhs(state) {
       return state.showMoveProductsBetweenWhs;
     },
+    showReportCreate(state) {
+      return state.showReportCreate;
+    },
   },
   mutations: {
     open_edit_modal(state, idx) {
@@ -180,6 +184,13 @@ export default {
     },
     openCloseAccountSattings(state, value) {
       state.showAccountSattings = value;
+    },
+    toggleReportCreate(state, value) {
+      if (value !== undefined) {
+        state.showReportCreate = value;
+      } else {
+        state.showReportCreate = !state.showReportCreate;
+      }
     },
   },
   actions: {},
