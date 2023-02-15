@@ -345,9 +345,6 @@ export default {
               :deep(.options) {
                 width: fit-content;
                 text-align: left;
-                p {
-                  width: calc(100% - 24px) !important;
-                }
               }
             }
           }

@@ -137,7 +137,7 @@ export default {
             width: inherit;
             height: inherit;
             transition: transform 0.15s ease-in-out;
-            @include bg_image("@/assets/cross_black.svg", 100% 100%);
+            @include bg_image("@/assets/cross_black.svg", 60%);
           }
           .icon:hover {
             transform: rotate(90deg);

@@ -93,7 +93,7 @@ export default {
   }
   > input {
     width: 100%;
-    height: 23px;
+    height: 27px;
     background: #ffffff;
     border: 0.5px solid #c4c4c4;
     border-radius: 4px;

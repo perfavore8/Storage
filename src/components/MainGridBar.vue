@@ -1,6 +1,6 @@
 <template>
   <tr class="bar_row">
-    <th class="bar_item item" style="min-width: 17px" v-if="!oneC">
+    <th class="bar_item item" v-if="!oneC">
       <input
         type="checkbox"
         class="checkbox"
@@ -37,7 +37,7 @@
         ></button>
       </div>
     </th>
-    <th class="bar_item item" style="min-width: 20px">
+    <th class="bar_item item" style="min-width: 80px">
       <div>
         <button
           class="settings_btn"
@@ -109,8 +109,8 @@ export default {
       let arr = [];
       this.fields.forEach((field) => {
         let a = 0;
-        if (field.type == 9) a = 70;
-        if (field.type == 7 || field.type == 8) a = 130;
+        if (field.type == 9) a = 90;
+        if (field.type == 7 || field.type == 8) a = 150;
         arr.push(a);
       });
 
@@ -233,6 +233,10 @@ export default {
   .bar_item:first-child {
     cursor: default;
     width: 17px !important;
+    font-size: 18px;
+    .checkbox + label::before {
+      margin-right: 0;
+    }
   }
   .bar_item:last-child {
     cursor: default;
@@ -242,7 +246,7 @@ export default {
       height: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-around;
     }
   }
 }

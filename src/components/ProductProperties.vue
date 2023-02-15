@@ -112,7 +112,7 @@
                   ></button>
                 </div>
               </td>
-              <td class="box item">
+              <td class="box item text-lg">
                 <input
                   type="checkbox"
                   class="checkbox"
@@ -123,7 +123,7 @@
                 />
                 <label :for="idx + 'nb'"></label>
               </td>
-              <td class="box item">
+              <td class="box item text-lg">
                 <input
                   type="checkbox"
                   class="checkbox"
@@ -202,7 +202,7 @@
                   ></button>
                 </div>
               </td>
-              <td class="box item">
+              <td class="box item text-lg">
                 <input
                   type="checkbox"
                   class="checkbox"
@@ -212,7 +212,7 @@
                 />
                 <label :for="idx + 'nb1'"></label>
               </td>
-              <td class="box item">
+              <td class="box item text-lg">
                 <input
                   type="checkbox"
                   class="checkbox"
@@ -565,6 +565,7 @@ export default {
         @include font(400, 16px);
         h6 {
           @include font(500, 16px);
+          margin: 36px 0;
         }
         .small {
           @include font(400, 14px);
@@ -621,8 +622,8 @@ export default {
             }
             .item:nth-child(2) {
               width: 0%;
-              min-width: 224px;
-              max-width: 224px;
+              min-width: 280px;
+              max-width: 280px;
             }
             .item:nth-child(3) {
               width: 12%;
@@ -651,17 +652,12 @@ export default {
             }
             .selectors {
               .v-select {
-                width: calc(100% - 26px) !important;
-                margin-right: 24px;
+                width: 100% !important;
                 :deep(.title) {
                   width: 100% !important;
                 }
                 :deep(.options) {
-                  width: calc(100% + 24px) !important;
                   text-align: left;
-                  p {
-                    width: calc(100% - 24px) !important;
-                  }
                 }
               }
               .type_selector_options {
@@ -713,38 +709,6 @@ export default {
           border: none;
           border-radius: 4px;
           @include bg_image("@/assets/plus.svg", 50%);
-        }
-        .steps {
-          display: flex;
-          flex-direction: column;
-          border: 1px solid #c9c9c9;
-          border-radius: 4px;
-          margin-top: 30px;
-          padding: 10px;
-          > div {
-            .label_input {
-              display: flex;
-              flex-direction: row;
-              padding: 10px;
-              label {
-                width: 40%;
-              }
-              .v-select {
-                width: calc(50% - 26px);
-                margin-right: 24px;
-                :deep(.title) {
-                  width: 100%;
-                }
-                :deep(.options) {
-                  width: calc(100% + 24px);
-                  text-align: left;
-                  p {
-                    width: calc(100% - 24px);
-                  }
-                }
-              }
-            }
-          }
         }
       }
       .footer {
@@ -835,7 +799,7 @@ export default {
   .triangle {
     cursor: pointer;
     padding: 5px 10px 5px 15px;
-    height: 20px;
+    height: 30px;
     margin: 5px 0;
     @include font(400, 15px);
     -webkit-clip-path: polygon(

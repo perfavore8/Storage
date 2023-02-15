@@ -157,8 +157,8 @@ $vv: calc(1vh + 1vw);
 .checkbox + label::before {
   content: "";
   display: inline-block;
-  width: 1em;
-  height: 1em;
+  width: calc(1em + 2px);
+  height: calc(1em + 2px);
   flex-shrink: 0;
   flex-grow: 0;
   border: 1px solid #adb5bd;
@@ -197,7 +197,6 @@ $vv: calc(1vh + 1vw);
   border-radius: 4px;
   transition: all 0.2s ease-in-out;
   @include font(400, 16px);
-  box-sizing: border-box;
 }
 .input:disabled {
   color: #212529;

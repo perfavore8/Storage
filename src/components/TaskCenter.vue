@@ -77,7 +77,7 @@ export default {
   // border-radius: 0.3rem;
   padding: 16px;
   // background-color: #fff;
-  width: 250px;
+  width: 280px;
   display: flex;
   flex-direction: column;
   gap: 8px;

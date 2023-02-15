@@ -415,7 +415,7 @@ export default {
               display: flex;
               align-items: center;
               text-align: left;
-              height: 30px;
+              height: 40px;
               cursor: pointer;
               padding: 5px 15px;
               @include font(400, 16px, 22px);
@@ -460,6 +460,7 @@ export default {
         .header {
           @include font(500, 16px);
           .small {
+            margin: 1em 0;
             margin-top: 8px;
             font-weight: 400 !important;
           }
@@ -496,6 +497,9 @@ export default {
               cursor: pointer;
               margin-top: 15px;
               margin-right: 25px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
               width: 34px;
               height: 34px;
               color: #fff;
@@ -505,7 +509,6 @@ export default {
               .icon {
                 width: inherit;
                 height: inherit;
-                margin: -1px 0 0 -5px;
                 @include bg_image("@/assets/plus.svg", 60% 60%);
               }
             }

@@ -39,7 +39,7 @@ export default {
   position: sticky;
   padding: 0 30px;
   left: 0;
-  width: calc(100vw - 80px);
+  width: calc(100vw - 20px);
   &_left {
     .header_row {
       display: flex;

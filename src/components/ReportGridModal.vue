@@ -130,7 +130,7 @@ export default {
         width: inherit;
         height: inherit;
         transition: transform 0.15s ease-in-out;
-        @include bg_image("@/assets/cross_black.svg", 100%);
+        @include bg_image("@/assets/cross_black.svg", 70%);
       }
     }
     .btn_del:hover {

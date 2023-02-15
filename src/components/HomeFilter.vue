@@ -74,8 +74,8 @@ export default {
     position: absolute;
     top: -5px;
     left: 0;
-    width: 54px;
-    height: 23px;
+    width: 56px;
+    height: 25px;
     border-radius: 20px;
     background: #c4c4c4;
     transition: 0.15s ease-out;

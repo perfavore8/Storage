@@ -1,46 +1,48 @@
 <template>
-  <div class="row">
-    <div class="left">
-      <div class="date_range">
-        <input type="date" v-model="dateStart" />
-        <input type="date" v-model="dateEnd" />
+  <div class="flex flex-col gap-5">
+    <div class="row">
+      <div class="left">
+        <div class="date_range">
+          <input type="date" v-model="dateStart" />
+          <input type="date" v-model="dateEnd" />
+        </div>
+        <AppInputSelect
+          :list="selected_field_autocomplete_list"
+          :countLettersReq="field.minLength"
+          :placeholder="field.placeholder"
+          @changeInputValue="(value) => changeInputValue(value, field.name)"
+          @select="(item) => selectField(item, field.name)"
+          @focusin="selected_field_autocomplete = field.name"
+          @focusout="selected_field_autocomplete = null"
+          v-for="field in fields"
+          :key="field.id"
+          v-show="
+            (isClient && field.clientShow) || (!isClient && field.salesShow)
+          "
+        />
       </div>
-      <AppInputSelect
-        :list="selected_field_autocomplete_list"
-        :countLettersReq="field.minLength"
-        :placeholder="field.placeholder"
-        @changeInputValue="(value) => changeInputValue(value, field.name)"
-        @select="(item) => selectField(item, field.name)"
-        @focusin="selected_field_autocomplete = field.name"
-        @focusout="selected_field_autocomplete = null"
-        v-for="field in fields"
-        :key="field.id"
-        v-show="
-          (isClient && field.clientShow) || (!isClient && field.salesShow)
-        "
-      />
+      <div class="btns">
+        <button class="btn btn_blue" @click="apply()">Применить</button>
+        <button class="btn btn_grey" @click="clearAllFields()">Очистить</button>
+      </div>
     </div>
-    <div class="btns">
-      <button class="btn btn_blue" @click="apply()">Применить</button>
-      <button class="btn btn_grey" @click="clearAllFields()">Очистить</button>
-    </div>
-  </div>
-  <div class="row selected_row">
-    <div
-      class="selected"
-      v-for="(field, idx1) in fields"
-      :key="field.id"
-      v-show="field.selected.length"
-    >
-      <span>{{ field.placeholder }}: </span>
+    <div class="row selected_row">
       <div
-        v-for="(item, idx2) in field.selected"
-        :key="item"
-        class="item"
-        @click="deleteField(idx1, idx2)"
+        class="selected"
+        v-for="(field, idx1) in fields"
+        :key="field.id"
+        v-show="field.selected.length"
       >
-        {{ item.value }}
-        <div class="icon"></div>
+        <span>{{ field.placeholder }}: </span>
+        <div
+          v-for="(item, idx2) in field.selected"
+          :key="item"
+          class="item"
+          @click="deleteField(idx1, idx2)"
+        >
+          {{ item.value }}
+          <div class="icon"></div>
+        </div>
       </div>
     </div>
   </div>

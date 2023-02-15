@@ -496,7 +496,7 @@ export default {
     @include font(500, 18px);
   }
   .card {
-    width: 300px;
+    width: 340px;
     // border: 1px solid #c9c9c9;
     border-radius: 8px;
     padding: 20px;

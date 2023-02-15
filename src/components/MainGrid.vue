@@ -410,6 +410,10 @@ export default {
 .item:first-child {
   width: 17px !important;
   text-align: center;
+  font-size: 16px;
+  .checkbox + label::before {
+    margin-right: 0;
+  }
   .filter {
     display: none;
   }

@@ -100,7 +100,6 @@ export default {
   gap: 20px;
   width: 100%;
   .radio_btns {
-    height: 24px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -125,8 +124,8 @@ export default {
       > label:before {
         content: "";
         display: inline-block;
-        width: 14px;
-        height: 14px;
+        width: 16px;
+        height: 16px;
         position: absolute;
         left: 0;
         bottom: 5px;

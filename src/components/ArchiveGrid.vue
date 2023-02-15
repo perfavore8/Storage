@@ -149,6 +149,7 @@ export default {
     background-color: rgba(0, 0, 0, 0.15) !important;
     .item {
       padding-bottom: 20px !important;
+      text-align: center !important;
     }
   }
   .row:nth-child(odd) {

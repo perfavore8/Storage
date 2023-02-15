@@ -233,33 +233,10 @@ export default {
     border-top: 1px solid #dee2e6;
     margin-top: 15px;
   }
-  .checkbox {
-    position: absolute;
-    z-index: -1;
-    opacity: 0;
-  }
-  .checkbox + label {
-    display: inline-flex;
-    align-items: center;
-    user-select: none;
-  }
+
   .checkbox + label::before {
-    content: "";
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    flex-shrink: 0;
-    flex-grow: 0;
     background-color: #fff;
     border: 1px solid #adb5bd;
-    border-radius: 0.25em;
-    margin-right: 0.5em;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 50% 50%;
-    cursor: pointer;
-    transition: border-color 0.15s ease-in-out,
-      background-color 0.15s ease-in-out;
   }
   .checkbox:checked + label::before {
     border-color: #0b76ef;

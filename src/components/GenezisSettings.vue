@@ -141,17 +141,13 @@ export default {
         // width: 40%;
       }
       .v-select {
-        width: calc(100% - 26px);
+        width: 100%;
         // margin-right: 24px;
         :deep(.title) {
           width: 100%;
         }
         :deep(.options) {
-          width: calc(100% + 24px);
           text-align: left;
-          p {
-            width: calc(100% - 24px);
-          }
         }
       }
     }

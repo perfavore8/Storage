@@ -390,6 +390,7 @@ export default {
         @include font(400, 16px);
         h6 {
           @include font(500, 16px);
+          margin: 36px 0;
         }
         .small {
           @include font(400, 14px);
@@ -409,17 +410,13 @@ export default {
               width: 40%;
             }
             .v-select {
-              width: calc(50% - 26px);
+              width: 50%;
               margin-right: 24px;
               :deep(.title) {
                 width: 100%;
               }
               :deep(.options) {
-                width: calc(100% + 24px);
                 text-align: left;
-                p {
-                  width: calc(100% - 24px);
-                }
               }
             }
           }

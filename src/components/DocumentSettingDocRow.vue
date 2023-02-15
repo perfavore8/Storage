@@ -63,6 +63,11 @@ export default {
     padding: 10px 5px;
     border: 1px solid #c9c9c9;
     text-align: left;
+    > a {
+      color: -webkit-link;
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
   .btns {
     display: flex;
@@ -88,7 +93,7 @@ export default {
       .icon {
         width: inherit;
         height: inherit;
-        @include bg_image("@/assets/pencil.svg", 80% 80%);
+        @include bg_image("@/assets/pencil.svg", 50%);
       }
     }
     .btn_edit:hover {
@@ -101,7 +106,7 @@ export default {
       .icon {
         width: inherit;
         height: inherit;
-        @include bg_image("@/assets/cross.svg", 80% 80%);
+        @include bg_image("@/assets/cross.svg", 50%);
       }
     }
     .btn_del:hover {

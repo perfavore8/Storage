@@ -187,8 +187,8 @@ export default {
     // max-width: 200px;
   }
   .title {
-    height: 20px;
-    width: calc(100% - 24px);
+    height: 34px;
+    width: 100%;
     padding: 6px 12px;
     display: flex;
     align-items: center;
@@ -244,8 +244,8 @@ export default {
     z-index: 5;
     p {
       cursor: pointer;
-      height: 20px;
-      width: calc(100% - 24px);
+      height: 32px;
+      width: 100%;
       padding: 6px 12px;
       transition: background-color 0.15s ease-out;
       white-space: pre;

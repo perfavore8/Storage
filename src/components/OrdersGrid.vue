@@ -321,10 +321,6 @@ export default {
   width: 17px !important;
   text-align: center;
 }
-.item:nth-child(2) {
-  width: 20px !important;
-  text-align: center;
-}
 .text {
   position: relative;
   top: 20px;

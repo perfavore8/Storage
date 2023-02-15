@@ -543,17 +543,13 @@ export default {
               }
 
               .v-select {
-                width: calc(100% - 26px) !important;
+                width: 100%;
                 margin-right: 24px;
                 :deep(.title) {
                   width: 100% !important;
                 }
                 :deep(.options) {
-                  width: calc(100% + 24px) !important;
                   text-align: left;
-                  p {
-                    width: calc(100% - 24px) !important;
-                  }
                 }
               }
             }
@@ -566,6 +562,7 @@ export default {
         }
         .small {
           @include font(400, 14px);
+          margin: 1em 0;
         }
         .fields {
           .row {

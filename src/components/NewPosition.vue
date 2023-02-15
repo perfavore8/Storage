@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="backdrop" @click="close()" />
-    <div class="container">
+    <div class="container max-w-none">
       <div class="header"><label>Добавление товаров</label></div>
       <div class="content">
         <table class="table">
@@ -876,9 +876,6 @@ export default {
                 flex: 2 2 auto;
                 width: 60% !important;
                 :deep(.title) {
-                  width: calc(100% - 24px) !important;
-                }
-                :deep(.options) {
                   width: 100% !important;
                 }
               }
@@ -901,48 +898,48 @@ export default {
           }
           .item:nth-child(4) {
             width: 20%;
-            min-width: 150px;
+            min-width: 160px;
           }
           .item:nth-child(5) {
             width: 20%;
-            min-width: 180px;
+            min-width: 190px;
             // max-width: 180px;
           }
           .item:nth-child(6) {
             width: 15%;
-            min-width: 50px;
+            min-width: 60px;
           }
           .item:nth-child(7) {
             width: 10%;
             // max-width: 140px;
-            min-width: 140px;
+            min-width: 150px;
           }
           .item:nth-child(8) {
             width: 5%;
           }
           .item:nth-child(9) {
             width: 15%;
-            min-width: 150px;
+            min-width: 160px;
             // max-width: 180px;
           }
           .item:nth-child(10) {
             width: 15%;
-            min-width: 100px;
+            min-width: 110px;
           }
           .item:nth-child(11) {
             width: 5%;
           }
           .item:nth-child(12) {
             width: 15%;
-            min-width: 140px;
+            min-width: 150px;
           }
           .item:nth-child(13) {
             width: 5.3%;
-            min-width: 34px;
-            max-width: 54px;
+            min-width: 44px;
+            max-width: 44px;
           }
           .long {
-            min-width: 172px;
+            min-width: 182px;
           }
           .del_btn {
             height: 34px;

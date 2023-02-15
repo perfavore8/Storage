@@ -10,7 +10,7 @@
       </div>
       <div class="content">
         <div class="block">
-          <h6>Этапы резервирования товаров со склада</h6>
+          <h6 class="my-9">Этапы резервирования товаров со склада</h6>
           <div class="text">
             <input
               type="checkbox"
@@ -119,7 +119,7 @@ export default {
           width: inherit;
           height: inherit;
           transition: transform 0.15s ease-in-out;
-          @include bg_image("@/assets/cross_black.svg", 100% 100%);
+          @include bg_image("@/assets/cross_black.svg", 60%);
         }
         .icon:hover {
           transform: rotate(90deg);

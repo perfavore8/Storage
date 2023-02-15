@@ -310,7 +310,7 @@ export default {
   position: sticky;
   padding: 0 30px;
   left: 0;
-  width: calc(100vw - 80px);
+  width: calc(100vw - 20px);
   z-index: 200;
   &_left {
     .header_row {
@@ -330,7 +330,7 @@ export default {
     position: sticky;
     padding: 0 30px;
     left: 0;
-    width: calc(100vw - 80px);
+    width: calc(100vw - 20px);
     &_left {
       display: flex;
       flex-direction: row;
@@ -389,6 +389,7 @@ export default {
           p {
             color: #757575;
             @include font(400, 16px, 19px);
+            margin: 16px 0;
           }
           .checkbox {
             position: absolute;

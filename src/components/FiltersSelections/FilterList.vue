@@ -146,17 +146,17 @@ export default {
     position: absolute;
     z-index: 50;
     margin-top: 30px;
-    max-width: 224px;
+    // max-width: 224px;
   }
-  .multi_selector {
-    width: fit-content;
-    max-width: none;
-    :deep(.item) {
-      white-space: pre;
-      width: max-content;
-      min-width: calc(100% - 24px);
-    }
-  }
+  // .multi_selector {
+  //   width: fit-content;
+  //   max-width: none;
+  //   :deep(.item) {
+  //     white-space: pre;
+  //     width: max-content;
+  //     min-width: 100%;
+  //   }
+  // }
 }
 .backdrop {
   position: fixed;

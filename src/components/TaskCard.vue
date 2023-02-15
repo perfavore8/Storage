@@ -12,7 +12,7 @@
       <div class="active_bar" :style="{ width: task.progress + '%' }" />
     </div>
     <p>{{ task.name }}</p>
-    <div ref="result"></div>
+    <div ref="result" class="result"></div>
   </div>
 </template>
 
@@ -70,7 +70,12 @@ export default {
     }
   }
   p {
-    margin-bottom: 0;
+    margin-top: 16px;
+  }
+  .result:deep(a) {
+    color: -webkit-link !important;
+    cursor: pointer;
+    text-decoration: underline !important;
   }
 }
 .done {

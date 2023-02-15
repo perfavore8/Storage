@@ -80,8 +80,8 @@ export default {
   border-radius: 5px;
   .item {
     cursor: pointer;
-    height: 20px;
-    width: 250px;
+    height: 32px;
+    // width: 250px;
     padding: 6px 12px;
     transition: background-color 0.2s ease-out;
     @include font(400, 16px, 20px);

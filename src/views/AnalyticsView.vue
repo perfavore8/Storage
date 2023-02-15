@@ -30,7 +30,7 @@
       </div>
       <div class="filters">
         <div class="row">
-          <div class="type" v-if="isTest">
+          <div class="type self-start" v-if="isTest">
             <button
               class="btn"
               :class="{ selected: view.selected.value === item.value }"
