@@ -1,31 +1,6 @@
 <template>
   <NotificationCenter />
   <div class="wrapper">
-    <!-- <div class="item">
-      <ChartsBar :data="bar.data" :options="bar.options" />
-    </div>
-    <div class="item"><ChartsBubble /></div>
-    <div class="item">
-      <ChartsDoughnut
-        :data="dataDoughnut.data"
-        :options="dataDoughnut.options"
-      />
-    </div>
-    <div class="item">
-      <ChartsLine :propsData="dataLine" :propsOptions="dataLine.options" />
-    </div>
-    <div class="item"><ChartsPie /></div>
-    <div class="item"><ChartsPolarArea /></div>
-    <div class="item"><ChartsRadar /></div>
-    <div class="item"><ChartsScatter /></div> -->
-    <!-- <div class="item">
-      <apexchart
-        :type="data[0].type"
-        height="350"
-        :options="data[0].chartOptions"
-        :series="data[0].series"
-      ></apexchart>
-    </div> -->
     <div class="item" v-for="item in data" :key="item">
       <apexchart
         :type="item.type"
@@ -38,26 +13,10 @@
 </template>
 
 <script>
-// import ChartsBar from "@/components/Charts/ChartsBar.vue";
-// import ChartsBubble from "@/components/Charts/ChartsBubble.vue";
-// import ChartsDoughnut from "@/components/Charts/ChartsDoughnut.vue";
-// import ChartsLine from "@/components/Charts/ChartsLine.vue";
-// import ChartsPie from "@/components/Charts/ChartsPie.vue";
-// import ChartsPolarArea from "@/components/Charts/ChartsPolarArea.vue";
-// import ChartsRadar from "@/components/Charts/ChartsRadar.vue";
-// import ChartsScatter from "@/components/Charts/ChartsScatter.vue";
 import NotificationCenter from "@/components/NotificationCenter.vue";
 import { reactive, ref } from "@vue/reactivity";
 export default {
   components: {
-    // ChartsBar,
-    // ChartsBubble,
-    // ChartsDoughnut,
-    // ChartsLine,
-    // ChartsPie,
-    // ChartsPolarArea,
-    // ChartsRadar,
-    // ChartsScatter,
     NotificationCenter,
   },
 
