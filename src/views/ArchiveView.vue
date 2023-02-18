@@ -1,13 +1,19 @@
 <template>
-  <div class="app">
-    <div class="header">
-      <NavBar />
-    </div>
-    <div class="content">
-      <div class="top">
-        <p>Найдено: {{ coun_archive }}</p>
+  <div :class="{ dark: isDarkTest }">
+    <div class="app px-4 md:px-[30px] dark:bg-slate-900">
+      <div class="header w-full">
+        <NavBar />
       </div>
-      <archive-grid class="grid"></archive-grid>
+      <div class="content w-full mt-2 md:mt-12">
+        <div class="top">
+          <p
+            class="my-2 md:my-4 text-sm md:text-base text-slate-500 dark:text-slate-300"
+          >
+            Найдено: {{ coun_archive }}
+          </p>
+        </div>
+        <archive-grid class="grid"></archive-grid>
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +33,9 @@ export default {
     coun_archive() {
       return this.$store.state.products.products.length;
     },
+    isDarkTest() {
+      return this.$route.query.test === "dark";
+    },
   },
 };
 </script>
@@ -34,9 +43,9 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: calc(100vw - 68px);
+  width: 100vw;
   height: 100%;
-  padding: 0 30px;
+  // padding: 0 30px;
 
   display: flex;
   flex-direction: column;
@@ -49,13 +58,13 @@ export default {
   justify-content: start;
 }
 .content {
-  margin-top: 50px;
+  // margin-top: 50px;
   .top {
     text-align: left;
     p {
       margin-left: 10px;
-      color: #757575;
-      @include font(400, 16px);
+      // color: #757575;
+      // @include font(400, 16px);
     }
   }
 }

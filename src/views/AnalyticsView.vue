@@ -384,7 +384,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: calc(100vw - 68px);
+  width: 100vw;
   height: 100vh;
   padding: 0 30px;
 

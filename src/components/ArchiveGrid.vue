@@ -3,58 +3,88 @@
     <label v-if="archive_list.length == 0" class="text">
       Ничего не найдено
     </label>
-    <table class="table" v-else>
-      <thead>
-        <tr class="row title">
-          <td
-            v-for="item in tableConfig"
-            :key="item[0]"
-            v-show="item[1].visible"
-            class="item"
-          >
-            {{ item[1].name }}
-          </td>
-          <td class="item"></td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in archive_list" :key="item.id" class="row">
-          <template v-for="field in tableConfig" :key="field">
-            <template v-if="field[1].visible">
-              <td class="item">
-                <span v-if="field[0].split('.').length < 2">
-                  {{ item.fields[field[0]] }}
-                </span>
-                <span v-else>
-                  <template v-if="item.fields[field[0].split('.')[0]]">
-                    {{
-                      field[0].split(".")[1] == "cost"
-                        ? item.fields[field[0].split(".")[0]][
-                            field[0].split(".")[1]
-                          ] +
-                          " " +
-                          item.fields[field[0].split(".")[0]].currency
-                        : item.fields[field[0].split(".")[0]][
-                            field[0].split(".")[1]
-                          ]
-                    }}
-                  </template>
-                </span>
-              </td>
-            </template>
-          </template>
-          <td class="item">
-            <div
-              class="edit_icon"
-              @click="unarchive_data(item)"
-              title="Разархивирование товара"
+    <template v-else>
+      <table class="table2 hidden md:table">
+        <thead>
+          <tr class="row title">
+            <td
+              v-for="item in tableConfig"
+              :key="item[0]"
+              v-show="item[1].visible"
+              class="item"
             >
-              <span class="material-icons"> ios_share </span>
+              {{ item[1].name }}
+            </td>
+            <td class="item"></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in archive_list" :key="item.id" class="row">
+            <template v-for="field in tableConfig" :key="field">
+              <template v-if="field[1].visible">
+                <td class="item">
+                  <span v-if="field[0].split('.').length < 2">
+                    {{ item.fields[field[0]] }}
+                  </span>
+                  <span v-else>
+                    <template v-if="item.fields[field[0].split('.')[0]]">
+                      {{
+                        field[0].split(".")[1] == "cost"
+                          ? item.fields[field[0].split(".")[0]][
+                              field[0].split(".")[1]
+                            ] +
+                            " " +
+                            item.fields[field[0].split(".")[0]].currency
+                          : item.fields[field[0].split(".")[0]][
+                              field[0].split(".")[1]
+                            ]
+                      }}
+                    </template>
+                  </span>
+                </td>
+              </template>
+            </template>
+            <td class="item">
+              <div
+                class="edit_icon"
+                @click="unarchive_data(item)"
+                title="Разархивирование товара"
+              >
+                <span class="material-icons"> ios_share </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="md:hidden mx-auto grid grid-cols-1 gap-6 mt-3 sm:grid-cols-2">
+        <template v-for="i in 10" :key="i">
+          <div
+            v-for="item in archive_list"
+            :key="item.id"
+            class="container px-5 py-3 max-w-xs rounded-xl bg-gray-50 dark:bg-slate-800 dark:text-slate-100 shadow-md flex flex-col items-center gap-y-3 relative"
+          >
+            <div
+              class="edit_icon absolute right-3 top-3"
+              @click="unarchive_data(item)"
+            >
+              <span
+                class="material-icons dark:text-slate-300"
+                style="font-size: 18px"
+              >
+                ios_share
+              </span>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <div class="flex flex-row gap-4">
+              <h6 class="font-bold">{{ item.fields.article }}</h6>
+              <span>№ {{ item.fields.batch }}</span>
+            </div>
+            <div class="text-sm">
+              <span>{{ item.fields.name }}</span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
     <grid-bottom
       class="bottom"
       :previous="meta.links.prev != null"
@@ -139,7 +169,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
-.table {
+.table2 {
   border: 1px solid #c9c9c9;
   border-collapse: collapse;
   width: 100%;
