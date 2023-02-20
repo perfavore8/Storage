@@ -16,7 +16,7 @@
   </div>
   <button
     @click="start()"
-    class="fixed top-2 left-2"
+    class="fixed top-2 left-2 z-50"
     v-if="isNotificationTest"
     :disabled="inProgress"
   >
