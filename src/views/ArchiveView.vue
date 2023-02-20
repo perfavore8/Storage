@@ -1,6 +1,6 @@
 <template>
   <div :class="{ dark: isDarkTest }">
-    <div class="app px-4 md:px-[30px] dark:bg-slate-900">
+    <div class="app min-h-screen px-4 md:px-[30px] dark:bg-slate-900">
       <div class="header w-full">
         <NavBar />
       </div>
@@ -43,7 +43,8 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: 100vw;
+  min-width: 100vw;
+  width: 100%;
   height: 100%;
   // padding: 0 30px;
 

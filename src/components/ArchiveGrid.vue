@@ -11,18 +11,18 @@
               v-for="item in tableConfig"
               :key="item[0]"
               v-show="item[1].visible"
-              class="item"
+              class="item dark:bg-slate-800"
             >
               {{ item[1].name }}
             </td>
-            <td class="item"></td>
+            <td class="item dark:bg-slate-800"></td>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in archive_list" :key="item.id" class="row">
             <template v-for="field in tableConfig" :key="field">
               <template v-if="field[1].visible">
-                <td class="item">
+                <td class="item dark:bg-slate-700">
                   <span v-if="field[0].split('.').length < 2">
                     {{ item.fields[field[0]] }}
                   </span>
@@ -44,7 +44,7 @@
                 </td>
               </template>
             </template>
-            <td class="item">
+            <td class="item dark:bg-slate-700">
               <div
                 class="edit_icon"
                 @click="unarchive_data(item)"
@@ -172,6 +172,7 @@ export default {
 .table2 {
   border: 1px solid #c9c9c9;
   border-collapse: collapse;
+  border-radius: 20px;
   width: 100%;
   @include font(400, 16px);
   .title {
@@ -189,8 +190,10 @@ export default {
     .item {
       padding: 10px;
       border: 1px solid #c9c9c9;
-      border-top: 2px solid #c9c9c9;
+      // border-top: 2px solid #c9c9c9;
       text-align: left;
+
+      @apply dark:text-white dark:border-gray-600 dark:border-2;
     }
   }
 }
@@ -203,6 +206,8 @@ export default {
   align-items: center;
   justify-content: center;
   color: #757575;
+
+  @apply dark:text-slate-400;
   // @include bg_image("@/assets/export.svg");
   // transform: rotate(180deg);
 }
