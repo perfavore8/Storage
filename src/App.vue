@@ -8,9 +8,21 @@
 </template>
 
 <script>
+import { computed, watch } from "@vue/runtime-core";
+import { useRoute } from "vue-router";
 import NotificationCenter from "./components/NotificationCenter.vue";
 export default {
   components: { NotificationCenter },
+  setup() {
+    const route = useRoute();
+
+    const isDarkTest = computed(() => route?.query?.test === "dark");
+    watch(isDarkTest, () => {
+      isDarkTest.value
+        ? document.body.classList.add("dark")
+        : document.body.classList.remove("dark");
+    });
+  },
 };
 </script>
 
