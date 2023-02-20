@@ -144,11 +144,14 @@
 import TaskCenter from "@/components/TaskCenter.vue";
 import { computed, ref } from "@vue/runtime-core";
 import store from "@/store";
+import { useNotification } from "@/composables/notification";
 export default {
   components: {
     TaskCenter,
   },
   setup() {
+    const { addNotification } = useNotification();
+
     const showTaskCenter = computed(() => store.state.shows.showTaskCenter);
     const show_sync = computed(() => store.state.shows.show_sync);
     const show_settings = computed(() => store.state.shows.show_settings);
@@ -172,7 +175,7 @@ export default {
       payload.append("name", file.name);
       const res = await store.dispatch("importStuff", payload);
       if (res.error) {
-        alert(res.error);
+        addNotification(3, "Ошибка", res.error);
       } else {
         store.commit("openCloseImportStuff", true);
       }

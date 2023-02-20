@@ -1,10 +1,18 @@
 <template>
+  <NotificationCenter />
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
       <component :is="Component" />
     </transition>
   </router-view>
 </template>
+
+<script>
+import NotificationCenter from "./components/NotificationCenter.vue";
+export default {
+  components: { NotificationCenter },
+};
+</script>
 
 <style lang="scss">
 body {
