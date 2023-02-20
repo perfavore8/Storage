@@ -47,6 +47,7 @@ export default {
   box-sizing: border-box;
 }
 .card {
+  max-width: max(30vw, 320px);
   position: relative;
   display: flex;
   flex-direction: row;
