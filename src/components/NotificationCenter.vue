@@ -3,7 +3,7 @@
     <template v-for="(notification, idx) in notificationsData" :key="idx">
       <transition name="card">
         <NotificationCard
-          v-if="notification.show"
+          v-if="notification.show || true"
           :notification="{
             type: notification.type,
             header: notification.header,

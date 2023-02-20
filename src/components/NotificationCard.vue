@@ -54,35 +54,44 @@ export default {
   align-items: center;
   border-radius: 12px;
   background: #fff;
-  padding: 20px 35px 20px 25px;
+  // padding: 20px 35px 20px 25px;
   box-shadow: 0 6px 20px -5px rgb(0 0 0 / 20%);
   overflow: hidden;
   width: fit-content;
   transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+  @apply py-2 pl-3 pr-7 sm:py-3 sm:pl-4 sm:pr-8 md:py-5 md:pl-6 md:pr-9;
   .logo {
-    font-size: 32px;
+    // font-size: 32px;
+    @apply text-xl sm:text-2xl md:text-3xl;
   }
   .main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 0 20px;
+    // margin: 0 20px;
+    @apply mx-2 sm:mx-3 md:mx-5;
     .header {
-      @include font(600, 16px);
       color: #333;
+      @apply text-xs font-semibold sm:text-sm md:text-base;
     }
     .text {
       color: #666;
+      @apply text-xs sm:text-sm md:text-base;
     }
   }
   .cross {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     top: 10px;
     right: 15px;
-    padding: 5px;
+    padding: 4px;
     opacity: 0.7;
-    padding: 0;
     background-color: transparent;
+    width: 26px;
+    height: 26px;
+    @apply top-1 right-1 md:top-[10px] md:right-4;
     > span {
       font-size: 18px;
     }
