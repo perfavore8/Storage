@@ -171,8 +171,11 @@ export default {
       payload.append("file", file);
       payload.append("name", file.name);
       const res = await store.dispatch("importStuff", payload);
-      if (res.error) alert(res.error);
-      store.commit("openCloseImportStuff", true);
+      if (res.error) {
+        alert(res.error);
+      } else {
+        store.commit("openCloseImportStuff", true);
+      }
       closeImportXlsl();
     };
 
