@@ -14,17 +14,30 @@
       </transition>
     </template>
   </div>
-  <button @click="start()" :disabled="inProgress">123</button>
+  <button
+    @click="start()"
+    class="fixed top-2 left-2"
+    v-if="isNotificationTest"
+    :disabled="inProgress"
+  >
+    123
+  </button>
 </template>
 
 <script>
 import NotificationCard from "./NotificationCard.vue";
 import { useNotification } from "@/composables/notification";
 import { computed } from "@vue/runtime-core";
+import { useRoute } from "vue-router";
 export default {
   components: { NotificationCard },
   setup() {
     const { notificationsData, addNotification, delay } = useNotification();
+    const route = useRoute();
+
+    const isNotificationTest = computed(
+      () => route.query.test === "notifications"
+    );
 
     const start = () => {
       notificationsData.forEach((val, idx) => {
@@ -44,7 +57,14 @@ export default {
       notificationsData[idx].timer = null;
     };
 
-    return { notificationsData, stop, start, inProgress, addNotification };
+    return {
+      notificationsData,
+      stop,
+      start,
+      inProgress,
+      addNotification,
+      isNotificationTest,
+    };
   },
 };
 </script>
