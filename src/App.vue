@@ -1,10 +1,11 @@
 <template>
   <NotificationCenter />
-  <router-view v-slot="{ Component }">
+  <!-- <router-view v-slot="{ Component, route }">
     <transition name="fade">
-      <component :is="Component" />
+      <component :is="Component" :key="route.path" />
     </transition>
-  </router-view>
+  </router-view> -->
+  <router-view />
 </template>
 
 <script>
@@ -54,7 +55,7 @@ body {
   transition: all 0.2s ease-out;
 }
 .fade-enter-active {
-  transition-delay: 0.2s;
+  transition-delay: 0.25s;
 }
 .fade-enter-from,
 .fade-leave-to {
