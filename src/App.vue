@@ -16,7 +16,7 @@ export default {
   setup() {
     const route = useRoute();
 
-    const isDarkTest = computed(() => route?.query?.test === "dark");
+    const isDarkTest = computed(() => route.query.test === "dark");
     watch(isDarkTest, () => {
       isDarkTest.value
         ? document.body.classList.add("dark")
