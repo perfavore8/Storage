@@ -107,7 +107,7 @@
                 Свойства товаров
               </div>
             </a>
-            <a v-if="!oneC && isFullAccount">
+            <a v-if="!oneC && isColored">
               <div class="modal_container" @click="openSyncSettings()">
                 Настройки синхронизации товаров
               </div>
@@ -120,7 +120,7 @@
                 Документы
               </div>
             </a>
-            <a v-if="isFullAccount">
+            <a v-if="isColored">
               <div
                 class="modal_container"
                 @click="openThirdPpartyIntegrations()"
@@ -164,11 +164,7 @@ export default {
         account.value?.config?.amo_product_list == "-1"
     );
 
-    const isFullAccount = computed(() =>
-      store.state.account.account.accounts_id.includes(
-        store.state.account.account.id
-      )
-    );
+    const isColored = computed(() => store.state.account.account.is_colored);
 
     const showImportXlsx = ref(false);
 
@@ -233,7 +229,7 @@ export default {
       showImportXlsx,
       openImportXlsl,
       closeImportXlsl,
-      isFullAccount,
+      isColored,
     };
   },
 };
