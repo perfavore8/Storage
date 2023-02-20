@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { nextTick, reactive } from "vue";
 
 const notificationsData = reactive([
   {
@@ -39,10 +39,11 @@ export function useNotification() {
       type: type,
       header: header,
       text: text,
-      show: true,
+      show: false,
       timer: setTimeout(() => (notification.show = false), delay),
     });
     notificationsData.push(notification);
+    nextTick(() => (notification.show = true));
   };
 
   return { notificationsData, addNotification, delay };
