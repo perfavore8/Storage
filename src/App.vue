@@ -1,7 +1,7 @@
 <template>
   <NotificationCenter />
   <router-view v-slot="{ Component }">
-    <transition name="fade" mode="out-in">
+    <transition name="fade">
       <component :is="Component" />
     </transition>
   </router-view>
@@ -52,6 +52,9 @@ body {
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.2s ease-out;
+}
+.fade-enter-active {
+  transition-delay: 0.2s;
 }
 .fade-enter-from,
 .fade-leave-to {
