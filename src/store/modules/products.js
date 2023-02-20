@@ -1,4 +1,6 @@
 import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { usePreparationProducts } from "@/composables/preparationProducts";
+const { preparationProducts } = usePreparationProducts();
 export default {
   state: {
     products: [],
@@ -20,7 +22,7 @@ export default {
   getters: {},
   mutations: {
     update_products(state, value) {
-      state.products = [...value];
+      state.products = [...preparationProducts(value)];
     },
     update_editing_product(state, value) {
       state.editing_product = { ...value };
