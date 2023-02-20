@@ -83,7 +83,9 @@
         @close="close"
         @save="save"
         :disabledSave="noOneSelectedFields"
-      />
+      >
+        <template v-slot:save>Импортировать</template>
+      </BtnsSaveClose>
     </footer>
   </div>
 </template>
