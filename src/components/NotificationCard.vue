@@ -59,7 +59,7 @@ export default {
   overflow: hidden;
   width: fit-content;
   transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
-  @apply py-2 pl-3 pr-7 sm:py-3 sm:pl-4 sm:pr-8 md:py-5 md:pl-6 md:pr-9 bg-white dark:bg-slate-800;
+  @apply py-2 pl-3 pr-7 sm:py-3 sm:pl-4 sm:pr-8 md:py-5 md:pl-6 md:pr-9 bg-white dark:bg-slate-800 dark:shadow-lg dark:shadow-slate-600/20;
   .logo {
     // font-size: 32px;
     @apply text-xl sm:text-2xl md:text-3xl;

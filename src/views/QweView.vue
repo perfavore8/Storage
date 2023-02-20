@@ -1,6 +1,6 @@
 <template>
   <NotificationCenter />
-  <div class="wrapper">
+  <div class="wrapper dark:bg-slate-900">
     <div class="item" v-for="item in data" :key="item">
       <apexchart
         :type="item.type"
@@ -14,72 +14,20 @@
 
 <script>
 import NotificationCenter from "@/components/NotificationCenter.vue";
-import { reactive, ref } from "@vue/reactivity";
+import { ref } from "@vue/reactivity";
+import { computed } from "@vue/runtime-core";
+import { useRoute } from "vue-router";
 export default {
   components: {
     NotificationCenter,
   },
 
   setup() {
+    const route = useRoute();
+    const isDarkTest = computed(() => route?.query?.test === "dark");
+    console.log(isDarkTest.value);
+
     const selected = ref(0);
-
-    const dataDoughnut = reactive({
-      data: {
-        labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
-        datasets: [
-          {
-            backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
-            data: [40, 20, 80, 10],
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-      },
-    });
-    const dataLine = reactive({
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [
-        {
-          label: "Data One",
-          backgroundColor: "#f87979",
-          data: [40, 39, 10, 40, 39, 80, 40],
-        },
-      ],
-      options: {
-        animations: {
-          tension: {
-            duration: 1000,
-            easing: "linear",
-            from: 0.5,
-            to: 0.2,
-            loop: true,
-          },
-        },
-      },
-    });
-
-    const bar = reactive({
-      data: {
-        labels: ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s"],
-        datasets: [
-          {
-            label: "Data One",
-            data: [40, 20, 10, 82, 73, 27, 23, 17, 52, 12, 54, 64, 56],
-            fill: false,
-            backgroundColor: "rgb(75, 192, 192)",
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          customCanvasBackgroundColor: {
-            color: "lightGreen",
-          },
-        },
-      },
-    });
 
     var dataSeries = [
       [
@@ -1796,6 +1744,9 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           responsive: [
             {
               breakpoint: 400,
@@ -1807,6 +1758,7 @@ export default {
           chart: {
             height: 350,
             type: "line",
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             zoom: {
               enabled: false,
             },
@@ -1824,7 +1776,7 @@ export default {
           grid: {
             row: {
               colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-              opacity: 0.5,
+              opacity: isDarkTest.value ? 0.2 : 0.5,
             },
           },
           xaxis: {
@@ -1855,7 +1807,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            // background: isDarkTest.value ? "rgb(30 41 59)" : "", ошибки
             height: 350,
             type: "line",
             dropShadow: {
@@ -1922,7 +1878,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "area",
             stacked: false,
             height: 350,
@@ -1986,7 +1946,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "line",
             height: 350,
           },
@@ -2018,7 +1982,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "line",
           },
@@ -2093,7 +2061,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "area",
             height: 350,
             zoom: {
@@ -2140,7 +2112,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "area",
           },
@@ -2344,7 +2320,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "area",
             height: 350,
           },
@@ -2451,7 +2431,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "area",
             height: 350,
             stacked: true,
@@ -2501,7 +2485,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "bar",
             height: 350,
           },
@@ -2559,7 +2547,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "bar",
           },
@@ -2755,7 +2747,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "bar",
           },
@@ -2792,7 +2788,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "bar",
             height: 350,
           },
@@ -2879,7 +2879,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "bar",
             height: 350,
           },
@@ -2919,7 +2923,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "bar",
             height: 430,
           },
@@ -2978,7 +2986,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "bar",
             height: 350,
             stacked: true,
@@ -3060,7 +3072,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "bar",
             height: 350,
             stacked: true,
@@ -3117,7 +3133,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "bar",
             height: 440,
             stacked: true,
@@ -3214,7 +3234,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            // background: isDarkTest.value ? "rgb(30 41 59)" : "", ошибки
             height: 350,
             type: "line",
           },
@@ -3280,7 +3304,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "line",
             stacked: false,
@@ -3402,7 +3430,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "line",
             stacked: false,
@@ -3578,7 +3610,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "line",
           },
@@ -3779,7 +3815,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "rangeArea",
             animations: {
@@ -3852,7 +3892,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "rangeBar",
           },
@@ -3915,7 +3959,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "rangeBar",
           },
@@ -4012,7 +4060,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "rangeBar",
           },
@@ -4233,7 +4285,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "rangeBar",
           },
@@ -4530,7 +4586,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "candlestick",
             height: 350,
           },
@@ -4552,7 +4612,11 @@ export default {
         type: "pie",
         series: [44, 55, 13, 43, 22],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             width: 380,
             type: "pie",
           },
@@ -4576,7 +4640,11 @@ export default {
         type: "donut",
         series: [44, 55, 41, 17, 15],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "donut",
           },
           responsive: [
@@ -4599,6 +4667,7 @@ export default {
         series: [25, 15, 44, 55, 41, 17],
         chartOptions: {
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             width: "100%",
             type: "pie",
           },
@@ -4611,6 +4680,7 @@ export default {
             "Saturday",
           ],
           theme: {
+            mode: isDarkTest.value ? "dark" : "light",
             monochrome: {
               enabled: true,
             },
@@ -4640,7 +4710,11 @@ export default {
         type: "donut",
         series: [44, 55, 41, 17, 15],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             width: 380,
             type: "donut",
           },
@@ -4688,7 +4762,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "radar",
           },
@@ -4724,7 +4802,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "radar",
             dropShadow: {
@@ -4755,7 +4837,11 @@ export default {
         type: "polarArea",
         series: [14, 23, 21, 17, 15, 10, 12, 17, 21],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             type: "polarArea",
           },
           stroke: {
@@ -4784,6 +4870,7 @@ export default {
         series: [42, 47, 52, 58, 65],
         chartOptions: {
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             width: 380,
             type: "polarArea",
           },
@@ -4812,6 +4899,7 @@ export default {
             },
           },
           theme: {
+            mode: isDarkTest.value ? "dark" : "light",
             monochrome: {
               enabled: true,
               shadeTo: "light",
@@ -4824,7 +4912,11 @@ export default {
         type: "radialBar",
         series: [70],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "radialBar",
           },
@@ -4842,7 +4934,11 @@ export default {
         type: "radialBar",
         series: [44, 55, 67, 83],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "radialBar",
           },
@@ -4873,7 +4969,11 @@ export default {
         type: "radialBar",
         series: [76, 67, 61, 90],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 390,
             type: "radialBar",
           },
@@ -4967,7 +5067,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "bubble",
           },
@@ -5102,7 +5206,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "scatter",
             zoom: {
@@ -5183,7 +5291,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "scatter",
             zoom: {
@@ -5281,7 +5393,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "heatmap",
           },
@@ -5362,7 +5478,11 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "heatmap",
           },
@@ -5479,10 +5599,14 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           legend: {
             show: false,
           },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "treemap",
           },
@@ -5542,10 +5666,14 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           legend: {
             show: false,
           },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "treemap",
           },
@@ -5616,10 +5744,14 @@ export default {
           },
         ],
         chartOptions: {
+          theme: {
+            mode: isDarkTest.value ? "dark" : "light",
+          },
           legend: {
             show: false,
           },
           chart: {
+            background: isDarkTest.value ? "rgb(30 41 59)" : "",
             height: 350,
             type: "treemap",
           },
@@ -5651,7 +5783,7 @@ export default {
       },
     ];
 
-    return { dataDoughnut, dataLine, bar, data, selected };
+    return { data, selected };
   },
 };
 </script>
