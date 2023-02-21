@@ -44,7 +44,7 @@
       </template>
     </div>
 
-    <div class="ref" v-if="!oneC && !is_empty_amo_product_list">
+    <div class="ref" v-if="!oneC && !is_empty_amo_product_list && isColored">
       <button
         class="ref_2_logo btn"
         @click="open_close_sync()"
