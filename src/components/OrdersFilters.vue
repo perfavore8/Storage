@@ -1,72 +1,78 @@
 <template>
-  <div class="filters">
-    <div
-      class="item"
-      :class="{ item_wide: filter.type == 14 }"
-      v-for="(filter, idx) in filtersValue"
-      :key="idx"
-    >
-      <div class="title">
-        {{ filter.name }}
-      </div>
-      <filter-number
-        v-if="filter.type == 1 || filter.type == 2"
-        :item="filter"
-        :idx="idx"
-        @change_filter_value="change_filter_value"
-      />
-      <filter-text
-        v-if="filter.type == 3 || filter.type == 4"
-        :item="filter"
-        :idx="idx"
-        @change_filter_value="change_filter_value"
-      />
-      <filter-list
-        v-if="filter.type == 5 || filter.type == 6"
-        :item="filter"
-        :idx="idx"
-        :selector_options="filter.selector_options"
-        @change_filter_value="change_filter_value"
-      />
-      <filter-list
-        v-if="filter.type == 12"
-        :item="filter"
-        :idx="idx"
-        :selector_options="categories_options"
-        @change_filter_value="change_filter_value"
-      />
-      <filter-date
-        v-if="filter.type == 7 || filter.type == 8"
-        :item="filter"
-        :idx="idx"
-        @change_filter_value="change_filter_value"
-      />
-      <filter-flag
-        v-if="filter.type == 9"
-        :item="filter"
-        :idx="idx"
-        @change_filter_value="change_filter_value"
-      />
-      <AppInputSelect
-        v-if="filter.type == 14"
-        :list="filter.selector_options"
-        :countLettersReq="filter.minLength"
-        @changeInputValue="(value) => changeInputValue(value, filter)"
-        @select="(item) => selectField(item, filter)"
-        @focusin="filter.inFocus = true"
-        @focusout="filter.inFocus = false"
-      />
-      <div class="selected" v-if="filter.value.length">
-        <div
-          v-for="(item, idx) in filter.value"
-          :key="item.value"
-          class="item"
-          @click="deleteField(filter, idx)"
-        >
-          {{ item.value }}
-          <div class="icon" />
+  <div class="flex flex-col gap-2">
+    <div class="filters">
+      <div
+        class="item"
+        :class="{ item_wide: filter.type == 14 }"
+        v-for="(filter, idx) in filtersValue"
+        :key="idx"
+      >
+        <div class="title">
+          {{ filter.name }}
+        </div>
+        <filter-number
+          v-if="filter.type == 1 || filter.type == 2"
+          :item="filter"
+          :idx="idx"
+          @change_filter_value="change_filter_value"
+        />
+        <filter-text
+          v-if="filter.type == 3 || filter.type == 4"
+          :item="filter"
+          :idx="idx"
+          @change_filter_value="change_filter_value"
+        />
+        <filter-list
+          v-if="filter.type == 5 || filter.type == 6"
+          :item="filter"
+          :idx="idx"
+          :selector_options="filter.selector_options"
+          @change_filter_value="change_filter_value"
+        />
+        <filter-list
+          v-if="filter.type == 12"
+          :item="filter"
+          :idx="idx"
+          :selector_options="categories_options"
+          @change_filter_value="change_filter_value"
+        />
+        <filter-date
+          v-if="filter.type == 7 || filter.type == 8"
+          :item="filter"
+          :idx="idx"
+          @change_filter_value="change_filter_value"
+        />
+        <filter-flag
+          v-if="filter.type == 9"
+          :item="filter"
+          :idx="idx"
+          @change_filter_value="change_filter_value"
+        />
+        <AppInputSelect
+          v-if="filter.type == 14"
+          :list="filter.selector_options"
+          :countLettersReq="filter.minLength"
+          @changeInputValue="(value) => changeInputValue(value, filter)"
+          @select="(item) => selectField(item, filter)"
+          @focusin="filter.inFocus = true"
+          @focusout="filter.inFocus = false"
+        />
+        <div class="selected" v-if="filter.value.length">
+          <div
+            v-for="(item, idx) in filter.value"
+            :key="item.value"
+            class="item"
+            @click="deleteField(filter, idx)"
+          >
+            {{ item.value }}
+            <div class="icon" />
+          </div>
         </div>
       </div>
+    </div>
+    <div class="btns self-end">
+      <button class="btn btn_blue" @click="apply()">Применить</button>
+      <button class="btn btn_grey" @click="clearAllFields()">Очистить</button>
     </div>
   </div>
 </template>
@@ -164,7 +170,17 @@ export default {
 
     const deleteField = (filter, idx) => filter.value.splice(idx, 1);
 
-    return { filtersValue, changeInputValue, selectField, deleteField };
+    const apply = () => {};
+    const clearAllFields = () => {};
+
+    return {
+      filtersValue,
+      changeInputValue,
+      selectField,
+      deleteField,
+      apply,
+      clearAllFields,
+    };
   },
 };
 </script>
@@ -203,6 +219,17 @@ export default {
       margin: 0 auto;
       width: 80%;
     }
+  }
+}
+.btns {
+  display: flex;
+  flex-direction: row;
+  justify-self: end;
+  .btn:first-child {
+    border-radius: 5px 0 0 5px;
+  }
+  .btn:last-child {
+    border-radius: 0 5px 5px 0;
   }
 }
 .selected {
