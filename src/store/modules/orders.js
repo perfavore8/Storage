@@ -2,19 +2,26 @@ import { BaseURL, TOKEN } from "@/composables/BaseURL";
 export default {
   state: {
     orders: {},
-    filters: {},
+    meta: {},
+    filters: {
+      page: 1,
+    },
     isLoading: false,
   },
   getters: {},
   mutations: {
     updateOrders(state, value) {
-      state.orders = { ...value };
+      state.orders = [...value];
     },
     updateOrdersFilters(state, value) {
       state.filters = { ...value };
     },
     updateIsLoading(state, value) {
       state.isLoading = value;
+    },
+    updateMeta(state, value) {
+      delete value.data;
+      state.meta = { ...value };
     },
   },
   actions: {
@@ -31,6 +38,7 @@ export default {
       });
       const json = await res.json();
       context.commit("updateOrders", json.data);
+      context.commit("updateMeta", json);
       context.commit("updateIsLoading", false);
     },
   },
