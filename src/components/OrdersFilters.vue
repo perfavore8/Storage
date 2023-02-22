@@ -33,7 +33,7 @@
           v-if="filter.type == 12"
           :item="filter"
           :idx="idx"
-          :selector_options="categories_options"
+          :selector_options="filter.selector_options"
           @change_filter_value="(val) => change_filter_value(val, idx)"
         />
         <filter-date
@@ -100,6 +100,7 @@ export default {
     const filtersValue = reactive([
       {
         name: "Дата создания",
+        code: "date_create",
         type: 7,
         value: "~",
       },
@@ -114,7 +115,8 @@ export default {
       },
       {
         name: "Статус заказа",
-        type: 5,
+        code: "status",
+        type: 12,
         value: [],
         selector_options: [
           {
@@ -123,12 +125,12 @@ export default {
           },
           {
             name: "Закрытый",
-            value: 2,
+            value: 0,
           },
-          {
-            name: "Отмененный",
-            value: 3,
-          },
+          // {
+          //   name: "Отмененный",
+          //   value: 3,
+          // },
         ],
       },
     ]);
@@ -174,8 +176,51 @@ export default {
       Object.assign(filtersValue[idx], value);
     };
 
-    const apply = () => {};
-    const clearAllFields = () => {};
+    const apply = () => {
+      const filter = {};
+
+      const date_create_from = filtersValue
+        .find((el) => el.code === "date_create")
+        .value?.split("~")[0];
+      if (date_create_from) filter.date_create_from = date_create_from;
+
+      const date_create_to = filtersValue
+        .find((el) => el.code === "date_create")
+        .value?.split("~")[1];
+      if (date_create_to) filter.date_create_to = date_create_to;
+
+      const responsible_id = [];
+      filtersValue
+        .find((el) => el.code === "responsible")
+        ?.value?.forEach((resp) =>
+          resp.id ? responsible_id.push(resp.id) : null
+        );
+      if (responsible_id) filter.responsible_id = responsible_id;
+
+      const status_id = [];
+      filtersValue
+        .find((el) => el.code === "status")
+        ?.value?.forEach((stat) => (stat !== "" ? status_id.push(stat) : null));
+      if (status_id) filter.status_id = status_id;
+
+      // console.log(filter);
+    };
+    const clearAllFields = () => {
+      filtersValue.map((filter) => {
+        if (filter.type === 1 || filter.type === 1) filter.value = 0;
+        if (filter.type === 3 || filter.type === 4) filter.value = "";
+        if (
+          filter.type === 5 ||
+          filter.type === 6 ||
+          filter.type === 12 ||
+          filter.type === 14
+        )
+          filter.value = [];
+        if (filter.type === 7 || filter.type === 8) filter.value = "~";
+        if (filter.type === 9) filter.value = 1;
+      });
+      apply();
+    };
 
     return {
       filtersValue,
