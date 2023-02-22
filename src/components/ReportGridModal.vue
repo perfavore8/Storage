@@ -85,6 +85,7 @@ export default {
   background-color: transparent;
   z-index: 1005;
   pointer-events: all;
+  backdrop-filter: blur(5px);
 }
 .background {
   width: 100%;
