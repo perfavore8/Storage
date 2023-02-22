@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="wrapper">
-      <OrdersFilters />
+      <OrdersFilters v-if="false" />
       <OrdersGrid />
     </div>
   </div>
