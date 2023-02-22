@@ -2,12 +2,16 @@ import { BaseURL, TOKEN } from "@/composables/BaseURL";
 export default {
   state: {
     orders: {},
+    filters: {},
     isLoading: false,
   },
   getters: {},
   mutations: {
     updateOrders(state, value) {
       state.orders = { ...value };
+    },
+    updateOrdersFilters(state, value) {
+      state.filters = { ...value };
     },
     updateIsLoading(state, value) {
       state.isLoading = value;
