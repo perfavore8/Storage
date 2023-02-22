@@ -14,39 +14,39 @@
           v-if="filter.type == 1 || filter.type == 2"
           :item="filter"
           :idx="idx"
-          @change_filter_value="change_filter_value"
+          @change_filter_value="(val) => change_filter_value(val, idx)"
         />
         <filter-text
           v-if="filter.type == 3 || filter.type == 4"
           :item="filter"
           :idx="idx"
-          @change_filter_value="change_filter_value"
+          @change_filter_value="(val) => change_filter_value(val, idx)"
         />
         <filter-list
           v-if="filter.type == 5 || filter.type == 6"
           :item="filter"
           :idx="idx"
           :selector_options="filter.selector_options"
-          @change_filter_value="change_filter_value"
+          @change_filter_value="(val) => change_filter_value(val, idx)"
         />
         <filter-list
           v-if="filter.type == 12"
           :item="filter"
           :idx="idx"
           :selector_options="categories_options"
-          @change_filter_value="change_filter_value"
+          @change_filter_value="(val) => change_filter_value(val, idx)"
         />
         <filter-date
           v-if="filter.type == 7 || filter.type == 8"
           :item="filter"
           :idx="idx"
-          @change_filter_value="change_filter_value"
+          @change_filter_value="(val) => change_filter_value(val, idx)"
         />
         <filter-flag
           v-if="filter.type == 9"
           :item="filter"
           :idx="idx"
-          @change_filter_value="change_filter_value"
+          @change_filter_value="(val) => change_filter_value(val, idx)"
         />
         <AppInputSelect
           v-if="filter.type == 14"
@@ -57,7 +57,7 @@
           @focusin="filter.inFocus = true"
           @focusout="filter.inFocus = false"
         />
-        <div class="selected" v-if="filter.value.length">
+        <div class="selected" v-if="filter.value.length && filter.type === 14">
           <div
             v-for="(item, idx) in filter.value"
             :key="item.value"
@@ -101,7 +101,7 @@ export default {
       {
         name: "Дата создания",
         type: 7,
-        value: "",
+        value: "~",
       },
       {
         name: "Ответственые",
@@ -170,6 +170,10 @@ export default {
 
     const deleteField = (filter, idx) => filter.value.splice(idx, 1);
 
+    const change_filter_value = (value, idx) => {
+      Object.assign(filtersValue[idx], value);
+    };
+
     const apply = () => {};
     const clearAllFields = () => {};
 
@@ -178,6 +182,7 @@ export default {
       changeInputValue,
       selectField,
       deleteField,
+      change_filter_value,
       apply,
       clearAllFields,
     };
