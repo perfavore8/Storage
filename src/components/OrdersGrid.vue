@@ -17,7 +17,6 @@
               />
               <label for="all"></label>
             </th>
-            <th class="bar_item item" style="max-width: 17px"></th>
             <th
               class="bar_item item"
               :style="{
@@ -48,20 +47,20 @@
                 />
                 <label :for="row + idx"></label>
               </td>
-              <td class="item">
-                <div class="stat">
-                  <img :src="row.img" class="img" />
-                  <span>{{ row.stat }}</span>
-                </div>
-              </td>
               <template v-for="title in products.titiles" :key="title">
-                <td class="item">
+                <td class="item" v-if="title.code === 'stat'">
+                  <div class="stat">
+                    <img :src="row.img" class="img" />
+                    <span>{{ row.stat }}</span>
+                  </div>
+                </td>
+                <td class="item" v-else>
                   {{ row[title.code] }}
                 </td>
               </template>
             </tr>
             <tr
-              class="row hidden"
+              class="row hidden-row"
               v-for="row2 in row.list"
               :key="row2"
               v-show="row.isOpen"
@@ -80,27 +79,25 @@
         Ничего не найдено
       </label>
     </div>
-    <!-- <grid-bottom
-      :previous="meta.links.prev != null"
-      :next="meta.links.next != null"
-      :page="meta.meta.current_page"
-      :blur="show_edit_modal"
-      :show="products.length != 0"
-      :count="count"
-      :showBtns="showGridBottom"
+    <grid-bottom
+      :previous="meta?.prev_page_url != null"
+      :next="meta?.next_page_url != null"
+      :page="meta?.current_page"
+      :show="products.list.length != 0"
+      :showSelector="false"
+      :count="meta?.per_page"
       @changePage="changePage"
-      @changeCount="changeCount"
-    /> -->
+    />
   </div>
 </template>
 
 <script>
-// import GridBottom from "@/components/GridBottom.vue";
+import GridBottom from "@/components/GridBottom.vue";
 // import { nextTick } from "vue";
 export default {
   name: "Main_grid",
   components: {
-    // GridBottom,
+    GridBottom,
   },
 
   data() {
@@ -121,6 +118,10 @@ export default {
       products: {
         titiles: [
           {
+            name: "Статус заказа",
+            code: "stat",
+          },
+          {
             name: "Ответственные",
             code: "otv",
           },
@@ -132,10 +133,6 @@ export default {
             name: "Сумма заказа",
             code: "sum",
           },
-          // {
-          //   name: "Статус заказа",
-          //   code: "stat",
-          // },
           {
             name: "Список позиций",
             code: "poz",
@@ -181,10 +178,15 @@ export default {
           },
         ],
       },
+      orders: {},
+      filters: {},
     };
   },
-  mounted() {
+  async mounted() {
     this.setSelectedProducts();
+    await this.$store.dispatch("getOrders", this.$store.state.orders.filters);
+    this.orders = { ...this.$store.state.orders.orders };
+    this.filters = { ...this.$store.state.orders.filters };
   },
 
   computed: {
@@ -194,20 +196,16 @@ export default {
     count() {
       return this.products.list.length;
     },
+    meta() {
+      return this.$store.state.orders.meta;
+    },
   },
 
   methods: {
-    async changeCount(count) {
-      this.setTrueIsConfirmFilters();
-      await this.$store.dispatch("update_user", { per_page: count });
-      // this.changePage(this.meta.current_page);
-      this.drop_page();
-    },
     changePage(val) {
-      this.setTrueIsConfirmFilters();
       const params = { page: val };
-      this.$store.commit("updateProductsParams", params);
-      this.get_products(this.productsParams);
+      this.$store.commit("updateOrdersFilters", params);
+      this.getOrders();
     },
     setSelectedProducts() {
       this.selectedProducts = [];
@@ -221,6 +219,9 @@ export default {
           ? (product.item = this.products[idx])
           : (product.item = {});
       });
+    },
+    getOrders() {
+      this.$store.dispatch("getOrders", this.$store.state.orders.filters);
     },
   },
 };
@@ -287,7 +288,7 @@ export default {
   height: 16px;
   border: none;
 }
-.hidden {
+.hidden-row {
   background-color: #dde8f0;
   cursor: default;
 }
