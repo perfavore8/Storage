@@ -8,6 +8,7 @@ import documents from "./modules/documents";
 import account from "./modules/account";
 import analytics from "./modules/analytics";
 import tasks from "./modules/tasks";
+import orders from "./modules/orders";
 
 export default createStore({
   modules: {
@@ -20,5 +21,6 @@ export default createStore({
     account,
     analytics,
     tasks,
+    orders,
   },
 });
