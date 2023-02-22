@@ -3,7 +3,9 @@
   <div class="background">
     <div class="container">
       <div class="header">
-        <h5>Позиции компании "{{ company }}"</h5>
+        <h5>
+          <slot name="title">Позиции компании "{{ company }}"</slot>
+        </h5>
         <button class="btn_del" @click="close()">
           <div class="icon"></div>
         </button>
@@ -58,7 +60,7 @@ export default {
     },
     company: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   methods: {
