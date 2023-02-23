@@ -7,7 +7,7 @@
       <table class="table" ref="table">
         <thead>
           <tr class="bar_row">
-            <th class="bar_item item" style="min-width: 17px">
+            <!-- <th class="bar_item item" style="min-width: 17px">
               <input
                 type="checkbox"
                 class="checkbox"
@@ -16,7 +16,7 @@
                 @change="changeAllSelectedProducts()"
               />
               <label for="all"></label>
-            </th>
+            </th> -->
             <th
               class="bar_item item"
               :style="{
@@ -27,6 +27,7 @@
               }"
               v-for="title in products.titiles"
               :key="title"
+              :colspan="title.isLast ? 3 : 1"
             >
               <div class="bar_item_group">
                 <label>{{ title.name }}</label>
@@ -37,7 +38,7 @@
         <tbody v-if="products.list.length">
           <template v-for="(row, idx) in products.list" :key="row">
             <tr class="row">
-              <td class="item">
+              <!-- <td class="item">
                 <input
                   type="checkbox"
                   class="checkbox"
@@ -46,59 +47,83 @@
                   v-model="selectedProducts[idx].value"
                 />
                 <label :for="row + idx"></label>
-              </td>
+              </td> -->
               <template v-for="title in products.titiles" :key="title">
                 <td
                   class="item"
-                  v-if="title.code === 'names'"
+                  v-if="title.code === 'name'"
                   style="padding: 5px 10px 5px 15px"
                 >
                   <div class="stat">
                     <img :src="row.img" class="img" />
                     <a
                       target="black"
-                      class="underline text-indigo-500 hover:text-indigo-600"
+                      class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
                       :href="
                         'https://' +
                         accountSubdomain +
                         '.amocrm.ru/leads/detail/' +
-                        row.names
+                        row.lead_id
                       "
                     >
-                      {{ row.names }}
+                      {{ row.name }}
                     </a>
                   </div>
                 </td>
-                <td class="item" v-else-if="title.code === 'poz'">
+                <!-- <td class="item" v-else-if="title.code === 'poz'">
                   <div class="flex flex-row gap-4 items-center">
                     <span class="font-medium text-base">{{
                       row.poz.list.length
                     }}</span>
+                  </div>
+                </td> -->
+                <!-- <td class="item" v-else-if="title.type === 2">
+                  <div class="flex flex-row gap-4 items-center justify-center">
                     <button
                       class="btn btn_grey"
                       @click="openModal(row.poz.list)"
                     >
-                      Показать
+                      Подробнее
                     </button>
                   </div>
-                </td>
-                <td class="item" v-else>
+                </td> -->
+                <td
+                  class="item"
+                  v-else
+                  :colspan="title.isLast ? 3 : 1"
+                  @click="row.isOpen = !row.isOpen"
+                >
                   {{ row[title.code] }}
                 </td>
               </template>
             </tr>
-            <!-- <tr
-              class="row hidden-row"
-              v-for="row2 in row.list"
-              :key="row2"
-              v-show="row.isOpen"
-            >
-              <td class="item"></td>
-              <template v-for="title in products.titiles" :key="title">
-                <td class="item">{{ row2[title.code] }}</td>
-              </template>
-            </tr>
-            <tr v-if="row.isOpen" class="space" /> -->
+
+            <template v-if="row.isOpen">
+              <tr
+                class="row hidden-row"
+                v-for="row2 in row.list.slice(
+                  (row.page.current - 1) * maxCount,
+                  row.page.current * maxCount
+                )"
+                :key="row2"
+              >
+                <!-- <td class="item"></td> -->
+                <template v-for="title in selectedOrder.title" :key="title">
+                  <td class="item">{{ row2[title.code] }}</td>
+                </template>
+              </tr>
+              <tr v-if="row.list.length > maxCount">
+                <td :colspan="Object.values(row.list?.[0])?.length">
+                  <div class="w-full flex items-center justify-center mt-2">
+                    <AppPaginator
+                      :page="row.page"
+                      @changePage="(page) => changePageRow(page, idx)"
+                    />
+                  </div>
+                </td>
+              </tr>
+              <tr class="space" />
+            </template>
           </template>
         </tbody>
       </table>
@@ -116,7 +141,7 @@
       @changePage="changePage"
     />
   </div>
-  <Teleport to="body">
+  <!-- <Teleport to="body">
     <ReportGridModal
       v-if="selectedOrder?.isOpen"
       :title="selectedOrder?.title"
@@ -125,18 +150,20 @@
     >
       <template v-slot:title>Позиции</template>
     </ReportGridModal>
-  </Teleport>
+  </Teleport> -->
 </template>
 
 <script>
 import GridBottom from "@/components/GridBottom.vue";
-import ReportGridModal from "./ReportGridModal.vue";
+import AppPaginator from "./AppPaginator.vue";
+// import ReportGridModal from "./ReportGridModal.vue";
 // import { nextTick } from "vue";
 export default {
   name: "Main_grid",
   components: {
     GridBottom,
-    ReportGridModal,
+    AppPaginator,
+    // ReportGridModal,
   },
 
   data() {
@@ -144,16 +171,7 @@ export default {
       selectedProducts: [],
       showArrow: false,
       allSelectedProducts: false,
-      src: [
-        "https://www.logobank.ru/images/ph/ru/v/vtb_new_logo_2018.png",
-        "https://www.logobank.ru/images/ph/ru/k/kamaz.png",
-        "https://www.logobank.ru/images/ph/en/s2/logo_stone_island-600x607.png",
-        "https://www.logobank.ru/images/ph/en/t/tele2.png",
-        "https://www.logobank.ru/images/ph/en/v/versace.png",
-        "https://www.logobank.ru/images/ph/en/n/nike.png",
-        "https://www.logobank.ru/images/ph/ru/0-9/1kanal.png",
-        "https://www.logobank.ru/images/ph/en/a/apple.png",
-      ],
+      maxCount: 10,
       whOptions: [],
       priceCatOptions: [],
       selectedOrder: {
@@ -188,7 +206,7 @@ export default {
         titiles: [
           {
             name: "Название сделки",
-            code: "names",
+            code: "name",
           },
           {
             name: "Статус заказа",
@@ -207,50 +225,17 @@ export default {
             code: "sum",
           },
           {
-            name: "Список позиций",
+            name: "Позиции",
             code: "poz",
-            type: 2,
+            isLast: true,
           },
-        ],
-        list: [
           // {
-          //   isOpen: false,
-          //   otv: "Егор Кондратенко",
-          //   date: "22.12.2022",
-          //   sum: "123123 RUB",
-          //   stat: "Открытый",
-          //   poz: "Заготовка обсадная 127х9,199999999999999, гр.пр. М, треугольная удлиненная  ",
-          //   img: "https://www.logobank.ru/images/ph/ru/v/vtb_new_logo_2018.png",
-          //   list: [
-          //     {
-          //       otv: "Егор Кондратенко",
-          //       sum: "123123 RUB",
-          //       poz: "Заготовка обсадная 127х9,199999999999999, гр.пр. М, треугольная удлиненная  ",
-          //     },
-          //   ],
-          // },
-          // {
-          //   isOpen: false,
-          //   otv: "Ефим Ефимович, Александр Заболотный",
-          //   date: "22.12.2022",
-          //   sum: "3500 RUB",
-          //   stat: "Закрытый",
-          //   poz: "Треники, Стол",
-          //   img: "https://www.logobank.ru/images/ph/en/a/apple.png",
-          //   list: [
-          //     {
-          //       otv: "Ефим Ефимович",
-          //       sum: "500 RUB",
-          //       poz: "Треники",
-          //     },
-          //     {
-          //       otv: "Александр Заболотный",
-          //       sum: "3000 RUB",
-          //       poz: "Стол",
-          //     },
-          //   ],
+          //   name: "",
+          //   code: "btns",
+          //   type: 2,
           // },
         ],
+        list: [],
       },
       orders: {},
       filters: {},
@@ -287,6 +272,11 @@ export default {
   },
 
   methods: {
+    dateFormater(date) {
+      const [dateTime] = date.split(".");
+      const [day, time] = dateTime.split("T");
+      return day + " " + time;
+    },
     changePage(val) {
       const params = { page: val };
       this.$store.commit("updateOrdersFilters", params);
@@ -322,12 +312,20 @@ export default {
           this.priceCatOptions.push({ name: val.name, value: val.code })
         );
     },
-    openModal(list) {
-      this.selectedOrder.list = list;
-      this.selectedOrder.isOpen = true;
-    },
-    closeOrderGridModal() {
-      this.selectedOrder.isOpen = false;
+    // openModal(list) {
+    //   this.selectedOrder.list = list;
+    //   this.selectedOrder.isOpen = true;
+    // },
+    // closeOrderGridModal() {
+    //   this.selectedOrder.isOpen = false;
+    // },
+    changePageRow(page, idx) {
+      const obj = {
+        prev: page === 1 ? null : page - 1,
+        current: page,
+        next: page === this.products?.list?.[idx]?.page?.last ? null : page + 1,
+      };
+      Object.assign(this.products?.list?.[idx]?.page, obj);
     },
     fillOrders() {
       this.orders.forEach((order) => {
@@ -350,23 +348,23 @@ export default {
           poz.push(a);
         });
         const obj = {
-          // isOpen: false,
-          names: order.lead_id,
+          page: {
+            first: 1,
+            prev: null,
+            current: 1,
+            next: Math.ceil(poz.length / this.maxCount) > 1 ? 2 : null,
+            last: Math.ceil(poz.length / this.maxCount),
+          },
+          isOpen: false,
+          name: order.lead_name,
+          lead_id: order.lead_id,
           otv: order.responsible_name,
-          date: order.created_at,
+          date: this.dateFormater(order.created_at),
           sum: order.sum + " " + order.price_currency,
           stat: this.statList.find((el) => el.value == order.is_active).name,
-          poz: {
-            list: [...poz],
-          },
+          poz: poz.length,
           img: "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png",
-          // list: [
-          //   {
-          //     otv: "Егор Кондратенко",
-          //     sum: "123123 RUB",
-          //     poz: "Заготовка обсадная 127х9,199999999999999, гр.пр. М, треугольная удлиненная  ",
-          //   },
-          // ],
+          list: [...poz],
         };
         this.products.list.push(obj);
       });
@@ -410,7 +408,7 @@ export default {
     @include font(500, 16px, 19px);
     color: #000000;
     vertical-align: middle;
-    text-align: center;
+    text-align: start;
     // cursor: pointer;
     label {
       cursor: inherit;
@@ -420,7 +418,7 @@ export default {
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: center;
+      justify-content: start;
       flex-wrap: wrap;
       gap: 10px;
     }
@@ -438,7 +436,7 @@ export default {
   border: none;
 }
 .hidden-row {
-  background-color: #dde8f0;
+  background-color: #dde8f082;
   cursor: default;
 }
 .item {
