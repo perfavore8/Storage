@@ -49,7 +49,7 @@ export default {
   }
 }
 .wrapper {
-  margin-top: 20px;
+  margin-top: 80px;
   padding: 0 30px;
 }
 </style>
