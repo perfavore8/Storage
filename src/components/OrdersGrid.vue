@@ -20,14 +20,15 @@
             <th
               class="bar_item item"
               :style="{
-                minWidth:
-                  (collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) /
-                    collsCount +
+                width:
+                  ((collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) /
+                    collsCount) *
+                    title.width +
                   '%',
               }"
-              v-for="title in products.titiles"
+              v-for="title in products.titles"
               :key="title"
-              :colspan="title.isLast ? 3 : 1"
+              :colspan="title.isGroup ? 2 : 1"
             >
               <div class="bar_item_group">
                 <label>{{ title.name }}</label>
@@ -48,7 +49,7 @@
                 />
                 <label :for="row + idx"></label>
               </td> -->
-              <template v-for="title in products.titiles" :key="title">
+              <template v-for="title in products.titles" :key="title">
                 <td
                   class="item"
                   v-if="title.code === 'name'"
@@ -90,7 +91,7 @@
                 <td
                   class="item"
                   v-else
-                  :colspan="title.isLast ? 3 : 1"
+                  :colspan="title.isGroup ? 2 : 1"
                   @click="row.isOpen = !row.isOpen"
                 >
                   {{ row[title.code] }}
@@ -179,12 +180,13 @@ export default {
         title: [
           { name: "Название", code: "name" },
           { name: "Артикул", code: "article" },
-          { name: "Партия", code: "batch" },
-          { name: "Количество", code: "count" },
+          // { name: "Партия", code: "batch" },
           { name: "Склад", code: "wh" },
           { name: "Цена", code: "price" },
           { name: "Валюта", code: "price_currency" },
-          { name: "Тип цены", code: "price_type" },
+          { name: "Количество", code: "count" },
+          // { name: "Тип цены", code: "price_type" },
+          { name: "Сума", code: "sum" },
         ],
         list: [],
       },
@@ -197,37 +199,52 @@ export default {
           name: "Закрытый",
           value: 0,
         },
+        {
+          name: "Удален",
+          value: 2,
+        },
         // {
         //   name: "Отмененный",
         //   value: 3,
         // },
       ],
       products: {
-        titiles: [
+        titles: [
           {
             name: "Название сделки",
             code: "name",
+            width: 2,
           },
           {
             name: "Статус заказа",
             code: "stat",
+            width: 1,
           },
           {
             name: "Ответственные",
             code: "otv",
+            width: 1,
           },
           {
             name: "Дата создания",
             code: "date",
+            width: 1,
+            // isGroup: true,
           },
           {
             name: "Сумма заказа",
             code: "sum",
+            width: 1,
           },
           {
             name: "Позиции",
             code: "poz",
-            isLast: true,
+            width: 1,
+          },
+          {
+            name: "Клиент",
+            code: "client",
+            width: 1,
           },
           // {
           //   name: "",
@@ -237,7 +254,6 @@ export default {
         ],
         list: [],
       },
-      orders: {},
       filters: {},
     };
   },
@@ -247,7 +263,6 @@ export default {
     await this.$store.dispatch("getOrders", this.$store.state.orders.filters);
     this.fillWhs();
     this.fillPriceCat();
-    this.orders = [...this.$store.state.orders.orders];
     this.filters = { ...this.$store.state.orders.filters };
     this.fillOrders();
     this.setSelectedProducts();
@@ -255,7 +270,7 @@ export default {
 
   computed: {
     collsCount() {
-      return this.products.titiles.length;
+      return this.products.titles.length;
     },
     count() {
       return this.products.list.length;
@@ -265,6 +280,9 @@ export default {
     },
     fields() {
       return this.$store.state.fields.all_fields;
+    },
+    orders() {
+      return this.$store.state.orders.orders;
     },
     accountSubdomain() {
       return this.$store.state.account.account.subdomain;
@@ -295,8 +313,9 @@ export default {
           : (product.item = {});
       });
     },
-    getOrders() {
-      this.$store.dispatch("getOrders", this.$store.state.orders.filters);
+    async getOrders() {
+      await this.$store.dispatch("getOrders", this.$store.state.orders.filters);
+      this.fillOrders();
     },
     fillWhs() {
       this.fields
@@ -328,6 +347,7 @@ export default {
       Object.assign(this.products?.list?.[idx]?.page, obj);
     },
     fillOrders() {
+      this.products.list = [];
       this.orders.forEach((order) => {
         const poz = [];
         order.positions.forEach((pos) => {
@@ -337,6 +357,7 @@ export default {
             batch: pos?.batch,
             wh_field: pos?.wh_field,
             count: pos?.count,
+            sum: pos?.sum,
             price_field: pos?.price_field,
             price: pos?.price,
             price_currency: pos?.price_currency,
@@ -467,7 +488,7 @@ export default {
 }
 .item:first-child {
   width: 17px !important;
-  text-align: center;
+  // text-align: center;
 }
 .text {
   position: relative;
