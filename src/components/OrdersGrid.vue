@@ -58,7 +58,13 @@
                   <div class="stat">
                     <div class="relative">
                       <img :src="row.img" class="img" />
-                      <div class="handle_cross"></div>
+                      <div
+                        class="handle_cross"
+                        v-if="
+                          statList.find((el) => el.name === row.stat).value ===
+                          2
+                        "
+                      ></div>
                     </div>
                     <a
                       target="black"
