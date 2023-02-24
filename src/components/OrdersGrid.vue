@@ -56,7 +56,10 @@
                   style="padding: 5px 10px 5px 15px"
                 >
                   <div class="stat">
-                    <img :src="row.img" class="img" />
+                    <div class="relative">
+                      <img :src="row.img" class="img" />
+                      <div class="handle_cross"></div>
+                    </div>
                     <a
                       target="black"
                       class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
@@ -379,6 +382,7 @@ export default {
           isOpen: false,
           name: order.lead_name,
           lead_id: order.lead_id,
+          client: order.client,
           otv: order.responsible_name,
           date: this.dateFormater(order.created_at),
           sum: order.sum + " " + order.price_currency,
@@ -403,6 +407,14 @@ export default {
   border: 1px solid #aeaeae;
   border-radius: 50%;
   object-fit: scale-down;
+}
+.handle_cross {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  @include bg_image("@/assets/handle_cross2.svg", 65%);
 }
 .stat {
   width: max-content;
