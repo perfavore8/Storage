@@ -388,7 +388,11 @@ export default {
           isOpen: false,
           name: order.lead_name,
           lead_id: order.lead_id,
-          client: order.client,
+          client: order.company_name
+            ? order.company_name
+            : "" + ", " + order.contact_name
+            ? order.contact_name
+            : "",
           otv: order.responsible_name,
           date: this.dateFormater(order.created_at),
           sum: order.sum + " " + order.price_currency,
