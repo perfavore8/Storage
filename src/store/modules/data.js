@@ -5,7 +5,7 @@ export default {
       {
         name: "Заказы",
         value: "orders",
-        isTest: true,
+        isTest: false,
       },
       {
         name: "Остатки",
