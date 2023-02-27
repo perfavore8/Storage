@@ -112,7 +112,7 @@
                   </div>
                 </td> -->
                 <td
-                  class="item"
+                  class="item cursor-pointer"
                   v-else
                   :colspan="title.isGroup ? 2 : 1"
                   @click="row.isOpen = !row.isOpen"
