@@ -224,7 +224,7 @@ export default {
         },
         {
           name: "Удален",
-          value: 1,
+          value: 3,
         },
         {
           name: "Отмененный",
@@ -232,7 +232,7 @@ export default {
         },
         {
           name: "Успешный",
-          value: 3,
+          value: 1,
         },
       ],
       products: {
