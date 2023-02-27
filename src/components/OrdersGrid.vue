@@ -376,7 +376,7 @@ export default {
       } else {
         if (this.sorting.order === "asc") this.sorting.order = "desc";
       }
-      this.$store.commit("updateOrdersFilters", { sort: this.sorting });
+      this.$store.commit("updateOrdersFilters", this.sorting);
       this.getOrders();
     },
     // openModal(list) {
