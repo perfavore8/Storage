@@ -76,7 +76,7 @@
                         class="handle_cross"
                         v-if="
                           statList.find((el) => el.name === row.stat)?.value ===
-                          1
+                          3
                         "
                       ></div>
                     </div>
