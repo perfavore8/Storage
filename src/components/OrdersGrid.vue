@@ -195,7 +195,7 @@ export default {
           { name: "Валюта", code: "price_currency" },
           { name: "Количество", code: "count" },
           // { name: "Тип цены", code: "price_type" },
-          { name: "Сума", code: "sum" },
+          { name: "Сумма", code: "sum" },
         ],
         list: [],
       },
@@ -377,6 +377,13 @@ export default {
           };
           poz.push(a);
         });
+        let client = "";
+        if (order.company_name == null && order.contact_name != null)
+          client = order.contact_name;
+        if (order.company_name != null && order.contact_name == null)
+          client = order.company_name;
+        if (order.company_name != null && order.contact_name != null)
+          client = order.company_name + ", " + order.contact_name;
         const obj = {
           page: {
             first: 1,
@@ -388,11 +395,7 @@ export default {
           isOpen: false,
           name: order.lead_name,
           lead_id: order.lead_id,
-          client: order.company_name
-            ? order.company_name
-            : "" + ", " + order.contact_name
-            ? order.contact_name
-            : "",
+          client: client,
           otv: order.responsible_name,
           date: this.dateFormater(order.created_at),
           sum: order.sum + " " + order.price_currency,
@@ -434,7 +437,6 @@ export default {
   @include font(500, 16px);
   gap: 8px;
 }
-
 .bar_row {
   height: 66px;
   .item {

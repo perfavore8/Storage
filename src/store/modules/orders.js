@@ -14,7 +14,7 @@ export default {
       state.orders = [...value];
     },
     updateOrdersFilters(state, value) {
-      state.filters = { ...value };
+      Object.assign(state.filters, value);
     },
     updateIsLoading(state, value) {
       state.isLoading = value;
