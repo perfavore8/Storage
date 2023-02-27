@@ -19,6 +19,7 @@
             </th> -->
             <th
               class="bar_item item"
+              :class="{ cursor_pointer: title.sortable }"
               :style="{
                 width:
                   ((collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) /
@@ -27,11 +28,24 @@
                   '%',
               }"
               v-for="title in products.titles"
+              @click="title.sortable ? sort(title.value) : null"
               :key="title"
               :colspan="title.isGroup ? 2 : 1"
             >
               <div class="bar_item_group">
                 <label>{{ title.name }}</label>
+                <button
+                  class="bar_item_icon"
+                  :class="{
+                    bar_item_icon_up:
+                      sorting.order == 'desc' &&
+                      title.value === sorting.order_by,
+                    bar_item_icon_down:
+                      sorting.order == 'asc' &&
+                      title.value === sorting.order_by,
+                  }"
+                  v-if="title.sortable"
+                ></button>
               </div>
             </th>
           </tr>
@@ -61,7 +75,7 @@
                       <div
                         class="handle_cross"
                         v-if="
-                          statList.find((el) => el.name === row.stat).value ===
+                          statList.find((el) => el.name === row.stat)?.value ===
                           2
                         "
                       ></div>
@@ -182,6 +196,10 @@ export default {
       showArrow: false,
       allSelectedProducts: false,
       maxCount: 10,
+      sorting: {
+        order_by: null,
+        order: "",
+      },
       whOptions: [],
       priceCatOptions: [],
       selectedOrder: {
@@ -204,18 +222,22 @@ export default {
           name: "Открытый",
           value: 1,
         },
-        {
-          name: "Закрытый",
-          value: 0,
-        },
+        // {
+        //   name: "Закрытый",
+        //   value: 0,
+        // },
         {
           name: "Удален",
           value: 2,
         },
-        // {
-        //   name: "Отмененный",
-        //   value: 3,
-        // },
+        {
+          name: "Отмененный",
+          value: 3,
+        },
+        {
+          name: "Успешный",
+          value: 4,
+        },
       ],
       products: {
         titles: [
@@ -228,6 +250,8 @@ export default {
             name: "Статус заказа",
             code: "stat",
             width: 1,
+            sortable: true,
+            value: "is_active",
           },
           {
             name: "Ответственные",
@@ -238,6 +262,8 @@ export default {
             name: "Дата создания",
             code: "date",
             width: 1,
+            sortable: true,
+            value: "created_at",
             // isGroup: true,
           },
           {
@@ -340,6 +366,19 @@ export default {
           this.priceCatOptions.push({ name: val.name, value: val.code })
         );
     },
+    sort(code) {
+      if (this.sorting.order_by != code) {
+        this.sorting.order = "";
+        this.sorting.order_by = code;
+      }
+      if (this.sorting.order === "desc" || !this.sorting.order) {
+        this.sorting.order = "asc";
+      } else {
+        if (this.sorting.order === "asc") this.sorting.order = "desc";
+      }
+      this.$store.commit("updateOrdersFilters", { sort: this.sorting });
+      this.getOrders();
+    },
     // openModal(list) {
     //   this.selectedOrder.list = list;
     //   this.selectedOrder.isOpen = true;
@@ -398,8 +437,8 @@ export default {
           client: client,
           otv: order.responsible_name,
           date: this.dateFormater(order.created_at),
-          sum: order.sum + " " + order.price_currency,
-          stat: this.statList.find((el) => el.value == order.is_active).name,
+          sum: (order.sum ? order.sum : "") + " " + order.price_currency,
+          stat: this.statList.find((el) => el.value == order.is_active)?.name,
           poz: poz.length,
           img: "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png",
           list: [...poz],
@@ -466,6 +505,23 @@ export default {
       justify-content: start;
       flex-wrap: wrap;
       gap: 10px;
+
+      .bar_item_icon {
+        margin: 0 auto;
+        height: 16px;
+        width: 16px;
+        background-color: transparent;
+        @include bg_image("@/assets/sort.svg");
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease-out;
+        &_up {
+          @include bg_image("@/assets/sort_up.svg");
+        }
+        &_down {
+          @include bg_image("@/assets/sort_down.svg");
+        }
+      }
     }
   }
   .bar_item:first-child {
@@ -483,6 +539,9 @@ export default {
 .hidden-row {
   background-color: #dde8f082;
   cursor: default;
+}
+.cursor_pointer {
+  cursor: pointer;
 }
 .item {
   padding: 10px;
