@@ -76,7 +76,7 @@
                         class="handle_cross"
                         v-if="
                           statList.find((el) => el.name === row.stat)?.value ===
-                          2
+                          1
                         "
                       ></div>
                     </div>
@@ -220,23 +220,19 @@ export default {
       statList: [
         {
           name: "Открытый",
-          value: 1,
+          value: 0,
         },
-        // {
-        //   name: "Закрытый",
-        //   value: 0,
-        // },
         {
           name: "Удален",
-          value: 2,
+          value: 1,
         },
         {
           name: "Отмененный",
-          value: 3,
+          value: 2,
         },
         {
           name: "Успешный",
-          value: 4,
+          value: 3,
         },
       ],
       products: {
@@ -438,7 +434,7 @@ export default {
           otv: order.responsible_name,
           date: this.dateFormater(order.created_at),
           sum: (order.sum ? order.sum : "") + " " + order.price_currency,
-          stat: this.statList.find((el) => el.value == order.is_active)?.name,
+          stat: this.statList.find((el) => el.value == order.status)?.name,
           poz: poz.length,
           img: "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png",
           list: [...poz],
