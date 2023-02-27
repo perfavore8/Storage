@@ -227,7 +227,7 @@ export default {
           value: 3,
         },
         {
-          name: "Отмененный",
+          name: "Отменен",
           value: 2,
         },
         {
