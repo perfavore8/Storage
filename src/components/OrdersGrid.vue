@@ -89,6 +89,9 @@
                         '.amocrm.ru/leads/detail/' +
                         row.lead_id
                       "
+                      v-if="
+                        statList.find((el) => el.name === row.stat)?.value !== 3
+                      "
                     >
                       {{ row.name }}
                     </a>
@@ -247,7 +250,7 @@ export default {
             code: "stat",
             width: 1,
             sortable: true,
-            value: "is_active",
+            value: "status",
           },
           {
             name: "Ответственные",
