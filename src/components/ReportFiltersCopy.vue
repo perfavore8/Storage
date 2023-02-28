@@ -230,9 +230,7 @@ export default {
       this.selected_field_autocomplete_list = [];
     },
     selectedItems: {
-      handler: function () {
-        console.log(this.coincideSelectedItems);
-      },
+      handler: function () {},
       deep: true,
     },
   },
@@ -353,9 +351,9 @@ export default {
     }
   }
   .btns {
+    width: 40%;
     display: flex;
     flex-direction: row;
-    justify-self: end;
     white-space: nowrap;
     .btn:first-child {
       border-radius: 5px 0 0 5px;
