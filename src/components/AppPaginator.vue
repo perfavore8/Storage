@@ -67,7 +67,7 @@ export default {
 
 <style lang="scss" scoped>
 button {
-  @apply min-w-[32px] h-8 rounded-md bg-slate-100 flex items-center justify-center px-1 hover:bg-slate-200;
+  @apply min-w-[32px] h-8 rounded-md bg-slate-100 flex items-center justify-center px-1 hover:bg-slate-200 outline-slate-300;
 }
 .grid {
   grid-template-areas: "a b c d e f g";
