@@ -154,8 +154,8 @@ export default {
   }
   .title {
     height: 34px;
-    // width: 100%;
-    width: fit-content;
+    width: 100%;
+    gap: 8px;
     padding: 6px 12px;
     display: flex;
     align-items: center;

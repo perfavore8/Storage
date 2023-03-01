@@ -141,7 +141,7 @@ export default {
   }
   .count {
     margin-left: 7px;
-    width: 70px;
+    width: fit-content;
   }
 }
 </style>
