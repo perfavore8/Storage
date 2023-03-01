@@ -139,9 +139,7 @@
       </div>
     </div>
     <grid-bottom
-      :previous="meta.links.prev != null"
-      :next="meta.links.next != null"
-      :page="meta.meta.current_page"
+      :page="page"
       :blur="show_edit_modal"
       :show="products.length != 0"
       :count="count"
@@ -274,6 +272,16 @@ export default {
     meta() {
       return this.$store.state.products.meta;
     },
+    page() {
+      const obj = {
+        first: this.getPageFromLink(this.meta?.links?.first),
+        prev: this.getPageFromLink(this.meta?.links?.prev),
+        current: this.meta?.meta?.current_page,
+        next: this.getPageFromLink(this.meta?.links?.next),
+        last: this.getPageFromLink(this.meta?.links?.last),
+      };
+      return obj;
+    },
     all_fields() {
       return this.$store.state.fields.all_fields;
     },
@@ -334,6 +342,13 @@ export default {
     },
   },
   methods: {
+    getPageFromLink(link) {
+      if (link) {
+        return link.split("?page=")[1];
+      } else {
+        return null;
+      }
+    },
     scrollUp() {
       window.scrollTo(0, 0);
     },

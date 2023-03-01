@@ -87,11 +87,10 @@
     </template>
     <grid-bottom
       class="bottom"
-      :previous="meta.links.prev != null"
-      :next="meta.links.next != null"
-      :page="meta.meta.current_page"
-      :show="archive_list.length != 0"
-      :count="meta.meta.per_page"
+      :page="page"
+      :blur="show_edit_modal"
+      :show="products.length != 0"
+      :count="count"
       v-if="showGridBottom"
       @changePage="changePage"
       @changeCount="changeCount"
@@ -137,9 +136,26 @@ export default {
     isDataLoading() {
       return this.$store.state.products.isLoading;
     },
+    page() {
+      const obj = {
+        first: this.getPageFromLink(this.meta?.links?.first),
+        prev: this.getPageFromLink(this.meta?.links?.prev),
+        current: this.meta?.meta?.current_page,
+        next: this.getPageFromLink(this.meta?.links?.next),
+        last: this.getPageFromLink(this.meta?.links?.last),
+      };
+      return obj;
+    },
   },
   watch: {},
   methods: {
+    getPageFromLink(link) {
+      if (link) {
+        return link.split("?page=")[1];
+      } else {
+        return null;
+      }
+    },
     changeCount(val) {
       this.count = val;
     },

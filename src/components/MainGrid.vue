@@ -111,9 +111,7 @@
       </label>
     </div>
     <grid-bottom
-      :previous="meta.links.prev != null"
-      :next="meta.links.next != null"
-      :page="meta.meta.current_page"
+      :page="page"
       :blur="show_edit_modal"
       :show="products.length != 0"
       :count="count"
@@ -229,6 +227,16 @@ export default {
     bar() {
       return this.$refs.bar;
     },
+    page() {
+      const obj = {
+        first: this.getPageFromLink(this.meta?.links?.first),
+        prev: this.getPageFromLink(this.meta?.links?.prev),
+        current: this.meta?.meta?.current_page,
+        next: this.getPageFromLink(this.meta?.links?.next),
+        last: this.getPageFromLink(this.meta?.links?.last),
+      };
+      return obj;
+    },
     showGridBottom() {
       return this.meta.meta.total >= this.meta.meta.per_page;
     },
@@ -277,6 +285,13 @@ export default {
   },
 
   methods: {
+    getPageFromLink(link) {
+      if (link) {
+        return link.split("?page=")[1];
+      } else {
+        return null;
+      }
+    },
     scrollUp() {
       window.scrollTo(0, 0);
     },

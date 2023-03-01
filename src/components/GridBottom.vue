@@ -1,7 +1,7 @@
 <template>
   <div class="bottom" :class="{ blur: blur }" v-if="show">
     <template v-if="showBtns">
-      <button
+      <!-- <button
         v-if="previous"
         @click="changePage(page - 1)"
         class="btn previous"
@@ -11,7 +11,8 @@
       <div class="span">{{ page }}</div>
       <button v-if="next" @click="changePage(page + 1)" class="btn next">
         {{ ">" }}
-      </button>
+      </button> -->
+      <AppPaginator :page="page" @changePage="changePage" />
     </template>
     <template v-if="showSelector">
       <selector-vue
@@ -26,22 +27,33 @@
 
 <script>
 import SelectorVue from "@/components/SelectorVue.vue";
+import AppPaginator from "./AppPaginator.vue";
 export default {
   components: {
     SelectorVue,
+    AppPaginator,
   },
   props: {
     previous: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     next: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     page: {
-      type: Number,
-      required: true,
+      type: Object,
+      required: false,
+      default() {
+        return {
+          first: 1,
+          prev: null,
+          current: 1,
+          next: null,
+          last: 1,
+        };
+      },
     },
     count: {
       type: Number,

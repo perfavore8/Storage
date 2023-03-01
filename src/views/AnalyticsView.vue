@@ -77,14 +77,13 @@
           @updateSelectedReport="updateSelectedReport"
           ref="grid"
         />
-        <GridBottom
-          :previous="reports.prev_page_url != null"
-          :next="reports.next_page_url != null"
-          :page="reports.current_page"
+        <grid-bottom
+          :page="page"
+          :blur="show_edit_modal"
           :show="reports.data?.length != 0"
           :count="count"
-          :showBtns="showGridBottom"
           :showSelector="false"
+          :showBtns="showGridBottom"
           @changePage="changePage"
           @changeCount="changeCount"
         />
@@ -128,7 +127,6 @@ export default {
       selectedReport: {},
       filter: {},
       total: {},
-      page: 1,
       view: {
         selected: { name: "table", value: "table", class: "font_download" },
         list: [
@@ -157,12 +155,29 @@ export default {
     isChartsView() {
       return this.view.selected.value !== "table";
     },
+    page() {
+      const obj = {
+        first: this.getPageFromLink(this.reports?.first_page_url),
+        prev: this.getPageFromLink(this.reports?.prev_page_url),
+        current: this.reports?.current_page,
+        next: this.getPageFromLink(this.reports?.next_page_url),
+        last: this.getPageFromLink(this.reports?.last_page_url),
+      };
+      return obj;
+    },
   },
   mounted() {
     this.clients();
     this.$store.dispatch("get_account");
   },
   methods: {
+    getPageFromLink(link) {
+      if (link) {
+        return link.split("?page=")[1];
+      } else {
+        return null;
+      }
+    },
     openReportCreate() {
       this.$store.commit("toggleReportCreate", true);
     },
