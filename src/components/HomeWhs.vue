@@ -15,7 +15,7 @@
       <AppInputSelect
         v-if="customWhs.length"
         :list="sortedCustomWhs"
-        :selected="selectWH"
+        :selected="selectedWH"
         :requestDelay="0"
         :placeholder="
           customWhs.includes(selectedWH) ? selectedWH.name : 'Выберите склад'
