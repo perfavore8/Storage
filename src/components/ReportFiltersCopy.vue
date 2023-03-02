@@ -38,20 +38,45 @@
               @select="(option) => field.select(option, field.id)"
             />
           </div>
-          <div class="filters">
+          <div
+            class="filters"
+            v-for="(filteringSystem, idx) in filteringSystems"
+            :key="filteringSystem"
+          >
+            <div
+              class="add_new_button"
+              @click="addFilteringSystem()"
+              v-if="idx === filteringSystems.length - 1"
+            >
+              <span class="material-icons-outlined"> add </span>
+            </div>
             <AppInputSelect
-              :list="selected_field_autocomplete_list"
-              :countLettersReq="field.minLength"
-              :placeholder="field.placeholder"
-              @changeInputValue="(value) => changeInputValue(value, field.name)"
-              @select="(item) => selectField(item, field.name)"
-              @focusin="selected_field_autocomplete = field.name"
-              @focusout="selected_field_autocomplete = null"
-              v-for="field in fields"
-              :key="field.id"
-              v-show="
-                (isClient && field.clientShow) || (!isClient && field.salesShow)
+              :list="
+                filteringSystem.filterList(
+                  filteringSystem.SystemInputValue,
+                  filteringSystem.systems
+                )
               "
+              :selected="filteringSystem.selectedSystem"
+              :countLettersReq="0"
+              :placeholder="'Система'"
+              :requestDelay="0"
+              :SelectedInTitle="true"
+              @changeInputValue="filteringSystem.changeSystemInputValue"
+              @select="(item) => filteringSystem.selectSystem(item)"
+            />
+            <AppInputSelect
+              v-for="filter in filteringSystem.selectedSystem?.filtersList"
+              :key="filter.id"
+              v-show="filter.show?.value"
+              :list="filteringSystem.filterList(filter.value, filter.list)"
+              :selected="filter.selected"
+              :countLettersReq="filter.minLength"
+              :placeholder="filter.placeholder"
+              :requestDelay="0"
+              :SelectedInTitle="true"
+              @changeInputValue="(value) => (filter.value = value)"
+              @select="(item) => (filter.selected = item)"
             />
           </div>
         </div>
@@ -97,6 +122,7 @@
 import AppInputSelect from "./AppInputSelect.vue";
 import SelectorVue from "./SelectorVue.vue";
 import AppMultiSelect from "./AppMultiSelect.vue";
+import { useSystems } from "@/composables/systemsForReports";
 import {
   computed,
   nextTick,
@@ -115,6 +141,9 @@ export default {
     },
   },
   setup(props, context) {
+    const filteringSystems = reactive([useSystems()]);
+    const addFilteringSystem = () => filteringSystems.push(useSystems());
+
     const selected_field_autocomplete = ref(null);
     const selected_field_autocomplete_list = ref([]);
     const copySelectedItems = ref([]);
@@ -234,6 +263,12 @@ export default {
         arr.push(field.list.some((el) => el.selected))
       );
       selectorData.forEach((field) => arr.push(field.selected));
+      filteringSystems.forEach((system) => {
+        arr.push(system.selectedSystem);
+        system?.systems?.forEach((syst) =>
+          syst?.filtersList?.forEach((filter) => arr.push(filter.selected))
+        );
+      });
       return arr;
     });
     const coincideSelectedItems = computed(() => {
@@ -335,6 +370,9 @@ export default {
       deleteField,
       clearAllFields,
       apply,
+      ...useSystems(),
+      filteringSystems,
+      addFilteringSystem,
     };
   },
 };
@@ -365,6 +403,7 @@ export default {
       // flex-wrap: wrap;
       // align-items: center;
       // gap: 10px;
+      position: relative;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 10px;
@@ -372,6 +411,22 @@ export default {
       // width: 929px;
       > .v-select {
         width: 100%;
+      }
+      .add_new_button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        left: -43px;
+        cursor: pointer;
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 4px;
+        color: #757575;
+        > span {
+          font-size: 28px;
+        }
       }
     }
 
