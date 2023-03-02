@@ -444,15 +444,6 @@ export default {
         border-radius: 0 5px 5px 0;
       }
     }
-    .add_new_button {
-      cursor: pointer;
-      width: 36px;
-      height: 36px;
-      background: #4e964d;
-      border: none;
-      border-radius: 4px;
-      @include bg_image("@/assets/plus.svg", 50%);
-    }
   }
   .filters {
     display: flex;
