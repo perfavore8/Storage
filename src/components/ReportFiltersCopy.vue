@@ -2,40 +2,58 @@
   <div class="flex flex-col gap-5 w-full">
     <div class="row">
       <div class="left">
-        <div class="filters">
-          <div class="date_range">
-            <input type="date" v-model="dateStart" />
-            <span> - </span>
-            <input type="date" v-model="dateEnd" />
+        <div class="flex flex-col w-full gap-3">
+          <div class="filters">
+            <div class="date_range">
+              <input type="date" v-model="dateStart" />
+              <span> - </span>
+              <input type="date" v-model="dateEnd" />
+            </div>
+            <AppInputSelect
+              :list="selected_field_autocomplete_list"
+              :countLettersReq="field.minLength"
+              :placeholder="field.placeholder"
+              @changeInputValue="(value) => changeInputValue(value, field.name)"
+              @select="(item) => selectField(item, field.name)"
+              @focusin="selected_field_autocomplete = field.name"
+              @focusout="selected_field_autocomplete = null"
+              v-for="field in fields"
+              :key="field.id"
+              v-show="
+                (isClient && field.clientShow) || (!isClient && field.salesShow)
+              "
+            />
+            <AppMultiSelect
+              v-for="field in multiSelectorData"
+              :key="field.id"
+              :list="field.list"
+              :placeholder="field.placeholder"
+              @select="(option) => field.select(option, field.id)"
+            />
+            <SelectorVue
+              v-for="field in selectorData"
+              :key="field.id"
+              :options_props="field.list"
+              :selected_option="field.selected"
+              @select="(option) => field.select(option, field.id)"
+            />
           </div>
-          <AppInputSelect
-            :list="selected_field_autocomplete_list"
-            :countLettersReq="field.minLength"
-            :placeholder="field.placeholder"
-            @changeInputValue="(value) => changeInputValue(value, field.name)"
-            @select="(item) => selectField(item, field.name)"
-            @focusin="selected_field_autocomplete = field.name"
-            @focusout="selected_field_autocomplete = null"
-            v-for="field in fields"
-            :key="field.id"
-            v-show="
-              (isClient && field.clientShow) || (!isClient && field.salesShow)
-            "
-          />
-          <AppMultiSelect
-            v-for="field in multiSelectorData"
-            :key="field.id"
-            :list="field.list"
-            :placeholder="field.placeholder"
-            @select="(option) => field.select(option, field.id)"
-          />
-          <SelectorVue
-            v-for="field in selectorData"
-            :key="field.id"
-            :options_props="field.list"
-            :selected_option="field.selected"
-            @select="(option) => field.select(option, field.id)"
-          />
+          <div class="filters">
+            <AppInputSelect
+              :list="selected_field_autocomplete_list"
+              :countLettersReq="field.minLength"
+              :placeholder="field.placeholder"
+              @changeInputValue="(value) => changeInputValue(value, field.name)"
+              @select="(item) => selectField(item, field.name)"
+              @focusin="selected_field_autocomplete = field.name"
+              @focusout="selected_field_autocomplete = null"
+              v-for="field in fields"
+              :key="field.id"
+              v-show="
+                (isClient && field.clientShow) || (!isClient && field.salesShow)
+              "
+            />
+          </div>
         </div>
         <div class="btns">
           <button class="btn btn_blue" @click="apply()">Применить</button>
@@ -79,7 +97,15 @@
 import AppInputSelect from "./AppInputSelect.vue";
 import SelectorVue from "./SelectorVue.vue";
 import AppMultiSelect from "./AppMultiSelect.vue";
-import { nextTick } from "@vue/runtime-core";
+import {
+  computed,
+  nextTick,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "@vue/runtime-core";
+import store from "@/store";
 export default {
   components: { AppInputSelect, AppMultiSelect, SelectorVue },
   props: {
@@ -88,192 +114,184 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      selected_field_autocomplete: null,
-      selected_field_autocomplete_list: [],
-      copySelectedItems: [],
-      dateStart: "",
-      dateEnd: "",
-      fields: [
-        {
-          id: 0,
-          name: "product",
-          value: "",
-          minLength: 3,
-          placeholder: "Артикулы/Названия",
-          clientShow: false,
-          salesShow: true,
-          selected: [],
+  setup(props, context) {
+    const selected_field_autocomplete = ref(null);
+    const selected_field_autocomplete_list = ref([]);
+    const copySelectedItems = ref([]);
+    const dateStart = ref("");
+    const dateEnd = ref("");
+    const fields = reactive([
+      {
+        id: 0,
+        name: "product",
+        value: "",
+        minLength: 3,
+        placeholder: "Артикулы/Названия",
+        clientShow: false,
+        salesShow: true,
+        selected: [],
+      },
+      {
+        id: 4,
+        name: "responsible",
+        value: "",
+        minLength: 0,
+        placeholder: "Ответственные",
+        clientShow: true,
+        salesShow: true,
+        selected: [],
+      },
+      {
+        id: 1,
+        name: "pipeline",
+        value: "",
+        minLength: 0,
+        placeholder: "Воронки",
+        clientShow: true,
+        salesShow: false,
+        selected: [],
+      },
+      {
+        id: 2,
+        name: "company",
+        value: "",
+        minLength: 3,
+        placeholder: "Компании",
+        clientShow: true,
+        salesShow: false,
+        selected: [],
+      },
+      {
+        id: 3,
+        name: "contact",
+        value: "",
+        minLength: 3,
+        placeholder: "Контакты",
+        clientShow: true,
+        salesShow: false,
+        selected: [],
+      },
+      {
+        id: 5,
+        name: "position",
+        value: "",
+        minLength: 3,
+        placeholder: "Позиции",
+        clientShow: true,
+        salesShow: false,
+        selected: [],
+      },
+    ]);
+    const multiSelectorData = reactive([
+      {
+        type: 6,
+        id: 6,
+        name: "position",
+        list: [
+          { name: "Все", value: "all", selected: false },
+          { name: "1", value: 1, selected: false },
+          { name: "2", value: 2, selected: false },
+          { name: "3", value: 3, selected: false },
+          { name: "4", value: 4, selected: false },
+        ],
+        placeholder: "Этапы сделок amoSRM",
+        clientShow: true,
+        salesShow: false,
+        select: (option, id) => {
+          if (option.value === "all") {
+            const item = multiSelectorData.find((el) => el.id === id);
+            item?.list?.forEach((el) => {
+              if (el.value !== "all") el.selected = !option.selected;
+            });
+          }
+          option.selected = !option.selected;
         },
-        {
-          id: 4,
-          name: "responsible",
-          value: "",
-          minLength: 0,
-          placeholder: "Ответственные",
-          clientShow: true,
-          salesShow: true,
-          selected: [],
+      },
+    ]);
+    const selectorData = reactive([
+      {
+        type: 6,
+        id: 7,
+        name: "data",
+        selected: { name: "Остатки", value: 1 },
+        list: [
+          { name: "Остатки", value: 1 },
+          { name: "Заказы", value: 2 },
+        ],
+        clientShow: true,
+        salesShow: false,
+        select: (option, id) => {
+          const item = selectorData.find((el) => el.id == id);
+          item ? (item.selected = option) : null;
         },
-        {
-          id: 1,
-          name: "pipeline",
-          value: "",
-          minLength: 0,
-          placeholder: "Воронки",
-          clientShow: true,
-          salesShow: false,
-          selected: [],
-        },
-        {
-          id: 2,
-          name: "company",
-          value: "",
-          minLength: 3,
-          placeholder: "Компании",
-          clientShow: true,
-          salesShow: false,
-          selected: [],
-        },
-        {
-          id: 3,
-          name: "contact",
-          value: "",
-          minLength: 3,
-          placeholder: "Контакты",
-          clientShow: true,
-          salesShow: false,
-          selected: [],
-        },
-        {
-          id: 5,
-          name: "position",
-          value: "",
-          minLength: 3,
-          placeholder: "Позиции",
-          clientShow: true,
-          salesShow: false,
-          selected: [],
-        },
-      ],
-      multiSelectorData: [
-        {
-          type: 6,
-          id: 6,
-          name: "position",
-          list: [
-            { name: "Все", value: "all", selected: false },
-            { name: "1", value: 1, selected: false },
-            { name: "2", value: 2, selected: false },
-            { name: "3", value: 3, selected: false },
-            { name: "4", value: 4, selected: false },
-          ],
-          placeholder: "Этапы сделок amoSRM",
-          clientShow: true,
-          salesShow: false,
-          select: (option, id) => {
-            if (option.value === "all") {
-              const item = this.multiSelectorData.find((el) => el.id === id);
-              item?.list?.forEach((el) => {
-                if (el.value !== "all") el.selected = !option.selected;
-              });
-            }
-            option.selected = !option.selected;
-          },
-        },
-      ],
-      selectorData: [
-        {
-          type: 6,
-          id: 7,
-          name: "data",
-          selected: { name: "Остатки", value: 1 },
-          list: [
-            { name: "Остатки", value: 1 },
-            { name: "Заказы", value: 2 },
-          ],
-          clientShow: true,
-          salesShow: false,
-          select: (option, id) => {
-            const item = this.selectorData.find((el) => el.id == id);
-            item ? (item.selected = option) : null;
-          },
-        },
-      ],
-    };
-  },
-  mounted() {
-    nextTick(() => {
-      this.copySelectedItems = structuredClone(this.selectedItems);
-    });
-  },
-  computed: {
-    selectedItems() {
+      },
+    ]);
+
+    const selectedItems = computed(() => {
       const arr = [];
-      this.fields.forEach((field) => arr.push(field.selected));
-      this.multiSelectorData.forEach((field) =>
+      fields.forEach((field) => arr.push(field.selected));
+      multiSelectorData.forEach((field) =>
         arr.push(field.list.some((el) => el.selected))
       );
-      this.selectorData.forEach((field) => arr.push(field.selected));
+      selectorData.forEach((field) => arr.push(field.selected));
       return arr;
-    },
-    coincideSelectedItems() {
+    });
+    const coincideSelectedItems = computed(() => {
       return (
-        JSON.stringify(this.copySelectedItems) ==
-        JSON.stringify(this.selectedItems)
+        JSON.stringify(copySelectedItems.value) ==
+        JSON.stringify(selectedItems.value)
       );
-    },
-  },
-  watch: {
-    selected_field_autocomplete() {
-      this.selected_field_autocomplete_list = [];
-    },
-    selectedItems: {
-      handler: function () {},
-      deep: true,
-    },
-  },
-  methods: {
-    createReport() {
+    });
+
+    onMounted(() => {
+      nextTick(() => {
+        copySelectedItems.value = structuredClone(selectedItems.value);
+      });
+    });
+
+    watch(selected_field_autocomplete, () => {
+      selected_field_autocomplete_list.value = [];
+    });
+
+    const createReport = () => {
       alert("потом будем сохранять шаблон");
-    },
-    async changeInputValue(value, name) {
+    };
+    const changeInputValue = async (value, name) => {
       const verify = (value) => {
         return value.split("").at(-1) != " " && value.split("")[0] != " ";
       };
-      this.selected_field_autocomplete_list = [];
-      if (verify(value) && this.selected_field_autocomplete == name) {
-        await this.$store.dispatch("getAutocompleteAnalytics", {
+      selected_field_autocomplete_list.value = [];
+      if (verify(value) && selected_field_autocomplete.value == name) {
+        await store.dispatch("getAutocompleteAnalytics", {
           field: name,
           value: { query: value },
         });
-        const list = this.$store.state.analytics.autocomplete;
+        const list = store.state.analytics.autocomplete;
         if (list != undefined) {
           list.map((item) => (item.name = item.value));
-          this.selected_field_autocomplete_list = [...list];
+          selected_field_autocomplete_list.value = [...list];
         }
       }
-    },
-    selectField(item, field) {
-      this.fields.forEach((val) => {
+    };
+    const selectField = (item, field) => {
+      fields.forEach((val) => {
         if (
           val.name === field &&
           !val.selected.filter((val) => val.value == item.value).length
         )
           val.selected.push(item);
       });
-    },
-    deleteField(idx1, idx2) {
-      this.fields[idx1].selected.splice(idx2, 1);
-    },
-    clearAllFields() {
-      this.dateStart = "";
-      this.dateEnd = "";
-      this.fields.map((val) => (val.selected = []));
-      this.apply();
-    },
-    apply() {
+    };
+    const deleteField = (idx1, idx2) => {
+      fields[idx1].selected.splice(idx2, 1);
+    };
+    const clearAllFields = () => {
+      dateStart.value = "";
+      dateEnd.value = "";
+      fields.map((val) => (val.selected = []));
+      apply();
+    };
+    const apply = () => {
       const preparationDate = (date) => {
         const a = date.split("-");
         const b = a[0];
@@ -283,21 +301,41 @@ export default {
       };
       const filter = {
         date:
-          preparationDate(this.dateStart) + "-" + preparationDate(this.dateEnd),
+          preparationDate(dateStart.value) +
+          "-" +
+          preparationDate(dateEnd.value),
       };
       if (filter.date == "-") delete filter.date;
-      this.fields.forEach((val) => {
+      fields.forEach((val) => {
         const list = [];
         val.selected.forEach((value) => list.push(value.value));
         if (
-          ((this.isClient && val.clientShow) ||
-            (!this.isClient && val.salesShow)) &&
+          ((props.isClient && val.clientShow) ||
+            (!props.isClient && val.salesShow)) &&
           list != 0
         )
           filter[val.name] = list;
       });
-      this.$emit("getFilter", filter);
-    },
+      context.emit("getFilter", filter);
+    };
+
+    return {
+      selected_field_autocomplete,
+      selected_field_autocomplete_list,
+      copySelectedItems,
+      dateStart,
+      dateEnd,
+      fields,
+      multiSelectorData,
+      selectorData,
+      coincideSelectedItems,
+      createReport,
+      changeInputValue,
+      selectField,
+      deleteField,
+      clearAllFields,
+      apply,
+    };
   },
 };
 </script>
@@ -321,7 +359,7 @@ export default {
     gap: 10px;
     width: 100%;
 
-    > .filters {
+    .filters {
       // display: flex;
       // flex-direction: row;
       // flex-wrap: wrap;
