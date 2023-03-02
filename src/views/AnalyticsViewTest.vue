@@ -17,11 +17,6 @@
             {{ type.label }}
           </button>
         </div>
-        <button
-          class="add_new_button"
-          v-if="isTest"
-          @click="openReportCreate()"
-        ></button>
       </div>
       <div class="filters">
         <div class="row">
