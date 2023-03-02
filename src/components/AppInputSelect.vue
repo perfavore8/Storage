@@ -3,10 +3,15 @@
     <input
       type="text"
       class="input"
-      :class="{ input_uderline: input_uderline }"
+      :class="{
+        input_uderline: input_uderline,
+        black_text: SelectedInTitle && selected?.name,
+      }"
       v-model="inputValue"
       @click="openList()"
-      :placeholder="placeholder"
+      :placeholder="
+        SelectedInTitle && selected?.name ? selected?.name : placeholder
+      "
     />
     <template v-if="showList">
       <div class="backdrop" @click="closeList()" />
@@ -51,6 +56,7 @@ export default {
     requestDelay: { type: Number, required: false, default: () => 300 }, // <--  миллисекунды
     placeholder: { type: String, required: false },
     input_uderline: { type: Boolean, required: false, default: () => false }, // стиль интпута
+    SelectedInTitle: { type: Boolean, required: false, default: () => false }, // показывать выбранный итем в тайтле
   },
   emits: ["changeInputValue", "focusIn", "select"],
   setup(props, context) {
@@ -106,6 +112,9 @@ export default {
 @import "@/app.scss";
 .input-select {
   position: relative;
+  .black_text::placeholder {
+    color: black;
+  }
   .backdrop {
     position: fixed;
     top: 0;
