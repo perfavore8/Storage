@@ -37,7 +37,7 @@
         <div class="filters_left">
           <div class="date">
             <div class="flex flex-row items-center gap-2">
-              <div v-if="isTest">
+              <div v-if="!isServicePage">
                 <input
                   type="checkbox"
                   id="is_in_wh"
