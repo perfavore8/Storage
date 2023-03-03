@@ -44,7 +44,7 @@
                   class="checkbox"
                   v-model="is_in_wh"
                 />
-                <label for="is_in_wh">Есть на складах</label>
+                <label for="is_in_wh">Только положительные остатки</label>
               </div>
               <input
                 type="date"
@@ -241,8 +241,9 @@ export default {
       this.$store.commit("updateIsLoading", true);
       this.isGrid ? this.ref_card.drop_page() : this.ref_main.drop_page();
     },
-    is_in_wh() {
-      this.$store.dispatch("update_user", { is_in_wh: this.is_in_wh });
+    async is_in_wh() {
+      await this.$store.dispatch("update_user", { is_in_wh: this.is_in_wh });
+      this.updateProducts();
     },
   },
   methods: {
