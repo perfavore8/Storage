@@ -159,9 +159,7 @@
       </label>
     </div>
     <grid-bottom
-      :previous="meta?.prev_page_url != null"
-      :next="meta?.next_page_url != null"
-      :page="meta?.current_page"
+      :page="page"
       :show="products.list.length != 0"
       :showSelector="false"
       :count="meta?.per_page"
@@ -321,9 +319,26 @@ export default {
     accountSubdomain() {
       return this.$store.state.account.account.subdomain;
     },
+    page() {
+      const obj = {
+        first: this.getPageFromLink(this.meta?.first_page_url),
+        prev: this.getPageFromLink(this.meta?.prev_page_url),
+        current: this.meta?.current_page,
+        next: this.getPageFromLink(this.meta?.next_page_url),
+        last: this.getPageFromLink(this.meta?.last_page_url),
+      };
+      return obj;
+    },
   },
 
   methods: {
+    getPageFromLink(link) {
+      if (link) {
+        return link.split("?page=")[1];
+      } else {
+        return null;
+      }
+    },
     dateFormater(date) {
       const [dateTime] = date.split(".");
       const [day, time] = dateTime.split("T");
