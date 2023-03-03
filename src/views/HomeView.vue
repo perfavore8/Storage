@@ -36,33 +36,22 @@
       <div class="filters" :class="{ blur: show_edit_modal }">
         <div class="filters_left">
           <div class="date">
-            <div class="flex flex-row items-center gap-2">
-              <div v-if="!isServicePage">
-                <input
-                  type="checkbox"
-                  id="is_in_wh"
-                  class="checkbox"
-                  v-model="is_in_wh"
-                />
-                <label for="is_in_wh">Только положительные остатки</label>
-              </div>
-              <input
-                type="date"
-                id="start"
-                name="trip-start"
-                :value="date"
-                min="2000-01-01"
-                max="2032-12-31"
-                aria-required="true"
-                aria-invalid="false"
-              />
-            </div>
+            <input
+              type="date"
+              id="start"
+              name="trip-start"
+              :value="date"
+              min="2000-01-01"
+              max="2032-12-31"
+              aria-required="true"
+              aria-invalid="false"
+            />
             <div class="bot">
               <p>Найдено: {{ totalCountProducts }}</p>
               <template v-if="isTest">
                 <input
                   type="checkbox"
-                  class="checkbox"
+                  class="checkbox grid"
                   v-model="isGrid"
                   id="grid"
                 />
@@ -77,6 +66,15 @@
                   </transition>
                 </label>
               </template>
+              <div v-if="!isServicePage" class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="is_in_wh"
+                  class="checkbox"
+                  v-model="is_in_wh"
+                />
+                <label for="is_in_wh">Только положительные остатки</label>
+              </div>
             </div>
           </div>
           <HomeBtns
@@ -400,6 +398,7 @@ export default {
         .bot {
           display: flex;
           flex-direction: row;
+          align-items: center;
           gap: 20px;
           .icon {
             color: #757575;
@@ -411,18 +410,18 @@ export default {
             @include font(400, 16px, 19px);
             margin: 16px 0;
           }
-          .checkbox {
+          .grid {
             position: absolute;
             z-index: -1;
             opacity: 0;
           }
-          .checkbox + label {
+          .grid + label {
             display: inline-flex;
             align-items: center;
             user-select: none;
             position: relative;
           }
-          .checkbox + label::before {
+          .grid + label::before {
             content: "";
             display: inline-block;
             width: 28px;
