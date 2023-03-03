@@ -36,16 +36,27 @@
       <div class="filters" :class="{ blur: show_edit_modal }">
         <div class="filters_left">
           <div class="date">
-            <input
-              type="date"
-              id="start"
-              name="trip-start"
-              :value="date"
-              min="2000-01-01"
-              max="2032-12-31"
-              aria-required="true"
-              aria-invalid="false"
-            />
+            <div class="flex flex-row items-center gap-2">
+              <div v-if="isTest">
+                <input
+                  type="checkbox"
+                  id="is_in_wh"
+                  class="checkbox"
+                  v-model="is_in_wh"
+                />
+                <label for="is_in_wh">Есть на складах</label>
+              </div>
+              <input
+                type="date"
+                id="start"
+                name="trip-start"
+                :value="date"
+                min="2000-01-01"
+                max="2032-12-31"
+                aria-required="true"
+                aria-invalid="false"
+              />
+            </div>
             <div class="bot">
               <p>Найдено: {{ totalCountProducts }}</p>
               <template v-if="isTest">
@@ -146,6 +157,7 @@ export default {
   },
   data() {
     return {
+      is_in_wh: false,
       paginatedData: [],
       paginatedParams: [],
       selectedWH: { name: "Все склады", value: "whs" },
@@ -186,6 +198,9 @@ export default {
     account() {
       return this.$store.state.account.account;
     },
+    user() {
+      return this.$store.state.account.user;
+    },
     ref_main() {
       return this.$refs.main;
     },
@@ -214,6 +229,7 @@ export default {
     await this.$store.dispatch("get_account");
     this.ref_homeWhs?.changeStoreWhs();
     this.$refs?.oldData?.importOldData("start");
+    this.is_in_wh = this.user?.config?.is_in_wh;
   },
   watch: {
     show_modals() {
@@ -224,6 +240,9 @@ export default {
     selected_storage() {
       this.$store.commit("updateIsLoading", true);
       this.isGrid ? this.ref_card.drop_page() : this.ref_main.drop_page();
+    },
+    is_in_wh() {
+      this.$store.dispatch("update_user", { is_in_wh: this.is_in_wh });
     },
   },
   methods: {
@@ -340,13 +359,13 @@ export default {
         flex-direction: column;
         gap: 19px;
 
-        input::-webkit-datetime-edit-day-field,
-        input::-webkit-datetime-edit-month-field,
-        input::-webkit-datetime-edit-year-field {
+        input[type="date"]::-webkit-datetime-edit-day-field,
+        input[type="date"]::-webkit-datetime-edit-month-field,
+        input[type="date"]::-webkit-datetime-edit-year-field {
           background: transparent;
           color: #3f3f3f;
         }
-        input {
+        input[type="date"] {
           position: relative;
           width: 112px;
           height: 34px;
@@ -357,15 +376,15 @@ export default {
           outline: none;
           @include font(400, 16px, 19px);
         }
-        input:focus {
+        input[type="date"]:focus {
           outline: 2px solid #3f3f3f6c;
         }
-        input::-webkit-datetime-edit-fields-wrapper {
+        input[type="date"]::-webkit-datetime-edit-fields-wrapper {
           display: flex;
           flex-direction: row;
           justify-content: center;
         }
-        input::-webkit-calendar-picker-indicator {
+        input[type="date"]::-webkit-calendar-picker-indicator {
           cursor: pointer;
           opacity: 0;
           position: absolute;
