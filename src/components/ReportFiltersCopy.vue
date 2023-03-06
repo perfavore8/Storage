@@ -406,7 +406,7 @@ export default {
       // gap: 10px;
       position: relative;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 10px;
       width: 100%;
       // width: 929px;
@@ -457,6 +457,7 @@ export default {
     }
   }
   .date_range {
+    container-type: inline-size;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -486,7 +487,7 @@ export default {
       border-radius: 4px;
       color: #3f3f3f;
       outline: none;
-      @include font(400, 16px);
+      font-size: 7cqw;
     }
     input::-webkit-datetime-edit-fields-wrapper {
       display: flex;
