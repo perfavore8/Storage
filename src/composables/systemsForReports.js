@@ -4,8 +4,8 @@ export function useSystems() {
   const systems = reactive([
     {
       id: 0,
-      name: "amoSRM",
-      value: "amoSRM",
+      name: "amoCRM",
+      value: "amoCRM",
       filtersList: [
         {
           id: 1235674,
