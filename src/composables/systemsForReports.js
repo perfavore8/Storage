@@ -8,12 +8,29 @@ export function useSystems() {
       value: "amoSRM",
       filtersList: [
         {
+          id: 1235674,
+          name: "entities",
+          value: "",
+          minLength: 0,
+          show: {
+            value: true,
+          },
+          placeholder: "Сущность",
+          selected: {},
+          list: [
+            { name: "Сделка", value: "trade" },
+            { name: "Контакт", value: "contact" },
+            { name: "Компания", value: "company" },
+          ],
+        },
+        {
           id: 0,
           name: "data",
           value: "",
           minLength: 0,
           show: {
-            value: true,
+            value: false,
+            data: [{ id: 1235674, value: "any" }],
           },
           placeholder: "Данные",
           selected: {},
@@ -29,7 +46,10 @@ export function useSystems() {
           minLength: 0,
           show: {
             value: false,
-            data: [{ id: 0, value: "event" }],
+            data: [
+              { id: 0, value: "event" },
+              { id: 1235674, value: "trade" },
+            ],
           },
           placeholder: "Сделки",
           selected: {},
@@ -44,13 +64,66 @@ export function useSystems() {
           ],
         },
         {
+          id: 111111,
+          name: "stepStart",
+          value: "",
+          minLength: 0,
+          show: {
+            value: false,
+            data: [
+              { id: 1, value: 2 },
+              { id: 0, value: "event" },
+              { id: 1235674, value: "trade" },
+            ],
+          },
+          placeholder: "С какого этапа",
+          selected: {},
+          list: [
+            { name: "Этап 1", value: 1 },
+            { name: "Этап 2", value: 2 },
+            { name: "Этап 3", value: 3 },
+            { name: "Этап 4", value: 4 },
+            { name: "Этап 5", value: 5 },
+            { name: "Этап 6", value: 6 },
+            { name: "Этап 7", value: 7 },
+          ],
+        },
+        {
+          id: 111112,
+          name: "stepEnd",
+          value: "",
+          minLength: 0,
+          show: {
+            value: false,
+            data: [
+              { id: 1, value: 2 },
+              { id: 0, value: "event" },
+              { id: 1235674, value: "trade" },
+            ],
+          },
+          placeholder: "На какой этап",
+          selected: {},
+          list: [
+            { name: "Этап 1", value: 1 },
+            { name: "Этап 2", value: 2 },
+            { name: "Этап 3", value: 3 },
+            { name: "Этап 4", value: 4 },
+            { name: "Этап 5", value: 5 },
+            { name: "Этап 6", value: 6 },
+            { name: "Этап 7", value: 7 },
+          ],
+        },
+        {
           id: 2,
           name: "trade",
           value: "",
           minLength: 0,
           show: {
             value: false,
-            data: [{ id: 0, value: "data" }],
+            data: [
+              { id: 0, value: "data" },
+              { id: 1235674, value: "trade" },
+            ],
           },
           placeholder: "Сделки",
           selected: {},
@@ -71,7 +144,10 @@ export function useSystems() {
           minLength: 0,
           show: {
             value: false,
-            data: [{ id: 0, value: "event" }],
+            data: [
+              { id: 0, value: "event" },
+              { id: 1235674, value: "contact" },
+            ],
           },
           placeholder: "Контакты",
           selected: {},
@@ -97,7 +173,10 @@ export function useSystems() {
           minLength: 0,
           show: {
             value: false,
-            data: [{ id: 0, value: "data" }],
+            data: [
+              { id: 0, value: "data" },
+              { id: 1235674, value: "contact" },
+            ],
           },
           placeholder: "Контакты",
           selected: {},
@@ -120,7 +199,10 @@ export function useSystems() {
           minLength: 0,
           show: {
             value: false,
-            data: [{ id: 0, value: "event" }],
+            data: [
+              { id: 0, value: "event" },
+              { id: 1235674, value: "company" },
+            ],
           },
           placeholder: "Компании",
           selected: {},
@@ -140,7 +222,10 @@ export function useSystems() {
           minLength: 0,
           show: {
             value: false,
-            data: [{ id: 0, value: "data" }],
+            data: [
+              { id: 0, value: "data" },
+              { id: 1235674, value: "company" },
+            ],
           },
           placeholder: "Компании",
           selected: {},
@@ -163,7 +248,7 @@ export function useSystems() {
           minLength: 0,
           show: {
             value: false,
-            data: [{ id: 0, value: "event" }],
+            data: [{ id: 0, value: "event1" }],
           },
           placeholder: "Задачи",
           selected: {},
@@ -182,7 +267,7 @@ export function useSystems() {
           minLength: 0,
           show: {
             value: false,
-            data: [{ id: 0, value: "data" }],
+            data: [{ id: 0, value: "data1" }],
           },
           placeholder: "Задачи",
           selected: {},
@@ -231,13 +316,20 @@ export function useSystems() {
     selectedSystemValues,
     () => {
       selectedSystem.filtersList?.map((filter) => {
+        let res = true;
         filter?.show?.data?.forEach((dat) => {
           const item = selectedSystem.filtersList?.find(
             (el) => el.id === dat.id
           );
-          if (filter.show)
-            filter.show.value = item?.selected?.value === dat.value;
+          if (filter.show) {
+            if (dat.value === "any") {
+              res = res && !!item?.selected?.value;
+            } else {
+              res = res && item?.selected?.value === dat.value;
+            }
+          }
         });
+        filter.show.value = res;
       });
     },
     { deep: true }

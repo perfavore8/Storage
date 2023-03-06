@@ -62,6 +62,7 @@
               :placeholder="'Система'"
               :requestDelay="0"
               :SelectedInTitle="true"
+              @focusOut="() => filteringSystem.changeSystemInputValue('')"
               @changeInputValue="filteringSystem.changeSystemInputValue"
               @select="(item) => filteringSystem.selectSystem(item)"
             />
@@ -200,60 +201,60 @@ export default {
         salesShow: false,
         selected: [],
       },
-      {
-        id: 5,
-        name: "position",
-        value: "",
-        minLength: 3,
-        placeholder: "Позиции",
-        clientShow: true,
-        salesShow: false,
-        selected: [],
-      },
+      // {
+      //   id: 5,
+      //   name: "position",
+      //   value: "",
+      //   minLength: 3,
+      //   placeholder: "Позиции",
+      //   clientShow: true,
+      //   salesShow: false,
+      //   selected: [],
+      // },
     ]);
     const multiSelectorData = reactive([
-      {
-        type: 6,
-        id: 6,
-        name: "position",
-        list: [
-          { name: "Все", value: "all", selected: false },
-          { name: "1", value: 1, selected: false },
-          { name: "2", value: 2, selected: false },
-          { name: "3", value: 3, selected: false },
-          { name: "4", value: 4, selected: false },
-        ],
-        placeholder: "Этапы сделок amoSRM",
-        clientShow: true,
-        salesShow: false,
-        select: (option, id) => {
-          if (option.value === "all") {
-            const item = multiSelectorData.find((el) => el.id === id);
-            item?.list?.forEach((el) => {
-              if (el.value !== "all") el.selected = !option.selected;
-            });
-          }
-          option.selected = !option.selected;
-        },
-      },
+      // {
+      //   type: 6,
+      //   id: 6,
+      //   name: "position",
+      //   list: [
+      //     { name: "Все", value: "all", selected: false },
+      //     { name: "1", value: 1, selected: false },
+      //     { name: "2", value: 2, selected: false },
+      //     { name: "3", value: 3, selected: false },
+      //     { name: "4", value: 4, selected: false },
+      //   ],
+      //   placeholder: "Этапы сделок amoCRM",
+      //   clientShow: true,
+      //   salesShow: false,
+      //   select: (option, id) => {
+      //     if (option.value === "all") {
+      //       const item = multiSelectorData.find((el) => el.id === id);
+      //       item?.list?.forEach((el) => {
+      //         if (el.value !== "all") el.selected = !option.selected;
+      //       });
+      //     }
+      //     option.selected = !option.selected;
+      //   },
+      // },
     ]);
     const selectorData = reactive([
-      {
-        type: 6,
-        id: 7,
-        name: "data",
-        selected: { name: "Остатки", value: 1 },
-        list: [
-          { name: "Остатки", value: 1 },
-          { name: "Заказы", value: 2 },
-        ],
-        clientShow: true,
-        salesShow: false,
-        select: (option, id) => {
-          const item = selectorData.find((el) => el.id == id);
-          item ? (item.selected = option) : null;
-        },
-      },
+      // {
+      //   type: 6,
+      //   id: 7,
+      //   name: "data",
+      //   selected: { name: "Остатки", value: 1 },
+      //   list: [
+      //     { name: "Остатки", value: 1 },
+      //     { name: "Заказы", value: 2 },
+      //   ],
+      //   clientShow: true,
+      //   salesShow: false,
+      //   select: (option, id) => {
+      //     const item = selectorData.find((el) => el.id == id);
+      //     item ? (item.selected = option) : null;
+      //   },
+      // },
     ]);
 
     const selectedItems = computed(() => {
