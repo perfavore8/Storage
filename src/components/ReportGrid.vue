@@ -33,6 +33,7 @@
               <a
                 v-for="lead in report[tit.code]"
                 :key="lead"
+                class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
                 target="black"
                 :href="
                   'https://' +
