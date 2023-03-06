@@ -13,16 +13,13 @@
           <img
             class="icon"
             src="@/assets/genezis.jpg"
-            @click="true ? null : route('genezis')"
+            @click="route('genezis')"
           />
           <a
             href=" https://www.amocrm.ru/oauth/?state=%7B%22external_source%22:%22gosklad%22%7D&client_id=d9322b36-0001-4269-bb61-976571e8a51a"
             target="blank"
           >
-            <button
-              class="btn btn_dark_blue"
-              :disabled="(account?.g_install || true) && !isTest"
-            >
+            <button class="btn btn_dark_blue" :disabled="account?.g_install">
               {{ account?.g_install ? "Установлено" : "Установить" }}
             </button>
           </a>
@@ -31,10 +28,7 @@
             1С интеграция»
           </small>
           <a @click="route('genezis')">
-            <button
-              class="btn btn_dark_blue"
-              :disabled="!account?.g_install && !isTest"
-            >
+            <button class="btn btn_dark_blue" :disabled="!account?.g_install">
               Настройки
             </button>
           </a>
@@ -78,9 +72,6 @@ export default {
     },
     account() {
       return this.$store.state.account.account;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
     },
   },
   methods: {
