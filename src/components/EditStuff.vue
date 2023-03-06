@@ -42,6 +42,17 @@
                   Разрешать добавлять в сделки товар с нулевым остатком
                 </label>
               </div>
+              <div class="permit">
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  id="q4"
+                  v-model="copyConfing.one_wh_per_lead"
+                />
+                <label for="q4">
+                  Товары в сделке только из одного склада
+                </label>
+              </div>
             </div>
           </div>
         </div>
