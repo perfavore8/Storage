@@ -4,11 +4,12 @@
       <div class="left">
         <div class="flex flex-col w-full gap-3">
           <div class="filters">
-            <div class="date_range">
-              <input type="date" v-model="dateStart" />
-              <span> - </span>
-              <input type="date" v-model="dateEnd" />
-            </div>
+            <AppDateRange
+              :dateStart="dateStart"
+              @update:dateStart="(newValue) => (dateStart = newValue)"
+              :dateEnd="dateEnd"
+              @update:dateEnd="(newValue) => (dateEnd = newValue)"
+            />
             <AppInputSelect
               :list="selected_field_autocomplete_list"
               :countLettersReq="field.minLength"
@@ -66,9 +67,10 @@
               @changeInputValue="filteringSystem.changeSystemInputValue"
               @select="(item) => filteringSystem.selectSystem(item)"
             />
-            <AppInputSelect
+            <component
               v-for="filter in filteringSystem.selectedSystem?.filtersList"
               :key="filter.id"
+              :is="filter.type"
               v-show="filter.show?.value"
               :list="filteringSystem.filterList(filter.value, filter.list)"
               :selected="filter.selected"
@@ -76,8 +78,15 @@
               :placeholder="filter.placeholder"
               :requestDelay="0"
               :SelectedInTitle="true"
+              :dateRange="filter.selected"
+              @update:dateRange="(newValue) => (filter.selected = newValue)"
               @changeInputValue="(value) => (filter.value = value)"
-              @select="(item) => (filter.selected = item)"
+              @select="
+                (item) =>
+                  filter.type === 'AppMultiSelect'
+                    ? filteringSystem.selectMulti(item, filter.id)
+                    : (filter.selected = item)
+              "
             />
           </div>
         </div>
@@ -120,6 +129,7 @@
 </template>
 
 <script>
+import AppDateRange from "./AppDateRange.vue";
 import AppInputSelect from "./AppInputSelect.vue";
 import SelectorVue from "./SelectorVue.vue";
 import AppMultiSelect from "./AppMultiSelect.vue";
@@ -134,7 +144,7 @@ import {
 } from "@vue/runtime-core";
 import store from "@/store";
 export default {
-  components: { AppInputSelect, AppMultiSelect, SelectorVue },
+  components: { AppInputSelect, AppMultiSelect, SelectorVue, AppDateRange },
   props: {
     isClient: {
       type: Boolean,
@@ -454,57 +464,6 @@ export default {
     }
     .btn:last-child {
       border-radius: 0 5px 5px 0;
-    }
-  }
-  .date_range {
-    container-type: inline-size;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 4px;
-    margin: 0 3px;
-    font-size: 16px;
-    input::-webkit-datetime-edit-day-field,
-    input::-webkit-datetime-edit-month-field,
-    input::-webkit-datetime-edit-year-field {
-      background: transparent;
-      color: #3f3f3f;
-    }
-    input::-webkit-datetime-edit-day-field:focus,
-    input::-webkit-datetime-edit-month-field:focus,
-    input::-webkit-datetime-edit-year-field:focus {
-      color: black;
-    }
-    input:focus {
-      outline: 1px solid #c4c4c4;
-    }
-    input {
-      position: relative;
-      width: 100%;
-      height: 34px;
-      background: white;
-      border: 1px solid #c4c4c4;
-      border-radius: 4px;
-      color: #3f3f3f;
-      outline: none;
-      font-size: 7cqw;
-    }
-    input::-webkit-datetime-edit-fields-wrapper {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-    }
-    input::-webkit-calendar-picker-indicator {
-      cursor: pointer;
-      opacity: 0;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      appearance: none;
     }
   }
 }
