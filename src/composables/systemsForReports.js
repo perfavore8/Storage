@@ -10,6 +10,7 @@ export function useSystems() {
         {
           id: 1235674,
           name: "entities",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
@@ -26,11 +27,11 @@ export function useSystems() {
         {
           id: 0,
           name: "data",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [{ id: 1235674, value: "any" }],
+            value: computed(() => isValueSelected(1235674, "any")),
           },
           placeholder: "Данные",
           selected: {},
@@ -42,14 +43,14 @@ export function useSystems() {
         {
           id: 1,
           name: "trade",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [
-              { id: 0, value: "event" },
-              { id: 1235674, value: "trade" },
-            ],
+            value: computed(
+              () =>
+                isValueSelected(1235674, "trade") && isValueSelected(0, "event")
+            ),
           },
           placeholder: "Сделки",
           selected: {},
@@ -63,67 +64,67 @@ export function useSystems() {
             { name: "привязка контакта", value: 7 },
           ],
         },
-        {
-          id: 111111,
-          name: "stepStart",
-          value: "",
-          minLength: 0,
-          show: {
-            value: false,
-            data: [
-              { id: 1, value: 2 },
-              { id: 0, value: "event" },
-              { id: 1235674, value: "trade" },
-            ],
-          },
-          placeholder: "С какого этапа",
-          selected: {},
-          list: [
-            { name: "Этап 1", value: 1 },
-            { name: "Этап 2", value: 2 },
-            { name: "Этап 3", value: 3 },
-            { name: "Этап 4", value: 4 },
-            { name: "Этап 5", value: 5 },
-            { name: "Этап 6", value: 6 },
-            { name: "Этап 7", value: 7 },
-          ],
-        },
-        {
-          id: 111112,
-          name: "stepEnd",
-          value: "",
-          minLength: 0,
-          show: {
-            value: false,
-            data: [
-              { id: 1, value: 2 },
-              { id: 0, value: "event" },
-              { id: 1235674, value: "trade" },
-            ],
-          },
-          placeholder: "На какой этап",
-          selected: {},
-          list: [
-            { name: "Этап 1", value: 1 },
-            { name: "Этап 2", value: 2 },
-            { name: "Этап 3", value: 3 },
-            { name: "Этап 4", value: 4 },
-            { name: "Этап 5", value: 5 },
-            { name: "Этап 6", value: 6 },
-            { name: "Этап 7", value: 7 },
-          ],
-        },
+        // {
+        //   id: 111111,
+        //   name: "stepStart",
+        //   value: "",
+        //   minLength: 0,
+        //   show: {
+        //     value: false,
+        //     data: [
+        //       { id: 1, value: 2 },
+        //       { id: 0, value: "event" },
+        //       { id: 1235674, value: "trade" },
+        //     ],
+        //   },
+        //   placeholder: "С какого этапа",
+        //   selected: {},
+        //   list: [
+        //     { name: "Этап 1", value: 1 },
+        //     { name: "Этап 2", value: 2 },
+        //     { name: "Этап 3", value: 3 },
+        //     { name: "Этап 4", value: 4 },
+        //     { name: "Этап 5", value: 5 },
+        //     { name: "Этап 6", value: 6 },
+        //     { name: "Этап 7", value: 7 },
+        //   ],
+        // },
+        // {
+        //   id: 111112,
+        //   name: "stepEnd",
+        //   value: "",
+        //   minLength: 0,
+        //   show: {
+        //     value: false,
+        //     data: [
+        //       { id: 1, value: 2 },
+        //       { id: 0, value: "event" },
+        //       { id: 1235674, value: "trade" },
+        //     ],
+        //   },
+        //   placeholder: "На какой этап",
+        //   selected: {},
+        //   list: [
+        //     { name: "Этап 1", value: 1 },
+        //     { name: "Этап 2", value: 2 },
+        //     { name: "Этап 3", value: 3 },
+        //     { name: "Этап 4", value: 4 },
+        //     { name: "Этап 5", value: 5 },
+        //     { name: "Этап 6", value: 6 },
+        //     { name: "Этап 7", value: 7 },
+        //   ],
+        // },
         {
           id: 2,
           name: "trade",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [
-              { id: 0, value: "data" },
-              { id: 1235674, value: "trade" },
-            ],
+            value: computed(
+              () =>
+                isValueSelected(1235674, "trade") && isValueSelected(0, "data")
+            ),
           },
           placeholder: "Сделки",
           selected: {},
@@ -140,14 +141,15 @@ export function useSystems() {
         {
           id: 3,
           name: "contact",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [
-              { id: 0, value: "event" },
-              { id: 1235674, value: "contact" },
-            ],
+            value: computed(
+              () =>
+                isValueSelected(1235674, "contact") &&
+                isValueSelected(0, "event")
+            ),
           },
           placeholder: "Контакты",
           selected: {},
@@ -169,14 +171,15 @@ export function useSystems() {
         {
           id: 4,
           name: "contact",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [
-              { id: 0, value: "data" },
-              { id: 1235674, value: "contact" },
-            ],
+            value: computed(
+              () =>
+                isValueSelected(1235674, "contact") &&
+                isValueSelected(0, "data")
+            ),
           },
           placeholder: "Контакты",
           selected: {},
@@ -195,14 +198,15 @@ export function useSystems() {
         {
           id: 5,
           name: "company",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [
-              { id: 0, value: "event" },
-              { id: 1235674, value: "company" },
-            ],
+            value: computed(
+              () =>
+                isValueSelected(1235674, "company") &&
+                isValueSelected(0, "event")
+            ),
           },
           placeholder: "Компании",
           selected: {},
@@ -218,14 +222,15 @@ export function useSystems() {
         {
           id: 6,
           name: "company",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [
-              { id: 0, value: "data" },
-              { id: 1235674, value: "company" },
-            ],
+            value: computed(
+              () =>
+                isValueSelected(1235674, "company") &&
+                isValueSelected(0, "data")
+            ),
           },
           placeholder: "Компании",
           selected: {},
@@ -244,11 +249,15 @@ export function useSystems() {
         {
           id: 7,
           name: "task",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [{ id: 0, value: "event1" }],
+            value: computed(
+              () =>
+                isValueSelected(1235674, "contact") &&
+                isValueSelected(0, "data1")
+            ),
           },
           placeholder: "Задачи",
           selected: {},
@@ -263,13 +272,192 @@ export function useSystems() {
         {
           id: 8,
           name: "task",
+          type: "AppInputSelect",
           value: "",
           minLength: 0,
           show: {
-            value: false,
-            data: [{ id: 0, value: "data1" }],
+            value: computed(
+              () =>
+                isValueSelected(1235674, "contact") &&
+                isValueSelected(0, "data1")
+            ),
           },
           placeholder: "Задачи",
+          selected: {},
+          list: [
+            { name: "ответственный", value: 1 },
+            { name: "дата создания", value: 2 },
+            { name: "дата изменения", value: 3 },
+            { name: "дата завершения", value: 4 },
+            { name: "тип задачи", value: 5 },
+            { name: "содержимое задачи", value: 6 },
+            { name: "результат выполнения", value: 7 },
+            { name: "связаные компании / контакты / сделки", value: 8 },
+          ],
+        },
+        {
+          id: 200,
+          name: "date",
+          type: "AppDateRange",
+          value: "",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                (isValueSelected(1, "any") ||
+                  isValueSelected(2, "any") ||
+                  isValueSelected(3, "any") ||
+                  isValueSelected(4, "any") ||
+                  isValueSelected(5, "any") ||
+                  isValueSelected(6, "any") ||
+                  isValueSelected(7, "any") ||
+                  isValueSelected(8, "any")) &&
+                isValueSelected(0, "any") &&
+                isValueSelected(1235674, "any")
+            ),
+          },
+          placeholder: "Интервал дат",
+          selected: "-",
+          list: [
+            { name: "ответственный", value: 1 },
+            { name: "дата создания", value: 2 },
+            { name: "дата изменения", value: 3 },
+            { name: "дата завершения", value: 4 },
+            { name: "тип задачи", value: 5 },
+            { name: "содержимое задачи", value: 6 },
+            { name: "результат выполнения", value: 7 },
+            { name: "связаные компании / контакты / сделки", value: 8 },
+          ],
+        },
+        {
+          id: 201,
+          name: "vortexAndPhase",
+          type: "AppMultiSelect",
+          value: "",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                (isValueSelected(1, "any") ||
+                  isValueSelected(2, "any") ||
+                  isValueSelected(3, "any") ||
+                  isValueSelected(4, "any") ||
+                  isValueSelected(5, "any") ||
+                  isValueSelected(6, "any") ||
+                  isValueSelected(7, "any") ||
+                  isValueSelected(8, "any")) &&
+                isValueSelected(0, "any") &&
+                isValueSelected(1235674, "any")
+            ),
+          },
+          placeholder: "Воронка и этап",
+          selected: {},
+          list: [
+            { name: "Все", value: "all", selected: false },
+            { name: "ответственный", value: 1, selected: false },
+            { name: "дата создания", value: 2, selected: false },
+            { name: "дата изменения", value: 3, selected: false },
+            { name: "дата завершения", value: 4, selected: false },
+            { name: "тип задачи", value: 5, selected: false },
+            { name: "содержимое задачи", value: 6, selected: false },
+            { name: "результат выполнения", value: 7, selected: false },
+            {
+              name: "связаные компании / контакты / сделки",
+              value: 8,
+              selected: false,
+            },
+          ],
+        },
+        {
+          id: 202,
+          name: "responsible",
+          type: "AppMultiSelect",
+          value: "",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                (isValueSelected(1, "any") ||
+                  isValueSelected(2, "any") ||
+                  isValueSelected(3, "any") ||
+                  isValueSelected(4, "any") ||
+                  isValueSelected(5, "any") ||
+                  isValueSelected(6, "any") ||
+                  isValueSelected(7, "any") ||
+                  isValueSelected(8, "any")) &&
+                isValueSelected(0, "any") &&
+                isValueSelected(1235674, "any")
+            ),
+          },
+          placeholder: "Отвественный",
+          selected: {},
+          list: [
+            { name: "ответственный", value: 1 },
+            { name: "дата создания", value: 2 },
+            { name: "дата изменения", value: 3 },
+            { name: "дата завершения", value: 4 },
+            { name: "тип задачи", value: 5 },
+            { name: "содержимое задачи", value: 6 },
+            { name: "результат выполнения", value: 7 },
+            { name: "связаные компании / контакты / сделки", value: 8 },
+          ],
+        },
+        {
+          id: 203,
+          name: "tags",
+          type: "AppMultiSelect",
+          value: "",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                (isValueSelected(1, "any") ||
+                  isValueSelected(2, "any") ||
+                  isValueSelected(3, "any") ||
+                  isValueSelected(4, "any") ||
+                  isValueSelected(5, "any") ||
+                  isValueSelected(6, "any") ||
+                  isValueSelected(7, "any") ||
+                  isValueSelected(8, "any")) &&
+                isValueSelected(0, "any") &&
+                isValueSelected(1235674, "any")
+            ),
+          },
+          placeholder: "Тэги",
+          selected: {},
+          list: [
+            { name: "ответственный", value: 1 },
+            { name: "дата создания", value: 2 },
+            { name: "дата изменения", value: 3 },
+            { name: "дата завершения", value: 4 },
+            { name: "тип задачи", value: 5 },
+            { name: "содержимое задачи", value: 6 },
+            { name: "результат выполнения", value: 7 },
+            { name: "связаные компании / контакты / сделки", value: 8 },
+          ],
+        },
+        {
+          id: 204,
+          name: "initiator",
+          type: "AppInputSelect",
+          value: "",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                (isValueSelected(1, "any") ||
+                  isValueSelected(2, "any") ||
+                  isValueSelected(3, "any") ||
+                  isValueSelected(4, "any") ||
+                  isValueSelected(5, "any") ||
+                  isValueSelected(6, "any") ||
+                  isValueSelected(7, "any") ||
+                  isValueSelected(8, "any")) &&
+                isValueSelected(0, "any") &&
+                isValueSelected(1235674, "any")
+            ),
+          },
+          placeholder: "Инициатор события",
           selected: {},
           list: [
             { name: "ответственный", value: 1 },
@@ -285,6 +473,15 @@ export function useSystems() {
       ],
     },
   ]);
+
+  const isValueSelected = (id, value) => {
+    const item = selectedSystem.filtersList?.find((el) => el.id === id);
+    if (value === "any") {
+      return !!item?.selected?.value;
+    } else {
+      return item?.selected?.value === value;
+    }
+  };
 
   const filterList = (value, list) => {
     return list.filter((item) =>
@@ -309,31 +506,37 @@ export function useSystems() {
 
   const selectedSystemValues = computed(() => {
     const res = [];
-    selectedSystem.filtersList?.forEach((filter) => res.push(filter.selected));
+    selectedSystem.filtersList?.forEach((filter) => res.push(filter));
     return res;
   });
   watch(
     selectedSystemValues,
     () => {
       selectedSystem.filtersList?.map((filter) => {
-        let res = true;
-        filter?.show?.data?.forEach((dat) => {
-          const item = selectedSystem.filtersList?.find(
-            (el) => el.id === dat.id
-          );
-          if (filter.show) {
-            if (dat.value === "any") {
-              res = res && !!item?.selected?.value;
-            } else {
-              res = res && item?.selected?.value === dat.value;
-            }
+        if (filter.show.value === false) {
+          if (filter.type == "AppInputSelect" && !!filter.selected.value)
+            filter.selected = {};
+          if (filter.type == "AppDateRange" && filter.selected !== "-")
+            filter.selected = "-";
+          if (filter.type == "AppMultiSelect" && filter.selected.length) {
+            filter.selected = [];
+            filter.list.map((el) => (el.selected = false));
           }
-        });
-        filter.show.value = res;
+        }
       });
     },
     { deep: true }
   );
+
+  const selectMulti = (option, id) => {
+    if (option.value === "all") {
+      const item = selectedSystem.filtersList?.find((el) => el.id === id);
+      item?.list?.forEach((el) => {
+        if (el.value !== "all") el.selected = !option.selected;
+      });
+    }
+    option.selected = !option.selected;
+  };
 
   return {
     systems,
@@ -343,5 +546,6 @@ export function useSystems() {
     SystemInputValue,
     selectSystem,
     filterList,
+    selectMulti,
   };
 }
