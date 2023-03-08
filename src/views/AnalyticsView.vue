@@ -113,6 +113,7 @@ export default {
   },
   data() {
     return {
+      current_page: 1,
       openSelectedReportModal: false,
       isLoading: false,
       title: [],
@@ -282,11 +283,11 @@ export default {
       if (this.isClient) {
         await this.$store.dispatch("getCustomers", {
           filter: this.filter,
-          page: this.page,
+          page: this.current_page,
         });
         await this.$store.dispatch("getCustomersTotal", {
           filter: this.filter,
-          page: this.page,
+          page: this.current_page,
         });
         this.reports = this.$store.state.analytics.customers;
         this.total = this.$store.state.analytics.customersTotal;
@@ -313,11 +314,11 @@ export default {
       } else {
         await this.$store.dispatch("getSales", {
           filter: this.filter,
-          page: this.page,
+          page: this.current_page,
         });
         await this.$store.dispatch("getSalesTotal", {
           filter: this.filter,
-          page: this.page,
+          page: this.current_page,
         });
         this.reports = this.$store.state.analytics.sales;
         this.total = this.$store.state.analytics.salesTotal;
@@ -338,7 +339,7 @@ export default {
     },
     changeReportType() {
       this.isClient = !this.isClient;
-      this.page = 1;
+      this.current_page = 1;
       this.refFilters?.clearAllFields();
     },
     async clients() {
@@ -374,12 +375,12 @@ export default {
       this.isLoading = false;
     },
     changePage(value) {
-      this.page = value;
+      this.current_page = value;
       this.isClient ? this.clients() : this.sales();
     },
     getFilter(value) {
       this.filter = value;
-      this.page = 1;
+      this.current_page = 1;
       this.isClient ? this.clients() : this.sales();
     },
     round(number) {
