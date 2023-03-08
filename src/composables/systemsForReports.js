@@ -193,6 +193,7 @@ export function useSystems() {
             { name: "пользовательские поля (id)", value: 7 },
             { name: "примечания", value: 8 },
             { name: "теги", value: 9 },
+            { name: "список задач", value: 10 },
           ],
         },
         {
@@ -244,6 +245,7 @@ export function useSystems() {
             { name: "пользовательские поля (id)", value: 7 },
             { name: "теги", value: 8 },
             { name: "примечания", value: 9 },
+            { name: "список задач", value: 10 },
           ],
         },
         {
@@ -446,6 +448,130 @@ export function useSystems() {
             { name: "Инициатор 3", value: 3 },
             { name: "Инициатор 4", value: 4 },
             { name: "Инициатор 5", value: 5 },
+          ],
+        },
+        {
+          id: 302,
+          name: "before",
+          type: "AppInputSelect",
+          value: "",
+          placeholder: "До",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                isValueSelected(1, 2) ||
+                isValueSelected(1, 3) ||
+                isValueSelected(1, 5) ||
+                isValueSelected(3, 6) ||
+                isValueSelected(3, 7) ||
+                isValueSelected(5, 6)
+            ),
+          },
+          selected: {},
+          list: [
+            { name: "1", value: 1 },
+            { name: "2", value: 2 },
+            { name: "3", value: 3 },
+            { name: "4", value: 4 },
+            { name: "5", value: 5 },
+          ],
+        },
+        {
+          id: 303,
+          name: "after",
+          type: "AppInputSelect",
+          value: "",
+          placeholder: "После",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                isValueSelected(1, 2) ||
+                isValueSelected(1, 3) ||
+                isValueSelected(1, 5) ||
+                isValueSelected(3, 6) ||
+                isValueSelected(3, 7) ||
+                isValueSelected(5, 6)
+            ),
+          },
+          selected: {},
+          list: [
+            { name: "1", value: 1 },
+            { name: "2", value: 2 },
+            { name: "3", value: 3 },
+            { name: "4", value: 4 },
+            { name: "5", value: 5 },
+          ],
+        },
+        {
+          id: 304,
+          name: "taskStatus",
+          type: "AppInputSelect",
+          value: "",
+          placeholder: "Статус задачи",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                (isValueSelected(2, 7) ||
+                  isValueSelected(4, 10) ||
+                  isValueSelected(6, 10)) &&
+                isValueSelected(0, "data")
+            ),
+          },
+          selected: {},
+          list: [
+            { name: "Открытый", value: 0 },
+            { name: "Успешный", value: 1 },
+            { name: "Отменен", value: 2 },
+            { name: "Удален", value: 3 },
+          ],
+        },
+        {
+          id: 305,
+          name: "taskType",
+          type: "AppInputSelect",
+          value: "",
+          placeholder: "Тип задачи",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                (isValueSelected(2, 7) ||
+                  isValueSelected(4, 10) ||
+                  isValueSelected(6, 10)) &&
+                isValueSelected(0, "data")
+            ),
+          },
+          selected: {},
+          list: [
+            { name: "Открытый", value: 0 },
+            { name: "Успешный", value: 1 },
+            { name: "Отменен", value: 2 },
+            { name: "Удален", value: 3 },
+          ],
+        },
+        {
+          id: 306,
+          name: "messageType",
+          type: "AppInputSelect",
+          value: "",
+          placeholder: "Тип сообщения",
+          minLength: 0,
+          show: {
+            value: computed(
+              () =>
+                isValueSelected(3, 2) ||
+                isValueSelected(3, 3) ||
+                isValueSelected(3, 5) ||
+                isValueSelected(5, 4)
+            ),
+          },
+          selected: {},
+          list: [
+            { name: "Входящий", value: 1 },
+            { name: "Исходящий", value: 2 },
           ],
         },
       ],
