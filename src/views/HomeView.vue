@@ -36,16 +36,23 @@
       <div class="filters" :class="{ blur: show_edit_modal }">
         <div class="filters_left">
           <div class="date">
-            <input
-              type="date"
-              id="start"
-              name="trip-start"
-              :value="date"
-              min="2000-01-01"
-              max="2032-12-31"
-              aria-required="true"
-              aria-invalid="false"
-            />
+            <div class="flex flex-row gap-5 items-center">
+              <input
+                type="date"
+                id="start"
+                name="trip-start"
+                :value="date"
+                min="2000-01-01"
+                max="2032-12-31"
+                aria-required="true"
+                aria-invalid="false"
+              />
+              <HomeBtns
+                :isServicePage="isServicePage"
+                @archive_data="archive_data"
+                @setCurrentItems="setCurrentItems"
+              />
+            </div>
             <div class="bot">
               <p>Найдено: {{ totalCountProducts }}</p>
               <template v-if="isTest">
@@ -77,11 +84,6 @@
               </div>
             </div>
           </div>
-          <HomeBtns
-            :isServicePage="isServicePage"
-            @archive_data="archive_data"
-            @setCurrentItems="setCurrentItems"
-          />
         </div>
         <div class="filters_right">
           <HomeFilter
