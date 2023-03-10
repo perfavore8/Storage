@@ -42,7 +42,11 @@
             v-for="item in row"
             :key="item"
           >
-            {{ item }}
+            {{
+              item === null || item === undefined
+                ? item
+                : String(item).slice(0, 200)
+            }}
           </div>
         </template>
 
@@ -419,6 +423,7 @@ export default {
           margin-top: 8px;
         }
         > .checkbox {
+          position: fixed;
           left: 50vw;
           top: 50vh;
         }
