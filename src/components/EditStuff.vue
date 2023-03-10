@@ -103,6 +103,16 @@
           </div>
           <h6>Привязка полей сделок</h6>
           <div class="steps">
+            <div class="label_input">
+              <label> Не заполнять бюджет сделки </label>
+              <input
+                type="checkbox"
+                class="checkbox"
+                id="not_fill_budget"
+                v-model="not_fill_budget"
+              />
+              <label for="not_fill_budget"></label>
+            </div>
             <div
               class="label_input"
               v-for="(item, idx) in leadsDeals"
@@ -175,6 +185,7 @@ export default {
         },
       ],
       leadsDealsList: [],
+      not_fill_budget: false,
     };
   },
   async mounted() {
@@ -182,6 +193,7 @@ export default {
     this.copyConfing = JSON.parse(
       JSON.stringify(this.$store.state.account.account.config)
     );
+    this.not_fill_budget = Boolean(this.copyConfing?.not_fill_budget);
     await this.$store.dispatch("getPipelinesList");
     this.copyPipelinesList = this.pipelinesList;
     await this.$store.dispatch("getLeadFieldsList");
@@ -223,7 +235,9 @@ export default {
   },
   methods: {
     save() {
-      const res = {};
+      const res = {
+        not_fill_budget: this.not_fill_budget,
+      };
       const config = this.$store.state.account.account.config;
       Object.entries(this.copyConfing).forEach((item) => {
         if (config[item[0]] !== item[1]) res[item[0]] = item[1];
