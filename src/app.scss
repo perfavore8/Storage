@@ -222,6 +222,11 @@ $vv: calc(1vh + 1vw);
 .input_uderline:focus {
   box-shadow: 0 5px 5px rgb(13 110 253 / 25%);
 }
+.input_error {
+    border-color: rgba(219, 54, 71);
+    box-shadow: 0 0 0 4px rgba(219, 54, 71, 0.25);
+  
+}
 
 .backdrop {
   position: fixed;
