@@ -1,12 +1,12 @@
 <template>
-  <div class="w-screen h-screen flex items-start justify-center">
+  <div class="w-screen h-screen flex items-start justify-center bg-slate-50">
     <div
-      class="container flex flex-col gap-5 p-12 items-center w-fit shadow-xl rounded-2xl border mt-24 border-slate-200"
+      class="w-80 sm:w-96 flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-24 border-slate-200"
     >
-      <img src="@/assets/logo_transparent.png" class="w-1/2" />
+      <img src="@/assets/logo_transparent.png" class="w-3/4" />
       <h1 class="font-bold text-3xl text-slate-700 mb-5">Авторизация</h1>
       <template v-if="!isCode">
-        <div class="grid grid-cols-2 gap-2">
+        <div class="flex flex-col gap-5">
           <SelectorVue
             :options_props="codes.list"
             :selected_option="codes.selected"
@@ -14,6 +14,7 @@
           />
           <input
             class="input"
+            type="tel"
             :class="{ input_error: isErrorInput }"
             v-model="imask.numberModel"
             masked="false"
@@ -21,11 +22,13 @@
             :placeholder="imask.mask"
           />
         </div>
-        <div class="w-full flex justify-center mt-5">
+        <div class="w-1/2 flex justify-center mt-5">
           <button class="btn btn_blue" @click="submit()">Отправить код</button>
         </div>
       </template>
-      <template v-else> 123 </template>
+      <template v-else>
+        <span>Отправили сообщение на номер: {{ imask.numberModel }}</span>
+      </template>
     </div>
   </div>
 </template>
@@ -426,4 +429,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+.v-select {
+  :deep(.options) {
+    @apply max-w-[100%] max-h-[200px];
+  }
+}
 </style>
