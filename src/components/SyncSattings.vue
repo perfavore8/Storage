@@ -207,7 +207,7 @@ export default {
         { value: "productValue", label: "Автосинхронизация товаров" },
         {
           value: "listProductValue",
-          label: "Автосинхронизация списка товаров",
+          label: "Автосинхронизация списка товаров в сделке",
         },
       ],
     };
