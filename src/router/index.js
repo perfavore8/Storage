@@ -52,6 +52,11 @@ const routes = [
     name: "Error_is_expired",
     component: () => import("../views/ErrorIsExpiredView.vue"),
   },
+  {
+    path: "/authorization",
+    name: "authorization",
+    component: () => import("../views/AuthorizationView.vue"),
+  },
 ];
 
 const router = createRouter({
