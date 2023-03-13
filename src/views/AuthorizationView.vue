@@ -20,7 +20,6 @@
             v-mask="imask.mask"
             :placeholder="imask.mask"
           />
-          {{ imask.numberModel }}
         </div>
         <div class="w-full flex justify-center mt-5">
           <button class="btn btn_blue" @click="submit()">Отправить код</button>
