@@ -31,6 +31,16 @@
           Отправили сообщение на номер:<br />
           {{ imask.numberModel }}
         </span>
+        <div class="pinBox">
+          <input
+            v-model="phoneCode"
+            class="pinEntry"
+            name="token"
+            type="number"
+            min="0"
+            autocomplete="off"
+          />
+        </div>
       </template>
     </div>
   </div>
@@ -39,6 +49,7 @@
 <script>
 import SelectorVue from "@/components/SelectorVue.vue";
 import { usePhoneCodes } from "../composables/phoneCodes";
+import { usePhoneCode } from "../composables/phoneCode";
 import { reactive, ref } from "vue";
 
 export default {
@@ -73,7 +84,15 @@ export default {
       }
     };
 
-    return { codes, imask, isCode, submit, isErrorInput, selectPhone };
+    return {
+      codes,
+      imask,
+      isCode,
+      submit,
+      isErrorInput,
+      selectPhone,
+      ...usePhoneCode(),
+    };
   },
 };
 </script>
@@ -82,7 +101,45 @@ export default {
 @import "@/app.scss";
 .v-select {
   :deep(.options) {
-    @apply max-w-[100%] max-h-[200px];
+    @apply max-w-[100%] max-h-[200px] md:max-w-fit md:max-h-[300px];
   }
+}
+.pinBox {
+  --width: 289px;
+  --height: 49px;
+  --spacing: 29px;
+
+  display: inline-block;
+  position: relative;
+  width: var(--width);
+  height: var(--height);
+  background-image: url("@/assets/Frame\ 1.png");
+
+  @apply scale-75 sm:scale-100;
+}
+
+.pinEntry {
+  font-variant-numeric: tabular-nums;
+  position: absolute;
+  padding-left: 16px;
+  padding-top: 1px;
+  font-family: "Inter", monospaced;
+  font-size: var(--spacing);
+  height: var(--height);
+  letter-spacing: var(--spacing);
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  clip: rect(0px, calc(var(--width) - 16px), var(--height), 0px);
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  display: none;
 }
 </style>
