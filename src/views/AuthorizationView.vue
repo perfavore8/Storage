@@ -27,7 +27,10 @@
         </div>
       </template>
       <template v-else>
-        <span>Отправили сообщение на номер: {{ imask.numberModel }}</span>
+        <span>
+          Отправили сообщение на номер:<br />
+          {{ imask.numberModel }}
+        </span>
       </template>
     </div>
   </div>
