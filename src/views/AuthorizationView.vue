@@ -22,6 +22,7 @@
             :placeholder="imask.mask"
           />
         </div>
+        <AuthBtnsGroup />
         <div class="w-1/2 flex justify-center mt-5">
           <button class="btn btn_blue" @click="submit()">Отправить код</button>
         </div>
@@ -51,9 +52,10 @@ import SelectorVue from "@/components/SelectorVue.vue";
 import { usePhoneCodes } from "../composables/phoneCodes";
 import { usePhoneCode } from "../composables/phoneCode";
 import { reactive, ref } from "vue";
+import AuthBtnsGroup from "@/components/AuthBtnsGroup.vue";
 
 export default {
-  components: { SelectorVue },
+  components: { SelectorVue, AuthBtnsGroup },
   setup() {
     const isCode = ref(false);
 

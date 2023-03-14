@@ -3,11 +3,12 @@
     <button
       class="btn"
       :class="{ selected: selected.value === item.value }"
-      v-for="item in list"
+      v-for="(item, idx) in list"
       :key="item.value"
       @click="select(item)"
     >
       {{ item.name }}
+      <slot :name="'item' + idx"></slot>
     </button>
   </div>
 </template>
