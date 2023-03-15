@@ -31,14 +31,14 @@
               Выключить
             </button>
           </div>
-          <GenezisSettings
+          <!-- <GenezisSettings
             v-for="field in genezisSettingsData"
             :key="field.label"
             :label="field.label"
             :leadsDeals="field.leadsDeals"
             :needSave="needSave"
           />
-          <BtnsSaveClose @save="save" :show_close="false" />
+          <BtnsSaveClose @save="save" :show_close="false" /> -->
         </div>
         <div class="autorization" v-else>
           Genezis не активирован.

@@ -31,11 +31,11 @@ export default {
           "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
       },
       list: [
-        {
-          name: "",
-          value: "amoCrm",
-          iconUrl: "https://graph.digiseller.ru/img.ashx?idd=3380359",
-        },
+        // {
+        //   name: "",
+        //   value: "amoCrm",
+        //   iconUrl: "https://graph.digiseller.ru/img.ashx?idd=3380359",
+        // },
         {
           name: "",
           value: "telegram",
