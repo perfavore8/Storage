@@ -1,9 +1,7 @@
 <template>
   <div class="app">
     <div class="header">
-      <div class="header_left">
-        <NavBar />
-      </div>
+      <AppHeader />
     </div>
     <div class="wrapper">
       <DocumentsGrid />
@@ -12,10 +10,10 @@
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue";
+import AppHeader from "@/components/AppHeader.vue";
 import DocumentsGrid from "@/components/DocumentsGrid.vue";
 export default {
-  components: { NavBar, DocumentsGrid },
+  components: { AppHeader, DocumentsGrid },
   setup() {},
 };
 </script>

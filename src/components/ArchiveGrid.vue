@@ -89,7 +89,7 @@
       class="bottom"
       :page="page"
       :blur="show_edit_modal"
-      :show="products.length != 0"
+      :show="products?.length != 0"
       :count="count"
       v-if="showGridBottom"
       @changePage="changePage"

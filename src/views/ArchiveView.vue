@@ -2,7 +2,7 @@
   <div :class="{ dark: isDarkTest }">
     <div class="app min-h-screen px-4 md:px-[30px] dark:bg-slate-900">
       <div class="header w-full">
-        <NavBar />
+        <AppHeader />
       </div>
       <div class="content w-full mt-2 md:mt-12">
         <div class="top">
@@ -20,13 +20,13 @@
 
 <script>
 import ArchiveGrid from "@/components/ArchiveGrid.vue";
-import NavBar from "@/components/NavBar.vue";
+import AppHeader from "@/components/AppHeader.vue";
 import { mapGetters } from "vuex";
 export default {
   name: "ArchiveView",
   components: {
     ArchiveGrid,
-    NavBar,
+    AppHeader,
   },
   computed: {
     ...mapGetters(["catalog"]),
@@ -57,6 +57,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: start;
+  width: calc(100vw - 80px);
 }
 .content {
   // margin-top: 50px;

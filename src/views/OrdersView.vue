@@ -1,9 +1,7 @@
 <template>
   <div class="app">
     <div class="header">
-      <div class="header_left">
-        <NavBar />
-      </div>
+      <AppHeader />
     </div>
     <div class="wrapper">
       <OrdersFilters v-if="false" />
@@ -13,11 +11,11 @@
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue";
+import AppHeader from "@/components/AppHeader.vue";
 import OrdersFilters from "@/components/OrdersFilters.vue";
 import OrdersGrid from "@/components/OrdersGrid.vue";
 export default {
-  components: { NavBar, OrdersFilters, OrdersGrid },
+  components: { AppHeader, OrdersFilters, OrdersGrid },
   setup() {},
 };
 </script>

@@ -2,7 +2,7 @@
   <ReportCreateModal v-if="showReportCreate" />
   <div class="app" :class="{ blur: openSelectedReportModal }">
     <div class="header">
-      <NavBar />
+      <AppHeader />
     </div>
     <div class="content">
       <div class="top">
@@ -97,8 +97,8 @@ import ReportCharts from "@/components/ReportCharts.vue";
 import ReportGrid from "@/components/ReportGrid.vue";
 import ReportFIlters from "@/components/ReportFIlters.vue";
 import ReportChartsFilter from "@/components/ReportChartsFilter.vue";
-import NavBar from "@/components/NavBar.vue";
 import GridBottom from "@/components/GridBottom.vue";
+import AppHeader from "@/components/AppHeader.vue";
 import { nextTick } from "@vue/runtime-core";
 export default {
   name: "AnalyticsView",
@@ -108,8 +108,8 @@ export default {
     ReportGrid,
     ReportFIlters,
     ReportChartsFilter,
-    NavBar,
     GridBottom,
+    AppHeader,
   },
   data() {
     return {

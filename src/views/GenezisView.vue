@@ -2,7 +2,7 @@
   <div class="app">
     <div class="header">
       <div class="top">
-        <NavBar />
+        <AppHeader />
       </div>
       <div class="bottom">
         <button
@@ -63,13 +63,13 @@
 
 <script>
 import { mapGetters } from "vuex";
-import NavBar from "@/components/NavBar.vue";
+import AppHeader from "@/components/AppHeader.vue";
 import GenezisSettings from "@/components/GenezisSettings.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
 export default {
   name: "InstructionsView",
-  components: { NavBar, GenezisSettings, BtnsSaveClose },
+  components: { AppHeader, GenezisSettings, BtnsSaveClose },
   data() {
     return {
       selectedTab: 1,
