@@ -5,14 +5,17 @@
         <NavBar />
       </div>
     </div>
-    <div class="wrapper"></div>
+    <div class="wrapper">
+      <DocumentsGrid />
+    </div>
   </div>
 </template>
 
 <script>
 import NavBar from "@/components/NavBar.vue";
+import DocumentsGrid from "@/components/DocumentsGrid.vue";
 export default {
-  components: { NavBar },
+  components: { NavBar, DocumentsGrid },
   setup() {},
 };
 </script>
