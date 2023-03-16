@@ -14,7 +14,7 @@ export default {
       {
         name: "Документы",
         value: "documents",
-        isTest: false,
+        isTest: true,
       },
       {
         name: "Аналитика",
