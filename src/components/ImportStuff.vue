@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="backdrop" @click="close()" />
+    <div class="backdrop_with_filter" @click="close()" />
   </Teleport>
   <div class="wrapper">
     <header class="header">
@@ -437,13 +437,7 @@ export default {
     justify-content: end;
   }
 }
-.backdrop {
-  background-color: transparent;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+.backdrop_with_filter {
   z-index: 800;
 }
 </style>

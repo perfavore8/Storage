@@ -1,6 +1,6 @@
 <template>
   <div class="app_fileds">
-    <div class="backdrop" @click="close()" />
+    <div class="backdrop_with_filter" @click="close()" />
     <div class="container">
       <div class="header">
         <div class="left">
@@ -89,9 +89,8 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
-  .backdrop {
+  .backdrop_with_filter {
     z-index: 259;
-    backdrop-filter: blur(5px);
   }
   .container {
     position: relative;

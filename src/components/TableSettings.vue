@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <div class="backdrop" @click="close()" />
+    <div class="backdrop_with_filter" @click="close()" />
     <div class="wrapper">
       <div class="modal-header">
         <div class="head-text">Настройка таблицы</div>
@@ -107,7 +107,7 @@ export default {
   left: 0;
   background: transparent;
 }
-.backdrop {
+.backdrop_with_filter {
   z-index: 199;
 }
 .wrapper {

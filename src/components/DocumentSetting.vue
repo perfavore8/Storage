@@ -21,7 +21,7 @@
     @close="close_fields"
   ></document-setting-fields>
   <div class="app" ref="app" @click="show_settings ? close_settings() : null">
-    <div class="backdrop" @click="close()" />
+    <div class="backdrop_with_filter" @click="close()" />
     <div class="container">
       <div class="header">
         <div class="left">
@@ -319,7 +319,7 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
-  .backdrop {
+  .backdrop_with_filter {
     z-index: 240;
   }
   .container {

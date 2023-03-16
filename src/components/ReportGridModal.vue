@@ -1,5 +1,5 @@
 <template>
-  <div class="backdrop" @click="close()" />
+  <div class="backdrop_with_filter" @click="close()" />
   <div class="background">
     <div class="container">
       <div class="header">
@@ -76,16 +76,9 @@ export default {
 * {
   box-sizing: border-box;
 }
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: transparent;
+.backdrop_with_filter {
   z-index: 1005;
   pointer-events: all;
-  backdrop-filter: blur(5px);
 }
 .background {
   width: 100%;

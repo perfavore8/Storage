@@ -1,5 +1,5 @@
 <template>
-  <div class="backdrop" @click.self="close()" />
+  <div class="backdrop_with_filter" @click.self="close()" />
   <div class="background_edit_modal">
     <div class="app_edit_modal">
       <div class="header">
@@ -270,13 +270,7 @@ export default {
   top: 0;
   left: 0;
 }
-.backdrop {
-  background-color: transparent;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+.backdrop_with_filter {
   z-index: 2000;
 }
 </style>

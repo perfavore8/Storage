@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="backdrop" @click="close()" />
+    <div class="backdrop_with_filter" @click="close()" />
     <div class="container" v-if="!isAccept">
       <div class="header">
         <label>Изменение цены "{{ copyEditPrice?.name }}"</label>
@@ -105,7 +105,7 @@ export default {
   left: 0;
   background: transparent;
   @include font(400, 16px);
-  .backdrop {
+  .backdrop_with_filter {
     z-index: 259;
   }
   .container {

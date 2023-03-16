@@ -1,6 +1,6 @@
 <template>
   <div class="app_new">
-    <div class="backdrop" @click="close_modal()" />
+    <div class="backdrop_with_filter" @click="close_modal()" />
     <div class="container">
       <div class="header"><slot name="title"></slot></div>
       <div class="content">
@@ -265,9 +265,8 @@ export default {
   left: 0;
   background: transparent;
   @include font(400, 16px);
-  .backdrop {
+  .backdrop_with_filter {
     z-index: 259;
-    backdrop-filter: blur(5px);
   }
   .container {
     position: relative;

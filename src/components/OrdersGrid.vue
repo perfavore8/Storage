@@ -70,7 +70,7 @@
                   style="padding: 5px 10px 5px 15px"
                 >
                   <div class="stat">
-                    <div class="relative">
+                    <div class="img_wrapper">
                       <img :src="row.img" class="img" />
                       <div
                         class="handle_cross"
@@ -489,6 +489,10 @@ export default {
   align-items: center;
   @include font(500, 16px);
   gap: 8px;
+  .img_wrapper {
+    position: relative;
+    z-index: -1;
+  }
 }
 .bar_row {
   height: 66px;

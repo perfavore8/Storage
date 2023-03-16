@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="backdrop" @click="close()" />
+    <div class="backdrop_with_filter" @click="close()" />
     <div class="bgc">
       <div class="container">
         <div class="header">
@@ -421,7 +421,7 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
-  .backdrop {
+  .backdrop_with_filter {
     z-index: 259;
   }
   .bgc {

@@ -1,7 +1,7 @@
 <template>
   <teleport to="body">
     <div class="wrapper">
-      <div class="backdrop" @click="close()" />
+      <div class="backdrop_with_filter" @click="close()" />
       <div class="container">
         <header class="header">
           <label>Новый отчет</label>
@@ -63,14 +63,7 @@ export default {
   justify-content: center;
   min-width: 100vw;
   min-height: 100vh;
-  .backdrop {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: transparent;
-    backdrop-filter: blur(4px);
+  .backdrop_with_filter {
     z-index: 49;
   }
   .container {

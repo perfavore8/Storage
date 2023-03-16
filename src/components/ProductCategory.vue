@@ -3,7 +3,10 @@
     class="wrapper"
     :class="{ opened_close_remove_modal: del_modal_config.show }"
   >
-    <div class="backdrop" @click="close_product_category()" />
+    <div
+      class="backdrop backdrop_with_filter"
+      @click="close_product_category()"
+    />
     <div class="bgc">
       <div class="container">
         <div class="header">
@@ -542,12 +545,6 @@ export default {
   @include font(400, 16px, 20px);
 }
 .backdrop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   z-index: 10;
-  background-color: transparent;
 }
 </style>

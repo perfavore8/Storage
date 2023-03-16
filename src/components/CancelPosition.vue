@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="backdrop" @click="close_modal()" />
+    <div class="backdrop_with_filter" @click="close_modal()" />
     <div class="container">
       <div class="header"><label>Списание товаров</label></div>
       <div class="content">
@@ -271,7 +271,7 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
-  .backdrop {
+  .backdrop_with_filter {
     z-index: 259;
   }
   .container {
