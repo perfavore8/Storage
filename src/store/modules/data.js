@@ -12,6 +12,11 @@ export default {
         value: "",
       },
       {
+        name: "Документы",
+        value: "documents",
+        isTest: false,
+      },
+      {
         name: "Аналитика",
         value: "analytics",
         isAdmin: true,
