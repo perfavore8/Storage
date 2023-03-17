@@ -13,11 +13,6 @@ const routes = [
     component: () => import("../views/QweView.vue"),
   },
   {
-    path: "/authorization",
-    name: "authorization",
-    component: () => import("../views/AuthView.vue"),
-  },
-  {
     path: "/archive",
     name: "archive",
     component: () => import("../views/ArchiveView.vue"),
