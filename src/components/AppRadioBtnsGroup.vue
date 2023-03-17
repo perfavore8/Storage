@@ -36,14 +36,17 @@ export default {
   border-radius: 6px;
   padding: 8px;
   background-color: #e5e7eb;
+  @apply dark:bg-[#374151];
   .btn {
     white-space: nowrap;
     border-radius: 6px;
     background-color: transparent;
     color: rgb(75, 85, 99);
+    @apply dark:text-white dark:text-opacity-80;
   }
   .btn:hover {
     color: rgb(31, 41, 55);
+    @apply dark:text-white;
   }
   .selected {
     color: hsl(209, 62%, 40%);
@@ -51,6 +54,7 @@ export default {
     padding-left: 24px;
     padding-right: 24px;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+    @apply dark:bg-[#1e2229];
   }
   .selected:hover {
     color: hsl(209, 62%, 40%);
