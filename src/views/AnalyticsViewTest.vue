@@ -139,7 +139,9 @@ export default {
           { name: "bar", value: "bar", class: "poll" },
           { name: "doughnut", value: "doughnut", class: "donut_small" },
         ],
-        select: (option) => (this.view.selected = option),
+        select: function (option) {
+          this.selected = option;
+        },
       },
     };
   },
