@@ -4,6 +4,7 @@
       <AppHeader />
     </div>
     <div class="wrapper">
+      <DocumentsFilters />
       <DocumentsGrid />
     </div>
   </div>
@@ -12,8 +13,9 @@
 <script>
 import AppHeader from "@/components/AppHeader.vue";
 import DocumentsGrid from "@/components/DocumentsGrid.vue";
+import DocumentsFilters from "@/components/DocumentsFilters.vue";
 export default {
-  components: { AppHeader, DocumentsGrid },
+  components: { AppHeader, DocumentsGrid, DocumentsFilters },
   setup() {},
 };
 </script>
