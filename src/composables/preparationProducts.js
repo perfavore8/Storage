@@ -4,10 +4,11 @@ export function usePreparationProducts() {
   const preparationProducts = (value) => {
     value.map((item) => {
       store.state.fields?.all_fields.forEach((field) => {
+        if (item.fields === null || item.fields === undefined) item.fields = {};
         if (field.type === 1 || field.type === 2) {
           if (
-            item.fields[field.code] === undefined ||
-            item.fields[field.code] === null
+            item.fields?.[field.code] === undefined ||
+            item.fields?.[field.code] === null
           ) {
             item.fields[field.code] = 0;
           } else {
@@ -16,40 +17,41 @@ export function usePreparationProducts() {
         }
         if (field.type === 3 || field.type === 4) {
           if (
-            item.fields[field.code] === undefined ||
-            item.fields[field.code] === null
+            item.fields?.[field.code] === undefined ||
+            item.fields?.[field.code] === null
           ) {
             item.fields[field.code] = "";
+            // // Object.assign(item.fields, {`${field.code}`:""});
           } else {
             item.fields[field.code] = String(item.fields[field.code]);
           }
         }
         if (field.type === 5 || field.type === 6) {
           if (
-            item.fields[field.code] === undefined ||
-            item.fields[field.code] === null
+            item.fields?.[field.code] === undefined ||
+            item.fields?.[field.code] === null
           ) {
             item.fields[field.code] = "";
           }
         }
         if (field.type === 7 || field.type === 8) {
           if (
-            item.fields[field.code] === undefined ||
-            item.fields[field.code] === null
+            item.fields?.[field.code] === undefined ||
+            item.fields?.[field.code] === null
           ) {
             item.fields[field.code] = "";
           }
         }
         if (field.type === 9) {
           if (
-            item.fields[field.code] === undefined ||
-            item.fields[field.code] === null
+            item.fields?.[field.code] === undefined ||
+            item.fields?.[field.code] === null
           ) {
             item.fields[field.code] = false;
           } else {
-            if (item.fields[field.code] === "0")
+            if (item.fields?.[field.code] === "0")
               item.fields[field.code] = false;
-            if (item.fields[field.code] === "1") {
+            if (item.fields?.[field.code] === "1") {
               item.fields[field.code] = true;
             } else {
               item.fields[field.code] = Boolean(item.fields[field.code]);
@@ -58,8 +60,8 @@ export function usePreparationProducts() {
         }
         if (field.type === 11) {
           if (
-            item.fields[field.code] === undefined ||
-            item.fields[field.code] === null
+            item.fields?.[field.code] === undefined ||
+            item.fields?.[field.code] === null
           ) {
             item.fields[field.code] = {
               cost: 0,
@@ -147,8 +149,8 @@ export function usePreparationProducts() {
         }
         if (field.type === 13) {
           if (
-            item.fields[field.code] === undefined ||
-            item.fields[field.code] === null
+            item.fields?.[field.code] === undefined ||
+            item.fields?.[field.code] === null
           ) {
             item.fields[field.code] = { count: 0, reserve: 0 };
           }
