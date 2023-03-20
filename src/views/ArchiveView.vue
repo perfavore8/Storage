@@ -31,7 +31,7 @@ export default {
   computed: {
     ...mapGetters(["catalog"]),
     count_archive() {
-      return this.$store.state.products.products.length;
+      return this.$store.state.products.meta.meta.total;
     },
     isDarkTest() {
       return this.$route.query.test === "dark";
