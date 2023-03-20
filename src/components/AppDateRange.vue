@@ -102,7 +102,7 @@ export default {
     border-radius: 4px;
     color: #3f3f3f;
     outline: none;
-    font-size: 7cqw;
+    font-size: min(7cqw, 2.3cqh);
   }
   input::-webkit-datetime-edit-fields-wrapper {
     display: flex;
