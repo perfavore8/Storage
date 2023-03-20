@@ -334,6 +334,8 @@ export default {
     const clearAllFields = () => {
       dateStart.value = "";
       dateEnd.value = "";
+      filteringSystems.length = 0;
+      addFilteringSystem();
       fields.map((val) => (val.selected = []));
       apply();
     };
