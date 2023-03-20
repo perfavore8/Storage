@@ -31,6 +31,14 @@
           />
         </div>
         <div class="label_input">
+          <label class="label">{{ orientation.label }}</label>
+          <selector-vue
+            :options_props="orientation.list"
+            @select="orientation.select"
+            :selected_option="orientation.selected"
+          />
+        </div>
+        <div class="label_input">
           <label class="label">Url последнего документа:</label>
           <selector-vue
             :options_props="lead_fields_options"
@@ -102,6 +110,17 @@ export default {
       copyPipelinesList: [],
       status_id: { name: "Не выбрано", value: 1 },
       url_field: { name: "Не выбрано", value: 1 },
+      orientation: {
+        label: "Ориентация",
+        selected: { name: "Книжная", value: 0 },
+        list: [
+          { name: "Книжная", value: 0 },
+          { name: "Альбомная", value: 1 },
+        ],
+        select: (option) => {
+          this.orientation.selected = option;
+        },
+      },
     };
   },
   async mounted() {
@@ -154,6 +173,7 @@ export default {
           name: this.name,
           file: this.file,
           type: this.type.name,
+          orientation: this.orientation?.selected?.value,
           export_type: this.export_type.name,
           status_id: this.status_id.value,
           url_field: this.url_field.value,
@@ -198,6 +218,11 @@ export default {
           this.type_options,
           this.cur_doc.type,
           "name"
+        );
+        this.orientation.selected = serch_selected_item(
+          this.orientation.list,
+          this.cur_doc.orientation,
+          "value"
         );
         this.status_id = serch_selected_item(
           this.copyPipelinesList,
