@@ -9,7 +9,7 @@
           <p
             class="my-2 md:my-4 text-sm md:text-base text-slate-500 dark:text-slate-300"
           >
-            Найдено: {{ coun_archive }}
+            Найдено: {{ count_archive }}
           </p>
         </div>
         <archive-grid class="grid"></archive-grid>
@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     ...mapGetters(["catalog"]),
-    coun_archive() {
+    count_archive() {
       return this.$store.state.products.products.length;
     },
     isDarkTest() {
