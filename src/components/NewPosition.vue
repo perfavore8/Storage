@@ -910,7 +910,7 @@ export default {
             width: 50%;
           }
           .item:nth-child(4) {
-            width: 20%;
+            width: 15%;
             min-width: 160px;
           }
           .item:nth-child(5) {
