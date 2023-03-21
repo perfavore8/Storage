@@ -7,7 +7,16 @@
         <table class="table">
           <thead>
             <tr class="row title">
-              <td class="item" v-for="tit in title" :key="tit">{{ tit }}</td>
+              <td
+                class="item"
+                v-for="(tit, idx) in title"
+                :key="tit"
+                :style="{
+                  width: (100 / totalTitleWidth) * titleWidth[idx],
+                }"
+              >
+                {{ tit }}
+              </td>
               <td class="item"></td>
             </tr>
           </thead>
@@ -376,6 +385,7 @@ export default {
         "НДС",
         "Категория",
       ],
+      titleWidth: [1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       new_items: [],
       options_type: [
         { name: "Товар", value: 1 },
@@ -414,6 +424,9 @@ export default {
     };
   },
   computed: {
+    totalTitleWidth() {
+      return this.titleWidth.reduce((acc, curr) => acc + curr, 0);
+    },
     fields() {
       return this.$store.state.fields.all_fields;
     },
@@ -888,34 +901,34 @@ export default {
             }
           }
           .item:nth-child(1) {
-            width: 10%;
+            width: 7%;
           }
           .item:nth-child(2) {
             width: 10%;
           }
           .item:nth-child(3) {
-            width: 10%;
+            width: 30%;
           }
           .item:nth-child(4) {
             width: 20%;
             min-width: 160px;
           }
           .item:nth-child(5) {
-            width: 20%;
+            width: 15%;
             min-width: 190px;
             // max-width: 180px;
           }
           .item:nth-child(6) {
-            width: 15%;
+            width: 10%;
             min-width: 60px;
           }
           .item:nth-child(7) {
-            width: 10%;
+            width: 7%;
             // max-width: 140px;
             min-width: 150px;
           }
           .item:nth-child(8) {
-            width: 5%;
+            width: 3%;
           }
           .item:nth-child(9) {
             width: 15%;
