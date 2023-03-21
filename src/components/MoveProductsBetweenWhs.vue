@@ -298,7 +298,6 @@ export default {
   .container {
     position: relative;
     z-index: 260;
-    max-width: 1140px;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -349,13 +348,13 @@ export default {
             }
           }
           .item:nth-child(1) {
-            width: 20%;
+            width: 15%;
           }
           .item:nth-child(2) {
-            width: 20%;
+            width: 25%;
           }
           .item:nth-child(3) {
-            width: 15%;
+            width: 10%;
           }
           .item:nth-child(4) {
             width: 1%;

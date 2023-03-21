@@ -277,7 +277,6 @@ export default {
   .container {
     position: relative;
     z-index: 260;
-    max-width: 1140px;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -330,7 +329,7 @@ export default {
             width: 20%;
           }
           .item:nth-child(2) {
-            width: 20%;
+            width: 30%;
           }
           .item:nth-child(3) {
             width: 1%;
@@ -344,7 +343,7 @@ export default {
             width: 10%;
           }
           .item:nth-child(6) {
-            width: 30%;
+            width: 35%;
           }
         }
       }
