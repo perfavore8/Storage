@@ -1,78 +1,72 @@
 <template>
-  <div class="wrapper" v-if="true">
-    <div class="main">
-      <table class="table" ref="table">
-        <thead>
-          <tr class="bar_row">
-            <th
-              class="bar_item item"
-              :class="{ cursor_pointer: title.sortable }"
-              :style="{
-                width:
-                  ((collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) /
-                    collsCount) *
-                    title.width +
-                  '%',
-              }"
-              v-for="title in documents.titles"
-              @click="title.sortable ? sort(title.value) : null"
-              :key="title"
-            >
-              <div class="bar_item_group">
-                <label>{{ title.name }}</label>
-                <button
-                  class="bar_item_icon"
-                  :class="{
-                    bar_item_icon_up:
-                      sorting.order == 'desc' &&
-                      title.value === sorting.order_by,
-                    bar_item_icon_down:
-                      sorting.order == 'asc' &&
-                      title.value === sorting.order_by,
-                  }"
-                  v-if="title.sortable"
-                ></button>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody v-if="documents.list.length">
-          <template v-for="row in documents.list" :key="row">
-            <tr class="row">
-              <template v-for="title in documents.titles" :key="title">
-                <td
-                  class="item"
-                  v-if="title.code === 'name'"
-                  style="padding: 5px 10px 5px 15px"
+  <div class="main">
+    <table class="table" ref="table">
+      <thead>
+        <tr class="bar_row">
+          <th
+            class="bar_item item"
+            :class="{ cursor_pointer: title.sortable }"
+            :style="{
+              width:
+                ((collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) /
+                  collsCount) *
+                  title.width +
+                '%',
+            }"
+            v-for="title in documents.titles"
+            @click="title.sortable ? sort(title.value) : null"
+            :key="title"
+          >
+            <div class="bar_item_group">
+              <label>{{ title.name }}</label>
+              <button
+                class="bar_item_icon"
+                :class="{
+                  bar_item_icon_up:
+                    sorting.order == 'desc' && title.value === sorting.order_by,
+                  bar_item_icon_down:
+                    sorting.order == 'asc' && title.value === sorting.order_by,
+                }"
+                v-if="title.sortable"
+              ></button>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody v-if="documents.list.length">
+        <template v-for="row in documents.list" :key="row">
+          <tr class="row">
+            <template v-for="title in documents.titles" :key="title">
+              <td
+                class="item"
+                v-if="title.code === 'name'"
+                style="padding: 5px 10px 5px 15px"
+              >
+                <a
+                  target="black"
+                  class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
+                  :href="'https://' + row.document_link"
                 >
-                  <a
-                    target="black"
-                    class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
-                    :href="'https://' + row.document_link"
-                  >
-                    {{ row.name }}
-                  </a>
-                </td>
-                <td class="item cursor-pointer" v-else>
-                  {{ row[title.code] }}
-                </td>
-              </template>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-      <label v-if="documents.length == 0" class="text">
-        Ничего не найдено
-      </label>
-    </div>
-    <grid-bottom
-      :page="page"
-      :show="documents.list.length != 0"
-      :showSelector="false"
-      :count="meta?.per_page"
-      @changePage="changePage"
-    />
+                  {{ row.name }}
+                </a>
+              </td>
+              <td class="item cursor-pointer" v-else>
+                {{ row[title.code] }}
+              </td>
+            </template>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+    <label v-if="documents.length == 0" class="text"> Ничего не найдено </label>
   </div>
+  <grid-bottom
+    :page="page"
+    :show="documents.list.length != 0"
+    :showSelector="false"
+    :count="meta?.per_page"
+    @changePage="changePage"
+  />
 </template>
 
 <script>
@@ -225,6 +219,7 @@ export default {
 }
 .main {
   width: 100%;
+  margin-top: 40px;
 }
 .text {
   position: relative;
