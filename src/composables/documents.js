@@ -1,5 +1,5 @@
 import store from "@/store";
-import { computed, reactive } from "vue";
+import { computed, onMounted, reactive } from "vue";
 
 export function useDocuments() {
   const documents = reactive({
@@ -24,7 +24,7 @@ export function useDocuments() {
       {
         name: "Название заказа",
         placeholder: "Название заказа",
-        code: "oreder_name",
+        code: "order_name",
         type: "AppInput",
         minLength: 0,
         requestDelay: 0,
@@ -91,7 +91,7 @@ export function useDocuments() {
       {
         name: "Google",
         document_link: "google.com",
-        oreder_name: "Заказ 1",
+        order_name: "Заказ 1",
         company: "Компания 1",
         contact: "Контакт 1",
         form_name: "Кто-то",
@@ -100,7 +100,7 @@ export function useDocuments() {
       {
         name: "Google",
         document_link: "google.com",
-        oreder_name: "Заказ 2",
+        order_name: "Заказ 2",
         company: "Компания 2",
         contact: "Контакт 2",
         form_name: "Кто-то",
@@ -109,7 +109,7 @@ export function useDocuments() {
       {
         name: "Google",
         document_link: "google.com",
-        oreder_name: "Заказ 3",
+        order_name: "Заказ 3",
         company: "Компания 2",
         contact: "Контакт 3",
         form_name: "Кто-то",
@@ -126,10 +126,13 @@ export function useDocuments() {
     documents.list = [];
     documentsRaw.value.forEach((document) => {
       const obj = {
-        name: document.name,
-        oreder_name: document.oreder_name,
-        form_name: document.form_name,
-        form_date: document.form_date,
+        name: document?.lead_name,
+        document_link: document?.url,
+        order_name: document?.lead_name,
+        company: document?.company_name,
+        contact: document?.contact_name,
+        form_name: document?.user_name,
+        form_date: document?.created_at,
       };
       documents.list.push(obj);
     });
@@ -140,7 +143,11 @@ export function useDocuments() {
     fillDocuments();
   };
 
+  onMounted(() => getDocuments());
+
   const documentsTitles = computed(() => documents.titles);
+
+  const total = computed(() => store.state.documents.meta.total);
 
   return {
     documents,
@@ -148,5 +155,6 @@ export function useDocuments() {
     fillDocuments,
     getDocuments,
     documentsTitles,
+    total,
   };
 }

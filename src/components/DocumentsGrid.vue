@@ -1,5 +1,10 @@
 <template>
   <div class="main">
+    <p
+      class="my-2 md:my-4 text-sm md:text-base text-slate-500 dark:text-slate-300 text-left"
+    >
+      Найдено: {{ total }}
+    </p>
     <table class="table" ref="table">
       <thead>
         <tr class="bar_row">
@@ -14,7 +19,7 @@
                 '%',
             }"
             v-for="title in documents.titles"
-            @click="title.sortable ? sort(title.value) : null"
+            @click="title.sortable ? sort(title.code) : null"
             :key="title"
           >
             <div class="bar_item_group">
@@ -23,9 +28,9 @@
                 class="bar_item_icon"
                 :class="{
                   bar_item_icon_up:
-                    sorting.order == 'desc' && title.value === sorting.order_by,
+                    sorting.order == 'desc' && title.code === sorting.order_by,
                   bar_item_icon_down:
-                    sorting.order == 'asc' && title.value === sorting.order_by,
+                    sorting.order == 'asc' && title.code === sorting.order_by,
                 }"
                 v-if="title.sortable"
               ></button>
@@ -77,7 +82,7 @@ import store from "@/store";
 export default {
   components: { GridBottom },
   setup() {
-    const { documents, collsCount, getDocuments } = useDocuments();
+    const { documents, collsCount, getDocuments, total } = useDocuments();
 
     const sorting = reactive({
       order_by: null,
@@ -86,20 +91,12 @@ export default {
 
     const meta = computed(() => store.state.orders.meta);
     const page = computed(() => {
-      const obj1 = {
+      const obj = {
         first: getPageFromLink(meta.value?.first_page_url),
         prev: getPageFromLink(meta.value?.prev_page_url),
         current: meta.value?.current_page,
         next: getPageFromLink(meta.value?.next_page_url),
         last: getPageFromLink(meta.value?.last_page_url),
-      };
-      obj1;
-      const obj = {
-        first: 1,
-        prev: 1,
-        current: 1,
-        next: 1,
-        last: 1,
       };
       return obj;
     });
@@ -122,6 +119,7 @@ export default {
       if (sorting.order_by != code) {
         sorting.order = "";
         sorting.order_by = code;
+        return;
       }
       if (sorting.order === "desc" || !sorting.order) {
         sorting.order = "asc";
@@ -132,7 +130,7 @@ export default {
       getDocuments();
     };
 
-    return { documents, collsCount, sorting, sort, changePage, page };
+    return { documents, collsCount, sorting, sort, changePage, page, total };
   },
 };
 </script>

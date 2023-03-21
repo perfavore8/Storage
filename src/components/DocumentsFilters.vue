@@ -65,11 +65,12 @@ export default {
       const filter = {};
       documentsTitles.value.forEach((val) => {
         let res = val.selected?.value;
-        if (val.type === "AppDateRange" || val.type === "AppInput")
+        if (
+          (val.type === "AppDateRange" || val.type === "AppInput") &&
+          val.selected !== "-"
+        )
           res = val.selected;
-        if (res !== null && res !== undefined) {
-          filter[val.code] = res;
-        }
+        filter[val.code] = res;
       });
       store.commit("updateDocumentsFilters", filter);
       getDocuments();

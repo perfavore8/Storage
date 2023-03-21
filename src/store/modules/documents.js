@@ -25,6 +25,11 @@ export default {
     },
     updateDocumentsFilters(state, value) {
       Object.assign(state.filters, value);
+      Object.keys(state.filters).forEach((key) => {
+        if (!state.filters[key]) {
+          delete state.filters[key];
+        }
+      });
     },
     updateIsLoading(state, value) {
       state.isLoading = value;
@@ -37,7 +42,7 @@ export default {
   actions: {
     async getDocuments(context, params) {
       context.commit("updateIsLoading", true);
-      const url = BaseURL + "document";
+      const url = BaseURL + "document/registry";
       const res = await fetch(url, {
         method: "POST",
         headers: {
