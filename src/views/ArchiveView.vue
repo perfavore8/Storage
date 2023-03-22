@@ -58,6 +58,7 @@ export default {
   flex-direction: row;
   justify-content: start;
   width: calc(100vw - 80px);
+  z-index: 50;
 }
 .content {
   // margin-top: 50px;

@@ -168,6 +168,7 @@ export default {
   flex-direction: column;
   justify-content: start;
   gap: 24px;
+  z-index: 50;
   .top {
     .btns {
       display: flex;

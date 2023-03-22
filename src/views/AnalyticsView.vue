@@ -408,6 +408,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: start;
+  z-index: 50;
 }
 .content {
   display: flex;
