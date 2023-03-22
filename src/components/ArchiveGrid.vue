@@ -156,11 +156,15 @@ export default {
         return null;
       }
     },
-    changeCount(val) {
-      this.count = val;
+    async changeCount(count) {
+      await this.$store.dispatch("update_user", { per_page: count });
+      this.drop_page();
+    },
+    drop_page() {
+      this.changePage(1);
     },
     changePage(val) {
-      this.page = val;
+      this.$store.dispatch("get_products", { is_archive: 1, page: val });
     },
     async unarchive_data(item) {
       if (!this.isLoading) {
