@@ -8,13 +8,13 @@ export default {
         isTest: false,
       },
       {
-        name: "Остатки",
-        value: "",
-      },
-      {
         name: "Документы",
         value: "documents",
         isTest: true,
+      },
+      {
+        name: "Остатки",
+        value: "",
       },
       {
         name: "Аналитика",
