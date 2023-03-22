@@ -22,7 +22,10 @@
           :class="{
             optgroup: option.value === 'optgroup',
             selected: option.value == selected_option.value,
+            color_selected:
+              option.value == selected_option.value && option.color,
           }"
+          :style="{ backgroundColor: option.color }"
           @click="select_option(option)"
         >
           <template v-if="option.optgroup">
@@ -227,6 +230,9 @@ export default {
 }
 .selected {
   background-color: rgb(13 110 253 / 20%);
+}
+.color_selected {
+  box-shadow: inset 0 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 .disabled {
   background-color: #e9ecef !important;
