@@ -63,6 +63,17 @@
             раньше этапа списания. Если этап презервирования не выбран, то
             резерирование будет происходить в момент добавления товара в сделку.
           </div>
+          <div class="mt-4">
+            <input
+              type="checkbox"
+              class="checkbox"
+              id="lock_reserved_products_edit"
+              v-model="lock_reserved_products_edit"
+            />
+            <label for="lock_reserved_products_edit">
+              Блокировать изменения товаров в этапах резервирования
+            </label>
+          </div>
           <div class="steps">
             <div
               class="label_input"
@@ -186,6 +197,7 @@ export default {
       ],
       leadsDealsList: [],
       not_fill_budget: false,
+      lock_reserved_products_edit: false,
     };
   },
   async mounted() {
@@ -194,6 +206,9 @@ export default {
       JSON.stringify(this.$store.state.account.account.config)
     );
     this.not_fill_budget = Boolean(this.copyConfing?.not_fill_budget);
+    this.lock_reserved_products_edit = Boolean(
+      this.copyConfing?.lock_reserved_products_edit
+    );
     await this.$store.dispatch("getPipelinesList");
     this.copyPipelinesList = this.pipelinesList;
     await this.$store.dispatch("getLeadFieldsList");
@@ -237,6 +252,7 @@ export default {
     save() {
       const res = {
         not_fill_budget: this.not_fill_budget,
+        lock_reserved_products_edit: this.lock_reserved_products_edit,
       };
       const config = this.$store.state.account.account.config;
       Object.entries(this.copyConfing).forEach((item) => {
