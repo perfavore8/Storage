@@ -209,7 +209,8 @@ export default {
     this.lock_reserved_products_edit = Boolean(
       this.copyConfing?.lock_reserved_products_edit
     );
-    await this.$store.dispatch("getPipelinesList");
+    // await this.$store.dispatch("getPipelinesList");
+    await this.$store.dispatch("getPipelinesListV2");
     this.copyPipelinesList = this.pipelinesList;
     await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
@@ -222,8 +223,8 @@ export default {
       const list = [];
       Object.entries(this.$store.state.account.pipelinesList).map((val) => {
         const arr = [];
-        Object.entries(val[1].statuses).forEach((stat) =>
-          arr.push({ name: stat[1], value: stat[0] })
+        val[1].statuses.forEach((stat) =>
+          arr.push({ name: stat.name, value: stat.id, color: stat.color })
         );
         val[1].statuses = arr;
         val[1].statuses.unshift({ name: "Не выбрано", value: -1 });
@@ -231,6 +232,30 @@ export default {
         val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
+      [
+        {
+          value: "5481832",
+          name: "Мероприятия/Кейтеринг",
+          statuses: [
+            {
+              name: "Не выбрано",
+              value: -1,
+            },
+            {
+              name: "Документы закрыты",
+              value: "142",
+            },
+          ],
+          selectedReserveOff: {
+            name: "отправлено КП",
+            value: "48538303",
+          },
+          selectedWriteOff: {
+            name: "Заказ согласован",
+            value: "50933296",
+          },
+        },
+      ];
       return list;
     },
     leadFieldsList() {
