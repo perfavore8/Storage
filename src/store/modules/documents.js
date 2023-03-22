@@ -40,6 +40,19 @@ export default {
     },
   },
   actions: {
+    async getAutocomplete(context, params) {
+      const url = BaseURL;
+      const res = await fetch(
+        url + params.subUrl + preparation_params(params.value),
+        {
+          headers: {
+            Authorization: TOKEN,
+          },
+        }
+      );
+      const json = await res.json();
+      return json;
+    },
     async getDocuments(context, params) {
       context.commit("updateIsLoading", true);
       const url = BaseURL + "document/registry";

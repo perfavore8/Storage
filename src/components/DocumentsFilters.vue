@@ -9,7 +9,11 @@
               :key="filter.code"
               :is="filter.type"
               v-show="filter?.show?.value || true"
-              :list="filterList(filter.value, filter.list)"
+              :list="
+                filter.isAutocomplete
+                  ? filter.list
+                  : filterList(filter.value, filter.list)
+              "
               :selected="filter.selected"
               :countLettersReq="filter.minLength"
               :placeholder="filter.placeholder"
@@ -19,11 +23,16 @@
               :inputValue="filter.selected"
               @update:dateRange="(newValue) => (filter.selected = newValue)"
               @update:inputValue="(newValue) => (filter.selected = newValue)"
-              @changeInputValue="(value) => (filter.value = value)"
+              @changeInputValue="
+                (value) => (
+                  (filter.value = value),
+                  filter.isAutocomplete ? getAutocompleteList(filter) : null
+                )
+              "
               @select="
                 (item) =>
                   filter.type === 'AppMultiSelect'
-                    ? filteringSystem.selectMulti(item, filter.code)
+                    ? selectMulti(item, filter.code)
                     : (filter.selected = item)
               "
             />
@@ -50,7 +59,8 @@ export default {
   components: { AppInputSelect, AppDateRange, AppInput },
 
   setup() {
-    const { documentsTitles, getDocuments } = useDocuments();
+    const { documentsTitles, getDocuments, getAutocompleteList } =
+      useDocuments();
 
     const clearAllFields = () => {
       documentsTitles.value.map((val) => {
@@ -92,7 +102,14 @@ export default {
       option.selected = !option.selected;
     };
 
-    return { documentsTitles, clearAllFields, apply, filterList, selectMulti };
+    return {
+      documentsTitles,
+      clearAllFields,
+      apply,
+      filterList,
+      selectMulti,
+      getAutocompleteList,
+    };
   },
 };
 </script>
@@ -149,9 +166,13 @@ export default {
       }
     }
 
-    .input-select {
-      // width: 20%;
-    }
+    // .input-select {
+    //   // width: 20%;
+    //   z-index: -1;
+    // }
+    // .date_range {
+    //   z-index: -1;
+    // }
   }
   .field {
     width: 40%;

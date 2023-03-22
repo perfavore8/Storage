@@ -44,7 +44,7 @@
             <template v-for="title in documents.titles" :key="title">
               <td
                 class="item"
-                v-if="title.code === 'name'"
+                v-if="title.isDocumentLink"
                 style="padding: 5px 10px 5px 15px"
               >
                 <a
@@ -52,7 +52,7 @@
                   class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
                   :href="'https://' + row.document_link"
                 >
-                  {{ row.name }}
+                  {{ row[title.code] }}
                 </a>
               </td>
               <td class="item cursor-pointer" v-else>
@@ -77,12 +77,17 @@
 <script>
 import GridBottom from "./GridBottom.vue";
 import { useDocuments } from "../composables/documents";
-import { computed, reactive } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import store from "@/store";
 export default {
   components: { GridBottom },
   setup() {
-    const { documents, collsCount, getDocuments, total } = useDocuments();
+    const { documents, collsCount, getDocuments, total, fillTitlesList } =
+      useDocuments();
+    onMounted(() => {
+      getDocuments();
+      fillTitlesList();
+    });
 
     const sorting = reactive({
       order_by: null,
@@ -92,11 +97,11 @@ export default {
     const meta = computed(() => store.state.orders.meta);
     const page = computed(() => {
       const obj = {
-        first: getPageFromLink(meta.value?.first_page_url),
-        prev: getPageFromLink(meta.value?.prev_page_url),
-        current: meta.value?.current_page,
-        next: getPageFromLink(meta.value?.next_page_url),
-        last: getPageFromLink(meta.value?.last_page_url),
+        first: getPageFromLink(meta.value?.links?.first_page_url),
+        prev: getPageFromLink(meta.value?.links?.prev_page_url),
+        current: meta.value?.meta?.current_page,
+        next: getPageFromLink(meta.value?.links?.next_page_url),
+        last: getPageFromLink(meta.value?.links?.last_page_url),
       };
       return obj;
     });

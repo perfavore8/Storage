@@ -1,123 +1,101 @@
 import store from "@/store";
-import { computed, onMounted, reactive } from "vue";
+import { computed, reactive } from "vue";
 
+const documents = reactive({
+  titles: [
+    {
+      name: "Название документа",
+      placeholder: "Название документа",
+      code: "template_name",
+      isDocumentLink: true,
+      type: "AppInputSelect",
+      minLength: 0,
+      requestDelay: 0,
+      value: "",
+      selected: {},
+      width: 1,
+      sortable: true,
+      isAutocomplete: false,
+      url: "document/templates",
+      list: [],
+    },
+    {
+      name: "Название заказа",
+      placeholder: "Название заказа",
+      code: "lead_name",
+      type: "AppInputSelect",
+      minLength: 0,
+      requestDelay: 300,
+      value: "",
+      selected: {},
+      width: 1,
+      sortable: true,
+      isAutocomplete: true,
+      url: "document/autocomplete/lead_name",
+      list: [],
+    },
+    {
+      name: "Компания",
+      placeholder: "Компания",
+      code: "company_name",
+      type: "AppInputSelect",
+      minLength: 3,
+      requestDelay: 300,
+      value: "",
+      selected: {},
+      width: 1,
+      sortable: true,
+      isAutocomplete: true,
+      url: "analytics/autocomplete/company",
+      list: [],
+    },
+    {
+      name: "Контакт",
+      placeholder: "Контакт",
+      code: "contact_name",
+      type: "AppInputSelect",
+      minLength: 3,
+      requestDelay: 300,
+      value: "",
+      selected: {},
+      width: 1,
+      sortable: true,
+      isAutocomplete: true,
+      url: "analytics/autocomplete/contact",
+      list: [],
+    },
+    {
+      name: "Кто сформировал",
+      placeholder: "Кто сформировал",
+      code: "user_name",
+      type: "AppInputSelect",
+      minLength: 0,
+      requestDelay: 0,
+      value: "",
+      selected: {},
+      width: 1,
+      sortable: true,
+      isAutocomplete: false,
+      url: "document/users",
+      list: [],
+    },
+    {
+      name: "Когда сформировал",
+      placeholder: "Когда сформировал",
+      code: "created_at",
+      type: "AppDateRange",
+      minLength: 0,
+      requestDelay: 0,
+      value: "",
+      selected: "-",
+      width: 1,
+      sortable: true,
+      list: [],
+    },
+  ],
+  list: [],
+});
 export function useDocuments() {
-  const documents = reactive({
-    titles: [
-      {
-        name: "Название документа",
-        placeholder: "Название документа",
-        code: "name",
-        type: "AppInputSelect",
-        minLength: 0,
-        requestDelay: 0,
-        value: "",
-        selected: "",
-        width: 1,
-        sortable: true,
-        list: [
-          { name: "Документ 1", value: 1 },
-          { name: "Документ 2", value: 2 },
-          { name: "Документ 3", value: 3 },
-        ],
-      },
-      {
-        name: "Название заказа",
-        placeholder: "Название заказа",
-        code: "order_name",
-        type: "AppInput",
-        minLength: 0,
-        requestDelay: 0,
-        value: "",
-        selected: "",
-        width: 1,
-        sortable: true,
-        list: [],
-      },
-      {
-        name: "Компания",
-        placeholder: "Компания",
-        code: "company",
-        type: "AppInput",
-        minLength: 0,
-        requestDelay: 0,
-        value: "",
-        selected: "",
-        width: 1,
-        sortable: true,
-        list: [],
-      },
-      {
-        name: "Контакт",
-        placeholder: "Контакт",
-        code: "contact",
-        type: "AppInput",
-        minLength: 0,
-        requestDelay: 0,
-        value: "",
-        selected: "",
-        width: 1,
-        sortable: true,
-        list: [],
-      },
-      {
-        name: "Кто сформировал",
-        placeholder: "Кто сформировал",
-        code: "form_name",
-        type: "AppInputSelect",
-        minLength: 0,
-        requestDelay: 0,
-        value: "",
-        selected: {},
-        width: 1,
-        sortable: true,
-        list: [{ name: "Кто-то", value: 1 }],
-      },
-      {
-        name: "Когда сформировал",
-        placeholder: "Когда сформировал",
-        code: "form_date",
-        type: "AppDateRange",
-        minLength: 0,
-        requestDelay: 0,
-        value: "",
-        selected: "-",
-        width: 1,
-        sortable: true,
-        list: [],
-      },
-    ],
-    list: [
-      {
-        name: "Google",
-        document_link: "google.com",
-        order_name: "Заказ 1",
-        company: "Компания 1",
-        contact: "Контакт 1",
-        form_name: "Кто-то",
-        form_date: "Когда-то",
-      },
-      {
-        name: "Google",
-        document_link: "google.com",
-        order_name: "Заказ 2",
-        company: "Компания 2",
-        contact: "Контакт 2",
-        form_name: "Кто-то",
-        form_date: "Когда-то",
-      },
-      {
-        name: "Google",
-        document_link: "google.com",
-        order_name: "Заказ 3",
-        company: "Компания 2",
-        contact: "Контакт 3",
-        form_name: "Кто-то",
-        form_date: "Когда-то",
-      },
-    ],
-  });
-
   const collsCount = computed(() => documents.titles.length);
 
   const documentsRaw = computed(() => store.state.documents.documents);
@@ -126,15 +104,44 @@ export function useDocuments() {
     documents.list = [];
     documentsRaw.value.forEach((document) => {
       const obj = {
-        name: document?.lead_name,
+        template_name: document?.name,
         document_link: document?.url,
-        order_name: document?.lead_name,
-        company: document?.company_name,
-        contact: document?.contact_name,
-        form_name: document?.user_name,
-        form_date: document?.created_at,
+        lead_name: document?.lead_name,
+        company_name: document?.company_name,
+        contact_name: document?.contact_name,
+        user_name: document?.user_name,
+        created_at: document?.created_at,
       };
       documents.list.push(obj);
+    });
+  };
+
+  const fillTitlesList = () => {
+    documents.titles.map(async (title) => {
+      if (title.type === "AppInputSelect" && !title.isAutocomplete) {
+        const res = await store.dispatch("getAutocomplete", {
+          subUrl: title.url,
+          value: {},
+        });
+        title.list = [];
+        res.forEach((el) => title.list.push({ name: el, value: el }));
+      }
+    });
+  };
+
+  const getAutocompleteList = async (title) => {
+    const res = await store.dispatch("getAutocomplete", {
+      subUrl: title.url,
+      value: { query: title.value },
+    });
+    title.list = [];
+    res.forEach((el) => {
+      const item = { name: el, value: el };
+      if (el.label) {
+        item.name = el.label;
+        item.value = el.value;
+      }
+      title.list.push(item);
     });
   };
 
@@ -143,11 +150,9 @@ export function useDocuments() {
     fillDocuments();
   };
 
-  onMounted(() => getDocuments());
-
   const documentsTitles = computed(() => documents.titles);
 
-  const total = computed(() => store.state.documents.meta.total);
+  const total = computed(() => store.state.documents.meta?.meta?.total);
 
   return {
     documents,
@@ -156,5 +161,7 @@ export function useDocuments() {
     getDocuments,
     documentsTitles,
     total,
+    fillTitlesList,
+    getAutocompleteList,
   };
 }
