@@ -23,5 +23,6 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  z-index: 50;
 }
 </style>
