@@ -139,6 +139,16 @@ export default {
       const json = await res.json();
       context.commit("updatePipelinesList", json);
     },
+    async getPipelinesListV2(context) {
+      const url = BaseURL + "account/pipelinesV2";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updatePipelinesList", json);
+    },
     async getLeadFieldsList(context) {
       const url = BaseURL + "account/lead-fields";
       const res = await fetch(url, {
