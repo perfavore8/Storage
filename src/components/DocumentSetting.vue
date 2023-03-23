@@ -103,6 +103,14 @@
               <label>Хук при загрузке документа в сделку</label>
               <input type="text" class="input my-2" v-model="hook_download" />
             </div>
+            <div class="grid grid-cols-3 items-center">
+              <label>Хук при генерации документа в сделке</label>
+              <input
+                type="text"
+                class="input my-2"
+                v-model="hook_generate_doc"
+              />
+            </div>
           </div>
           <div class="main">
             <table class="table">
@@ -177,6 +185,7 @@ export default {
       copy_documents: [],
       disable_fields_templates: false,
       hook_download: "",
+      hook_generate_doc: "",
     };
   },
   computed: {
@@ -207,6 +216,7 @@ export default {
     await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
     this.hook_download = this.account.config?.hook_download;
+    this.hook_generate_doc = this.account.config?.hook_generate_doc;
     this.set_lead_fields_options();
     this.set_contact_name_type_options();
   },
@@ -229,6 +239,7 @@ export default {
     save() {
       this.$store.dispatch("update_account", {
         hook_download: this.hook_download,
+        hook_generate_doc: this.hook_generate_doc,
         field_docs: this.lead_fields.value,
         contact_name_type: this.contact_name_type.value,
       });
