@@ -101,6 +101,7 @@
             </p>
             <input
               type="text"
+              class="input my-2"
               placeholder="Хук при загрузке документа в сделку"
               v-if="isTest"
               v-model="hook_download"
