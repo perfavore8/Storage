@@ -232,30 +232,6 @@ export default {
         val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
-      [
-        {
-          value: "5481832",
-          name: "Мероприятия/Кейтеринг",
-          statuses: [
-            {
-              name: "Не выбрано",
-              value: -1,
-            },
-            {
-              name: "Документы закрыты",
-              value: "142",
-            },
-          ],
-          selectedReserveOff: {
-            name: "отправлено КП",
-            value: "48538303",
-          },
-          selectedWriteOff: {
-            name: "Заказ согласован",
-            value: "50933296",
-          },
-        },
-      ];
       return list;
     },
     leadFieldsList() {
