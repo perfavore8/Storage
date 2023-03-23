@@ -23,8 +23,7 @@
           :class="{
             optgroup: item.value === 'optgroup',
             selected: item.selected,
-            color_selected:
-              option.value == selected_option.value && option.color,
+            color_selected: item.selected && option.color,
           }"
           :style="{ backgroundColor: option.color }"
           @click="select(item)"
