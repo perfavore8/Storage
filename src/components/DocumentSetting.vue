@@ -214,6 +214,7 @@ export default {
     await this.$store.dispatch("get_account");
     await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
+    this.hook_download = this.account.config?.hook_download;
     this.set_lead_fields_options();
     this.set_contact_name_type_options();
   },
