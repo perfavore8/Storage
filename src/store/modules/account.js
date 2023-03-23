@@ -6,6 +6,7 @@ export default {
     currencies: {},
     tableConfig: {},
     pipelinesList: {},
+    pipelinesListV2: {},
     leadFieldsList: {},
     leadFieldGroupsList: {},
     productLists: {},
@@ -27,6 +28,9 @@ export default {
     },
     updatePipelinesList(state, value) {
       state.pipelinesList = { ...value };
+    },
+    updatePipelinesListV2(state, value) {
+      state.pipelinesListV2 = { ...value };
     },
     updateLeadFieldsList(state, value) {
       state.leadFieldsList = { ...value };
@@ -147,7 +151,7 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("updatePipelinesList", json);
+      context.commit("updatePipelinesListV2", json);
     },
     async getLeadFieldsList(context) {
       const url = BaseURL + "account/lead-fields";
