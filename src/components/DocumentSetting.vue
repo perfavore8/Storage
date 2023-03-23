@@ -99,13 +99,12 @@
               где Google ID файла: 1XdXdEMtUFa8V__UK234432Dpx5-CeI Вместо Google
               ID файла допускается ввод полного адреса
             </p>
-            <input
-              type="text"
-              class="input my-2"
-              placeholder="Хук при загрузке документа в сделку"
-              v-if="isTest"
-              v-model="hook_download"
-            />
+            <template v-if="isTest">
+              <div class="grid grid-cols-3 items-center">
+                <label>Хук при загрузке документа в сделку</label>
+                <input type="text" class="input my-2" v-model="hook_download" />
+              </div>
+            </template>
           </div>
           <div class="main">
             <table class="table">
