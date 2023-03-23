@@ -99,12 +99,10 @@
               где Google ID файла: 1XdXdEMtUFa8V__UK234432Dpx5-CeI Вместо Google
               ID файла допускается ввод полного адреса
             </p>
-            <template v-if="isTest">
-              <div class="grid grid-cols-3 items-center">
-                <label>Хук при загрузке документа в сделку</label>
-                <input type="text" class="input my-2" v-model="hook_download" />
-              </div>
-            </template>
+            <div class="grid grid-cols-3 items-center">
+              <label>Хук при загрузке документа в сделку</label>
+              <input type="text" class="input my-2" v-model="hook_download" />
+            </div>
           </div>
           <div class="main">
             <table class="table">
@@ -201,12 +199,6 @@ export default {
         list.push({ value: val[0], ...val[1] });
       });
       return list;
-    },
-    isTest() {
-      return (
-        this.$store.state.account?.account?.id == 1 ||
-        this.$route.query.test === "salesUp"
-      );
     },
   },
   async mounted() {
