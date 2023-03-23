@@ -10,7 +10,7 @@ export default {
       {
         name: "Документы",
         value: "documents",
-        isTest: true,
+        isTest: false,
       },
       {
         name: "Остатки",
