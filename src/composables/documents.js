@@ -130,10 +130,9 @@ export function useDocuments() {
   };
 
   const getAutocompleteList = async (title) => {
-    const res = await store.dispatch("getAutocomplete", {
-      subUrl: title.url,
-      value: { query: title.value },
-    });
+    const params = { subUrl: title.url, value: { query: title.value } };
+    if (title.code === "contact_name") params.value.from_docs = 1;
+    const res = await store.dispatch("getAutocomplete", params);
     title.list = [];
     res.forEach((el) => {
       const item = { name: el, value: el };

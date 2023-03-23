@@ -50,7 +50,7 @@
                 <a
                   target="black"
                   class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
-                  :href="'https://' + row.document_link"
+                  :href="row.document_link"
                 >
                   {{ row[title.code] }}
                 </a>
@@ -70,6 +70,7 @@
     :show="documents.list.length != 0"
     :showSelector="false"
     :count="meta?.per_page"
+    v-if="documents.list.length > meta?.total"
     @changePage="changePage"
   />
 </template>

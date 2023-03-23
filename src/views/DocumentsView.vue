@@ -3,7 +3,7 @@
     <div class="header">
       <AppHeader />
     </div>
-    <div class="wrapper">
+    <div class="wrapper mb-8">
       <DocumentsFilters />
       <DocumentsGrid />
     </div>
