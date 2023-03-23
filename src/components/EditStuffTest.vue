@@ -77,17 +77,16 @@
           <div class="steps">
             <div
               class="label_input"
-              v-for="item in copyPipelinesList"
+              v-for="item in copyPipelinesListV2"
               :key="item"
             >
               <label> Воронка "{{ item?.name }}" </label>
-              <SelectorVue
-                :options_props="item?.statuses"
+              <AppMultiSelect
+                :list="item?.statuses"
                 @select="
                   (event) =>
                     optionSelectSteps(event, item?.value, 'reserve_off')
                 "
-                :selected_option="item.selectedReserveOff"
               />
             </div>
           </div>
@@ -152,11 +151,13 @@
 </template>
 <script>
 import SelectorVue from "@/components/SelectorVue";
+import AppMultiSelect from "./AppMultiSelect.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 export default {
   components: {
     SelectorVue,
     BtnsSaveClose,
+    AppMultiSelect,
   },
   data() {
     return {
@@ -165,6 +166,7 @@ export default {
         write_off: [],
       },
       copyPipelinesList: [],
+      copyPipelinesListV2: [],
       copyLeadFieldsList: [],
       leadsDeals: [
         {
@@ -210,7 +212,9 @@ export default {
       this.copyConfing?.lock_reserved_products_edit
     );
     await this.$store.dispatch("getPipelinesList");
+    await this.$store.dispatch("getPipelinesListV2");
     this.copyPipelinesList = this.pipelinesList;
+    this.copyPipelinesListV2 = this.pipelinesListV2;
     await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
     this.fillLeadsDealsList();
@@ -225,10 +229,25 @@ export default {
         Object.entries(val[1].statuses).forEach((stat) =>
           arr.push({ name: stat[1], value: stat[0] })
         );
-        val[1].statuses = arr;
-        val[1].statuses.unshift({ name: "Не выбрано", value: -1 });
-        val[1].selectedReserveOff = { name: "Не выбрано", value: -1 };
+        val[1].statuses = [{ name: "Не выбрано", value: -1 }, ...arr];
         val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
+        list.push({ value: val[0], ...val[1] });
+      });
+      return list;
+    },
+    pipelinesListV2() {
+      const list = [];
+      Object.entries(this.$store.state.account.pipelinesListV2).map((val) => {
+        const arr = [];
+        val[1].statuses.forEach((stat) =>
+          arr.push({
+            name: stat.name,
+            value: stat.id,
+            color: stat.color,
+            selected: false,
+          })
+        );
+        val[1].statuses = [{ name: "Все", value: "all" }, ...arr];
         list.push({ value: val[0], ...val[1] });
       });
       return list;
@@ -283,34 +302,67 @@ export default {
     },
     optionSelectSteps(option, value, code) {
       let addNew = true;
-      if (this.include(this.copyConfing[code], value, "field")) {
-        this.copyConfing[code].map((val) => {
-          if (val.field == value) val.value = option.value;
-        });
-        addNew = false;
-      }
+      if (code !== "reserve_off") {
+        if (this.include(this.copyConfing[code], value, "field")) {
+          this.copyConfing[code].map((val) => {
+            if (val.field == value) val.value = option.value;
+          });
+          addNew = false;
+        }
 
-      const obj = {
-        field: value,
-        value: option.value,
-      };
-      if (addNew) this.copyConfing[code].push(obj);
+        const obj = {
+          field: value,
+          value: option.value,
+        };
+        if (addNew) this.copyConfing[code].push(obj);
 
-      if (option.value == -1) {
-        this.copyConfing[code].forEach((val, idx) => {
-          if (val.field == value) this.copyConfing[code].splice(idx, 1);
-        });
+        if (option.value == -1) {
+          this.copyConfing[code].forEach((val, idx) => {
+            if (val.field == value) this.copyConfing[code].splice(idx, 1);
+          });
+        }
       }
 
       this.copyPipelinesList.map((val) => {
-        if (val.value == value) {
-          if (code == "write_off") {
-            val.selectedWriteOff = option;
-          } else {
-            val.selectedReserveOff = option;
-          }
+        if (val.value == value && code == "write_off") {
+          val.selectedWriteOff = option;
         }
       });
+      this.copyPipelinesListV2.map((val) => {
+        if (val.value == value && code == "reserve_off") {
+          if (option.value === "all") {
+            val.statuses?.forEach((el) => {
+              if (el.value !== "all") el.selected = !option.selected;
+            });
+          }
+          option.selected = !option.selected;
+        }
+      });
+
+      if (code === "reserve_off") {
+        const pipeline = this.copyPipelinesListV2.find(
+          (val) => val.value === value
+        );
+        const list = [];
+        pipeline?.statuses?.forEach((stat) =>
+          stat.selected && stat.value != "all" ? list.push(stat.value) : null
+        );
+        console.log(list);
+        if (this.copyConfing.reserve_off_v2.find((el) => el.field === value))
+          addNew = false;
+        if (addNew) {
+          this.copyConfing.reserve_off_v2.push({
+            field: value,
+            values: list,
+          });
+        } else {
+          const item = this.copyConfing.reserve_off_v2.find(
+            (el) => el.field === value
+          );
+          if (item) item.values = list;
+        }
+        console.log(this.copyConfing.reserve_off_v2);
+      }
     },
     searchSelectedInArr(item, arr, code) {
       let res = { name: "Не выбрано", value: -1 };
@@ -321,24 +373,28 @@ export default {
     },
     searchSelectedPipelines() {
       this.copyPipelinesList.map((val) => {
-        const reserve_off = this.copyConfing.reserve_off.filter(
+        const write_off = this.copyConfing.write_off.find(
           (item) => item.field == val.value
         );
-        const write_off = this.copyConfing.write_off.filter(
-          (item) => item.field == val.value
-        );
-        if (reserve_off.length)
-          val.selectedReserveOff = this.searchSelectedInArr(
-            reserve_off[0].value,
-            val.statuses,
-            "value"
-          );
-        if (write_off.length)
+        if (write_off)
           val.selectedWriteOff = this.searchSelectedInArr(
-            write_off[0].value,
+            write_off.value,
             val.statuses,
             "value"
           );
+      });
+      this.copyPipelinesListV2.map((val) => {
+        const reserve_off_v2 = this.copyConfing?.reserve_off_v2?.find(
+          (item) => item.field == val.value
+        );
+        val.statuses.map((stat) => {
+          if (reserve_off_v2?.values?.includes(stat.value))
+            stat.selected = true;
+        });
+        const unSelected = val.statuses.filter((stat) => !stat.selected);
+        if (unSelected.length === 1 && unSelected[0].value === "all") {
+          val.statuses.find((stat) => stat.value === "all").selected = true;
+        }
       });
     },
 

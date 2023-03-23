@@ -99,6 +99,12 @@
               где Google ID файла: 1XdXdEMtUFa8V__UK234432Dpx5-CeI Вместо Google
               ID файла допускается ввод полного адреса
             </p>
+            <input
+              type="text"
+              placeholder="Хук при загрузке документа в сделку"
+              v-if="isTest"
+              v-model="hook_download"
+            />
           </div>
           <div class="main">
             <table class="table">
@@ -172,6 +178,7 @@ export default {
       selected_doc_id: null,
       copy_documents: [],
       disable_fields_templates: false,
+      hook_download: "",
     };
   },
   computed: {
@@ -194,6 +201,12 @@ export default {
         list.push({ value: val[0], ...val[1] });
       });
       return list;
+    },
+    isTest() {
+      return (
+        this.$store.state.account?.account?.id == 1 ||
+        this.$route.query.test === "salesUp"
+      );
     },
   },
   async mounted() {
@@ -222,6 +235,7 @@ export default {
     },
     save() {
       this.$store.dispatch("update_account", {
+        hook_download: this.hook_download,
         field_docs: this.lead_fields.value,
         contact_name_type: this.contact_name_type.value,
       });
