@@ -23,9 +23,9 @@
           :class="{
             optgroup: item.value === 'optgroup',
             selected: item.selected,
-            color_selected: item.selected && option.color,
+            color_selected: item.selected && item.color,
           }"
-          :style="{ backgroundColor: option.color }"
+          :style="{ backgroundColor: item.color }"
           @click="select(item)"
         >
           <template v-if="item.optgroup">
