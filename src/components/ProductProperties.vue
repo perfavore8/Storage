@@ -43,17 +43,55 @@
                 class=""
                 v-if="isTest && selected_fields_properties.length == 1"
               ></th>
-              <th class="item">
+              <th class="item title">
                 <div class="copy_fields">
                   <span>Поле</span>
                 </div>
               </th>
               <th class="item">Тип</th>
-              <th class="item">Видимость в сделке</th>
-              <th class="item">Редактирование в сделке</th>
+              <th class="item title">
+                <div class="flex flex-row gap-1 items-center w-min mx-auto">
+                  <div
+                    class="opacity-50 flex items-center"
+                    title="Видимость в сделке"
+                  >
+                    <span class="material-icons-outlined"> visibility </span>
+                  </div>
+                </div>
+              </th>
+              <th class="item title">
+                <div class="flex flex-row gap-1 items-center w-min mx-auto">
+                  <div
+                    class="opacity-50 flex items-center"
+                    title="Редактирование в сделке"
+                  >
+                    <span class="material-icons-outlined"> edit </span>
+                  </div>
+                </div>
+              </th>
               <template v-if="isTest">
-                <th class="item">Заголовок товара в сделке</th>
-                <th class="item">Дублировать в новые партии</th>
+                <th class="item title">
+                  <div class="flex flex-row gap-1 items-center w-min mx-auto">
+                    <div
+                      class="opacity-50 flex items-center"
+                      title="Заголовок товара в сделке"
+                    >
+                      <span class="material-icons-outlined"> title </span>
+                    </div>
+                  </div>
+                </th>
+                <th class="item title">
+                  <div class="flex flex-row gap-1 items-center w-min mx-auto">
+                    <div
+                      class="opacity-50 flex items-center"
+                      title="Дублировать в новые партии"
+                    >
+                      <span class="material-icons-outlined">
+                        content_copy
+                      </span>
+                    </div>
+                  </div>
+                </th>
               </template>
               <th class="item">
                 <button
@@ -603,11 +641,19 @@ export default {
       this.get_fields();
     },
     changeTitleSort(idx, isUp) {
-      const count = isUp ? 1 : -1;
-      this.copy_fields[idx].lead_config.title_sort += -count;
-      this.copy_fields[idx - count].lead_config.title_sort += count;
+      if (isUp) {
+        this.copy_fields[idx].lead_config.title_sort -= 1;
+        this.copy_fields[idx - 1].lead_config.title_sort += 1;
+      } else {
+        this.copy_fields[idx].lead_config.title_sort += 1;
+        this.copy_fields[idx + 1].lead_config.title_sort -= 1;
+      }
       this.update_field(idx, ["lead_config"]);
-      this.update_field(idx - count, ["lead_config"]);
+      if (isUp) {
+        this.update_field(idx - 1, ["lead_config"]);
+      } else {
+        this.update_field(idx + 1, ["lead_config"]);
+      }
     },
     add_selector_option(idx) {
       if (this.copy_fields[idx].data == null) this.copy_fields[idx].data = [];
@@ -694,6 +740,10 @@ export default {
         .rows {
           border: 1px solid #c9c9c9;
           border-collapse: collapse;
+          // width: min-content;
+          .title {
+            font-size: 16px;
+          }
           .row:first-child {
             .item {
               padding-bottom: 20px;
@@ -737,26 +787,36 @@ export default {
                 box-shadow: 0 0 0 4px rgba(219, 54, 71, 0.25);
               }
             }
-            .item:nth-child(1) {
+            .item:nth-child(2) {
               width: 30%;
               text-align: left;
             }
-            .item:nth-child(2) {
-              width: 0%;
-              min-width: 280px;
-              max-width: 280px;
-            }
             .item:nth-child(3) {
+              width: 50%;
+              // min-width: 280px;
+            }
+            .item:nth-child(30) {
               width: 12%;
             }
             .item:nth-child(4) {
-              width: 15%;
+              text-align: center;
+              min-width: 60px;
+              max-width: 60px;
             }
             .item:nth-child(5) {
-              width: 12%;
+              text-align: center;
+              min-width: 60px;
+              max-width: 60px;
             }
             .item:nth-child(6) {
-              width: 12%;
+              text-align: center;
+              min-width: 60px;
+              max-width: 60px;
+            }
+            .item:nth-child(7) {
+              text-align: center;
+              min-width: 60px;
+              max-width: 60px;
             }
             .item:last-child {
               width: 0.1%;
@@ -767,8 +827,8 @@ export default {
             .new_item_input {
             }
             .del_btn {
-              height: 34px;
-              width: 34px !important;
+              height: 18px;
+              width: 18px !important;
               cursor: pointer;
               background: #dc3545;
               border: none;
@@ -1014,5 +1074,8 @@ export default {
   &_down {
     @include bg_image("@/assets/sort_down.svg");
   }
+}
+.checkbox + label::before {
+  margin-right: 0 !important;
 }
 </style>
