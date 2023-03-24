@@ -50,45 +50,79 @@
               </th>
               <th class="item">Тип</th>
               <th class="item title">
-                <div class="flex flex-row gap-1 items-center w-min mx-auto">
+                <div class="w-min mx-auto">
                   <div
-                    class="opacity-50 flex items-center"
-                    title="Видимость в сделке"
+                    class="flex items-center relative"
+                    @mouseenter="toolTips.visibility = true"
+                    @mouseleave="toolTips.visibility = false"
                   >
-                    <span class="material-icons-outlined"> visibility </span>
+                    <span class="material-icons-outlined opacity-50">
+                      visibility
+                    </span>
+                    <div
+                      class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                      v-if="toolTips.visibility"
+                    >
+                      Видимость в сделке
+                    </div>
                   </div>
                 </div>
               </th>
               <th class="item title">
-                <div class="flex flex-row gap-1 items-center w-min mx-auto">
+                <div class="w-min mx-auto">
                   <div
-                    class="opacity-50 flex items-center"
-                    title="Редактирование в сделке"
+                    class="flex items-center relative"
+                    @mouseenter="toolTips.edit = true"
+                    @mouseleave="toolTips.edit = false"
                   >
-                    <span class="material-icons-outlined"> edit </span>
+                    <span class="material-icons-outlined opacity-50">
+                      edit
+                    </span>
+                    <div
+                      class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                      v-if="toolTips.edit"
+                    >
+                      Редактирование в сделке
+                    </div>
                   </div>
                 </div>
               </th>
               <template v-if="isTest">
                 <th class="item title">
-                  <div class="flex flex-row gap-1 items-center w-min mx-auto">
+                  <div class="w-min mx-auto">
                     <div
-                      class="opacity-50 flex items-center"
-                      title="Заголовок товара в сделке"
+                      class="flex items-center relative"
+                      @mouseenter="toolTips.title = true"
+                      @mouseleave="toolTips.title = false"
                     >
-                      <span class="material-icons-outlined"> title </span>
+                      <span class="material-icons-outlined opacity-50">
+                        title
+                      </span>
+                      <div
+                        class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                        v-if="toolTips.title"
+                      >
+                        Заголовок товара в сделке
+                      </div>
                     </div>
                   </div>
                 </th>
                 <th class="item title">
-                  <div class="flex flex-row gap-1 items-center w-min mx-auto">
+                  <div class="w-min mx-auto">
                     <div
-                      class="opacity-50 flex items-center"
-                      title="Дублировать в новые партии"
+                      class="flex items-center relative"
+                      @mouseenter="toolTips.content_copy = true"
+                      @mouseleave="toolTips.content_copy = false"
                     >
-                      <span class="material-icons-outlined">
+                      <span class="material-icons-outlined opacity-50">
                         content_copy
                       </span>
+                      <div
+                        class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                        v-if="toolTips.content_copy"
+                      >
+                        Дублировать в новые партии
+                      </div>
                     </div>
                   </div>
                 </th>
@@ -372,6 +406,12 @@ export default {
   },
   data() {
     return {
+      toolTips: {
+        visibility: false,
+        edit: false,
+        title: false,
+        content_copy: false,
+      },
       copy_fields: [],
       copy_fields_properties: [],
       selected_fields_properties: [],
@@ -760,7 +800,7 @@ export default {
             .btn_save_all {
               white-space: nowrap;
               position: absolute;
-              left: -80%;
+              left: -120%;
               top: -75%;
               height: min-content;
               width: min-content;
