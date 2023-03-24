@@ -83,6 +83,13 @@
               <label> Воронка "{{ item?.name }}" </label>
               <AppMultiSelect
                 :list="item?.statuses"
+                :placeholder="
+                  item?.statuses.filter((val) => val.selected).length
+                    ? item?.statuses.filter(
+                        (val) => val.selected && val.value !== 'all'
+                      ).length
+                    : 'Не выбрано'
+                "
                 @select="
                   (event) =>
                     optionSelectSteps(event, item?.value, 'reserve_off')
@@ -347,7 +354,6 @@ export default {
         pipeline?.statuses?.forEach((stat) =>
           stat.selected && stat.value != "all" ? list.push(stat.value) : null
         );
-        console.log(list);
         if (this.copyConfing.reserve_off_v2.find((el) => el.field === value))
           addNew = false;
         if (addNew) {
@@ -361,7 +367,6 @@ export default {
           );
           if (item) item.values = list;
         }
-        console.log(this.copyConfing.reserve_off_v2);
       }
     },
     searchSelectedInArr(item, arr, code) {
