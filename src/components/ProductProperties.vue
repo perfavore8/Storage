@@ -39,6 +39,10 @@
           <h6>Поля товаров в сделке</h6>
           <table class="rows">
             <tr class="row">
+              <th
+                class=""
+                v-if="isTest && selected_fields_properties.length == 1"
+              ></th>
               <th class="item">
                 <div class="copy_fields">
                   <span>Поле</span>
@@ -47,6 +51,10 @@
               <th class="item">Тип</th>
               <th class="item">Видимость в сделке</th>
               <th class="item">Редактирование в сделке</th>
+              <template v-if="isTest">
+                <th class="item">Заголовок товара в сделке</th>
+                <th class="item">Дублировать в новые партии</th>
+              </template>
               <th class="item">
                 <button
                   class="btn btn_save_all btn_yellow"
@@ -64,6 +72,23 @@
               :key="row.id"
               v-show="selected_fields_properties.at(-1)?.id === row.category_id"
             >
+              <th
+                class="p-[10px] border border-[#c9c9c9]"
+                v-if="isTest && selected_fields_properties.length == 1"
+              >
+                <div class="flex flex-row">
+                  <button
+                    class="bar_item_icon bar_item_icon_up"
+                    :disabled="idx === 0"
+                    @click="changeTitleSort(idx, true)"
+                  />
+                  <button
+                    class="bar_item_icon bar_item_icon_down"
+                    :disabled="idx === copy_fields.length - 1"
+                    @click="changeTitleSort(idx, false)"
+                  />
+                </div>
+              </th>
               <td class="item">
                 <span v-if="row.is_system">{{ row.name }}</span>
                 <input
@@ -134,6 +159,29 @@
                 />
                 <label :for="idx + 'n'"></label>
               </td>
+              <template v-if="isTest">
+                <td class="box item text-lg">
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    :id="idx + 'nt'"
+                    :disabled="row.lead_config.title_visible.disabled"
+                    v-model="row.lead_config.title_visible.value"
+                    @change="row.changeLeadConfig = true"
+                  />
+                  <label :for="idx + 'nt'"></label>
+                </td>
+                <td class="box item text-lg">
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    :id="idx + 'nd'"
+                    v-model="row.config.double_in_new_bath"
+                    @change="row.changeConfig = true"
+                  />
+                  <label :for="idx + 'nd'"></label>
+                </td>
+              </template>
               <td class="item del_sell">
                 <button
                   class="del_btn"
@@ -143,13 +191,17 @@
                 <button
                   class="btn btn_save btn_blue"
                   v-if="
-                    row.changeName || row.changeData || row.changeLeadConfig
+                    row.changeName ||
+                    row.changeData ||
+                    row.changeLeadConfig ||
+                    row.changeConfig
                   "
                   @click="
                     update_field(idx, [
                       row.changeName ? 'name' : null,
                       row.changeData ? 'data' : null,
                       row.changeLeadConfig ? 'lead_config' : null,
+                      row.changeConfig ? 'config' : null,
                     ])
                   "
                 >
@@ -165,6 +217,10 @@
               /////
               /// -->
             <tr class="row" v-for="(row, idx) in new_fields" :key="row.id">
+              <th
+                class="p-[10px] border border-[#c9c9c9]"
+                v-if="isTest && selected_fields_properties.length == 1"
+              ></th>
               <td class="item">
                 <input
                   type="text"
@@ -222,6 +278,29 @@
                 />
                 <label :for="idx + 'n1'"></label>
               </td>
+              <template v-if="isTest">
+                <td class="box item text-lg">
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    :id="idx + 'n2'"
+                    :disabled="
+                      new_fields[idx].lead_config.title_visible.disabled
+                    "
+                    v-model="new_fields[idx].lead_config.title_visible.value"
+                  />
+                  <label :for="idx + 'n2'"></label>
+                </td>
+                <td class="box item text-lg">
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    :id="idx + 'n3'"
+                    v-model="new_fields[idx].config.double_in_new_bath"
+                  />
+                  <label :for="idx + 'n3'"></label>
+                </td>
+              </template>
               <td class="item del_sell">
                 <button class="del_btn" @click="delete_new_field(idx)"></button>
                 <button
@@ -288,7 +367,11 @@ export default {
       let res = false;
       this.copy_fields.forEach((field) => {
         res =
-          res || field.changeName || field.changeData || field.changeLeadConfig;
+          res ||
+          field.changeName ||
+          field.changeData ||
+          field.changeLeadConfig ||
+          field.changeConfig;
       });
       return res;
     },
@@ -308,6 +391,9 @@ export default {
       });
       return arr;
     },
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
+    },
   },
   methods: {
     add_new_field() {
@@ -321,6 +407,10 @@ export default {
         lead_config: {
           visible: { disabled: false, value: false },
           editable: { disabled: false, value: false },
+          title_visible: { disabled: false, value: false },
+        },
+        config: {
+          double_in_new_bath: false,
         },
       };
       this.new_fields.push(item);
@@ -385,16 +475,21 @@ export default {
     updateAllFields() {
       this.copy_fields.map((field, idx) => {
         const needUpdate =
-          field.changeName || field.changeData || field.changeLeadConfig;
+          field.changeName ||
+          field.changeData ||
+          field.changeLeadConfig ||
+          field.changeConfig;
         if (needUpdate)
           this.update_field(idx, [
             field.changeName ? "name" : null,
             field.changeData ? "data" : null,
             field.changeLeadConfig ? "lead_config" : null,
+            field.changeConfig ? "config" : null,
           ]);
         field.changeName = false;
         field.changeData = false;
         field.changeLeadConfig = false;
+        field.changeConfig = false;
       });
     },
     async update_field(idx, params_names) {
@@ -408,6 +503,16 @@ export default {
               ? 1
               : 0;
             params[val].editable = this.copy_fields[idx][val].editable.value
+              ? 1
+              : 0;
+            params[val].title_visible = this.copy_fields[idx][val].title_visible
+              .value
+              ? 1
+              : 0;
+          }
+          if (val == "config") {
+            params[val].double_in_new_bath = this.copy_fields[idx][val]
+              .double_in_new_bath
               ? 1
               : 0;
           } else {
@@ -425,6 +530,7 @@ export default {
         this.copy_fields[idx].changeName = false;
         this.copy_fields[idx].changeData = false;
         this.copy_fields[idx].changeLeadConfig = false;
+        this.copy_fields[idx].changeConfig = false;
         // this.get_fields();
       }
     },
@@ -440,15 +546,21 @@ export default {
         val["changeName"] = false;
         val["changeData"] = false;
         val["changeLeadConfig"] = false;
-        const value = val.lead_config.visible;
+        val["changeConfig"] = false;
+        const visible = val.lead_config.visible;
         val.lead_config.visible = {
-          disabled: value == -1 || value == 2,
-          value: value > 0,
+          disabled: visible == -1 || visible == 2,
+          value: visible > 0,
         };
-        const value2 = val.lead_config.editable;
+        const editable = val.lead_config.editable;
         val.lead_config.editable = {
-          disabled: value2 == -1 || value2 == 2,
-          value: value2 > 0,
+          disabled: editable == -1 || editable == 2,
+          value: editable > 0,
+        };
+        const title_visible = val.lead_config.title_visible;
+        val.lead_config.title_visible = {
+          disabled: title_visible == -1 || title_visible == 2,
+          value: title_visible > 0,
         };
       });
       this.is_loading = false;
@@ -490,6 +602,13 @@ export default {
       });
       this.get_fields();
     },
+    changeTitleSort(idx, isUp) {
+      const count = isUp ? 1 : -1;
+      this.copy_fields[idx].lead_config.title_sort += -count;
+      this.copy_fields[idx - count].lead_config.title_sort += count;
+      this.update_field(idx, ["lead_config"]);
+      this.update_field(idx - count, ["lead_config"]);
+    },
     add_selector_option(idx) {
       if (this.copy_fields[idx].data == null) this.copy_fields[idx].data = [];
       this.copy_fields[idx].data.push("");
@@ -527,18 +646,19 @@ export default {
   .bgc {
     position: relative;
     z-index: 260;
-    width: 80%;
+    width: fit-content;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.3rem;
     margin: 30px auto;
     outline: 0;
+    padding: 60px;
     box-shadow: 0 0 7px 6px rgb(206 212 218 / 50%);
     .container {
       text-align: left;
-      width: 80%;
-      margin: 30px auto;
+      // width: 80%;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       .header {
@@ -562,6 +682,7 @@ export default {
         }
       }
       .content {
+        position: relative;
         @include font(400, 16px);
         h6 {
           @include font(500, 16px);
@@ -632,10 +753,14 @@ export default {
               width: 15%;
             }
             .item:nth-child(5) {
-              width: 0.1%;
-              max-width: 54px;
+              width: 12%;
+            }
+            .item:nth-child(6) {
+              width: 12%;
             }
             .item:last-child {
+              width: 0.1%;
+              max-width: 54px;
               border-right: none;
               min-width: 34px;
             }
@@ -702,7 +827,7 @@ export default {
           cursor: pointer;
           margin-top: 8px;
           position: absolute;
-          right: 18.5%;
+          right: 10px;
           width: 34px;
           height: 34px;
           background: #4e964d;
@@ -873,6 +998,21 @@ export default {
       calc(100% - $step) 100%,
       0% 100%
     );
+  }
+}
+.bar_item_icon {
+  margin: 0 auto;
+  height: 16px;
+  width: 16px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  &_up {
+    @include bg_image("@/assets/sort_up.svg");
+  }
+  &_down {
+    @include bg_image("@/assets/sort_down.svg");
   }
 }
 </style>
