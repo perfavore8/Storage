@@ -43,13 +43,13 @@
                 class=""
                 v-if="isTest && selected_fields_properties.length == 1"
               ></th>
-              <th class="item title">
+              <th class="item item_field title">
                 <div class="copy_fields">
                   <span>Поле</span>
                 </div>
               </th>
-              <th class="item">Тип</th>
-              <th class="item title">
+              <th class="item item_type">Тип</th>
+              <th class="item item_icon title">
                 <div class="w-min mx-auto">
                   <div
                     class="flex items-center relative"
@@ -68,7 +68,7 @@
                   </div>
                 </div>
               </th>
-              <th class="item title">
+              <th class="item item_icon title">
                 <div class="w-min mx-auto">
                   <div
                     class="flex items-center relative"
@@ -88,7 +88,7 @@
                 </div>
               </th>
               <template v-if="isTest">
-                <th class="item title">
+                <th class="item item_icon title">
                   <div class="w-min mx-auto">
                     <div
                       class="flex items-center relative"
@@ -107,7 +107,7 @@
                     </div>
                   </div>
                 </th>
-                <th class="item title">
+                <th class="item item_icon title">
                   <div class="w-min mx-auto">
                     <div
                       class="flex items-center relative"
@@ -828,33 +828,15 @@ export default {
                 box-shadow: 0 0 0 4px rgba(219, 54, 71, 0.25);
               }
             }
-            .item:nth-child(2) {
+            .item_field {
               width: 30%;
               text-align: left;
             }
-            .item:nth-child(3) {
+            .item_type {
               width: 50%;
               // min-width: 280px;
             }
-            .item:nth-child(30) {
-              width: 12%;
-            }
-            .item:nth-child(4) {
-              text-align: center;
-              min-width: 60px;
-              max-width: 60px;
-            }
-            .item:nth-child(5) {
-              text-align: center;
-              min-width: 60px;
-              max-width: 60px;
-            }
-            .item:nth-child(6) {
-              text-align: center;
-              min-width: 60px;
-              max-width: 60px;
-            }
-            .item:nth-child(7) {
+            .item_icon {
               text-align: center;
               min-width: 60px;
               max-width: 60px;
