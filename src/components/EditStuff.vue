@@ -82,7 +82,7 @@
             >
               <label> Воронка "{{ item?.name }}" </label>
               <AppMultiSelect
-                :list="item?.statuses"
+                :list="[{ name: 'Все', value: 'all' }, ...item?.statuses]"
                 :placeholder="
                   item?.statuses.filter((val) => val.selected).length
                     ? 'Выбрано: ' +
@@ -106,12 +106,15 @@
           <div class="steps">
             <div
               class="label_input"
-              v-for="item in copyPipelinesList"
+              v-for="item in copyPipelinesListV2"
               :key="item"
             >
               <label> Воронка "{{ item?.name }}" </label>
               <SelectorVue
-                :options_props="item?.statuses"
+                :options_props="[
+                  { name: 'Не выбрано', value: -1 },
+                  ...item?.statuses,
+                ]"
                 @select="
                   (event) => optionSelectSteps(event, item?.value, 'write_off')
                 "
@@ -173,7 +176,6 @@ export default {
         reserve_off: [],
         write_off: [],
       },
-      copyPipelinesList: [],
       copyPipelinesListV2: [],
       copyLeadFieldsList: [],
       leadsDeals: [
@@ -219,9 +221,7 @@ export default {
     this.lock_reserved_products_edit = Boolean(
       this.copyConfing?.lock_reserved_products_edit
     );
-    await this.$store.dispatch("getPipelinesList");
     await this.$store.dispatch("getPipelinesListV2");
-    this.copyPipelinesList = this.pipelinesList;
     this.copyPipelinesListV2 = this.pipelinesListV2;
     await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
@@ -230,19 +230,6 @@ export default {
     this.searchSelectedLeadsDeals();
   },
   computed: {
-    pipelinesList() {
-      const list = [];
-      Object.entries(this.$store.state.account.pipelinesList).map((val) => {
-        const arr = [];
-        Object.entries(val[1].statuses).forEach((stat) =>
-          arr.push({ name: stat[1], value: stat[0] })
-        );
-        val[1].statuses = [{ name: "Не выбрано", value: -1 }, ...arr];
-        val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
-        list.push({ value: val[0], ...val[1] });
-      });
-      return list;
-    },
     pipelinesListV2() {
       const list = [];
       Object.entries(this.$store.state.account.pipelinesListV2).map((val) => {
@@ -255,7 +242,8 @@ export default {
             selected: false,
           })
         );
-        val[1].statuses = [{ name: "Все", value: "all" }, ...arr];
+        val[1].statuses = [...arr];
+        val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
@@ -331,12 +319,10 @@ export default {
         }
       }
 
-      this.copyPipelinesList.map((val) => {
+      this.copyPipelinesListV2.map((val) => {
         if (val.value == value && code == "write_off") {
           val.selectedWriteOff = option;
         }
-      });
-      this.copyPipelinesListV2.map((val) => {
         if (val.value == value && code == "reserve_off") {
           if (option.value === "all") {
             val.statuses?.forEach((el) => {
@@ -378,7 +364,7 @@ export default {
       return res;
     },
     searchSelectedPipelines() {
-      this.copyPipelinesList.map((val) => {
+      this.copyPipelinesListV2.map((val) => {
         const write_off = this.copyConfing.write_off.find(
           (item) => item.field == val.value
         );
@@ -388,8 +374,7 @@ export default {
             val.statuses,
             "value"
           );
-      });
-      this.copyPipelinesListV2.map((val) => {
+
         const reserve_off_v2 = this.copyConfing?.reserve_off_v2?.find(
           (item) => item.field == val.value
         );

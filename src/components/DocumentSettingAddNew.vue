@@ -126,7 +126,7 @@ export default {
   async mounted() {
     await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
-    await this.$store.dispatch("getPipelinesList");
+    await this.$store.dispatch("getPipelinesListV2");
     this.copyPipelinesList = this.pipelinesList;
     this.$store.state.documents.config.types?.forEach((val, idx) =>
       this.type_options.push({ name: val, value: idx })
@@ -156,10 +156,15 @@ export default {
     pipelinesList() {
       const list = [];
       list.push({ name: "Не выбрано", value: -1 });
-      Object.entries(this.$store.state.account.pipelinesList).map((val) => {
+      Object.entries(this.$store.state.account.pipelinesListV2).map((val) => {
         list.push({ name: val[1].name, value: "optgroup" });
-        Object.entries(val[1].statuses).forEach((stat) =>
-          list.push({ name: stat[1], value: stat[0], optgroup: true })
+        val[1].statuses.forEach((stat) =>
+          list.push({
+            name: stat.name,
+            value: stat.id,
+            color: stat.color,
+            optgroup: true,
+          })
         );
       });
       return list;
