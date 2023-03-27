@@ -22,12 +22,15 @@
           :class="{
             optgroup: option.value === 'optgroup',
             selected: option.value == selected_option.value,
-            color_selected:
-              option.value == selected_option.value && option.color,
           }"
           :style="{ backgroundColor: option.color }"
           @click="select_option(option)"
         >
+          <template
+            v-if="option.value == selected_option.value && option.color"
+          >
+            <span class="material-icons-outlined opacity-50"> check </span>
+          </template>
           <template v-if="option.optgroup">
             &nbsp;&nbsp;&nbsp;&nbsp;{{ option.name }}
           </template>
@@ -216,6 +219,8 @@ export default {
       transition: background-color 0.15s ease-out;
       white-space: pre;
       text-align: start;
+      display: flex;
+      align-items: center;
     }
     p:hover {
       background-color: rgb(13 110 253 / 25%);
@@ -230,9 +235,6 @@ export default {
 }
 .selected {
   background-color: rgb(13 110 253 / 20%);
-}
-.color_selected {
-  box-shadow: inset 0 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 .disabled {
   background-color: #e9ecef !important;
