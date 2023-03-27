@@ -575,8 +575,8 @@ export default {
       params["id"] = this.copy_fields[idx]["id"];
       params_names.forEach((val) => {
         if (val != null) {
+          params[val] = {};
           if (val == "lead_config") {
-            params[val] = {};
             params[val].visible = this.copy_fields[idx][val].visible.value
               ? 1
               : 0;
@@ -587,8 +587,7 @@ export default {
               .value
               ? 1
               : 0;
-          }
-          if (val == "config") {
+          } else if (val == "config") {
             params[val].double_in_new_bath = this.copy_fields[idx][val]
               .double_in_new_bath
               ? 1
