@@ -451,7 +451,12 @@ export default {
           client: client,
           otv: order.responsible_name,
           date: this.dateFormater(order.created_at),
-          sum: (order.sum ? order.sum : "") + " " + order.price_currency,
+          sum:
+            (order.positions_sum_sum
+              ? Math.round(order.positions_sum_sum * 100) / 100
+              : "") +
+            " " +
+            order.price_currency,
           stat: this.statList.find((el) => el.value == order.status)?.name,
           poz: poz.length,
           img: "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png",
