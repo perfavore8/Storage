@@ -6,8 +6,7 @@
   </transition>
   <transition name="modal_window">
     <div v-if="show_edit_stuff" class="edit_staff">
-      <EditStuffTest v-if="isTest" />
-      <edit-stuff v-else />
+      <edit-stuff />
     </div>
   </transition>
   <transition name="modal_window">
@@ -68,7 +67,6 @@
 <script>
 import TableSettings from "@/components/TableSettings.vue";
 import EditStuff from "@/components/EditStuff.vue";
-import EditStuffTest from "@/components/EditStuffTest.vue";
 import NewPosition from "@/components/NewPosition.vue";
 import CancelPosition from "@/components/CancelPosition";
 import DocumentSetting from "@/components/DocumentSetting.vue";
@@ -84,7 +82,6 @@ export default {
   components: {
     TableSettings,
     EditStuff,
-    EditStuffTest,
     NewPosition,
     CancelPosition,
     DocumentSetting,
