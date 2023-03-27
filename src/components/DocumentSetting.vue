@@ -64,7 +64,12 @@
       </div>
       <div class="content">
         <div class="binding">
-          <div class="header">Привязка полей документов</div>
+          <div class="header">
+            Привязка полей документов
+            <div class="save">
+              <btns-save-close @save="save" :show_close="false" />
+            </div>
+          </div>
           <div class="main">
             <div class="column">
               <div class="label_select">
@@ -84,12 +89,30 @@
                 />
               </div>
             </div>
-            <div class="save">
-              <btns-save-close @save="save" :show_close="false" />
-            </div>
           </div>
         </div>
         <div class="patterns">
+          <div class="header mb-2">Хуки</div>
+          <div class="main mb-4">
+            <div class="column">
+              <div class="grid grid-cols-[3fr_4fr] items-center">
+                <label>Хук при загрузке документа в сделку</label>
+                <input
+                  type="text"
+                  class="input inputhuk my-2"
+                  v-model="hook_download"
+                />
+              </div>
+              <div class="grid grid-cols-[3fr_4fr] items-center">
+                <label>Хук при генерации документа в сделке</label>
+                <input
+                  type="text"
+                  class="input inputhuk my-2"
+                  v-model="hook_generate_doc"
+                />
+              </div>
+            </div>
+          </div>
           <div class="header">
             <div>Шаблоны документов</div>
             <p class="small">
@@ -99,18 +122,6 @@
               где Google ID файла: 1XdXdEMtUFa8V__UK234432Dpx5-CeI Вместо Google
               ID файла допускается ввод полного адреса
             </p>
-            <div class="grid grid-cols-3 items-center">
-              <label>Хук при загрузке документа в сделку</label>
-              <input type="text" class="input my-2" v-model="hook_download" />
-            </div>
-            <div class="grid grid-cols-3 items-center">
-              <label>Хук при генерации документа в сделке</label>
-              <input
-                type="text"
-                class="input my-2"
-                v-model="hook_generate_doc"
-              />
-            </div>
           </div>
           <div class="main">
             <table class="table">
@@ -450,13 +461,17 @@ export default {
       padding: 15px 50px;
       border-bottom: 2px solid #dee2e6;
       .binding {
-        margin-bottom: 20px;
+        margin-bottom: 8px;
         .header {
           @include font(500, 16px);
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
         }
         .main {
           display: grid;
-          grid-template-columns: 7fr 1fr;
           background-color: #fff;
           border: 1px solid #c9c9c9;
           .save {
@@ -466,10 +481,14 @@ export default {
             display: flex;
             flex-direction: column;
             justify-content: start;
+            gap: 12px;
+            padding: 20px;
             .label_select {
               display: grid;
               grid-template-columns: 3fr 4fr;
-              padding: 20px;
+              .v-select {
+                width: 50%;
+              }
             }
           }
         }
@@ -544,6 +563,9 @@ export default {
       padding: 15px 50px;
     }
   }
+}
+.inputhuk {
+  width: 50%;
 }
 .modal-enter-active,
 .modal-leave-active {
