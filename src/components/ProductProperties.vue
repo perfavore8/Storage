@@ -587,6 +587,7 @@ export default {
               .value
               ? 1
               : 0;
+            params[val].title_sort = this.copy_fields[idx][val].title_sort;
           } else if (val == "config") {
             params[val].double_in_new_bath = this.copy_fields[idx][val]
               .double_in_new_bath
@@ -693,6 +694,7 @@ export default {
       } else {
         this.update_field(idx + 1, ["lead_config"]);
       }
+      this.get_fields();
     },
     add_selector_option(idx) {
       if (this.copy_fields[idx].data == null) this.copy_fields[idx].data = [];
