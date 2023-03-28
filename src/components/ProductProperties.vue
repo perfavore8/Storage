@@ -87,26 +87,26 @@
                   </div>
                 </div>
               </th>
-              <template v-if="isTest">
-                <th class="item item_icon title">
-                  <div class="w-min mx-auto">
+              <th class="item item_icon title">
+                <div class="w-min mx-auto">
+                  <div
+                    class="flex items-center relative"
+                    @mouseenter="toolTips.title = true"
+                    @mouseleave="toolTips.title = false"
+                  >
+                    <span class="material-icons-outlined opacity-50">
+                      title
+                    </span>
                     <div
-                      class="flex items-center relative"
-                      @mouseenter="toolTips.title = true"
-                      @mouseleave="toolTips.title = false"
+                      class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                      v-if="toolTips.title"
                     >
-                      <span class="material-icons-outlined opacity-50">
-                        title
-                      </span>
-                      <div
-                        class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
-                        v-if="toolTips.title"
-                      >
-                        Заголовок товара в сделке
-                      </div>
+                      Заголовок товара в сделке
                     </div>
                   </div>
-                </th>
+                </div>
+              </th>
+              <template v-if="isTest">
                 <th class="item item_icon title">
                   <div class="w-min mx-auto">
                     <div
@@ -231,18 +231,18 @@
                 />
                 <label :for="idx + 'n'"></label>
               </td>
+              <td class="box item text-lg">
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  :id="idx + 'nt'"
+                  :disabled="row.lead_config.title_visible.disabled"
+                  v-model="row.lead_config.title_visible.value"
+                  @change="row.changeLeadConfig = true"
+                />
+                <label :for="idx + 'nt'"></label>
+              </td>
               <template v-if="isTest">
-                <td class="box item text-lg">
-                  <input
-                    type="checkbox"
-                    class="checkbox"
-                    :id="idx + 'nt'"
-                    :disabled="row.lead_config.title_visible.disabled"
-                    v-model="row.lead_config.title_visible.value"
-                    @change="row.changeLeadConfig = true"
-                  />
-                  <label :for="idx + 'nt'"></label>
-                </td>
                 <td class="box item text-lg">
                   <input
                     type="checkbox"
@@ -350,19 +350,17 @@
                 />
                 <label :for="idx + 'n1'"></label>
               </td>
+              <td class="box item text-lg">
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  :id="idx + 'n2'"
+                  :disabled="new_fields[idx].lead_config.title_visible.disabled"
+                  v-model="new_fields[idx].lead_config.title_visible.value"
+                />
+                <label :for="idx + 'n2'"></label>
+              </td>
               <template v-if="isTest">
-                <td class="box item text-lg">
-                  <input
-                    type="checkbox"
-                    class="checkbox"
-                    :id="idx + 'n2'"
-                    :disabled="
-                      new_fields[idx].lead_config.title_visible.disabled
-                    "
-                    v-model="new_fields[idx].lead_config.title_visible.value"
-                  />
-                  <label :for="idx + 'n2'"></label>
-                </td>
                 <td class="box item text-lg">
                   <input
                     type="checkbox"
