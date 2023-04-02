@@ -124,9 +124,11 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch("getLeadFieldsList");
+    await Promise.all([
+      this.$store.dispatch("getLeadFieldsList"),
+      this.$store.dispatch("getPipelinesListV2"),
+    ]);
     this.copyLeadFieldsList = this.leadFieldsList;
-    await this.$store.dispatch("getPipelinesListV2");
     this.copyPipelinesList = this.pipelinesList;
     this.$store.state.documents.config.types?.forEach((val, idx) =>
       this.type_options.push({ name: val, value: idx })

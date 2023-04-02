@@ -99,8 +99,10 @@ export default {
     };
 
     onMounted(async () => {
-      await store.dispatch("get_account");
-      await store.dispatch("getLeadFieldsList");
+      await Promise.all([
+        store.dispatch("get_account"),
+        store.dispatch("getLeadFieldsList"),
+      ]);
       copyConfing = JSON.parse(
         JSON.stringify(store.state.account.account.config)
       );

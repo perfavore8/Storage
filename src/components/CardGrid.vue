@@ -226,13 +226,15 @@ export default {
     this.$store.commit("open_close_buttons", false);
   },
   async mounted() {
-    this.$store.dispatch("get_fields_properties");
-    await this.$store.dispatch(
-      "getTableConfig",
-      this.selectedWH.value != "whs" ? this.selectedWH.value : ""
-    );
-    await this.$store.dispatch("get_all_fields");
-    await this.get_products(this.productsParams);
+    await Promise.all([
+      this.$store.dispatch("get_fields_properties"),
+      this.$store.dispatch(
+        "getTableConfig",
+        this.selectedWH.value != "whs" ? this.selectedWH.value : ""
+      ),
+      this.$store.dispatch("get_all_fields"),
+      this.get_products(this.productsParams),
+    ]);
     this.setSelectedProducts();
   },
   computed: {

@@ -213,7 +213,11 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch("get_account");
+    await Promise.all([
+      this.$store.dispatch("get_account"),
+      this.$store.dispatch("getPipelinesListV2"),
+      this.$store.dispatch("getLeadFieldsList"),
+    ]);
     this.copyConfing = JSON.parse(
       JSON.stringify(this.$store.state.account.account.config)
     );
@@ -221,9 +225,7 @@ export default {
     this.lock_reserved_products_edit = Boolean(
       this.copyConfing?.lock_reserved_products_edit
     );
-    await this.$store.dispatch("getPipelinesListV2");
     this.copyPipelinesListV2 = this.pipelinesListV2;
-    await this.$store.dispatch("getLeadFieldsList");
     this.copyLeadFieldsList = this.leadFieldsList;
     this.fillLeadsDealsList();
     this.searchSelectedPipelines();

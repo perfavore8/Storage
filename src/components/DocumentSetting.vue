@@ -222,9 +222,11 @@ export default {
     },
   },
   async mounted() {
-    await this.$store.dispatch("get_documents");
-    await this.$store.dispatch("get_account");
-    await this.$store.dispatch("getLeadFieldsList");
+    await Promise.all([
+      this.$store.dispatch("get_documents"),
+      this.$store.dispatch("get_account"),
+      this.$store.dispatch("getLeadFieldsList"),
+    ]);
     this.copyLeadFieldsList = this.leadFieldsList;
     this.hook_download = this.account.config?.hook_download;
     this.hook_generate_doc = this.account.config?.hook_generate_doc;

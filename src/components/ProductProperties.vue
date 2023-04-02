@@ -423,8 +423,10 @@ export default {
   },
   async mounted() {
     this.is_loading = true;
-    await this.$store.dispatch("get_types");
-    await this.$store.dispatch("get_fields_properties");
+    await Promise.all([
+      this.$store.dispatch("get_types"),
+      this.$store.dispatch("get_fields_properties"),
+    ]);
     this.copy_fields_properties = [
       ...this.$store.state.categories.fields_properties,
     ];

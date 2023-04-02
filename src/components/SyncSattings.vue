@@ -213,10 +213,12 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch("get_account");
-    await this.$store.dispatch("getProductLists");
-    await this.$store.dispatch("getLeadFieldsList");
-    await this.$store.dispatch("getLeadFieldGroupsList");
+    await Promise.all([
+      this.$store.dispatch("get_account"),
+      this.$store.dispatch("getProductLists"),
+      this.$store.dispatch("getLeadFieldsList"),
+      this.$store.dispatch("getLeadFieldGroupsList"),
+    ]);
     this.copyLeadFieldsList = this.leadFieldsList;
     this.copyLeadFieldGroupsList = this.leadFieldGroupsList;
     this.copyConfing = this.$store.state.account.account.config;
@@ -301,8 +303,10 @@ export default {
       this.$store.commit("openCloseSyncSettings", false);
     },
     async updateFields() {
-      await this.$store.dispatch("getSyncFields");
-      await this.$store.dispatch("get_account");
+      await Promise.all([
+        this.$store.dispatch("getSyncFields"),
+        this.$store.dispatch("get_account"),
+      ]);
 
       this.fillCopySyncFields();
       this.searchSelectedSyncFields();

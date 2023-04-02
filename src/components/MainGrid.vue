@@ -166,13 +166,18 @@ export default {
   },
   async mounted() {
     this.$store.commit("toggleIsNavBarDisabled", true);
-    this.$store.dispatch("get_fields_properties");
-    await this.$store.dispatch(
-      "getTableConfig",
-      this.selectedWH.value != "whs" ? this.selectedWH.value : ""
-    );
-    await this.$store.dispatch("get_all_fields");
-    await this.get_products(this.productsParams);
+    const t1 = Date.now();
+    await Promise.all([
+      this.$store.dispatch("get_fields_properties"),
+      this.$store.dispatch(
+        "getTableConfig",
+        this.selectedWH.value != "whs" ? this.selectedWH.value : ""
+      ),
+      this.$store.dispatch("get_all_fields"),
+      this.get_products(this.productsParams),
+    ]);
+    const t2 = Date.now();
+    console.log(t2 - t1);
     this.setSelectedProducts();
     this.bar?.dropAllSelectedProducts();
     this.$store.commit("toggleIsNavBarDisabled", false);

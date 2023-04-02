@@ -290,9 +290,11 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch("get_all_fields");
-    await this.$store.dispatch("get_account");
-    await this.$store.dispatch("getOrders", this.$store.state.orders.filters);
+    await Promise.all([
+      this.$store.dispatch("get_all_fields"),
+      this.$store.dispatch("get_account"),
+      this.$store.dispatch("getOrders", this.$store.state.orders.filters),
+    ]);
     this.fillWhs();
     this.fillPriceCat();
     this.filters = { ...this.$store.state.orders.filters };
@@ -412,7 +414,9 @@ export default {
       this.products.list = [];
       this.orders.forEach((order) => {
         const poz = [];
+        let posTotalSum = 0;
         order.positions.forEach((pos) => {
+          posTotalSum += pos?.sum;
           const a = {
             name: pos?.name,
             article: pos?.article,
@@ -452,9 +456,7 @@ export default {
           otv: order.responsible_name,
           date: this.dateFormater(order.created_at),
           sum:
-            (order.positions_sum_sum
-              ? Math.round(order.positions_sum_sum * 100) / 100
-              : "") +
+            (posTotalSum ? Math.round(posTotalSum * 100) / 100 : "") +
             " " +
             order.price_currency,
           stat: this.statList.find((el) => el.value == order.status)?.name,

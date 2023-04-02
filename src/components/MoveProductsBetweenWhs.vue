@@ -138,8 +138,10 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch("get_fields_properties");
-    await this.$store.dispatch("get_all_fields");
+    await Promise.all([
+      this.$store.dispatch("get_fields_properties"),
+      this.$store.dispatch("get_all_fields"),
+    ]);
     nextTick(() => {
       this.itemsForMove = [...this.currentItems];
       this.itemsForMove.map((item) => {

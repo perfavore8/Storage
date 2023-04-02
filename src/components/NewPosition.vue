@@ -460,8 +460,10 @@ export default {
     },
   },
   async mounted() {
-    await this.$store.dispatch("get_fields_properties");
-    await this.$store.dispatch("get_all_fields");
+    await Promise.all([
+      this.$store.dispatch("get_fields_properties"),
+      this.$store.dispatch("get_all_fields"),
+    ]);
     this.tocopyCurrentItems(this.currentItems);
     this.get_categories_options();
     this.get_options("batch", this.batch_category_options, "Новая");
