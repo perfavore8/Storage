@@ -141,7 +141,7 @@
             >
               <label>
                 Поле "{{ item?.name }}"
-                <span v-if="idx != 0">(число)</span>
+                <span v-if="idx >= 2">(число)</span>
               </label>
               <SelectorVue
                 :options_props="leadsDealsList"
@@ -182,6 +182,11 @@ export default {
         {
           name: "Товары",
           code: "field_products",
+          selected: { name: "Не выбрано", value: -1 },
+        },
+        {
+          name: "Поле для поиска товаров",
+          code: "field_search_products",
           selected: { name: "Не выбрано", value: -1 },
         },
         {
