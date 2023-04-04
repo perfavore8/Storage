@@ -120,7 +120,7 @@
                 Документы
               </div>
             </a>
-            <a v-if="isColored || isRominox || isTest">
+            <a v-if="isRominox || isTest">
               <div
                 class="modal_container"
                 @click="openThirdPpartyIntegrations()"
