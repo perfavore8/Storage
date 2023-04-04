@@ -120,7 +120,7 @@
                 Документы
               </div>
             </a>
-            <a v-if="isColored">
+            <a v-if="isColored || isRominox || isTest">
               <div
                 class="modal_container"
                 @click="openThirdPpartyIntegrations()"
@@ -158,6 +158,9 @@ export default {
     const oneC = computed(() => store.state.account.account?.config?.g_enabled);
     const account = computed(() => store.state.account.account);
     const isTest = computed(() => store.state.account?.account?.id == 1);
+    const isRominox = computed(
+      () => store.state.account?.account?.id == 29904814
+    );
     const is_empty_amo_product_list = computed(
       () =>
         !account.value?.config?.amo_product_list ||
@@ -230,6 +233,7 @@ export default {
       openImportXlsl,
       closeImportXlsl,
       isColored,
+      isRominox,
     };
   },
 };
