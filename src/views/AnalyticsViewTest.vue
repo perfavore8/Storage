@@ -218,64 +218,55 @@ export default {
       this.total["poz"] = "";
     },
     async updateOpenedRows(value) {
-      let query = "";
-      this.reportType.selected == "customers"
-        ? (query = "company")
-        : (query = "name");
-      const arr = [];
-      value.forEach((val) => arr.push(val[query]));
-      if (this.reportType.selected == "customers") {
-        this.reports.data.map((val) =>
-          val.otv && !arr.includes(val[query]) ? (val.otv.value = false) : null
-        );
-      }
-      if (this.reportType.selected == "sales") {
-        this.reports.data.map((val) =>
-          val.poz && !arr.includes(val[query]) ? (val.poz.value = false) : null
-        );
-      }
-      await value?.forEach(async (val) => {
+      const query =
+        this.reportType.selected === "customers" ? "company" : "name";
+      const arr = value.map((val) => val[query]);
+
+      this.reports.data.map((val) => {
+        if (this.reportType.selected === "customers" && val.otv) {
+          val.otv.value = arr.includes(val[query]) ? val.otv.value : false;
+        } else if (this.reportType.selected === "sales" && val.poz) {
+          val.poz.value = arr.includes(val[query]) ? val.poz.value : false;
+        }
+      });
+
+      await value.forEach(async (val) => {
         if (!this.openedRows.includes(val[query])) {
           this.openedRows.push(val[query]);
-          if (this.reportType.selected == "customers") {
-            await this.$store.dispatch("getCustomersResponsible", {
-              filter: this.filter,
-              company: val.company,
-            });
-            this.reports.data.map((report) => {
-              if (report.company == val.company && report.otv) {
-                report.otv.value = val.otv.value;
-                report.otv.list =
-                  this.$store.state.analytics.customersResponsible;
-                report.otv.list.map((item) => {
-                  item["prib"] = item.sum - item.cost_sum;
-                  item.sum = this.round(item.sum);
-                  item.cost_sum = this.round(item.cost_sum);
-                  item.prib = this.round(item.prib);
-                  item.otv = item.user;
-                });
-              }
-            });
+
+          let rows = { code: "", label: "", resName: "" };
+          if (this.reportType.selected === "customers") {
+            rows = {
+              code: "otv",
+              label: "company",
+              resName: "getCustomersResponsible",
+            };
+          } else if (this.reportType.selected === "sales") {
+            rows = { code: "poz", label: "name", resName: "getSalesProducts" };
           }
-          if (this.reportType.selected == "sales") {
-            await this.$store.dispatch("getSalesProducts", {
-              filter: this.filter,
-              product: val.name,
-            });
-            this.reports.data.map((report) => {
-              if (report.name == val.name && report.poz) {
-                report.poz.value = val.poz.value;
-                report.poz.list = this.$store.state.analytics.salesProducts;
-                report.poz.list.map((item) => {
-                  item["prib"] = item.sum - item.cost_sum;
-                  item.sum = this.round(item.sum);
-                  item.cost_sum = this.round(item.cost_sum);
-                  item.prib = this.round(item.prib);
-                  item.poz = item.user;
-                });
-              }
-            });
-          }
+          const response = rows.resName
+            ? await this.$store.dispatch(rows.resName, {
+                filter: this.filter,
+                product: val.name,
+              })
+            : [];
+          this.reports.data.map((report) => {
+            if (
+              report[[rows.label]] === val[[rows.label]] &&
+              report[rows.code]
+            ) {
+              report[rows.code].value = val[rows.code].value;
+              report[rows.code].list = response.map((item) => {
+                const newItem = { ...item };
+                newItem.prib = newItem.sum - newItem.cost_sum;
+                newItem.sum = this.round(newItem.sum);
+                newItem.cost_sum = this.round(newItem.cost_sum);
+                newItem.prib = this.round(newItem.prib);
+                newItem[rows.code] = item.user;
+                return newItem;
+              });
+            }
+          });
         }
       });
     },

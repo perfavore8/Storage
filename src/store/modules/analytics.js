@@ -78,6 +78,7 @@ export default {
       });
       const json = await res.json();
       context.commit("updateCustomersResponsible", json);
+      return json;
     },
     async getCustomersProducts(context, params) {
       const url = BaseURL + "analytics/customers/products";
@@ -117,6 +118,7 @@ export default {
       });
       const json = await res.json();
       context.commit("updateSalesProducts", json);
+      return json;
     },
     async getSalesTotal(context, params) {
       const url = BaseURL + "analytics/sales/total";
