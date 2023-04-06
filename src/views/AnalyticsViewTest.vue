@@ -44,7 +44,7 @@
             </button>
           </div>
           <ReportFIltersCopy
-            :isClient="reportType.selected == 'client'"
+            :isClient="reportType.selected == 'customers'"
             ref="filters"
             @getFilter="getFilter"
           />
@@ -63,7 +63,7 @@
         <ReportGrid
           :title="title"
           :reportsData="reports"
-          :isClient="reportType.selected == 'client'"
+          :isClient="reportType.selected == 'customers'"
           :isLoading="isLoading"
           :total="total"
           @updateOpenSelectedReportModal="updateOpenSelectedReportModal"
@@ -119,15 +119,15 @@ export default {
       reports: [],
       isClient: true,
       reportType: {
-        selected: "client",
+        selected: "customers",
         list: [
-          { label: "Отчет по клиентам", value: "client" },
+          { label: "Отчет по клиентам", value: "customers" },
           { label: "Отчет по продажам", value: "sales" },
           { label: "Движение товаров", value: "stuffMove" },
         ],
       },
       titles: {
-        client: [
+        customers: [
           { name: "Компания", code: "company", type: 0 },
           { name: "Контакт", code: "contact", type: 0 },
           { name: "Сделки", code: "leads", type: 0 },
@@ -219,12 +219,12 @@ export default {
     },
     async updateOpenedRows(value) {
       let query = "";
-      this.reportType.selected == "client"
+      this.reportType.selected == "customers"
         ? (query = "company")
         : (query = "name");
       const arr = [];
       value.forEach((val) => arr.push(val[query]));
-      if (this.reportType.selected == "client") {
+      if (this.reportType.selected == "customers") {
         this.reports.data.map((val) =>
           val.otv && !arr.includes(val[query]) ? (val.otv.value = false) : null
         );
@@ -237,7 +237,7 @@ export default {
       await value?.forEach(async (val) => {
         if (!this.openedRows.includes(val[query])) {
           this.openedRows.push(val[query]);
-          if (this.reportType.selected == "client") {
+          if (this.reportType.selected == "customers") {
             await this.$store.dispatch("getCustomersResponsible", {
               filter: this.filter,
               company: val.company,
@@ -311,65 +311,33 @@ export default {
       this.selectedReport = { ...value };
     },
     async getReports() {
-      this.reports.data = [];
-      this.total = [];
-      if (this.reportType.selected == "client") {
-        await this.$store.dispatch("getCustomers", {
-          filter: this.filter,
-          page: this.page,
-        });
-        await this.$store.dispatch("getCustomersTotal", {
-          filter: this.filter,
-          page: this.page,
-        });
-        this.reports = this.$store.state.analytics.customers;
-        this.total = this.$store.state.analytics.customersTotal;
-        this.reports.data.map((val) => {
-          val["otv"] = {
-            value: false,
-            list: [],
-          };
-          val["poz"] = {
-            value: false,
-            list: [],
-            title: [
-              { name: "Название", code: "name" },
-              { name: "Кол-во", code: "count" },
-              { name: "Оборот", code: "sum" },
-              { name: "Прибыль", code: "prib" },
-            ],
-          };
-          val["prib"] = val.sum - val.cost_sum;
-          val.sum = this.round(val.sum);
-          val.cost_sum = this.round(val.cost_sum);
-          val.prib = this.round(val.prib);
-        });
+      try {
+        const reportFetchRequest = async (type, capitalizeType) => {
+          await Promise.all([
+            this.$store.dispatch(`get${capitalizeType}`, {
+              filter: this.filter,
+              page: this.page,
+            }),
+            this.$store.dispatch(`get${capitalizeType}Total`, {
+              filter: this.filter,
+              page: this.page,
+            }),
+          ]);
+          this.reports = this.$store.state.analytics[type];
+          this.total = this.$store.state.analytics[`${type}Total`];
+          this.applyReportsTransformations(type);
+          nextTick(() => this.refGrid?.calcShowTopTitle());
+        };
+        this.reports.data = [];
+        this.total = [];
+        await reportFetchRequest(
+          this.reportType.selected,
+          this.capitalize(this.reportType.selected)
+        );
+        this.calcTotal();
+      } catch (error) {
+        console.error(error);
       }
-      if (this.reportType.selected == "sales") {
-        await this.$store.dispatch("getSales", {
-          filter: this.filter,
-          page: this.page,
-        });
-        await this.$store.dispatch("getSalesTotal", {
-          filter: this.filter,
-          page: this.page,
-        });
-        this.reports = this.$store.state.analytics.sales;
-        this.total = this.$store.state.analytics.salesTotal;
-        this.reports.data.map((val) => {
-          val["poz"] = {
-            value: false,
-            list: [],
-          };
-          val["prib"] = val.sum - val.cost_sum;
-          val.leads = val.leads.split(",");
-          val.sum = this.round(val.sum);
-          val.cost_sum = this.round(val.cost_sum);
-          val.prib = this.round(val.prib);
-        });
-      }
-      this.calcTotal();
-      nextTick(() => this.refGrid?.calcShowTopTitle());
     },
     changeReportType(value) {
       this.reportType.selected = value;
@@ -395,6 +363,47 @@ export default {
     round(number) {
       number = Number(number);
       return Math.round(number * 100) / 100 + " р.";
+    },
+    capitalize(string) {
+      if (typeof string !== "string") return "";
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    applyReportsTransformations(type) {
+      if (type == "customers") {
+        this.reports.data.map((val) => {
+          val["otv"] = {
+            value: false,
+            list: [],
+          };
+          val["poz"] = {
+            value: false,
+            list: [],
+            title: [
+              { name: "Название", code: "name" },
+              { name: "Кол-во", code: "count" },
+              { name: "Оборот", code: "sum" },
+              { name: "Прибыль", code: "prib" },
+            ],
+          };
+          val["prib"] = val.sum - val.cost_sum;
+          val.sum = this.round(val.sum);
+          val.cost_sum = this.round(val.cost_sum);
+          val.prib = this.round(val.prib);
+        });
+      }
+      if (type == "sales") {
+        this.reports.data.map((val) => {
+          val["poz"] = {
+            value: false,
+            list: [],
+          };
+          val["prib"] = val.sum - val.cost_sum;
+          val.leads = val.leads.split(",");
+          val.sum = this.round(val.sum);
+          val.cost_sum = this.round(val.cost_sum);
+          val.prib = this.round(val.prib);
+        });
+      }
     },
   },
 };
