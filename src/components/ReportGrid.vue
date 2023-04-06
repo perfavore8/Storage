@@ -129,7 +129,7 @@ export default {
     },
     openedRows() {
       return this.copyReports.filter(
-        (val) => val[this.buttonInTitle.code]?.value
+        (val) => val[this.buttonInTitle?.code]?.value
       );
     },
     selectedReport() {

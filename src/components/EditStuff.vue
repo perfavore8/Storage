@@ -226,6 +226,7 @@ export default {
     this.copyConfing = JSON.parse(
       JSON.stringify(this.$store.state.account.account.config)
     );
+    if (!this.copyConfing.reserve_off_v2) this.copyConfing.reserve_off_v2 = [];
     this.not_fill_budget = Boolean(this.copyConfing?.not_fill_budget);
     this.lock_reserved_products_edit = Boolean(
       this.copyConfing?.lock_reserved_products_edit

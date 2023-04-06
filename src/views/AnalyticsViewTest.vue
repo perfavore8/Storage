@@ -55,12 +55,11 @@
           @getFilter="getFilter"
         />
       </div>
-      <template
-        v-if="
+      <template v-if="view.selected.value === 'table'">
+        <!-- v-if="
           view.selected.value === 'table' &&
           this.reportType.selected != 'stuffMove'
-        "
-      >
+        " -->
         <ReportGrid
           :title="title"
           :reportsData="reports"
@@ -124,7 +123,40 @@ export default {
         list: [
           { label: "Отчет по клиентам", value: "client" },
           { label: "Отчет по продажам", value: "sales" },
-          { label: "Отчет по движениям товаров", value: "stuffMove" },
+          { label: "Движение товаров", value: "stuffMove" },
+        ],
+      },
+      titles: {
+        client: [
+          { name: "Компания", code: "company", type: 0 },
+          { name: "Контакт", code: "contact", type: 0 },
+          { name: "Сделки", code: "leads", type: 0 },
+          { name: "Оборот", code: "sum", type: 0 },
+          { name: "Прибыль", code: "prib", type: 0 },
+          { name: "Ответственные", code: "otv", type: 1 },
+          { name: "Позиции", code: "poz", type: 2 },
+        ],
+        sales: [
+          { name: "Название", code: "name", type: 0 },
+          { name: "Кол-во", code: "count", type: 0 },
+          { name: "Оборот", code: "sum", type: 0 },
+          { name: "Себестоимость", code: "cost_sum", type: 0 },
+          { name: "Прибыль", code: "prib", type: 0 },
+          { name: "Сделки", code: "leads", type: 0 },
+          { name: "Позиции", code: "poz", type: 1 },
+        ],
+        stuffMove: [
+          { name: "Дата события", code: "event_date", type: 0 },
+          { name: "Тип события", code: "event_type", type: 0 },
+          { name: "Артикул", code: "article_number", type: 0 },
+          { name: "Название", code: "title", type: 0 },
+          { name: "Партия", code: "party", type: 0 },
+          { name: "Колличество", code: "quantity", type: 0 },
+          { name: "Цена", code: "price", type: 0 },
+          { name: "Начальный склад", code: "initial_warehouse", type: 0 },
+          { name: "Итоговый склад", code: "final_warehouse", type: 0 },
+          { name: "Пользователь", code: "user", type: 0 },
+          { name: "Комментарий", code: "comment", type: 0 },
         ],
       },
       openedRows: [],
@@ -164,7 +196,7 @@ export default {
     },
   },
   mounted() {
-    this.clients();
+    this.getTitile();
     this.$store.dispatch("get_account");
   },
   methods: {
@@ -279,6 +311,8 @@ export default {
       this.selectedReport = { ...value };
     },
     async getReports() {
+      this.reports.data = [];
+      this.total = [];
       if (this.reportType.selected == "client") {
         await this.$store.dispatch("getCustomers", {
           filter: this.filter,
@@ -342,46 +376,21 @@ export default {
       this.page = 1;
       this.refFilters?.clearAllFields();
     },
-    async clients() {
+    async getTitile() {
       this.isLoading = true;
       this.openedRows = [];
-      this.reportType.selected = "client";
-      this.title = [
-        { name: "Компания", code: "company", type: 0 },
-        { name: "Контакт", code: "contact", type: 0 },
-        { name: "Сделки", code: "leads", type: 0 },
-        { name: "Оборот", code: "sum", type: 0 },
-        { name: "Прибыль", code: "prib", type: 0 },
-        { name: "Ответственные", code: "otv", type: 1 },
-        { name: "Позиции", code: "poz", type: 2 },
-      ];
-      await this.getReports();
-      this.isLoading = false;
-    },
-    async sales() {
-      this.isLoading = true;
-      this.openedRows = [];
-      this.reportType.selected == "sales";
-      this.title = [
-        { name: "Название", code: "name", type: 0 },
-        { name: "Кол-во", code: "count", type: 0 },
-        { name: "Оборот", code: "sum", type: 0 },
-        { name: "Себестоимость", code: "cost_sum", type: 0 },
-        { name: "Прибыль", code: "prib", type: 0 },
-        { name: "Сделки", code: "leads", type: 0 },
-        { name: "Позиции", code: "poz", type: 1 },
-      ];
+      this.title = this.titles[this.reportType.selected];
       await this.getReports();
       this.isLoading = false;
     },
     changePage(value) {
       this.page = value;
-      this.reportType.selected == "client" ? this.clients() : this.sales();
+      this.getTitile();
     },
     getFilter(value) {
       this.filter = value;
       this.page = 1;
-      this.reportType.selected == "client" ? this.clients() : this.sales();
+      this.getTitile();
     },
     round(number) {
       number = Number(number);
