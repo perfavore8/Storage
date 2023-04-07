@@ -304,15 +304,10 @@ export default {
     async getReports() {
       try {
         const reportFetchRequest = async (type, capitalizeType) => {
+          const params = { filter: this.filter, page: this.page };
           await Promise.all([
-            this.$store.dispatch(`get${capitalizeType}`, {
-              filter: this.filter,
-              page: this.page,
-            }),
-            this.$store.dispatch(`get${capitalizeType}Total`, {
-              filter: this.filter,
-              page: this.page,
-            }),
+            this.$store.dispatch(`get${capitalizeType}`, params),
+            this.$store.dispatch(`get${capitalizeType}Total`, params),
           ]);
           this.reports = this.$store.state.analytics[type];
           this.total = this.$store.state.analytics[`${type}Total`];
