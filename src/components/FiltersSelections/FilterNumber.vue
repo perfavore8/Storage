@@ -3,7 +3,11 @@
     <button @click="option == 4 ? (option = 0) : (option += 1)">
       <span :class="{ big: option == 0 }">{{ options[option] }}</span>
     </button>
-    <input v-model="filterValue" type="number" />
+    <input
+      v-model="filterValue"
+      type="number"
+      :placeholder="item.placeholder"
+    />
   </div>
 </template>
 

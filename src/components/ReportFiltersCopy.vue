@@ -20,9 +20,7 @@
               @focusout="selected_field_autocomplete = null"
               v-for="field in fields"
               :key="field.id"
-              v-show="
-                (isClient && field.clientShow) || (!isClient && field.salesShow)
-              "
+              v-show="field.typesShow.includes(reportType)"
             />
             <AppMultiSelect
               v-for="field in multiSelectorData"
@@ -30,6 +28,14 @@
               :list="field.list"
               :placeholder="field.placeholder"
               @select="(option) => field.select(option, field.id)"
+            />
+            <FilterNumber
+              v-for="field in numberData"
+              :key="field.id"
+              :idx="field.id"
+              :item="field.selected"
+              v-show="field.typesShow.includes(reportType)"
+              @change_filter_value="field.select"
             />
             <SelectorVue
               v-for="field in selectorData"
@@ -133,6 +139,7 @@ import AppDateRange from "./AppDateRange.vue";
 import AppInputSelect from "./AppInputSelect.vue";
 import SelectorVue from "./SelectorVue.vue";
 import AppMultiSelect from "./AppMultiSelect.vue";
+import FilterNumber from "./FiltersSelections/FilterNumber.vue";
 import { useSystems } from "@/composables/systemsForReports";
 import {
   computed,
@@ -144,10 +151,16 @@ import {
 } from "@vue/runtime-core";
 import store from "@/store";
 export default {
-  components: { AppInputSelect, AppMultiSelect, SelectorVue, AppDateRange },
+  components: {
+    AppInputSelect,
+    AppMultiSelect,
+    SelectorVue,
+    AppDateRange,
+    FilterNumber,
+  },
   props: {
-    isClient: {
-      type: Boolean,
+    reportType: {
+      type: String,
       required: true,
     },
   },
@@ -167,8 +180,7 @@ export default {
         value: "",
         minLength: 3,
         placeholder: "Артикулы/Названия",
-        clientShow: false,
-        salesShow: true,
+        typesShow: ["sales", "stuffMove"],
         selected: [],
       },
       {
@@ -177,8 +189,7 @@ export default {
         value: "",
         minLength: 0,
         placeholder: "Ответственные",
-        clientShow: true,
-        salesShow: true,
+        typesShow: ["customers", "sales", "stuffMove"],
         selected: [],
       },
       {
@@ -187,8 +198,7 @@ export default {
         value: "",
         minLength: 0,
         placeholder: "Воронки",
-        clientShow: true,
-        salesShow: false,
+        typesShow: ["customers"],
         selected: [],
       },
       {
@@ -197,8 +207,7 @@ export default {
         value: "",
         minLength: 3,
         placeholder: "Компании",
-        clientShow: true,
-        salesShow: false,
+        typesShow: ["customers"],
         selected: [],
       },
       {
@@ -207,8 +216,43 @@ export default {
         value: "",
         minLength: 3,
         placeholder: "Контакты",
-        clientShow: true,
-        salesShow: false,
+        typesShow: ["customers"],
+        selected: [],
+      },
+      {
+        id: 5,
+        name: "event_type",
+        value: "",
+        minLength: 0,
+        placeholder: "Тип события",
+        typesShow: ["stuffMove"],
+        selected: [],
+      },
+      {
+        id: 6,
+        name: "party",
+        value: "",
+        minLength: 0,
+        placeholder: "Партия",
+        typesShow: ["stuffMove"],
+        selected: [],
+      },
+      {
+        id: 7,
+        name: "initial_warehouse",
+        value: "",
+        minLength: 0,
+        placeholder: "Начальный склад	",
+        typesShow: ["stuffMove"],
+        selected: [],
+      },
+      {
+        id: 8,
+        name: "final_warehouse",
+        value: "",
+        minLength: 0,
+        placeholder: "Итоговый склад	",
+        typesShow: ["stuffMove"],
         selected: [],
       },
       // {
@@ -265,6 +309,18 @@ export default {
       //     item ? (item.selected = option) : null;
       //   },
       // },
+    ]);
+    const numberData = reactive([
+      {
+        id: 1,
+        name: "quantity",
+        selected: { option: "=", value: null, placeholder: "Колличество" },
+        list: [],
+        typesShow: ["stuffMove"],
+        select: function (option) {
+          this.selected = option;
+        },
+      },
     ]);
 
     const selectedItems = computed(() => {
@@ -357,11 +413,7 @@ export default {
       fields.forEach((val) => {
         const list = [];
         val.selected.forEach((value) => list.push(value.value));
-        if (
-          ((props.isClient && val.clientShow) ||
-            (!props.isClient && val.salesShow)) &&
-          list != 0
-        )
+        if (val.typesShow.includes(props.reportType) && list != 0)
           filter[val.name] = list;
       });
       context.emit("getFilter", filter);
@@ -386,6 +438,7 @@ export default {
       ...useSystems(),
       filteringSystems,
       addFilteringSystem,
+      numberData,
     };
   },
 };
@@ -422,6 +475,10 @@ export default {
       gap: 10px;
       width: 100%;
       // width: 929px;
+      .filter {
+        align-items: center;
+        max-width: none;
+      }
       > .v-select {
         width: 100%;
       }

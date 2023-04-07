@@ -13,7 +13,7 @@
         <tr class="space"></tr>
         <tr class="row title">
           <td class="item" v-for="tit in title" :key="tit">
-            {{ total[tit.code] }}
+            {{ total[tit?.code] }}
           </td>
         </tr>
         <tr class="space"></tr>
@@ -26,11 +26,11 @@
             :key="tit"
             :class="{ center: tit.type }"
           >
-            <span v-if="!tit.type && (isClient || tit.code != 'leads')">
-              {{ report[tit.code] }}
+            <span v-if="!tit.type && (isClient || tit?.code != 'leads')">
+              {{ report[tit?.code] }}
             </span>
-            <div v-if="!tit.type && tit.code == 'leads' && !isClient">
-              <template v-for="(lead, lidx) in report[tit.code]" :key="lead">
+            <div v-if="!tit.type && tit?.code == 'leads' && !isClient">
+              <template v-for="(lead, lidx) in report[tit?.code]" :key="lead">
                 <a
                   class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
                   target="black"
@@ -44,38 +44,38 @@
                   {{ lead }}
                 </a>
                 <span>{{
-                  lidx < report[tit.code].length - 1 ? ", " : ""
+                  lidx < report[tit?.code].length - 1 ? ", " : ""
                 }}</span>
               </template>
             </div>
             <button
               class="btn"
               v-if="tit.type"
-              v-show="report[tit.code]"
-              @click="report[tit.code].value = !report[tit.code]?.value"
+              v-show="report[tit?.code]"
+              @click="report[tit?.code].value = !report[tit?.code]?.value"
             >
-              {{ report[tit.code]?.value ? "Скрыть" : "Показать" }}
+              {{ report[tit?.code]?.value ? "Скрыть" : "Показать" }}
             </button>
           </td>
         </tr>
         <tr
           class="hiden"
-          v-for="otv in report[buttonInTitle.code]?.list"
+          v-for="otv in report[buttonInTitle?.code]?.list"
           :key="otv.id"
-          v-show="report[buttonInTitle.code]?.value"
+          v-show="report[buttonInTitle?.code]?.value"
         >
           <td class="item" v-for="tit in title" :key="tit">
-            <span v-if="otv[tit.code]">
-              {{ otv[tit.code] }}
+            <span v-if="otv[tit?.code]">
+              {{ otv[tit?.code] }}
             </span>
           </td>
         </tr>
-        <tr class="space" v-if="report[buttonInTitle.code]?.value"></tr>
+        <tr class="space" v-if="report[buttonInTitle?.code]?.value"></tr>
       </template>
       <tr class="space"></tr>
       <tr class="row title" ref="total">
         <td class="item" v-for="tit in title" :key="tit">
-          {{ total[tit.code] }}
+          {{ total[tit?.code] }}
         </td>
       </tr>
     </tbody>

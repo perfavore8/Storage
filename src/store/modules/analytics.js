@@ -11,32 +11,46 @@ export default {
     sales: {},
     salesProducts: [],
     salesTotal: {},
+    stuffMove: {},
+    stuffMoveTotal: {},
   },
   getters: {},
   mutations: {
     updateAutocomplete(state, value) {
-      if (value) state.autocomplete = [...value];
+      state.autocomplete = [...value];
     },
     updateCustomers(state, value) {
-      if (value) state.customers = { ...value };
+      state.customers = { ...value };
     },
     updateCustomersResponsible(state, value) {
-      if (value) state.customersResponsible = [...value];
+      state.customersResponsible = [...value];
     },
     updateCustomersProducts(state, value) {
-      if (value) state.customersProducts = [...value];
+      state.customersProducts = [...value];
     },
     updateCustomersTotal(state, value) {
-      if (value) state.customersTotal = { ...value };
+      state.customersTotal = { ...value };
     },
     updateSales(state, value) {
-      if (value) state.sales = { ...value };
+      state.sales = { ...value };
     },
     updateSalesProducts(state, value) {
-      if (value) state.salesProducts = [...value];
+      state.salesProducts = [...value];
     },
     updateSalesTotal(state, value) {
-      if (value) state.salesTotal = { ...value };
+      state.salesTotal = { ...value };
+    },
+    updateStuffMove(state, value) {
+      console.log(value);
+      value.types = value.data.types;
+      value.data = value.data.list;
+      console.log(value);
+
+      state.stuffMove = { ...value };
+    },
+    updateStuffMoveTotal(state, value) {
+      console.log(value);
+      state.stuffMoveTotal = { ...value };
     },
   },
   actions: {
@@ -147,5 +161,32 @@ export default {
       context.commit("updateCustomersTotal", json);
       return json;
     },
+    async getStuffMove(context, params) {
+      const url = BaseURL + "analytics/movement/products";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      context.commit("updateStuffMoveTotal", json.data.total);
+      context.commit("updateStuffMove", json);
+    },
+    // async getStuffMoveTotal(context, params) {
+    //   const url = BaseURL + "analytics/movement/products/total";
+    //   const res = await fetch(url, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: TOKEN,
+    //     },
+    //     body: JSON.stringify(params),
+    //   });
+    //   const json = await res.json();
+    //   context.commit("updateStuffMoveTotal", json);
+    // },
   },
 };

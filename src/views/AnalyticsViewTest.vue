@@ -44,7 +44,7 @@
             </button>
           </div>
           <ReportFIltersCopy
-            :isClient="reportType.selected == 'customers'"
+            :reportType="reportType.selected"
             ref="filters"
             @getFilter="getFilter"
           />
@@ -152,7 +152,6 @@ export default {
           { name: "Название", code: "title", type: 0 },
           { name: "Партия", code: "party", type: 0 },
           { name: "Колличество", code: "quantity", type: 0 },
-          { name: "Цена", code: "price", type: 0 },
           { name: "Начальный склад", code: "initial_warehouse", type: 0 },
           { name: "Итоговый склад", code: "final_warehouse", type: 0 },
           { name: "Пользователь", code: "user", type: 0 },
@@ -305,13 +304,16 @@ export default {
       try {
         const reportFetchRequest = async (type, capitalizeType) => {
           const params = { filter: this.filter, page: this.page };
-          await Promise.all([
-            this.$store.dispatch(`get${capitalizeType}`, params),
-            this.$store.dispatch(`get${capitalizeType}Total`, params),
-          ]);
+          await this.$store.dispatch(`get${capitalizeType}`, params);
           this.reports = this.$store.state.analytics[type];
-          this.total = this.$store.state.analytics[`${type}Total`];
+          if (this.reportType.selected !== "stuffMove") {
+            await this.$store.dispatch(`get${capitalizeType}Total`, params);
+            this.total = this.$store.state.analytics[`${type}Total`];
+          } else {
+            this.total = this.$store.state.analytics[`${type}Total`];
+          }
           this.applyReportsTransformations(type);
+          console.log(this.reports, this.total);
           nextTick(() => this.refGrid?.calcShowTopTitle());
         };
         this.reports.data = [];
@@ -388,6 +390,11 @@ export default {
           val.sum = this.round(val.sum);
           val.cost_sum = this.round(val.cost_sum);
           val.prib = this.round(val.prib);
+        });
+      }
+      if (type == "stuffMove") {
+        this.reports.data.map((val) => {
+          val.event_type = this.reports.types[val.event_type];
         });
       }
     },
