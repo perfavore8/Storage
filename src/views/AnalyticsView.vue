@@ -8,18 +8,13 @@
       <div class="top">
         <div class="btns" v-if="!isChartsView">
           <button
-            @click="changeReportType()"
+            v-for="type in reportType.list"
+            :key="type.label"
+            @click="changeReportType(type.value)"
             class="btn"
-            :class="{ selected_report: isClient }"
+            :class="{ selected_report: reportType.selected == type.value }"
           >
-            Отчет по клиентам
-          </button>
-          <button
-            @click="changeReportType()"
-            class="btn"
-            :class="{ selected_report: !isClient }"
-          >
-            Отчет по продажам
+            {{ type.label }}
           </button>
         </div>
       </div>
@@ -49,7 +44,7 @@
             </button>
           </div>
           <ReportFIlters
-            :isClient="isClient"
+            :reportType="reportType.selected"
             ref="filters"
             @getFilter="getFilter"
           />
@@ -60,25 +55,29 @@
           @getFilter="getFilter"
         />
       </div>
-      <template v-if="this.view.selected.value === 'table'">
+      <template v-if="view.selected.value === 'table'">
+        <!-- v-if="
+          view.selected.value === 'table' &&
+          this.reportType.selected != 'stuffMove'
+        " -->
         <ReportGrid
           :title="title"
           :reportsData="reports"
-          :isClient="isClient"
+          :reportType="reportType.selected"
           :isLoading="isLoading"
           :total="total"
           @updateOpenSelectedReportModal="updateOpenSelectedReportModal"
           @updateOpenedRows="updateOpenedRows"
           @updateSelectedReport="updateSelectedReport"
+          @sort="sort"
           ref="grid"
         />
-        <grid-bottom
+        <GridBottom
           :page="page"
-          :blur="show_edit_modal"
           :show="reports.data?.length != 0"
           :count="count"
-          :showSelector="false"
           :showBtns="showGridBottom"
+          :showSelector="false"
           @changePage="changePage"
           @changeCount="changeCount"
         />
@@ -92,37 +91,78 @@
 
 <script>
 import { mapGetters } from "vuex";
+import ReportFIlters from "@/components/ReportFIlters.vue";
 import ReportCreateModal from "@/components/ReportCreateModal.vue";
 import ReportCharts from "@/components/ReportCharts.vue";
 import ReportGrid from "@/components/ReportGrid.vue";
-import ReportFIlters from "@/components/ReportFIlters.vue";
 import ReportChartsFilter from "@/components/ReportChartsFilter.vue";
-import GridBottom from "@/components/GridBottom.vue";
 import AppHeader from "@/components/AppHeader.vue";
+import GridBottom from "@/components/GridBottom.vue";
 import { nextTick } from "@vue/runtime-core";
 export default {
   name: "AnalyticsView",
   components: {
+    ReportFIlters,
     ReportCreateModal,
     ReportCharts,
     ReportGrid,
-    ReportFIlters,
     ReportChartsFilter,
-    GridBottom,
     AppHeader,
+    GridBottom,
   },
   data() {
     return {
-      current_page: 1,
       openSelectedReportModal: false,
       isLoading: false,
       title: [],
       reports: [],
       isClient: true,
+      reportType: {
+        selected: "customers",
+        list: [
+          { label: "Отчет по клиентам", value: "customers" },
+          { label: "Отчет по продажам", value: "sales" },
+          { label: "Движение товаров", value: "stuffMove" },
+        ],
+      },
+      titles: {
+        customers: [
+          { name: "Компания", code: "company", type: 0 },
+          { name: "Контакт", code: "contact", type: 0 },
+          { name: "Сделки", code: "leads", type: 0 },
+          { name: "Оборот", code: "sum", type: 0 },
+          { name: "Прибыль", code: "prib", type: 0 },
+          { name: "Ответственные", code: "otv", type: 1 },
+          { name: "Позиции", code: "poz", type: 2 },
+        ],
+        sales: [
+          { name: "Название", code: "name", type: 0 },
+          { name: "Кол-во", code: "count", type: 0 },
+          { name: "Оборот", code: "sum", type: 0 },
+          { name: "Себестоимость", code: "cost_sum", type: 0 },
+          { name: "Прибыль", code: "prib", type: 0 },
+          { name: "Сделки", code: "leads", type: 0 },
+          { name: "Позиции", code: "poz", type: 1 },
+        ],
+        stuffMove: [
+          { name: "Дата события", code: "event_date", type: 0 },
+          { name: "Тип события", code: "event_type", type: 0 },
+          { name: "Артикул", code: "article_number", type: 0 },
+          { name: "Название", code: "title", type: 0 },
+          { name: "Партия", code: "party", type: 0 },
+          { name: "Колличество", code: "quantity", type: 0 },
+          { name: "Начальный склад", code: "initial_warehouse", type: 0 },
+          { name: "Итоговый склад", code: "final_warehouse", type: 0 },
+          { name: "Пользователь", code: "user", type: 0 },
+          { name: "Комментарий", code: "comment", type: 0 },
+        ],
+      },
       openedRows: [],
       selectedReport: {},
       filter: {},
+      sorted: {},
       total: {},
+      newPage: 1,
       view: {
         selected: { name: "table", value: "table", class: "font_download" },
         list: [
@@ -130,7 +170,9 @@ export default {
           { name: "bar", value: "bar", class: "poll" },
           { name: "doughnut", value: "doughnut", class: "donut_small" },
         ],
-        select: (option) => (this.view.selected = option),
+        select: function (option) {
+          this.selected = option;
+        },
       },
     };
   },
@@ -140,7 +182,11 @@ export default {
       return this.$refs.filters;
     },
     showGridBottom() {
-      return this.reports.total >= this.reports.per_page;
+      let res = false;
+      this.reportType.selected === "stuffMove"
+        ? (res = this.reports?.meta?.total >= this.reports?.meta?.per_page)
+        : (res = this.reports.total >= this.reports.per_page);
+      return res;
     },
     refGrid() {
       return this.$refs.grid;
@@ -152,18 +198,29 @@ export default {
       return this.view.selected.value !== "table";
     },
     page() {
-      const obj = {
-        first: this.getPageFromLink(this.reports?.first_page_url),
-        prev: this.getPageFromLink(this.reports?.prev_page_url),
-        current: this.reports?.current_page,
-        next: this.getPageFromLink(this.reports?.next_page_url),
-        last: this.getPageFromLink(this.reports?.last_page_url),
-      };
+      let obj = {};
+      if (this.reportType.selected === "stuffMove") {
+        obj = {
+          first: this.getPageFromLink(this.reports?.links?.first),
+          prev: this.getPageFromLink(this.reports?.links?.prev),
+          current: this.reports?.meta?.current_page,
+          next: this.getPageFromLink(this.reports?.links?.next),
+          last: this.getPageFromLink(this.reports?.links?.last),
+        };
+      } else {
+        obj = {
+          first: this.getPageFromLink(this.reports?.first_page_url),
+          prev: this.getPageFromLink(this.reports?.prev_page_url),
+          current: this.reports?.current_page,
+          next: this.getPageFromLink(this.reports?.next_page_url),
+          last: this.getPageFromLink(this.reports?.last_page_url),
+        };
+      }
       return obj;
     },
   },
   mounted() {
-    this.clients();
+    this.getTitile();
     this.$store.dispatch("get_account");
   },
   methods: {
@@ -185,66 +242,62 @@ export default {
       this.total.sum = this.round(this.total.sum);
       this.total.cost_sum = this.round(this.total.cost_sum);
       this.total.prib = this.round(this.total.prib);
-      if (!this.isClient) this.total.leads = this.total?.leads_count;
+      if (this.reportType.selected == "sales")
+        this.total.leads = this.total?.leads?.split(",").length;
       this.total["name"] = "Общее";
       this.total["company"] = "Общее";
       this.total["poz"] = "";
     },
     async updateOpenedRows(value) {
-      let query = "";
-      this.isClient ? (query = "company") : (query = "name");
-      const arr = [];
-      value.forEach((val) => arr.push(val[query]));
-      if (this.isClient) {
-        this.reports.data.map((val) =>
-          val.otv && !arr.includes(val[query]) ? (val.otv.value = false) : null
-        );
-      } else {
-        this.reports.data.map((val) =>
-          val.poz && !arr.includes(val[query]) ? (val.poz.value = false) : null
-        );
-      }
-      await value?.forEach(async (val) => {
+      const query =
+        this.reportType.selected === "customers" ? "company" : "name";
+      const arr = value.map((val) => val[query]);
+
+      this.reports.data.map((val) => {
+        if (this.reportType.selected === "customers" && val.otv) {
+          val.otv.value = arr.includes(val[query]) ? val.otv.value : false;
+        } else if (this.reportType.selected === "sales" && val.poz) {
+          val.poz.value = arr.includes(val[query]) ? val.poz.value : false;
+        }
+      });
+
+      await value.forEach(async (val) => {
         if (!this.openedRows.includes(val[query])) {
           this.openedRows.push(val[query]);
-          if (this.isClient) {
-            await this.$store.dispatch("getCustomersResponsible", {
-              filter: this.filter,
-              company: val.company,
-            });
-            this.reports.data.map((report) => {
-              if (report.company == val.company && report.otv) {
-                report.otv.value = val.otv.value;
-                report.otv.list =
-                  this.$store.state.analytics.customersResponsible;
-                report.otv.list.map((item) => {
-                  item["prib"] = item.sum - item.cost_sum;
-                  item.sum = this.round(item.sum);
-                  item.cost_sum = this.round(item.cost_sum);
-                  item.prib = this.round(item.prib);
-                  item.otv = item.user;
-                });
-              }
-            });
-          } else {
-            await this.$store.dispatch("getSalesProducts", {
-              filter: this.filter,
-              product: val.name,
-            });
-            this.reports.data.map((report) => {
-              if (report.name == val.name && report.poz) {
-                report.poz.value = val.poz.value;
-                report.poz.list = this.$store.state.analytics.salesProducts;
-                report.poz.list.map((item) => {
-                  item["prib"] = item.sum - item.cost_sum;
-                  item.sum = this.round(item.sum);
-                  item.cost_sum = this.round(item.cost_sum);
-                  item.prib = this.round(item.prib);
-                  item.poz = item.user;
-                });
-              }
-            });
+
+          let rows = { code: "", label: "", resName: "" };
+          if (this.reportType.selected === "customers") {
+            rows = {
+              code: "otv",
+              label: "company",
+              resName: "getCustomersResponsible",
+            };
+          } else if (this.reportType.selected === "sales") {
+            rows = { code: "poz", label: "name", resName: "getSalesProducts" };
           }
+          const response = rows.resName
+            ? await this.$store.dispatch(rows.resName, {
+                filter: this.filter,
+                product: val.name,
+              })
+            : [];
+          this.reports.data.map((report) => {
+            if (
+              report[[rows.label]] === val[[rows.label]] &&
+              report[rows.code]
+            ) {
+              report[rows.code].value = val[rows.code].value;
+              report[rows.code].list = response.map((item) => {
+                const newItem = { ...item };
+                newItem.prib = newItem.sum - newItem.cost_sum;
+                newItem.sum = this.round(newItem.sum);
+                newItem.cost_sum = this.round(newItem.cost_sum);
+                newItem.prib = this.round(newItem.prib);
+                newItem[rows.code] = item.user;
+                return newItem;
+              });
+            }
+          });
         }
       });
     },
@@ -280,17 +333,71 @@ export default {
       this.selectedReport = { ...value };
     },
     async getReports() {
-      if (this.isClient) {
-        await this.$store.dispatch("getCustomers", {
-          filter: this.filter,
-          page: this.current_page,
-        });
-        await this.$store.dispatch("getCustomersTotal", {
-          filter: this.filter,
-          page: this.current_page,
-        });
-        this.reports = this.$store.state.analytics.customers;
-        this.total = this.$store.state.analytics.customersTotal;
+      try {
+        const reportFetchRequest = async (type, capitalizeType) => {
+          const params = {
+            filter: this.filter,
+            page: this.newPage,
+            sort: this.sorted,
+          };
+          await this.$store.dispatch(`get${capitalizeType}`, params);
+          this.reports = this.$store.state.analytics[type];
+          if (this.reportType.selected !== "stuffMove") {
+            await this.$store.dispatch(`get${capitalizeType}Total`, params);
+            this.total = this.$store.state.analytics[`${type}Total`];
+          } else {
+            this.total = this.$store.state.analytics[`${type}Total`];
+          }
+          this.applyReportsTransformations(type);
+          nextTick(() => this.refGrid?.calcShowTopTitle());
+        };
+        this.reports.data = [];
+        this.total = [];
+        await reportFetchRequest(
+          this.reportType.selected,
+          this.capitalize(this.reportType.selected)
+        );
+        this.calcTotal();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    changeReportType(value) {
+      this.reportType.selected = value;
+      this.newPage = 1;
+      this.refFilters?.clearAllFields();
+    },
+    async getTitile() {
+      this.isLoading = true;
+      this.openedRows = [];
+      this.title = this.titles[this.reportType.selected];
+      await this.getReports();
+      this.isLoading = false;
+    },
+    changePage(value) {
+      this.newPage = value;
+      this.getTitile();
+    },
+    getFilter(value) {
+      this.filter = value;
+      this.newPage = 1;
+      this.getTitile();
+    },
+    sort(code, order) {
+      this.newPage = 1;
+      this.sorted = { by: code, order: order };
+      this.getTitile();
+    },
+    round(number) {
+      number = Number(number);
+      return Math.round(number * 100) / 100 + " р.";
+    },
+    capitalize(string) {
+      if (typeof string !== "string") return "";
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    applyReportsTransformations(type) {
+      if (type == "customers") {
         this.reports.data.map((val) => {
           val["otv"] = {
             value: false,
@@ -311,17 +418,8 @@ export default {
           val.cost_sum = this.round(val.cost_sum);
           val.prib = this.round(val.prib);
         });
-      } else {
-        await this.$store.dispatch("getSales", {
-          filter: this.filter,
-          page: this.current_page,
-        });
-        await this.$store.dispatch("getSalesTotal", {
-          filter: this.filter,
-          page: this.current_page,
-        });
-        this.reports = this.$store.state.analytics.sales;
-        this.total = this.$store.state.analytics.salesTotal;
+      }
+      if (type == "sales") {
         this.reports.data.map((val) => {
           val["poz"] = {
             value: false,
@@ -334,58 +432,11 @@ export default {
           val.prib = this.round(val.prib);
         });
       }
-      this.calcTotal();
-      nextTick(() => this.refGrid?.calcShowTopTitle());
-    },
-    changeReportType() {
-      this.isClient = !this.isClient;
-      this.current_page = 1;
-      this.refFilters?.clearAllFields();
-    },
-    async clients() {
-      this.isLoading = true;
-      this.openedRows = [];
-      this.isClient = true;
-      this.title = [
-        { name: "Компания", code: "company", type: 0 },
-        { name: "Контакт", code: "contact", type: 0 },
-        { name: "Сделки", code: "leads", type: 0 },
-        { name: "Оборот", code: "sum", type: 0 },
-        { name: "Прибыль", code: "prib", type: 0 },
-        { name: "Ответственные", code: "otv", type: 1 },
-        { name: "Позиции", code: "poz", type: 2 },
-      ];
-      await this.getReports();
-      this.isLoading = false;
-    },
-    async sales() {
-      this.isLoading = true;
-      this.openedRows = [];
-      this.isClient = false;
-      this.title = [
-        { name: "Название", code: "name", type: 0 },
-        { name: "Кол-во", code: "count", type: 0 },
-        { name: "Оборот", code: "sum", type: 0 },
-        { name: "Себестоимость", code: "cost_sum", type: 0 },
-        { name: "Прибыль", code: "prib", type: 0 },
-        { name: "Сделки", code: "leads", type: 0 },
-        { name: "Позиции", code: "poz", type: 1 },
-      ];
-      await this.getReports();
-      this.isLoading = false;
-    },
-    changePage(value) {
-      this.current_page = value;
-      this.isClient ? this.clients() : this.sales();
-    },
-    getFilter(value) {
-      this.filter = value;
-      this.current_page = 1;
-      this.isClient ? this.clients() : this.sales();
-    },
-    round(number) {
-      number = Number(number);
-      return Math.round(number * 100) / 100 + " р.";
+      if (type == "stuffMove") {
+        this.reports.data.map((val) => {
+          val.event_type = this.reports.types[val.event_type].name;
+        });
+      }
     },
   },
 };
@@ -424,7 +475,7 @@ export default {
       flex-direction: row;
       .btn {
         border: 1px solid #6c757d;
-        border-radius: 4px;
+        border-radius: 0;
         color: #6c757d;
         background: white;
       }
@@ -446,15 +497,6 @@ export default {
       .btn:last-child {
         border-radius: 0 5px 5px 0;
       }
-    }
-    .add_new_button {
-      cursor: pointer;
-      width: 36px;
-      height: 36px;
-      background: #4e964d;
-      border: none;
-      border-radius: 4px;
-      @include bg_image("@/assets/plus.svg", 50%);
     }
   }
   .filters {

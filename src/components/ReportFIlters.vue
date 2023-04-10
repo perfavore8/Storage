@@ -1,29 +1,117 @@
 <template>
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-5 w-full">
     <div class="row">
       <div class="left">
-        <div class="date_range">
-          <input type="date" v-model="dateStart" />
-          <input type="date" v-model="dateEnd" />
+        <div class="flex flex-col w-full gap-3">
+          <div class="filters">
+            <AppDateRange
+              :dateStart="dateStart"
+              @update:dateStart="(newValue) => (dateStart = newValue)"
+              :dateEnd="dateEnd"
+              @update:dateEnd="(newValue) => (dateEnd = newValue)"
+            />
+            <AppInputSelect
+              :list="selected_field_autocomplete_list"
+              :countLettersReq="field.minLength"
+              :placeholder="field.placeholder"
+              @changeInputValue="(value) => changeInputValue(value, field.name)"
+              @select="(item) => selectField(item, field.name, field.id)"
+              @focusin="selected_field_autocomplete = field.name"
+              @focusout="selected_field_autocomplete = null"
+              v-for="field in fields"
+              :key="field.id"
+              v-show="field.typesShow.includes(reportType)"
+            />
+            <AppMultiSelect
+              v-for="field in multiSelectorData"
+              :key="field.id"
+              :list="field.list"
+              :placeholder="field.placeholder"
+              @select="(option) => field.select(option, field.id)"
+            />
+            <FilterNumber
+              v-for="field in numberData"
+              :key="field.id"
+              :idx="field.id"
+              :item="field.selected"
+              v-show="field.typesShow.includes(reportType)"
+              @change_filter_value="(option) => field.select(option, field.id)"
+            />
+            <SelectorVue
+              v-for="field in selectorData"
+              :key="field.id"
+              :options_props="field.list"
+              :selected_option="field.selected"
+              @select="(option) => field.select(option, field.id)"
+            />
+          </div>
+          <template v-if="isTest">
+            <div
+              class="filters"
+              v-for="(filteringSystem, idx) in filteringSystems"
+              :key="filteringSystem"
+            >
+              <div
+                class="add_new_button"
+                @click="addFilteringSystem()"
+                v-if="idx === filteringSystems.length - 1"
+              >
+                <span class="material-icons-outlined"> add </span>
+              </div>
+              <AppInputSelect
+                :list="
+                  filteringSystem.filterList(
+                    filteringSystem.SystemInputValue,
+                    filteringSystem.systems
+                  )
+                "
+                :selected="filteringSystem.selectedSystem"
+                :countLettersReq="0"
+                :placeholder="'Система'"
+                :requestDelay="0"
+                :SelectedInTitle="true"
+                @focusOut="() => filteringSystem.changeSystemInputValue('')"
+                @changeInputValue="filteringSystem.changeSystemInputValue"
+                @select="(item) => filteringSystem.selectSystem(item)"
+              />
+              <component
+                v-for="filter in filteringSystem.selectedSystem?.filtersList"
+                :key="filter.id"
+                :is="filter.type"
+                v-show="filter.show?.value"
+                :list="filteringSystem.filterList(filter.value, filter.list)"
+                :selected="filter.selected"
+                :countLettersReq="filter.minLength"
+                :placeholder="filter.placeholder"
+                :requestDelay="0"
+                :SelectedInTitle="true"
+                :dateRange="filter.selected"
+                @update:dateRange="(newValue) => (filter.selected = newValue)"
+                @changeInputValue="(value) => (filter.value = value)"
+                @select="
+                  (item) =>
+                    filter.type === 'AppMultiSelect'
+                      ? filteringSystem.selectMulti(item, filter.id)
+                      : (filter.selected = item)
+                "
+              />
+            </div>
+          </template>
         </div>
-        <AppInputSelect
-          :list="selected_field_autocomplete_list"
-          :countLettersReq="field.minLength"
-          :placeholder="field.placeholder"
-          @changeInputValue="(value) => changeInputValue(value, field.name)"
-          @select="(item) => selectField(item, field.name)"
-          @focusin="selected_field_autocomplete = field.name"
-          @focusout="selected_field_autocomplete = null"
-          v-for="field in fields"
-          :key="field.id"
-          v-show="
-            (isClient && field.clientShow) || (!isClient && field.salesShow)
-          "
-        />
-      </div>
-      <div class="btns">
-        <button class="btn btn_blue" @click="apply()">Применить</button>
-        <button class="btn btn_grey" @click="clearAllFields()">Очистить</button>
+        <div class="btns">
+          <button class="btn btn_blue" @click="apply()">Применить</button>
+          <button
+            class="btn btn_yellow"
+            v-if="!coincideSelectedItems && isTest"
+            style="border-radius: 0"
+            @click="createReport()"
+          >
+            Создать шаблон
+          </button>
+          <button class="btn btn_grey" @click="clearAllFields()">
+            Очистить
+          </button>
+        </div>
       </div>
     </div>
     <div class="row selected_row">
@@ -40,7 +128,7 @@
           class="item"
           @click="deleteField(idx1, idx2)"
         >
-          {{ item.value }}
+          {{ item.name }}
           <div class="icon"></div>
         </div>
       </div>
@@ -49,141 +137,362 @@
 </template>
 
 <script>
+import AppDateRange from "./AppDateRange.vue";
 import AppInputSelect from "./AppInputSelect.vue";
+import SelectorVue from "./SelectorVue.vue";
+import AppMultiSelect from "./AppMultiSelect.vue";
+import FilterNumber from "./FiltersSelections/FilterNumber.vue";
+import { useSystems } from "@/composables/systemsForReports";
+import {
+  computed,
+  nextTick,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "@vue/runtime-core";
+import store from "@/store";
+import { useRoute } from "vue-router";
 export default {
-  components: { AppInputSelect },
+  components: {
+    AppInputSelect,
+    AppMultiSelect,
+    SelectorVue,
+    AppDateRange,
+    FilterNumber,
+  },
   props: {
-    isClient: {
-      type: Boolean,
+    reportType: {
+      type: String,
       required: true,
     },
   },
-  data() {
-    return {
-      selected_field_autocomplete: null,
-      selected_field_autocomplete_list: [],
-      dateStart: "",
-      dateEnd: "",
-      fields: [
-        {
-          id: 0,
-          name: "product",
-          value: "",
-          minLength: 3,
-          placeholder: "Артикулы/Названия",
-          clientShow: false,
-          salesShow: true,
-          selected: [],
+  setup(props, context) {
+    const filteringSystems = reactive([useSystems()]);
+    const addFilteringSystem = () => filteringSystems.push(useSystems());
+
+    const route = useRoute();
+    const isTest = computed(() => {
+      return (
+        store.state.account?.account?.id == 1 || route.query.test === "salesUp"
+      );
+    });
+
+    const selected_field_autocomplete = ref(null);
+    const selected_field_autocomplete_list = ref([]);
+    const copySelectedItems = ref([]);
+    const dateStart = ref("");
+    const dateEnd = ref("");
+    const fields = reactive([
+      {
+        id: 0,
+        name: "product",
+        value: "",
+        minLength: 3,
+        placeholder: "Артикулы/Названия",
+        typesShow: ["sales", "stuffMove"],
+        selected: [],
+      },
+      {
+        id: 4,
+        name: "responsible",
+        value: "",
+        minLength: 0,
+        placeholder: "Ответственные",
+        typesShow: ["customers", "sales"],
+        selected: [],
+      },
+      {
+        id: 1,
+        name: "pipeline",
+        value: "",
+        minLength: 0,
+        placeholder: "Воронки",
+        typesShow: ["customers"],
+        selected: [],
+      },
+      {
+        id: 2,
+        name: "company",
+        value: "",
+        minLength: 3,
+        placeholder: "Компании",
+        typesShow: ["customers"],
+        selected: [],
+      },
+      {
+        id: 3,
+        name: "contact",
+        value: "",
+        minLength: 3,
+        placeholder: "Контакты",
+        typesShow: ["customers"],
+        selected: [],
+      },
+      {
+        id: 10,
+        name: "users",
+        value: "",
+        minLength: 0,
+        placeholder: "Пользователи",
+        typesShow: ["stuffMove"],
+        selected: [],
+        haveTheirOwnLists: true,
+        listName: "users",
+      },
+      {
+        id: 5,
+        name: "event_type",
+        value: "",
+        minLength: 0,
+        placeholder: "Тип события",
+        typesShow: ["stuffMove"],
+        selected: [],
+        haveTheirOwnLists: true,
+        listName: "types",
+      },
+      {
+        id: 6,
+        name: "product/batch",
+        value: "",
+        minLength: 3,
+        placeholder: "Партия",
+        typesShow: ["stuffMove"],
+        selected: [],
+      },
+      {
+        id: 7,
+        name: "initial_warehouse",
+        value: "",
+        minLength: 0,
+        placeholder: "Начальный склад	",
+        typesShow: ["stuffMove"],
+        selected: [],
+        haveTheirOwnLists: true,
+        listName: "whs",
+      },
+      {
+        id: 8,
+        name: "final_warehouse",
+        value: "",
+        minLength: 0,
+        placeholder: "Итоговый склад	",
+        typesShow: ["stuffMove"],
+        selected: [],
+        haveTheirOwnLists: true,
+        listName: "whs",
+      },
+      // {
+      //   id: 5,
+      //   name: "position",
+      //   value: "",
+      //   minLength: 3,
+      //   placeholder: "Позиции",
+      //   clientShow: true,
+      //   salesShow: false,
+      //   selected: [],
+      // },
+    ]);
+    const multiSelectorData = reactive([
+      // {
+      //   type: 6,
+      //   id: 6,
+      //   name: "position",
+      //   list: [
+      //     { name: "Все", value: "all", selected: false },
+      //     { name: "1", value: 1, selected: false },
+      //     { name: "2", value: 2, selected: false },
+      //     { name: "3", value: 3, selected: false },
+      //     { name: "4", value: 4, selected: false },
+      //   ],
+      //   placeholder: "Этапы сделок amoCRM",
+      //   clientShow: true,
+      //   salesShow: false,
+      //   select: (option, id) => {
+      //     if (option.value === "all") {
+      //       const item = multiSelectorData.find((el) => el.id === id);
+      //       item?.list?.forEach((el) => {
+      //         if (el.value !== "all") el.selected = !option.selected;
+      //       });
+      //     }
+      //     option.selected = !option.selected;
+      //   },
+      // },
+    ]);
+    const selectorData = reactive([
+      // {
+      //   type: 6,
+      //   id: 7,
+      //   name: "data",
+      //   selected: { name: "Остатки", value: 1 },
+      //   list: [
+      //     { name: "Остатки", value: 1 },
+      //     { name: "Заказы", value: 2 },
+      //   ],
+      //   clientShow: true,
+      //   salesShow: false,
+      //   select: (option, id) => {
+      //     const item = selectorData.find((el) => el.id == id);
+      //     item ? (item.selected = option) : null;
+      //   },
+      // },
+    ]);
+    const numberData = reactive([
+      {
+        id: 1,
+        name: "quantity",
+        selected: { option: "=", value: "", placeholder: "Колличество" },
+        list: [],
+        typesShow: ["stuffMove"],
+        select: (option, id) => {
+          const item = numberData.find((el) => el.id === id);
+          item.selected = option;
         },
-        {
-          id: 4,
-          name: "responsible",
-          value: "",
-          minLength: 0,
-          placeholder: "Ответственные",
-          clientShow: true,
-          salesShow: true,
-          selected: [],
-        },
-        {
-          id: 1,
-          name: "pipeline",
-          value: "",
-          minLength: 0,
-          placeholder: "Воронки",
-          clientShow: true,
-          salesShow: false,
-          selected: [],
-        },
-        {
-          id: 2,
-          name: "company",
-          value: "",
-          minLength: 3,
-          placeholder: "Компании",
-          clientShow: true,
-          salesShow: false,
-          selected: [],
-        },
-        {
-          id: 3,
-          name: "contact",
-          value: "",
-          minLength: 3,
-          placeholder: "Контакты",
-          clientShow: true,
-          salesShow: false,
-          selected: [],
-        },
-      ],
+      },
+    ]);
+
+    const selectedItems = computed(() => {
+      const arr = [];
+      fields.forEach((field) => arr.push(field.selected));
+      multiSelectorData.forEach((field) =>
+        arr.push(field.list.some((el) => el.selected))
+      );
+      selectorData.forEach((field) => arr.push(field.selected));
+      filteringSystems.forEach((system) => {
+        arr.push(system.selectedSystem);
+        system?.systems?.forEach((syst) =>
+          syst?.filtersList?.forEach((filter) => arr.push(filter.selected))
+        );
+      });
+      return arr;
+    });
+    const coincideSelectedItems = computed(() => {
+      return (
+        JSON.stringify(copySelectedItems.value) ==
+        JSON.stringify(selectedItems.value)
+      );
+    });
+
+    onMounted(() => {
+      nextTick(() => {
+        copySelectedItems.value = structuredClone(selectedItems.value);
+      });
+    });
+
+    watch(selected_field_autocomplete, () => {
+      selected_field_autocomplete_list.value = [];
+    });
+
+    const createReport = () => {
+      alert("потом будем сохранять шаблон");
     };
-  },
-  watch: {
-    selected_field_autocomplete() {
-      this.selected_field_autocomplete_list = [];
-    },
-  },
-  methods: {
-    async changeInputValue(value, name) {
+    const changeInputValue = async (value, name) => {
+      const item = fields.find((el) => el.name === name);
       const verify = (value) => {
-        return value.split("").at(-1) != " " && value.split("")[0] != " ";
+        return (
+          value.split("").at(-1) != " " &&
+          value.split("")[0] != " " &&
+          !item?.haveTheirOwnLists
+        );
       };
-      this.selected_field_autocomplete_list = [];
-      if (verify(value) && this.selected_field_autocomplete == name) {
-        await this.$store.dispatch("getAutocompleteAnalytics", {
+      selected_field_autocomplete_list.value = [];
+      if (verify(value) && selected_field_autocomplete.value == name) {
+        await store.dispatch("getAutocompleteAnalytics", {
           field: name,
           value: { query: value },
         });
-        const list = this.$store.state.analytics.autocomplete;
+        const list = store.state.analytics.autocomplete;
         if (list != undefined) {
           list.map((item) => (item.name = item.value));
-          this.selected_field_autocomplete_list = [...list];
+          selected_field_autocomplete_list.value = [...list];
+        }
+      } else if (item?.haveTheirOwnLists) {
+        const list = store.state.analytics.stuffMove[item?.listName];
+        if (list != undefined) {
+          selected_field_autocomplete_list.value = [...list];
         }
       }
-    },
-    selectField(item, field) {
-      this.fields.forEach((val) => {
+    };
+    const selectField = (item, field, id) => {
+      fields.forEach((val) => {
         if (
           val.name === field &&
+          val.id === id &&
           !val.selected.filter((val) => val.value == item.value).length
         )
           val.selected.push(item);
       });
-    },
-    deleteField(idx1, idx2) {
-      this.fields[idx1].selected.splice(idx2, 1);
-    },
-    clearAllFields() {
-      this.dateStart = "";
-      this.dateEnd = "";
-      this.fields.map((val) => (val.selected = []));
-      this.apply();
-    },
-    apply() {
+    };
+    const deleteField = (idx1, idx2) => {
+      fields[idx1].selected.splice(idx2, 1);
+    };
+    const clearAllFields = () => {
+      dateStart.value = "";
+      dateEnd.value = "";
+      filteringSystems.length = 0;
+      addFilteringSystem();
+      fields.map((val) => (val.selected = []));
+      apply();
+    };
+    const apply = () => {
       const preparationDate = (date) => {
         const a = date.split("-");
         const b = a[0];
         a.splice(0, 1);
         a.push(b);
-        return a.join("/");
+        let res = a.join("/");
+        const [Y, M, D] = res.split("/");
+        if (Y && M && D) {
+          res = M + "/" + D + "/" + Y;
+        } else {
+          res = "";
+        }
+        return res;
       };
       const filter = {
         date:
-          preparationDate(this.dateStart) + "-" + preparationDate(this.dateEnd),
+          preparationDate(dateStart.value) +
+          "-" +
+          preparationDate(dateEnd.value),
       };
       if (filter.date == "-") delete filter.date;
-      this.fields.forEach((val) => {
+      numberData.forEach((val) => {
+        filter[val.name] = {
+          compare: val.selected.option,
+          query: val.selected.value,
+        };
+      });
+      fields.forEach((val) => {
         const list = [];
         val.selected.forEach((value) => list.push(value.value));
-        if (
-          ((this.isClient && val.clientShow) ||
-            (!this.isClient && val.salesShow)) &&
-          list != 0
-        )
+        if (val.typesShow.includes(props.reportType) && list.length != 0)
           filter[val.name] = list;
       });
-      this.$emit("getFilter", filter);
-    },
+      context.emit("getFilter", filter);
+    };
+
+    return {
+      selected_field_autocomplete,
+      selected_field_autocomplete_list,
+      copySelectedItems,
+      dateStart,
+      dateEnd,
+      fields,
+      multiSelectorData,
+      selectorData,
+      coincideSelectedItems,
+      createReport,
+      changeInputValue,
+      selectField,
+      deleteField,
+      clearAllFields,
+      apply,
+      ...useSystems(),
+      filteringSystems,
+      addFilteringSystem,
+      numberData,
+      isTest,
+    };
   },
 };
 </script>
@@ -194,7 +503,7 @@ export default {
   box-sizing: border-box;
 }
 .row {
-  max-width: 90%;
+  max-width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -202,9 +511,51 @@ export default {
   gap: 10px;
   .left {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
     gap: 10px;
+    width: 100%;
+
+    .filters {
+      // display: flex;
+      // flex-direction: row;
+      // flex-wrap: wrap;
+      // align-items: center;
+      // gap: 10px;
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      width: 100%;
+      // width: 929px;
+      .filter {
+        align-items: center;
+        max-width: none;
+      }
+      > .v-select {
+        width: 100%;
+      }
+      .add_new_button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        left: -43px;
+        cursor: pointer;
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 4px;
+        color: #757575;
+        > span {
+          font-size: 28px;
+        }
+      }
+    }
+
+    .input-select {
+      // width: 20%;
+    }
   }
   .field {
     width: 40%;
@@ -216,48 +567,15 @@ export default {
     }
   }
   .btns {
+    width: 40%;
     display: flex;
     flex-direction: row;
-    justify-self: end;
+    white-space: nowrap;
     .btn:first-child {
       border-radius: 5px 0 0 5px;
     }
     .btn:last-child {
       border-radius: 0 5px 5px 0;
-    }
-  }
-  .date_range {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin: 0 3px;
-    input {
-      position: relative;
-      width: 100%;
-      height: 27px;
-      background: white;
-      border: 0.5px solid #c4c4c4;
-      border-radius: 4px;
-      color: #3f3f3f;
-      outline: none;
-      @include font(400, 14px, 17px);
-    }
-    input::-webkit-datetime-edit-fields-wrapper {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-    }
-    input::-webkit-calendar-picker-indicator {
-      cursor: pointer;
-      opacity: 0;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      appearance: none;
     }
   }
 }

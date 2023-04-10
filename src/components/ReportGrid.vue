@@ -5,7 +5,25 @@
   <table class="table" :class="{ blur: openSelectedReportModal || isLoading }">
     <thead>
       <tr class="row title">
-        <td class="item" v-for="tit in title" :key="tit">{{ tit.name }}</td>
+        <td
+          class="item"
+          v-for="tit in title"
+          :key="tit"
+          :class="{ pointer: sortable }"
+          @click="sortable ? sort(tit?.code) : null"
+        >
+          {{ tit.name }}
+          <button
+            class="bar_item_icon"
+            :class="{
+              bar_item_icon_up:
+                order.code === tit?.code && order.prev_order === 'desc',
+              bar_item_icon_down:
+                order.code === tit?.code && order.prev_order === 'asc',
+            }"
+            v-if="sortable"
+          ></button>
+        </td>
       </tr>
     </thead>
     <tbody>
@@ -26,10 +44,17 @@
             :key="tit"
             :class="{ center: tit.type }"
           >
-            <span v-if="!tit.type && (isClient || tit?.code != 'leads')">
+            <span
+              v-if="
+                !tit.type &&
+                (reportType === 'customers' || tit?.code != 'leads')
+              "
+            >
               {{ report[tit?.code] }}
             </span>
-            <div v-if="!tit.type && tit?.code == 'leads' && !isClient">
+            <div
+              v-if="!tit.type && tit?.code == 'leads' && reportType === 'sales'"
+            >
               <template v-for="(lead, lidx) in report[tit?.code]" :key="lead">
                 <a
                   class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
@@ -99,19 +124,26 @@ export default {
     title: { type: Array, required: true },
     reportsData: { type: Object, required: true },
     total: { type: Object, required: false },
-    isClient: { type: Boolean, required: true },
+    reportType: { type: String, required: true },
     isLoading: { type: Boolean, required: true },
   },
   data() {
     return {
       copyReports: [],
       showTopTitle: true,
+      order: {
+        code: "",
+        prev_order: "",
+      },
     };
   },
   mounted() {
     this.copy();
   },
   computed: {
+    sortable() {
+      return this.reportType === "stuffMove";
+    },
     isTest() {
       return (
         this.$store.state.account?.account?.id == 1 ||
@@ -166,7 +198,9 @@ export default {
     openedRows: {
       handler: function (newVal, oldVal) {
         let query = "";
-        this.isClient ? (query = "company") : (query = "name");
+        this.reportType === "customers"
+          ? (query = "company")
+          : (query = "name");
         const arrNewVal = [];
         newVal.forEach((val) => arrNewVal.push(val[query]));
         const arrOldVal = [];
@@ -209,6 +243,15 @@ export default {
       this.copyReports.map(
         (val) => (val[this.modalInTitle?.code].value = false)
       );
+    },
+    sort(code) {
+      const order_values = ["asc", "desc"];
+      let new_order = "";
+      this.order.code === code && this.order.prev_order == order_values[0]
+        ? (new_order = order_values[1])
+        : (new_order = order_values[0]);
+      this.order = { code: code, prev_order: new_order };
+      this.$emit("sort", code, new_order);
     },
   },
 };
@@ -277,5 +320,23 @@ export default {
 .blur {
   filter: blur(8px);
   transition: all 0.2s;
+}
+.bar_item_icon {
+  height: 16px;
+  width: 16px;
+  background-color: transparent;
+  @include bg_image("@/assets/sort.svg");
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  &_up {
+    @include bg_image("@/assets/sort_up.svg");
+  }
+  &_down {
+    @include bg_image("@/assets/sort_down.svg");
+  }
+}
+.pointer {
+  cursor: pointer;
 }
 </style>

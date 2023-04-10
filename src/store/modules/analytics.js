@@ -41,15 +41,20 @@ export default {
       state.salesTotal = { ...value };
     },
     updateStuffMove(state, value) {
-      console.log(value);
-      value.types = value.data.types;
+      value.types = value.data.types.map(
+        (val, idx) => (val = { name: val, value: idx })
+      );
+      value.users = value.data.users.map(
+        (val) => (val = { name: val, value: val })
+      );
+      value.whs = value.data.whs.map(
+        (val) => (val = { ...val, value: val.name })
+      );
       value.data = value.data.list;
-      console.log(value);
 
       state.stuffMove = { ...value };
     },
     updateStuffMoveTotal(state, value) {
-      console.log(value);
       state.stuffMoveTotal = { ...value };
     },
   },

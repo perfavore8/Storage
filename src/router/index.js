@@ -28,11 +28,6 @@ const routes = [
     component: () => import("../views/DocumentsView.vue"),
   },
   {
-    path: "/analyticstest",
-    name: "analyticstest",
-    component: () => import("../views/AnalyticsViewTest.vue"),
-  },
-  {
     path: "/genezis",
     name: "genezis",
     component: () => import("../views/GenezisView.vue"),
