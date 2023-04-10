@@ -4,6 +4,11 @@
       <AppHeader />
     </div>
     <div class="wrapper">
+      <div class="w-full flex justify-end" v-if="isTest">
+        <button class="btn btn_light_yellow" @click="addToDeal()">
+          Добавить к сделке
+        </button>
+      </div>
       <OrdersFilters v-if="false" />
       <OrdersGrid />
     </div>
@@ -14,9 +19,23 @@
 import AppHeader from "@/components/AppHeader.vue";
 import OrdersFilters from "@/components/OrdersFilters.vue";
 import OrdersGrid from "@/components/OrdersGrid.vue";
+import router from "@/router";
+import store from "@/store";
+import { useRoute } from "vue-router";
+import { computed } from "vue";
 export default {
   components: { AppHeader, OrdersFilters, OrdersGrid },
-  setup() {},
+  setup() {
+    const Route = useRoute();
+    const isTest = computed(
+      () =>
+        store.state.account?.account?.id == 1 || Route?.query?.test === "test"
+    );
+
+    const addToDeal = () => router.push("/addToDeal");
+
+    return { addToDeal, isTest };
+  },
 };
 </script>
 
