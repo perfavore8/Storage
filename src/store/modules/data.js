@@ -6,6 +6,7 @@ export default {
         name: "Заказы",
         value: "orders",
         isTest: false,
+        hideId: [148],
       },
       {
         name: "Документы",
@@ -14,7 +15,7 @@ export default {
       },
       {
         name: "Остатки",
-        value: "",
+        value: "remnants",
       },
       {
         name: "Аналитика",

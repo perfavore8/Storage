@@ -5,7 +5,11 @@
       :class="{ selected_catalog: $route.path === '/' + page.value }"
       @click="route(page.value)"
       v-for="page in catalog"
-      v-show="!(page.isTest && !isTest) && !(page.isAdmin && !isAdmin)"
+      v-show="
+        !(page.isTest && !isTest) &&
+        !(page.isAdmin && !isAdmin) &&
+        !page.hideId?.includes(accountId)
+      "
       :disabled="isNavBarDisabled"
       :key="page"
     >
@@ -25,6 +29,7 @@ const Route = useRoute();
 const isTest = computed(
   () => store.state.account?.account?.id == 1 || Route?.query?.test === "test"
 );
+const accountId = computed(() => store.state.account?.account?.id);
 const isAdmin = computed(() =>
   store.state.account?.user?.isAdmin === undefined
     ? true
