@@ -766,23 +766,17 @@ export default {
         }
         if (params.products.length) {
           params.products.map((val) => {
-            let oldCount = this.copyCurrentItems.filter(
+            const item = this.new_items.find(
+              (value) => value.name == val.fields.name
+            );
+
+            let oldCount = this.copyCurrentItems.find(
               (value) => value.fields.name == val.fields.name
-            )[0].fields[
-              this.new_items.filter((value) => value.name == val.fields.name)[0]
-                .wh.value
-            ]?.count;
+            ).fields[item.wh.value]?.count;
             oldCount ? null : (oldCount = 0);
-            val.fields[
-              this.new_items.filter(
-                (value) => value.name == val.fields.name
-              )[0].wh.value
-            ] = {
-              count:
-                this.new_items.filter(
-                  (value) => value.name == val.fields.name
-                )[0].count + oldCount,
-              reserve: 0,
+
+            val.fields[item.wh.value] = {
+              count: item.count + oldCount,
             };
           });
           await this.$store.dispatch("update_product", params);
