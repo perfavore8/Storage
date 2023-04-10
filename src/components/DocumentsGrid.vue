@@ -122,7 +122,6 @@ export default {
     };
 
     const sort = (code) => {
-      console.log(sorting, code);
       if (sorting.order_by != code) {
         sorting.order = "";
         sorting.order_by = code;

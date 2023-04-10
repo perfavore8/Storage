@@ -166,7 +166,6 @@ export default {
   },
   async mounted() {
     this.$store.commit("toggleIsNavBarDisabled", true);
-    const t1 = Date.now();
     await Promise.all([
       this.$store.dispatch("get_fields_properties"),
       this.$store.dispatch(
@@ -176,8 +175,6 @@ export default {
       this.$store.dispatch("get_all_fields"),
       this.get_products(this.productsParams),
     ]);
-    const t2 = Date.now();
-    console.log(t2 - t1);
     this.setSelectedProducts();
     this.bar?.dropAllSelectedProducts();
     this.$store.commit("toggleIsNavBarDisabled", false);

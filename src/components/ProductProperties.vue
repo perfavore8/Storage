@@ -599,7 +599,6 @@ export default {
         }
       });
       if (this.copy_fields[idx]?.is_system) delete params?.name;
-      // console.log(params);
       const error = await this.$store.dispatch("update_fields", params);
       const nameError = error.error == "This field name exist.";
 

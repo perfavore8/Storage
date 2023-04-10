@@ -54,7 +54,6 @@ export default {
 
     const option_select = (option) => {
       filterValue.value = option.value;
-      console.log(option_value.value);
     };
 
     watch(() => props.item, change_value);

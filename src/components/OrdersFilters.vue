@@ -202,8 +202,6 @@ export default {
         .find((el) => el.code === "status")
         ?.value?.forEach((stat) => (stat !== "" ? status_id.push(stat) : null));
       if (status_id) filter.status_id = status_id;
-
-      // console.log(filter);
     };
     const clearAllFields = () => {
       filtersValue.map((filter) => {

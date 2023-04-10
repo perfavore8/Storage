@@ -152,9 +152,7 @@ export default {
   },
   wath: {
     editPrices: {
-      handler: function () {
-        console.log("123");
-      },
+      handler: function () {},
       deep: true,
     },
   },
