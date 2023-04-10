@@ -70,7 +70,7 @@
     :show="documents.list.length != 0"
     :showSelector="false"
     :count="meta?.per_page"
-    v-if="documents.list.length > meta?.total"
+    v-if="documents.list.length < meta?.meta?.total"
     @changePage="changePage"
   />
 </template>
@@ -98,11 +98,11 @@ export default {
     const meta = computed(() => store.state.orders.meta);
     const page = computed(() => {
       const obj = {
-        first: getPageFromLink(meta.value?.links?.first_page_url),
-        prev: getPageFromLink(meta.value?.links?.prev_page_url),
+        first: getPageFromLink(meta.value?.links?.first),
+        prev: getPageFromLink(meta.value?.links?.prev),
         current: meta.value?.meta?.current_page,
-        next: getPageFromLink(meta.value?.links?.next_page_url),
-        last: getPageFromLink(meta.value?.links?.last_page_url),
+        next: getPageFromLink(meta.value?.links?.next),
+        last: getPageFromLink(meta.value?.links?.last),
       };
       return obj;
     });
@@ -122,21 +122,30 @@ export default {
     };
 
     const sort = (code) => {
+      console.log(sorting, code);
       if (sorting.order_by != code) {
         sorting.order = "";
         sorting.order_by = code;
-        return;
       }
       if (sorting.order === "desc" || !sorting.order) {
         sorting.order = "asc";
-      } else {
-        if (sorting.order === "asc") sorting.order = "desc";
+      } else if (sorting.order === "asc") {
+        sorting.order = "desc";
       }
       store.commit("updateDocumentsFilters", sorting);
       getDocuments();
     };
 
-    return { documents, collsCount, sorting, sort, changePage, page, total };
+    return {
+      documents,
+      collsCount,
+      sorting,
+      sort,
+      changePage,
+      page,
+      total,
+      meta,
+    };
   },
 };
 </script>
