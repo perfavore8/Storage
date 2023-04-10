@@ -82,14 +82,14 @@
                 />
                 <label for="is_in_wh">Только положительные остатки</label>
               </div>
+              <HomeFilter
+                @confirmFilters="confirmFilters"
+                @clearFilters="clearFilters"
+              />
             </div>
           </div>
         </div>
         <div class="filters_right">
-          <HomeFilter
-            @confirmFilters="confirmFilters"
-            @clearFilters="clearFilters"
-          />
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"

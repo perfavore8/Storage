@@ -1,8 +1,4 @@
 <template>
-  <div class="btns" v-if="filterValue">
-    <button class="btn btn_tempest" @click="confirmFilters()">Применить</button>
-    <button class="btn btn_rusty_red" @click="clearFilters()">Очистить</button>
-  </div>
   <div class="filter_group">
     <input
       type="checkbox"
@@ -12,6 +8,10 @@
       class="checkbox"
     />
     <label for="filter">Фильтр</label>
+  </div>
+  <div class="btns" v-if="filterValue">
+    <button class="btn btn_tempest" @click="confirmFilters()">Применить</button>
+    <button class="btn btn_rusty_red" @click="clearFilters()">Очистить</button>
   </div>
 </template>
 
