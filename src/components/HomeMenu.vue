@@ -371,7 +371,4 @@ export default {
     padding-bottom: 10px;
   }
 }
-.backdrop {
-  z-index: 800;
-}
 </style>

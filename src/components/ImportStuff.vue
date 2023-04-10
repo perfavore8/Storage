@@ -1,96 +1,96 @@
 <template>
-  <Teleport to="body">
-    <div class="backdrop_with_filter" @click="close()" />
-  </Teleport>
   <div class="wrapper">
-    <header class="header">
-      <h1>Настройки импорта</h1>
-      <button class="btn cross" @click="close()"></button>
-    </header>
-    <main class="main">
-      <small class="small">
-        Максимальное количество товаров в файле: {{ max_import_product }}
-      </small>
-      <div class="top">
-        <div class="template">
-          <SelectorVue
-            :options_props="templates.list"
-            :selected_option="templates.selected"
-            @select="selectTemplate"
-          />
-          <input
-            class="input"
-            type="text"
-            v-model="templates.newTemplateName"
-            v-if="templates.selected.showTemplateName"
-            title="Чтобы не сохранять шаблон оставте поле пустым"
-          />
-        </div>
-        <div class="compare" v-if="isAnyCompares">
-          <SelectorVue
-            :options_props="addOrUpdateFields.list"
-            :selected_option="templates.selected.addOrUpdateFields.selected"
-            @select="addOrUpdateFields.select"
-          />
-        </div>
-      </div>
-      <div class="table" ref="gridRef">
-        <template v-for="(row, i) in tableData">
-          <div
-            class="item"
-            :class="{ title: i == 0 }"
-            v-for="item in row"
-            :key="item"
-          >
-            {{
-              item === null || item === undefined
-                ? item
-                : String(item).slice(0, 200)
-            }}
+    <div class="backdrop_with_filter" @click="close()" />
+    <div class="bgc">
+      <header class="header">
+        <h1>Настройки импорта</h1>
+        <button class="btn cross" @click="close()"></button>
+      </header>
+      <main class="main">
+        <small class="small">
+          Максимальное количество товаров в файле: {{ max_import_product }}
+        </small>
+        <div class="top">
+          <div class="template">
+            <SelectorVue
+              :options_props="templates.list"
+              :selected_option="templates.selected"
+              @select="selectTemplate"
+            />
+            <input
+              class="input"
+              type="text"
+              v-model="templates.newTemplateName"
+              v-if="templates.selected.showTemplateName"
+              title="Чтобы не сохранять шаблон оставте поле пустым"
+            />
           </div>
-        </template>
-
-        <div class="item" v-for="i in gridCount" :key="i">
-          <ImportStuffSelector
-            :options_props="importStuffFields"
-            :selected_option="selectedFields ? selectedFields[i - 1] : {}"
-            @toggleShowOptions="toggleShowOptions"
-            @select="(option) => selectStuffField(option, i - 1)"
-          />
-          <template v-if="selectedFields[i - 1]?.value !== -1">
-            <input
-              type="checkbox"
-              class="checkbox"
-              :id="'ImportStuffCompares' + i"
-              v-model="templates.selected.compares[i - 1]"
-              @change="checkIsSavedTemplate()"
+          <div class="compare" v-if="isAnyCompares">
+            <SelectorVue
+              :options_props="addOrUpdateFields.list"
+              :selected_option="templates.selected.addOrUpdateFields.selected"
+              @select="addOrUpdateFields.select"
             />
-            <label :for="'ImportStuffCompares' + i"> Сравнивать поле </label>
-          </template>
-          <template v-if="selectedFields[i - 1]?.isList">
-            <input
-              type="checkbox"
-              class="checkbox"
-              :id="'ImportStuffListAdd' + i"
-              v-model="selectedFields[i - 1].listAdd"
-              @change="checkIsSavedTemplate()"
-            />
-            <label :for="'ImportStuffListAdd' + i">
-              Добавлять новые значения
-            </label>
-          </template>
+          </div>
         </div>
-      </div>
-    </main>
-    <footer class="footer">
-      <BtnsSaveClose
-        @close="close"
-        @save="save"
-        :disabledSave="noOneSelectedFields"
-      >
-        <template v-slot:save>Импортировать</template>
-      </BtnsSaveClose>
-    </footer>
+        <div class="table" ref="gridRef">
+          <template v-for="(row, i) in tableData">
+            <div
+              class="item"
+              :class="{ title: i == 0 }"
+              v-for="item in row"
+              :key="item"
+            >
+              {{
+                item === null || item === undefined
+                  ? item
+                  : String(item).slice(0, 200)
+              }}
+            </div>
+          </template>
+
+          <div class="item" v-for="i in gridCount" :key="i">
+            <ImportStuffSelector
+              :options_props="importStuffFields"
+              :selected_option="selectedFields ? selectedFields[i - 1] : {}"
+              @toggleShowOptions="toggleShowOptions"
+              @select="(option) => selectStuffField(option, i - 1)"
+            />
+            <template v-if="selectedFields[i - 1]?.value !== -1">
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="'ImportStuffCompares' + i"
+                v-model="templates.selected.compares[i - 1]"
+                @change="checkIsSavedTemplate()"
+              />
+              <label :for="'ImportStuffCompares' + i"> Сравнивать поле </label>
+            </template>
+            <template v-if="selectedFields[i - 1]?.isList">
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="'ImportStuffListAdd' + i"
+                v-model="selectedFields[i - 1].listAdd"
+                @change="checkIsSavedTemplate()"
+              />
+              <label :for="'ImportStuffListAdd' + i">
+                Добавлять новые значения
+              </label>
+            </template>
+          </div>
+        </div>
+      </main>
+      <footer class="footer">
+        <BtnsSaveClose
+          @close="close"
+          @save="save"
+          :disabledSave="noOneSelectedFields"
+        >
+          <template v-slot:save>Импортировать</template>
+        </BtnsSaveClose>
+      </footer>
+    </div>
   </div>
 </template>
 
@@ -329,115 +329,120 @@ export default {
 @import "@/app.scss";
 .wrapper {
   pointer-events: all;
-  z-index: 9999;
-  width: fit-content;
-  max-width: 70%;
-  @include font(400, 16px);
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
+  width: 100%;
+  height: max-content;
+  min-height: 100vh;
   position: absolute;
-  top: 30px;
+  top: 0;
   left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  outline: 0;
-  box-shadow: 0 0 7px 6px rgb(206 212 218 / 50%);
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 40px;
-    padding: 12px 32px;
-    border-bottom: 2px solid #dee2e6;
-    > h1 {
-      margin: 0;
-      @include font(500, 20px);
-    }
-    .cross {
-      background-color: transparent;
-      width: 16px;
-      height: 16px;
-      transition: transform 0.15s ease-in-out;
-      @include bg_image("@/assets/cross_black.svg", 100% 100%);
-    }
-    .cross:hover {
-      transform: rotate(90deg);
-    }
+  background: transparent;
+  .backdrop_with_filter {
+    z-index: 259;
   }
-  .main {
-    padding: 32px 32px;
+  .bgc {
+    position: relative;
+    z-index: 260;
+    width: fit-content;
+    max-width: 80%;
+    @include font(400, 16px);
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    margin: 30px auto;
+    outline: 0;
+    box-shadow: 0 0 7px 6px rgb(206 212 218 / 50%);
+    text-align: left;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    .small {
-      @include font(300, 14px);
-    }
-    .top {
+    .header {
       display: flex;
-      flex-direction: row;
       justify-content: space-between;
+      align-items: center;
+      gap: 40px;
+      padding: 12px 32px;
+      border-bottom: 2px solid #dee2e6;
+      > h1 {
+        margin: 0;
+        @include font(500, 20px);
+      }
+      .cross {
+        background-color: transparent;
+        width: 16px;
+        height: 16px;
+        transition: transform 0.15s ease-in-out;
+        @include bg_image("@/assets/cross_black.svg", 100% 100%);
+      }
+      .cross:hover {
+        transform: rotate(90deg);
+      }
+    }
+    .main {
+      padding: 32px 32px;
+      display: flex;
+      flex-direction: column;
       gap: 16px;
-      .template {
+      .small {
+        @include font(300, 14px);
+      }
+      .top {
         display: flex;
         flex-direction: row;
+        justify-content: space-between;
         gap: 16px;
-        .input {
-          width: 50%;
+        .template {
+          display: flex;
+          flex-direction: row;
+          gap: 16px;
+          .input {
+            width: 50%;
+          }
+        }
+        .compare {
         }
       }
-      .compare {
+      .table {
+        border-collapse: collapse;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(v-bind(gridCount), auto);
+        // max-width: 100vw;
+        overflow-x: scroll;
+        overflow-y: visible;
+        // overflow: scroll;
+        .title {
+          @include font(700, 16px);
+          background-color: rgba(0, 0, 0, 0.1) !important;
+          padding-bottom: 20px !important;
+          text-align: center !important;
+        }
+        .item {
+          padding: 12px 16px;
+          border: 1px solid #c9c9c9;
+          text-align: left;
+          display: flex;
+          flex-direction: column;
+          > .v-select {
+            min-width: 100px;
+            width: fit-content;
+          }
+          > .checkbox + label {
+            margin-top: 8px;
+          }
+          > .checkbox {
+            position: fixed;
+            left: 50vw;
+            top: 50vh;
+          }
+        }
       }
     }
-    .table {
-      border-collapse: collapse;
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(v-bind(gridCount), auto);
-      // max-width: 100vw;
-      overflow-x: scroll;
-      overflow-y: visible;
-      // overflow: scroll;
-      .title {
-        @include font(700, 16px);
-        background-color: rgba(0, 0, 0, 0.1) !important;
-        padding-bottom: 20px !important;
-        text-align: center !important;
-      }
-      .item {
-        padding: 12px 16px;
-        border: 1px solid #c9c9c9;
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        > .v-select {
-          min-width: 100px;
-          width: fit-content;
-        }
-        > .checkbox + label {
-          margin-top: 8px;
-        }
-        > .checkbox {
-          position: fixed;
-          left: 50vw;
-          top: 50vh;
-        }
-      }
+    .footer {
+      border-top: 2px solid #dee2e6;
+      padding: 12px 32px;
+      display: flex;
+      justify-content: end;
     }
   }
-  .footer {
-    border-top: 2px solid #dee2e6;
-    padding: 12px 32px;
-    display: flex;
-    justify-content: end;
-  }
-}
-.backdrop_with_filter {
-  z-index: 800;
 }
 </style>
