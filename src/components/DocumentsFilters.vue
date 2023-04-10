@@ -79,8 +79,11 @@ export default {
         if (
           (val.type === "AppDateRange" || val.type === "AppInput") &&
           val.selected !== "-"
-        )
+        ) {
           res = val.selected;
+        } else if (val.code === "status_id") {
+          res = val.selected.id;
+        }
         filter[val.code] = res;
       });
       store.commit("updateDocumentsFilters", filter);

@@ -7,15 +7,15 @@ const documents = reactive({
       name: "Статус",
       placeholder: "Статус документа",
       code: "status_id",
-      isDocumentLink: false,
-      type: "AppMultiSelect",
+      type: "AppInputSelect",
       minLength: 0,
       requestDelay: 0,
       value: "",
       selected: {},
       width: 1,
-      sortable: true,
+      sortable: false,
       isAutocomplete: false,
+      selfList: true,
       url: "document/templates",
       list: [],
     },
@@ -121,7 +121,7 @@ export function useDocuments() {
     documentsRaw.value.forEach((document) => {
       const item = documents.titles.find((el) => el.code === "status_id");
       const search = (id) => {
-        let res = item?.list?.find((val) => val.id == document?.[id])?.name;
+        let res = item?.list?.find((val) => val.id == id)?.name;
         if (!res) res = "";
         return res;
       };
@@ -134,16 +134,20 @@ export function useDocuments() {
         user_name: document?.user_name,
         created_at: document?.created_at,
         status_id:
-          search(document?.pipeline_id) + "-" + search(document?.status_id),
+          search(document?.pipeline_id) + " - " + search(document?.status_id),
       };
-      if (obj.status_id === "-") obj.status_id = "";
+      if (obj.status_id === " - ") obj.status_id = "";
       documents.list.push(obj);
     });
   };
 
   const fillTitlesList = () => {
     documents.titles.map(async (title) => {
-      if (title.type === "AppInputSelect" && !title.isAutocomplete) {
+      if (
+        title.type === "AppInputSelect" &&
+        !title.isAutocomplete &&
+        !title.selfList
+      ) {
         const res = await store.dispatch("getAutocomplete", {
           subUrl: title.url,
           value: {},
@@ -156,7 +160,6 @@ export function useDocuments() {
 
   const fillStatuses = async () => {
     const item = documents.titles.find((val) => val.code === "status_id");
-    item.list.push({ name: "Все", value: "all", id: -1 });
     await store.dispatch("getPipelinesListV2");
     const pipelinesListV2 = store.state.account.pipelinesListV2;
     Object.entries(pipelinesListV2).forEach(([key, value]) => {
@@ -188,8 +191,8 @@ export function useDocuments() {
     });
   };
 
+  fillStatuses();
   const getDocuments = async () => {
-    fillStatuses();
     await store.dispatch("getDocuments", store.state.documents.filters);
     fillDocuments();
   };

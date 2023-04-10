@@ -20,11 +20,21 @@
           <ul class="list">
             <li
               class="item"
-              :class="{ selected: item.value === selected?.value }"
+              :class="{
+                optgroup: item.value === 'optgroup',
+                selected: item.value === selected?.value,
+              }"
+              :style="{ backgroundColor: item.color }"
               v-for="item in list"
               :key="item.value"
               @click="selectItem(item)"
             >
+              <template v-if="item.value === selected.value && item.color">
+                <span class="material-icons-outlined opacity-50"> check </span>
+              </template>
+              <template v-if="item.optgroup">
+                &nbsp;&nbsp;&nbsp;&nbsp;
+              </template>
               {{ item.name }}
             </li>
           </ul>
@@ -150,10 +160,15 @@ export default {
     min-width: 100%;
 
     box-sizing: border-box;
+    .optgroup {
+      @include font(500, 16px, 20px);
+      background-color: #ffffff !important;
+      cursor: default !important;
+    }
     .item {
       display: flex;
       align-items: center;
-      justify-content: center;
+      // justify-content: center;
       box-sizing: border-box;
       cursor: pointer;
       height: 40px;
