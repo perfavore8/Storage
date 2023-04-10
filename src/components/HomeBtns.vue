@@ -3,7 +3,7 @@
     <div class="buttons" v-if="show_buttons && !oneC">
       <template v-if="!isServicePage">
         <button
-          class="btn btn_light_dark_blue smallBtn"
+          class="btn btn_tempest smallBtn"
           @click="addCurrentProducts()"
           :disabled="oneC"
         >

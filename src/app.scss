@@ -97,6 +97,17 @@ $vv: calc(1vh + 1vw);
 .btn_light_dark_blue:disabled {
   background-color: hsl(210, 42%, 30%, 0.5) !important;
 }
+.btn_tempest {
+  color: #fff;
+  background: hsl(210, 42%, 42%);
+}
+.btn_light_dark_blue:hover {
+  background: rgb(55, 94, 134);
+  box-shadow: 0 0 5px 2px rgb(55 94 134 / 25%);
+}
+.btn_light_dark_blue:disabled {
+  background-color: rgba(55, 94, 134, 0.5) !important;
+}
 .btn_pink {
   background: #ea9197;
 }
@@ -106,6 +117,17 @@ $vv: calc(1vh + 1vw);
 }
 .btn_pink:disabled {
   background-color: #ea919780 !important;
+}
+.btn_rusty_red {
+  color: white;
+  background: #c15933;
+}
+.btn_rusty_red:hover {
+  background: rgb(153, 71, 41);
+  box-shadow: 0 0 5px 2px rgb(153 71 41 / 25%);
+}
+.btn_rusty_red:disabled {
+  background-color: rgba(153, 71, 41, 0.5) !important;
 }
 .btn_green {
   background: #4e964d;

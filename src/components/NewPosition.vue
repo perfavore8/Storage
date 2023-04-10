@@ -230,18 +230,6 @@
                     v-model="row.price.cost"
                     class="input"
                     min="0"
-                    :class="{
-                      not_valid:
-                        (row.price.cost === '' ||
-                          row.price.cost === undefined) &&
-                        try_accept,
-                    }"
-                    :title="
-                      (row.price.cost === '' || row.price.cost === undefined) &&
-                      try_accept
-                        ? 'Пустое поле'
-                        : null
-                    "
                     :disabled="!row.new && !row.newBatch"
                   />
                 </td>
@@ -406,20 +394,8 @@ export default {
       timer: 0,
       targetAutocomplete: null,
       copyCurrentItems: [],
-      fieldsForValidation: [
-        "article",
-        "name",
-        "batch",
-        "count",
-        "cost_price",
-        "price.cost",
-      ],
-      fieldsServiceForValidation: [
-        "article",
-        "name",
-        "cost_price",
-        "price.cost",
-      ],
+      fieldsForValidation: ["article", "name", "batch", "count", "cost_price"],
+      fieldsServiceForValidation: ["article", "name", "cost_price"],
       try_accept: false,
     };
   },

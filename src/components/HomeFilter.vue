@@ -1,7 +1,7 @@
 <template>
   <div class="btns" v-if="filterValue">
-    <button class="btn btn_blue" @click="confirmFilters()">Применить</button>
-    <button class="btn btn_grey" @click="clearFilters()">Очистить</button>
+    <button class="btn btn_tempest" @click="confirmFilters()">Применить</button>
+    <button class="btn btn_rusty_red" @click="clearFilters()">Очистить</button>
   </div>
   <div class="filter_group">
     <input
