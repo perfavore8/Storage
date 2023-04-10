@@ -52,11 +52,12 @@
 <script>
 import AppDateRange from "./AppDateRange.vue";
 import AppInputSelect from "./AppInputSelect.vue";
+import AppMultiSelect from "./AppMultiSelect.vue";
 import AppInput from "./AppInput.vue";
 import { useDocuments } from "../composables/documents";
 import store from "@/store";
 export default {
-  components: { AppInputSelect, AppDateRange, AppInput },
+  components: { AppInputSelect, AppDateRange, AppInput, AppMultiSelect },
 
   setup() {
     const { documentsTitles, getDocuments, getAutocompleteList } =
@@ -94,7 +95,7 @@ export default {
 
     const selectMulti = (option, code) => {
       if (option.value === "all") {
-        const item = documentsTitles?.find((el) => el.code === code);
+        const item = documentsTitles.value?.find((el) => el.code === code);
         item?.list?.forEach((el) => {
           if (el.value !== "all") el.selected = !option.selected;
         });
