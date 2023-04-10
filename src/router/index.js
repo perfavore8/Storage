@@ -3,7 +3,7 @@ import store from "../store";
 
 const routes = [
   {
-    path: "/",
+    path: "/remnants",
     name: "home",
     component: () => import("../views/HomeView.vue"),
   },
@@ -62,20 +62,23 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   await store.dispatch("get_account");
-  if (
-    !store.state.account?.account?.install &&
-    to.path != "/Error_is_not_installed"
-  )
+  const account = store.state.account?.account;
+  if (!account?.install && to.path != "/Error_is_not_installed")
     next("/Error_is_not_installed");
   if (
-    (store.state.account?.account?.install &&
-      to.path == "/Error_is_not_installed") ||
-    (!store.state.account?.account?.expired && to.path == "/Error_is_expired")
+    (account?.install && to.path == "/Error_is_not_installed") ||
+    (!account?.expired && to.path == "/Error_is_expired")
   )
     next("/");
-  if (store.state.account?.account?.expired && to.path != "/Error_is_expired")
+  if (account?.expired && to.path != "/Error_is_expired")
     next("/Error_is_expired"); // не забудь переключить !expired => expired
-  else next();
+  if (to.path == "/") {
+    if (account.id == 148) {
+      next("/documents");
+    } else {
+      next("/orders");
+    }
+  } else next();
 });
 
 export default router;
