@@ -357,7 +357,7 @@ export default {
       const category_id = this.selectedCategories.at(-1)?.id;
       const params = { account_id: 30214471, q: q };
       if (category_id) params.category_id = category_id;
-      await this.$store.dispatch("addProductAutocompleteW", params);
+      await this.$store.dispatch("getProductsAutocompleteW", params);
       const res = this.$store.state.widjetProducts.productsAutocomplete;
       res.map((val) => (val.name = val.label));
       this.search.list = res;
