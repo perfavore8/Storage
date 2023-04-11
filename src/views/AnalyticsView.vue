@@ -6,17 +6,13 @@
     </div>
     <div class="content">
       <div class="top">
-        <div class="btns" v-if="!isChartsView">
-          <button
-            v-for="type in reportType.list"
-            :key="type.label"
-            @click="changeReportType(type.value)"
-            class="btn"
-            :class="{ selected_report: reportType.selected == type.value }"
-          >
-            {{ type.label }}
-          </button>
-        </div>
+        <AppRadioBtnsGroupUnderlined
+          v-if="!isChartsView"
+          class="w-full"
+          :list="reportType.list"
+          :selected="reportType.selected"
+          @select="changeReportType"
+        />
       </div>
       <div class="filters">
         <div class="row">
@@ -44,7 +40,7 @@
             </button>
           </div>
           <ReportFIlters
-            :reportType="reportType.selected"
+            :reportType="reportType.selected.value"
             ref="filters"
             @getFilter="getFilter"
           />
@@ -58,12 +54,12 @@
       <template v-if="view.selected.value === 'table'">
         <!-- v-if="
           view.selected.value === 'table' &&
-          this.reportType.selected != 'stuffMove'
+          this.reportType.selected.value != 'stuffMove'
         " -->
         <ReportGrid
           :title="title"
           :reportsData="reports"
-          :reportType="reportType.selected"
+          :reportType="reportType.selected.value"
           :isLoading="isLoading"
           :total="total"
           @updateOpenSelectedReportModal="updateOpenSelectedReportModal"
@@ -99,6 +95,7 @@ import ReportChartsFilter from "@/components/ReportChartsFilter.vue";
 import AppHeader from "@/components/AppHeader.vue";
 import GridBottom from "@/components/GridBottom.vue";
 import { nextTick } from "@vue/runtime-core";
+import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 export default {
   name: "AnalyticsView",
   components: {
@@ -109,6 +106,7 @@ export default {
     ReportChartsFilter,
     AppHeader,
     GridBottom,
+    AppRadioBtnsGroupUnderlined,
   },
   data() {
     return {
@@ -118,11 +116,11 @@ export default {
       reports: [],
       isClient: true,
       reportType: {
-        selected: "customers",
+        selected: { name: "Отчет по клиентам", value: "customers" },
         list: [
-          { label: "Отчет по клиентам", value: "customers" },
-          { label: "Отчет по продажам", value: "sales" },
-          { label: "Движение товаров", value: "stuffMove" },
+          { name: "Отчет по клиентам", value: "customers" },
+          { name: "Отчет по продажам", value: "sales" },
+          { name: "Движение товаров", value: "stuffMove" },
         ],
       },
       titles: {
@@ -183,7 +181,7 @@ export default {
     },
     showGridBottom() {
       let res = false;
-      this.reportType.selected === "stuffMove"
+      this.reportType.selected.value === "stuffMove"
         ? (res = this.reports?.meta?.total >= this.reports?.meta?.per_page)
         : (res = this.reports.total >= this.reports.per_page);
       return res;
@@ -199,7 +197,7 @@ export default {
     },
     page() {
       let obj = {};
-      if (this.reportType.selected === "stuffMove") {
+      if (this.reportType.selected.value === "stuffMove") {
         obj = {
           first: this.getPageFromLink(this.reports?.links?.first),
           prev: this.getPageFromLink(this.reports?.links?.prev),
@@ -242,7 +240,7 @@ export default {
       this.total.sum = this.round(this.total.sum);
       this.total.cost_sum = this.round(this.total.cost_sum);
       this.total.prib = this.round(this.total.prib);
-      if (this.reportType.selected == "sales")
+      if (this.reportType.selected.value == "sales")
         this.total.leads = this.total?.leads?.split(",").length;
       this.total["name"] = "Общее";
       this.total["company"] = "Общее";
@@ -250,13 +248,13 @@ export default {
     },
     async updateOpenedRows(value) {
       const query =
-        this.reportType.selected === "customers" ? "company" : "name";
+        this.reportType.selected.value === "customers" ? "company" : "name";
       const arr = value.map((val) => val[query]);
 
       this.reports.data.map((val) => {
-        if (this.reportType.selected === "customers" && val.otv) {
+        if (this.reportType.selected.value === "customers" && val.otv) {
           val.otv.value = arr.includes(val[query]) ? val.otv.value : false;
-        } else if (this.reportType.selected === "sales" && val.poz) {
+        } else if (this.reportType.selected.value === "sales" && val.poz) {
           val.poz.value = arr.includes(val[query]) ? val.poz.value : false;
         }
       });
@@ -266,13 +264,13 @@ export default {
           this.openedRows.push(val[query]);
 
           let rows = { code: "", label: "", resName: "" };
-          if (this.reportType.selected === "customers") {
+          if (this.reportType.selected.value === "customers") {
             rows = {
               code: "otv",
               label: "company",
               resName: "getCustomersResponsible",
             };
-          } else if (this.reportType.selected === "sales") {
+          } else if (this.reportType.selected.value === "sales") {
             rows = { code: "poz", label: "name", resName: "getSalesProducts" };
           }
           const response = rows.resName
@@ -342,7 +340,7 @@ export default {
           };
           await this.$store.dispatch(`get${capitalizeType}`, params);
           this.reports = this.$store.state.analytics[type];
-          if (this.reportType.selected !== "stuffMove") {
+          if (this.reportType.selected.value !== "stuffMove") {
             await this.$store.dispatch(`get${capitalizeType}Total`, params);
             this.total = this.$store.state.analytics[`${type}Total`];
           } else {
@@ -354,23 +352,23 @@ export default {
         this.reports.data = [];
         this.total = [];
         await reportFetchRequest(
-          this.reportType.selected,
-          this.capitalize(this.reportType.selected)
+          this.reportType.selected.value,
+          this.capitalize(this.reportType.selected.value)
         );
         this.calcTotal();
       } catch (error) {
         console.error(error);
       }
     },
-    changeReportType(value) {
-      this.reportType.selected = value;
+    changeReportType(option) {
+      this.reportType.selected = option;
       this.newPage = 1;
       this.refFilters?.clearAllFields();
     },
     async getTitile() {
       this.isLoading = true;
       this.openedRows = [];
-      this.title = this.titles[this.reportType.selected];
+      this.title = this.titles[this.reportType.selected.value];
       await this.getReports();
       this.isLoading = false;
     },
