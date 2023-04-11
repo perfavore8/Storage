@@ -29,7 +29,7 @@
               :key="item.value"
               @click="selectItem(item)"
             >
-              <template v-if="item.value === selected.value && item.color">
+              <template v-if="item.value === selected?.value && item.color">
                 <span class="material-icons-outlined opacity-50"> check </span>
               </template>
               <template v-if="item.optgroup">
