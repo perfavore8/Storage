@@ -111,35 +111,44 @@ const documents = reactive({
   ],
   list: [],
 });
+
+const status_id = computed(() =>
+  documents.titles.find((el) => el.code === "status_id")
+);
+
+const documentsRaw = computed(() => store.state.documents.documents);
+
+const fillDocuments = () => {
+  documents.list = [];
+  const search = (id) => {
+    let res = "";
+    if (status_id.value && status_id.value.list) {
+      const foundValue = status_id.value.list.find((val) => val.id == id);
+      if (foundValue) {
+        res = foundValue.name;
+      }
+    }
+    return res;
+  };
+  documentsRaw.value.forEach((document) => {
+    const obj = {
+      template_name: document?.name,
+      document_link: document?.url,
+      lead_name: document?.lead_name,
+      company_name: document?.company_name,
+      contact_name: document?.contact_name,
+      user_name: document?.user_name,
+      created_at: document?.created_at,
+      status_id:
+        search(document?.pipeline_id) + " - " + search(document?.status_id),
+    };
+    if (obj.status_id === " - ") obj.status_id = "";
+    documents.list.push(obj);
+  });
+};
+
 export function useDocuments() {
   const collsCount = computed(() => documents.titles.length);
-
-  const documentsRaw = computed(() => store.state.documents.documents);
-
-  const fillDocuments = () => {
-    documents.list = [];
-    documentsRaw.value.forEach((document) => {
-      const item = documents.titles.find((el) => el.code === "status_id");
-      const search = (id) => {
-        let res = item?.list?.find((val) => val.id == id)?.name;
-        if (!res) res = "";
-        return res;
-      };
-      const obj = {
-        template_name: document?.name,
-        document_link: document?.url,
-        lead_name: document?.lead_name,
-        company_name: document?.company_name,
-        contact_name: document?.contact_name,
-        user_name: document?.user_name,
-        created_at: document?.created_at,
-        status_id:
-          search(document?.pipeline_id) + " - " + search(document?.status_id),
-      };
-      if (obj.status_id === " - ") obj.status_id = "";
-      documents.list.push(obj);
-    });
-  };
 
   const fillTitlesList = () => {
     documents.titles.map(async (title) => {
@@ -159,13 +168,16 @@ export function useDocuments() {
   };
 
   const fillStatuses = async () => {
-    const item = documents.titles.find((val) => val.code === "status_id");
     await store.dispatch("getPipelinesListV2");
     const pipelinesListV2 = store.state.account.pipelinesListV2;
     Object.entries(pipelinesListV2).forEach(([key, value]) => {
-      item.list.push({ name: value.name, value: "optgroup", id: key });
+      status_id.value.list.push({
+        name: value.name,
+        value: "optgroup",
+        id: key,
+      });
       value.statuses.forEach((stat) => {
-        item.list.push({
+        status_id.value.list.push({
           name: stat.name,
           value: key + "-" + stat.id,
           id: stat.id,
@@ -191,9 +203,11 @@ export function useDocuments() {
     });
   };
 
-  fillStatuses();
   const getDocuments = async () => {
-    await store.dispatch("getDocuments", store.state.documents.filters);
+    await Promise.all([
+      fillStatuses(),
+      store.dispatch("getDocuments", store.state.documents.filters),
+    ]);
     fillDocuments();
   };
 
