@@ -233,6 +233,7 @@ export default {
           const item = {
             id: val.id,
             fields: val.fields,
+            comment: val.fields.rison,
           };
           item.fields[val.fields.whToCancel.value].count =
             item.fields[val.fields.whToCancel.value].count -
