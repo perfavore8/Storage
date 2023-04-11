@@ -9,6 +9,9 @@ import account from "./modules/account";
 import analytics from "./modules/analytics";
 import tasks from "./modules/tasks";
 import orders from "./modules/orders";
+import widjetCategories from "./modulesWidget/categoriesW";
+import widjetProducts from "./modulesWidget/productsW";
+import widjetFields from "./modulesWidget/fieldsW";
 
 export default createStore({
   modules: {
@@ -22,5 +25,8 @@ export default createStore({
     analytics,
     tasks,
     orders,
+    widjetCategories,
+    widjetProducts,
+    widjetFields,
   },
 });
