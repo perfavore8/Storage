@@ -1,13 +1,14 @@
 <template>
   <div class="app">
     <div class="header">
-      <AppRadioBtnsGroup
+      <AppRadioBtnsGroupUnderlined
+        class="w-full"
         :list="tabs.list"
         :selected="tabs.selected"
         @select="(option) => tabs.select(option)"
       />
     </div>
-    <div class="content">
+    <div class="content mt-4">
       <component :is="tabs.selected.code" />
     </div>
   </div>
@@ -15,12 +16,17 @@
 
 <script>
 import { reactive } from "vue";
-import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
 import ProductsTab from "@/components/AddToDealSelections/ProductsTab.vue";
 import DocumentsTab from "@/components/AddToDealSelections/DocumentsTab.vue";
 import ClientTab from "@/components/AddToDealSelections/ClientTab.vue";
+import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 export default {
-  components: { AppRadioBtnsGroup, ProductsTab, DocumentsTab, ClientTab },
+  components: {
+    ProductsTab,
+    DocumentsTab,
+    ClientTab,
+    AppRadioBtnsGroupUnderlined,
+  },
   setup() {
     const tabs = reactive({
       selected: { name: "Товары", value: "products", code: "ProductsTab" },

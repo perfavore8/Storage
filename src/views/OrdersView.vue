@@ -6,7 +6,7 @@
     <div class="wrapper">
       <div class="w-full flex justify-end" v-if="isTest">
         <button class="btn btn_light_yellow" @click="addToDeal()">
-          Добавить к сделке
+          Новый заказ
         </button>
       </div>
       <OrdersFilters v-if="false" />

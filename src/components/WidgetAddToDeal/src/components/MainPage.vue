@@ -483,7 +483,6 @@ export default {
     width: 100%;
     height: 100%;
     .header {
-      margin-bottom: 30px;
     }
     .content::-webkit-scrollbar {
       width: 0;
