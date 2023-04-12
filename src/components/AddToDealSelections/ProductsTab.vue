@@ -1,7 +1,10 @@
 <template>
-  <div class="grid grid-cols-2 gap-10 mx-auto justify-items-stretch">
-    <main-page />
+  <div class="grid grid-cols-4 gap-10 mx-auto justify-items-stretch">
+    <div class="col-span-2">
+      <main-page />
+    </div>
     <ProductsTabFields />
+    кастомные поля
   </div>
 </template>
 
