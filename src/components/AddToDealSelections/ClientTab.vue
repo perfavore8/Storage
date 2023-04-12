@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-3 justify-items-center items-start w-full mx-auto gap-10 mt-4"
+    class="grid grid-cols-3 justify-items-center items-start w-4/5 mx-auto gap-10 mt-4"
   >
     <div
       class="max-w-md min-w-[40%] w-fit text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"

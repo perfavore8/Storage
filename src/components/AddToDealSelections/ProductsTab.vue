@@ -1,8 +1,9 @@
 <template>
   <div
-    class="grid grid-cols-4 gap-10 mx-auto justify-items-stretch items-start"
+    class="grid grid-cols-3 gap-10 mx-auto justify-items-stretch items-start w-4/5"
   >
-    <div class="col-span-2">
+    <div>
+      <h2 class="font-semibold text-gray-700 mb-4">Список позиций</h2>
       <main-page />
     </div>
     <ProductsTabFields />

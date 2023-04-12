@@ -2,7 +2,7 @@
   <div class="app">
     <div class="header">
       <AppRadioBtnsGroupUnderlined
-        class="w-full"
+        class="w-4/5"
         :list="tabs.list"
         :selected="tabs.selected"
         @select="(option) => tabs.select(option)"
