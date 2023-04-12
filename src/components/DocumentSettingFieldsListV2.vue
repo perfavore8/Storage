@@ -1,22 +1,39 @@
 <template>
   <div class="list">
-    <div class="row" v-for="row in list" :key="row">
-      <div class="title">{{ row.title }}</div>
-      <div class="mb-2">
-        <small>{{ row.description }}</small>
+    <template v-if="Array.isArray(list)">
+      <div class="row" v-for="row in list" :key="row">
+        <div class="title">{{ row.title }}</div>
+        <div class="mb-2">
+          <small>{{ row.description }}</small>
+        </div>
+        <div class="fields" v-if="row.list">
+          <button
+            class="field"
+            v-for="[value, name] in Object.entries(row.list)"
+            :key="value"
+            @click="copy(value)"
+          >
+            {{ name }}
+          </button>
+          <span v-show="false"></span>
+        </div>
       </div>
-      <div class="fields" v-if="row.list">
-        <button
-          class="field"
-          v-for="[value, name] in Object.entries(row.list)"
-          :key="value"
-          @click="copy(value)"
-        >
-          {{ name }}
-        </button>
-        <span v-show="false"></span>
+    </template>
+    <template v-else>
+      <div class="row">
+        <div class="fields">
+          <button
+            class="field"
+            v-for="[value, name] in Object.entries(list)"
+            :key="value"
+            @click="copy(value)"
+          >
+            {{ name }}
+          </button>
+          <span v-show="false"></span>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
