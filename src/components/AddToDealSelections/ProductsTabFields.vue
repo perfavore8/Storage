@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4 justify-center items-center">
-    <h2 class="font-semibold text-gray-700">В РЕЗЕРВЕ</h2>
+    <h2 class="font-semibold text-gray-700 w-full text-start">В РЕЗЕРВЕ</h2>
     <div
       class="max-w-md min-w-[40%] w-fit text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
     >
