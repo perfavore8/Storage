@@ -80,6 +80,17 @@ export default {
       context.commit("update_templates", json.templates);
       context.commit("update_config", json.config);
     },
+    async get_documents_v2(context) {
+      const url = BaseURL + "document/listV2";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("update_templates", json.templates);
+      context.commit("update_config", json.config);
+    },
     async delete_template(context, params) {
       const url = BaseURL + "document/delete";
       await fetch(url + preparation_params(params), {

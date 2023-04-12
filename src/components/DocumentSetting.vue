@@ -17,9 +17,13 @@
     </template>
   </document-setting-add-new>
   <document-setting-fields
-    v-if="showFields"
+    v-if="showFields && !isTest"
     @close="close_fields"
   ></document-setting-fields>
+  <DocumentSettingFieldsV2
+    v-if="showFields && isTest"
+    @close="close_fields"
+  ></DocumentSettingFieldsV2>
   <div class="app" ref="app" @click="show_settings ? close_settings() : null">
     <div class="backdrop_with_filter" @click="close()" />
     <div class="container">
@@ -164,6 +168,7 @@
 import SelectorVue from "@/components/SelectorVue.vue";
 import DocumentSettingAddNew from "@/components/DocumentSettingAddNew.vue";
 import DocumentSettingFields from "@/components/DocumentSettingFields.vue";
+import DocumentSettingFieldsV2 from "@/components/DocumentSettingFieldsV2.vue";
 import DocumentSettingDocRow from "@/components/DocumentSettingDocRow.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 export default {
@@ -171,6 +176,7 @@ export default {
     SelectorVue,
     DocumentSettingAddNew,
     DocumentSettingFields,
+    DocumentSettingFieldsV2,
     DocumentSettingDocRow,
     BtnsSaveClose,
   },
@@ -206,6 +212,9 @@ export default {
     account() {
       return this.$store.state.account.account;
     },
+    isTest() {
+      return this.$store.state.account.account.id == 1;
+    },
     leadFieldsList() {
       const list = [];
       Object.entries(this.$store.state.account.leadFieldsList).map((val) => {
@@ -222,8 +231,12 @@ export default {
     },
   },
   async mounted() {
+    if (this.isTest) {
+      await this.$store.dispatch("get_documents_v2");
+    } else {
+      this.$store.dispatch("get_documents");
+    }
     await Promise.all([
-      this.$store.dispatch("get_documents"),
       this.$store.dispatch("get_account"),
       this.$store.dispatch("getLeadFieldsList"),
     ]);
