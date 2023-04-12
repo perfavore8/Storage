@@ -6,15 +6,16 @@
       <main-page />
     </div>
     <ProductsTabFields />
-    кастомные поля
+    <ProductsTabCastomFields />
   </div>
 </template>
 
 <script>
 import MainPage from "../WidgetAddToDeal/src/components/MainPage.vue";
 import ProductsTabFields from "./ProductsTabFields.vue";
+import ProductsTabCastomFields from "./ProductsTabCastomFields.vue";
 export default {
-  components: { MainPage, ProductsTabFields },
+  components: { MainPage, ProductsTabFields, ProductsTabCastomFields },
   setup() {},
 };
 </script>
