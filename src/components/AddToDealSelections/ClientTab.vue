@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-3 justify-items-center w-fit mx-auto gap-10 mt-4">
+  <div class="grid grid-cols-3 justify-items-center w-full mx-auto gap-10 mt-4">
     <div
       class="max-w-md min-w-[40%] w-fit text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
       v-for="col in list"

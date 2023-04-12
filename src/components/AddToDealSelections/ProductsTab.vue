@@ -1,5 +1,7 @@
 <template>
-  <div class="grid grid-cols-4 gap-10 mx-auto justify-items-stretch">
+  <div
+    class="grid grid-cols-4 gap-10 mx-auto justify-items-stretch items-start"
+  >
     <div class="col-span-2">
       <main-page />
     </div>
