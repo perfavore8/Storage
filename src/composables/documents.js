@@ -18,6 +18,7 @@ const documents = reactive({
       selfList: true,
       url: "document/templates",
       list: [],
+      visibleIds: [148, 1],
     },
     {
       name: "Название документа",

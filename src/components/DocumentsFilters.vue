@@ -8,7 +8,11 @@
               v-for="filter in documentsTitles"
               :key="filter.code"
               :is="filter.type"
-              v-show="filter?.show?.value || true"
+              v-show="
+                filter.visibleIds
+                  ? filter.visibleIds?.includes(accountId)
+                  : true
+              "
               :list="
                 filter.isAutocomplete
                   ? filter.list

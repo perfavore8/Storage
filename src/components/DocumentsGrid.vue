@@ -19,6 +19,9 @@
                 '%',
             }"
             v-for="title in documents.titles"
+            v-show="
+              title.visibleIds ? title.visibleIds?.includes(accountId) : true
+            "
             @click="title.sortable ? sort(title.code) : null"
             :key="title"
           >
@@ -42,22 +45,30 @@
         <template v-for="row in documents.list" :key="row">
           <tr class="row">
             <template v-for="title in documents.titles" :key="title">
-              <td
-                class="item"
-                v-if="title.isDocumentLink"
-                style="padding: 5px 10px 5px 15px"
+              <template
+                v-if="
+                  title.visibleIds
+                    ? title.visibleIds?.includes(accountId)
+                    : true
+                "
               >
-                <a
-                  target="black"
-                  class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
-                  :href="row.document_link"
+                <td
+                  class="item"
+                  v-if="title.isDocumentLink"
+                  style="padding: 5px 10px 5px 15px"
                 >
+                  <a
+                    target="black"
+                    class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
+                    :href="row.document_link"
+                  >
+                    {{ row[title.code] }}
+                  </a>
+                </td>
+                <td class="item cursor-pointer" v-else>
                   {{ row[title.code] }}
-                </a>
-              </td>
-              <td class="item cursor-pointer" v-else>
-                {{ row[title.code] }}
-              </td>
+                </td>
+              </template>
             </template>
           </tr>
         </template>
@@ -94,6 +105,8 @@ export default {
       order_by: null,
       order: "",
     });
+
+    const accountId = computed(() => store.state.account.account.id);
 
     const meta = computed(() => store.state.orders.meta);
     const page = computed(() => {
@@ -144,6 +157,7 @@ export default {
       page,
       total,
       meta,
+      accountId,
     };
   },
 };
