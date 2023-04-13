@@ -458,7 +458,9 @@ export default {
           sum:
             (posTotalSum ? Math.round(Number(posTotalSum) * 100) / 100 : "") +
             " " +
-            order.price_currency,
+            order.price_currency
+              ? order.price_currency
+              : "",
           stat: this.statList.find((el) => el.value == order.status)?.name,
           poz: poz.length,
           img: "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png",
