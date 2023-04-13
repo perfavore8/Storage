@@ -288,11 +288,11 @@ export default {
       );
     },
     set_contact_name_type_options() {
-      this.$store.state.documents.config.contact_name_types.forEach(
+      this.$store.state.documents.config.contact_name_types?.forEach(
         (val, idx) =>
           this.contact_name_type_options.push({ name: val, value: idx })
       );
-      this.contact_name_type_options.forEach((val) =>
+      this.contact_name_type_options?.forEach((val) =>
         val.value == this.$store.state.account.account.config.contact_name_type
           ? (this.contact_name_type = val)
           : null
