@@ -456,7 +456,7 @@ export default {
           otv: order.responsible_name,
           date: this.dateFormater(order.created_at),
           sum:
-            (posTotalSum ? Math.round(posTotalSum * 100) / 100 : "") +
+            (posTotalSum ? Math.round(Number(posTotalSum) * 100) / 100 : "") +
             " " +
             order.price_currency,
           stat: this.statList.find((el) => el.value == order.status)?.name,
