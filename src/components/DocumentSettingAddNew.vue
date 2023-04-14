@@ -102,7 +102,6 @@ export default {
       type: { name: "docx", value: 1 },
       export_type_options: [],
       export_type: { name: "Исходный", value: 1 },
-      pipelines_options: [],
       lead_fields_options: [],
       try_accept: false,
       name: "",
@@ -136,7 +135,6 @@ export default {
     this.$store.state.documents.config.export_type?.forEach((val, idx) =>
       this.export_type_options.push({ name: val, value: idx })
     );
-    this.set_pipelines_options();
     this.set_lead_fields_options();
     nextTick(() => this.add_cur_doc());
   },
@@ -247,24 +245,6 @@ export default {
           "name"
         );
       }
-    },
-    set_pipelines_options() {
-      const pipelines = Object.entries(
-        this.$store.state.documents.config.pipelines
-      );
-      pipelines.forEach((val) => {
-        const idx = val[0];
-        const optgroup = val[1].name;
-        this.pipelines_options.push({ name: optgroup, value: "optgroup" });
-        const list = Object.entries(val[1].statuses);
-        list.forEach((pip) =>
-          this.pipelines_options.push({
-            name: pip[1],
-            value: idx + "_" + pip[0],
-            optgroup: true,
-          })
-        );
-      });
     },
     set_lead_fields_options() {
       this.lead_fields_options.push({ name: "Не выбрано", value: -1 });
