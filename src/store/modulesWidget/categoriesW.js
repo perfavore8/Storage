@@ -50,6 +50,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {});
       response = await res.json();
+      context.commit("update_fields_properties2", response);
 
       return response;
     },

@@ -7,13 +7,17 @@ export default {
     fields: [],
     all_fields: [],
     tableConfig: {},
+    showTableSettings: false,
   },
   getters: {},
   mutations: {
+    toggleShowTableSettings(state, value) {
+      state.showTableSettings = value;
+    },
     updateFields(state, value) {
       state.fields = [...value];
     },
-    updateTableConfig(state, value) {
+    updateTableConfigW(state, value) {
       state.tableConfig = { ...value };
     },
     update_all_fields(state, value) {
@@ -55,8 +59,23 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {});
       response = await res.json();
-      context.commit("updateTableConfig", response?.table);
+      context.commit("updateTableConfigW", response?.table);
 
+      return response;
+    },
+    async updateTableConfigW(context, params) {
+      const url = BaseURL + "products/filtered/config/update";
+      let response = [];
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      response = await res.json();
+      context.commit("updateTableConfigW", response?.table);
       return response;
     },
   },
