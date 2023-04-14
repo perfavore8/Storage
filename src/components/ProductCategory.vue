@@ -523,6 +523,7 @@ export default {
   // box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
 }
 .opened_close_remove_modal {
+  z-index: 201;
   pointer-events: none;
   filter: blur(1px);
 }

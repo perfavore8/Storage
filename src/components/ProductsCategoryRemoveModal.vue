@@ -1,5 +1,6 @@
 <template>
   <div class="bg">
+    <div class="backdrop filter" />
     <div class="modal">
       <h3 class="header">Подтверждаете удаление категории?</h3>
       <p class="text">
@@ -31,6 +32,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/app.scss";
 .bg {
   width: 100%;
   height: 100%;
@@ -39,8 +41,14 @@ export default {
   left: 0;
   z-index: 1001;
   font-family: "Inter";
+  .filter {
+    backdrop-filter: blur(1px);
+    z-index: 1002;
+  }
 
   .modal {
+    position: relative;
+    z-index: 1003;
     padding: 20px;
     border-radius: 0.3rem;
     filter: none !important;
