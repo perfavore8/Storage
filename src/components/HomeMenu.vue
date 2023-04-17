@@ -200,9 +200,26 @@ export default {
     const openTaskCenter = () => store.commit("openCloseTaskCenter", true);
     const closeTaskCenter = () => store.commit("openCloseTaskCenter", false);
     const open_close_sync = () => store.commit("open_close_sync");
-    const syncAmoGs = () => store.dispatch("syncAmoGs");
-    const syncGsAmo = () => store.dispatch("syncGsAmo");
-    const sync1C = () => store.dispatch("sync1C");
+    const syncAmoGs = () => {
+      store.dispatch("syncAmoGs");
+      addNotification(
+        0,
+        "Добавлена задача",
+        "Синхронизировать товары amoCRM -> GoСклад"
+      );
+    };
+    const syncGsAmo = () => {
+      store.dispatch("syncGsAmo");
+      addNotification(
+        0,
+        "Добавлена задача",
+        "Синхронизировать товары GoСклад -> amoCRM"
+      );
+    };
+    const sync1C = () => {
+      store.dispatch("sync1C");
+      addNotification(0, "Добавлена задача", "Синхронизировать остатки с 1C");
+    };
     const open_close_settings = () => store.commit("open_close_settings");
     const close_settings = () => store.commit("close_settings");
     const open_edit_stuff = () => store.commit("open_close_edit_stuff", true);
