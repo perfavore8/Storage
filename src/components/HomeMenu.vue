@@ -44,7 +44,7 @@
       </template>
     </div>
 
-    <div class="ref" v-if="!oneC && !is_empty_amo_product_list && isColored">
+    <div class="ref" v-if="isColored">
       <button
         class="ref_2_logo btn"
         @click="open_close_sync()"
@@ -62,15 +62,24 @@
             class="modal_settings modal_sync"
             @click.stop="open_close_sync()"
           >
-            <a>
-              <div class="modal_container" @click="syncAmoGs()">
-                Синхронизировать товары amoCRM -> GoСклад
-              </div>
-            </a>
-            <template v-if="isTest">
+            <template v-if="!is_empty_amo_product_list">
               <a>
-                <div class="modal_container" @click="syncGsAmo()">
-                  Синхронизировать товары GoСклад -> amoCRM
+                <div class="modal_container" @click="syncAmoGs()">
+                  Синхронизировать товары amoCRM -> GoСклад
+                </div>
+              </a>
+              <template v-if="isTest">
+                <a>
+                  <div class="modal_container" @click="syncGsAmo()">
+                    Синхронизировать товары GoСклад -> amoCRM
+                  </div>
+                </a>
+              </template>
+            </template>
+            <template v-if="isTest && oneC">
+              <a>
+                <div class="modal_container" @click="sync1C()">
+                  Синхронизировать остатки с 1C
                 </div>
               </a>
             </template>
@@ -189,6 +198,7 @@ export default {
     const open_close_sync = () => store.commit("open_close_sync");
     const syncAmoGs = () => store.dispatch("syncAmoGs");
     const syncGsAmo = () => store.dispatch("syncGsAmo");
+    const sync1C = () => store.dispatch("sync1C");
     const open_close_settings = () => store.commit("open_close_settings");
     const close_settings = () => store.commit("close_settings");
     const open_edit_stuff = () => store.commit("open_close_edit_stuff", true);
@@ -216,6 +226,7 @@ export default {
       open_close_sync,
       syncAmoGs,
       syncGsAmo,
+      sync1C,
       open_close_settings,
       close_settings,
       open_edit_stuff,

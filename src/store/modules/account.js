@@ -228,5 +228,13 @@ export default {
       context.dispatch("get_account");
       return json;
     },
+    async sync1C() {
+      const url = BaseURL + "account/genezis/sync";
+      await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+    },
   },
 };
