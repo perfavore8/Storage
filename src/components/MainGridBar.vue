@@ -60,7 +60,10 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { useNotification } from "@/composables/notification";
+import store from "@/store";
+import { computed } from "@vue/reactivity";
+import { reactive, ref } from "vue";
 export default {
   props: {
     fields: {
@@ -81,33 +84,28 @@ export default {
       type: Object,
     },
   },
-  data() {
-    return {
-      order: {
-        code: "",
-        prev_order: "",
-      },
-      disableExportXlsx: false,
-      allSelectedProducts: false,
+  setup(props, context) {
+    const order = reactive({
+      code: "",
+      prev_order: "",
+    });
+    const sort = (code) => {
+      const order_values = ["asc", "desc"];
+      let new_order = "";
+      order.code === code && order.prev_order == order_values[0]
+        ? (new_order = order_values[1])
+        : (new_order = order_values[0]);
+      Object.assign(order, { code: code, prev_order: new_order });
+      if (code.split(".").length > 1) code = code.split(".").join("->");
+      context.emit("sort", code, new_order);
     };
-  },
-  computed: {
-    ...mapGetters(["fields"]),
-    collsCount() {
-      return this.tableConfig.length;
-    },
-    oneC() {
-      return this.$store.state.account.account?.config?.g_enabled;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
-    },
-    productsParams() {
-      return this.$store.state.products.productsParams;
-    },
-    width() {
+
+    const collsCount = computed(() => props.tableConfig.length);
+    const oneC = computed(() => store.state.account.account?.config?.g_enabled);
+    const isTest = computed(() => store.state.account?.account?.id == 1);
+    const width = computed(() => {
       let arr = [];
-      this.fields.forEach((field) => {
+      props.fields.forEach((field) => {
         let a = 0;
         if (field.type == 9) a = 90;
         if (field.type == 7 || field.type == 8) a = 150;
@@ -115,41 +113,20 @@ export default {
       });
 
       return arr;
-    },
-  },
-  methods: {
-    isShow(code) {
-      let res = false;
-      Object.entries(this.tableConfig).forEach((val) => {
-        if (val[0].split(".")[0] == code && val[1]?.visible) res = true;
-      });
-      return res;
-    },
-    dropOrder() {
-      this.order = {
-        code: "",
-        prev_order: "",
-      };
-    },
-    sort(code) {
-      const order_values = ["asc", "desc"];
-      let new_order = "";
-      this.order.code === code && this.order.prev_order == order_values[0]
-        ? (new_order = order_values[1])
-        : (new_order = order_values[0]);
-      this.order = { code: code, prev_order: new_order };
-      if (code.split(".").length > 1) code = code.split(".").join("->");
-      this.$emit("sort", code, new_order);
-    },
-    async exportXlsx() {
-      this.disableExportXlsx = true;
-      this.$store.commit("openCloseTaskCenter", true);
-      setTimeout(() => {
-        this.$store.commit("openCloseTaskCenter", false);
-      }, 5000);
-      const { sort, filter } = this.productsParams;
+    });
+
+    const { addNotification } = useNotification();
+    const productsParams = computed(() => store.state.products.productsParams);
+    const disableExportXlsx = ref(false);
+    const exportXlsx = async () => {
+      disableExportXlsx.value = true;
+      // store.commit("openCloseTaskCenter", true);
+      // setTimeout(() => {
+      //   store.commit("openCloseTaskCenter", false);
+      // }, 5000);
+      const { sort, filter } = productsParams.value;
       const sortedTableConfig = [];
-      Object.entries(this.tableConfig)
+      Object.entries(props.tableConfig)
         .filter((val) => val[1].visible)
         .sort((a, b) => {
           if (a[1].sort > b[1].sort) return 1;
@@ -162,21 +139,41 @@ export default {
         filter: filter,
         config: sortedTableConfig,
       };
-      this.$store.dispatch("exportXlsx", params);
-      // const blob = await this.$store.dispatch("exportXlsx", params);
+      store.dispatch("exportXlsx", params);
+      addNotification(0, "Добавлена задача", "Экспорт списка товаров в xlsx");
+      // const blob = await store.dispatch("exportXlsx", params);
       // const file = window.URL.createObjectURL(blob);
       // window.location.assign(file);
-      // this.disableExportXlsx = false;
-    },
-    changeAllSelectedProducts() {
-      this.$emit("changeAllSelectedProducts", this.allSelectedProducts);
-    },
-    dropAllSelectedProducts() {
-      this.allSelectedProducts = false;
-    },
-    openTableSettings() {
-      this.$store.commit("open_table_settings");
-    },
+      // disableExportXlsx.value = false;
+    };
+
+    const allSelectedProducts = ref(false);
+    const changeAllSelectedProducts = () => {
+      context.emit("changeAllSelectedProducts", allSelectedProducts.value);
+    };
+    const dropAllSelectedProducts = () => {
+      allSelectedProducts.value = false;
+    };
+
+    const openTableSettings = () => {
+      store.commit("open_table_settings");
+    };
+
+    return {
+      order,
+      sort,
+      collsCount,
+      oneC,
+      isTest,
+      width,
+      productsParams,
+      disableExportXlsx,
+      exportXlsx,
+      allSelectedProducts,
+      changeAllSelectedProducts,
+      dropAllSelectedProducts,
+      openTableSettings,
+    };
   },
 };
 </script>
