@@ -58,14 +58,15 @@
       <template v-if="show_sync">
         <div class="backdrop" @click="open_close_sync()" />
         <transition name="modal">
-          <div
-            class="modal_settings modal_sync"
-            @click.stop="is_empty_amo_product_list ? null : open_close_sync()"
-          >
+          <div class="modal_settings modal_sync">
             <a :class="{ disable: is_empty_amo_product_list }">
               <div
                 class="modal_container"
-                @click="is_empty_amo_product_list ? null : syncAmoGs()"
+                @click="
+                  is_empty_amo_product_list
+                    ? null
+                    : (syncAmoGs(), open_close_sync())
+                "
               >
                 Синхронизировать товары amoCRM -> GoСклад
               </div>
@@ -74,7 +75,11 @@
               <a :class="{ disable: is_empty_amo_product_list }">
                 <div
                   class="modal_container"
-                  @click="is_empty_amo_product_list ? null : syncGsAmo()"
+                  @click="
+                    is_empty_amo_product_list
+                      ? null
+                      : (syncGsAmo(), open_close_sync())
+                  "
                 >
                   Синхронизировать товары GoСклад -> amoCRM
                 </div>
@@ -82,7 +87,10 @@
             </template>
             <template v-if="oneC">
               <a>
-                <div class="modal_container" @click="sync1C()">
+                <div
+                  class="modal_container"
+                  @click="sync1C(), open_close_sync()"
+                >
                   Синхронизировать остатки с 1C
                 </div>
               </a>

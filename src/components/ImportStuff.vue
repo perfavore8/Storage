@@ -102,9 +102,12 @@ import SelectorVue from "./SelectorVue.vue";
 import { useImportStuffFields } from "@/composables/importStuffFields";
 import { reactive, ref } from "@vue/reactivity";
 import { computed, nextTick, onMounted, watch } from "@vue/runtime-core";
+import { useNotification } from "@/composables/notification";
 export default {
   components: { SelectorVue, ImportStuffSelector, BtnsSaveClose },
   setup() {
+    const { addNotification } = useNotification();
+
     const {
       selectedImportStuffFields,
       importStuffFields,
@@ -277,6 +280,7 @@ export default {
           ? templates.newTemplateName
           : templates.selected.name;
       store.dispatch("importStart", params);
+      addNotification(0, "Добавлена задача", "Импорт товаров");
       close();
     };
 
