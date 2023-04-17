@@ -60,23 +60,27 @@
         <transition name="modal">
           <div
             class="modal_settings modal_sync"
-            @click.stop="open_close_sync()"
+            @click.stop="is_empty_amo_product_list ? null : open_close_sync()"
           >
-            <template v-if="!is_empty_amo_product_list">
-              <a>
-                <div class="modal_container" @click="syncAmoGs()">
-                  Синхронизировать товары amoCRM -> GoСклад
+            <a :class="{ disable: is_empty_amo_product_list }">
+              <div
+                class="modal_container"
+                @click="is_empty_amo_product_list ? null : syncAmoGs()"
+              >
+                Синхронизировать товары amoCRM -> GoСклад
+              </div>
+            </a>
+            <template v-if="isTest">
+              <a :class="{ disable: is_empty_amo_product_list }">
+                <div
+                  class="modal_container"
+                  @click="is_empty_amo_product_list ? null : syncGsAmo()"
+                >
+                  Синхронизировать товары GoСклад -> amoCRM
                 </div>
               </a>
-              <template v-if="isTest">
-                <a>
-                  <div class="modal_container" @click="syncGsAmo()">
-                    Синхронизировать товары GoСклад -> amoCRM
-                  </div>
-                </a>
-              </template>
             </template>
-            <template v-if="isTest && oneC">
+            <template v-if="oneC">
               <a>
                 <div class="modal_container" @click="sync1C()">
                   Синхронизировать остатки с 1C
@@ -358,6 +362,16 @@ export default {
       }
       a:hover {
         background-color: #f5f5f5;
+      }
+      .disable {
+        // background-color: #c5c5c5 !important;
+        .modal_container {
+          color: #aeaeae;
+          cursor: default;
+        }
+      }
+      .disable:hover {
+        background-color: #e7e7e732;
       }
     }
     .tasks {
