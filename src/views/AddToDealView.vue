@@ -1,6 +1,26 @@
 <template>
   <div class="app">
     <div class="header">
+      <button
+        class="bg-slate-400 bg-opacity-90 p-2 h-fit w-fit rounded-xl absolute left-0 hover:shadow-sm hover:drop-shadow-md outline-none focus-visible:drop-shadow-md"
+        @click="back()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="none"
+            stroke="#fff"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M11 18h3.75a5.25 5.25 0 1 0 0-10.5H5M7.5 4L4 7.5L7.5 11"
+          />
+        </svg>
+      </button>
       <AppRadioBtnsGroupUnderlined
         class="w-4/5"
         :list="tabs.list"
@@ -16,6 +36,7 @@
 
 <script>
 import { reactive } from "vue";
+import router from "@/router";
 import ProductsTab from "@/components/AddToDealSelections/ProductsTab.vue";
 import DocumentsTab from "@/components/AddToDealSelections/DocumentsTab.vue";
 import ClientTab from "@/components/AddToDealSelections/ClientTab.vue";
@@ -40,7 +61,9 @@ export default {
       },
     });
 
-    return { tabs };
+    const back = () => router.push("/");
+
+    return { tabs, back };
   },
 };
 </script>
@@ -58,10 +81,12 @@ export default {
   text-align: center;
 
   .header {
+    position: relative;
     margin-top: 20px;
     z-index: 50;
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
   }
 }

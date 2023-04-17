@@ -5,8 +5,8 @@
     </div>
     <div class="wrapper">
       <div class="w-full flex justify-end" v-if="isTest">
-        <button class="btn btn_light_yellow" @click="addToDeal()">
-          Новый заказ
+        <button class="btn btn_dark_blue" @click="addToDeal()">
+          Создать заказ
         </button>
       </div>
       <OrdersFilters v-if="false" />
