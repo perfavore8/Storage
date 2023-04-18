@@ -10,7 +10,7 @@
       v-if="all_fields.length && tableConfig != {} && sortedFields.length"
       :fields="all_fields"
       :tableConfig="tableConfig"
-      :sortedFields="sortedFields"
+      :sortedFields="sortedFields2"
       @confirm="() => get_products(productsParams)"
     />
     <div class="main">
@@ -206,6 +206,16 @@ export default {
     },
     sortedFields() {
       const list = Object.entries(this.tableConfig);
+      return list
+        .sort((a, b) => {
+          if (a[1].sort > b[1].sort) return 1;
+          if (a[1].sort == b[1].sort) return 0;
+          if (a[1].sort < b[1].sort) return -1;
+        })
+        .filter((val) => val[1]?.visible);
+    },
+    sortedFields2() {
+      const list = Object.entries(this.tableConfig);
       return list.sort((a, b) => {
         if (a[1].sort > b[1].sort) return 1;
         if (a[1].sort == b[1].sort) return 0;
@@ -230,7 +240,7 @@ export default {
     await Promise.all([
       this.$store.dispatch("getTableConfigW", {
         account_id: 30214471,
-        code: "whs",
+        code: "widget",
       }),
       this.$store.dispatch("get_fields_properties2W", {
         account_id: 30214471,
@@ -403,7 +413,7 @@ export default {
       await Promise.all([
         this.$store.dispatch("getTableConfigW", {
           account_id: 30214471,
-          code: "whs",
+          code: "widget",
         }),
         this.$store.dispatch("getAllFieldsW", { account_id: 30214471 }),
         this.get_products(this.productsParams),

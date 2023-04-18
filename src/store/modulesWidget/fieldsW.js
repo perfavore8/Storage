@@ -67,15 +67,13 @@ export default {
       const url = BaseURL + "products/filtered/config/update";
       let response = [];
 
-      const res = await fetch(url, {
+      await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
       });
-      response = await res.json();
-      context.commit("updateTableConfigW", response?.table);
       return response;
     },
   },
