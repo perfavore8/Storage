@@ -160,7 +160,7 @@ export default {
 
       return response;
     },
-    async addProduct3(context, params) {
+    async addProduct3W(context, params) {
       context.commit("updateDisableAddToDeal", true);
       const url = BaseURL + "add-product-v3";
 
