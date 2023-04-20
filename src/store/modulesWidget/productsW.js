@@ -13,16 +13,28 @@ export default {
       links: {},
       meta: {},
     },
+    meta2: {
+      links: {},
+      meta: {},
+    },
     productsParams: {
       page: 1,
       filter: {},
       sort: {},
       per_page: 20,
     },
+    productsParams2: {
+      page: 1,
+      per_page: 12,
+    },
     selectedWirePerLead: { sources: [], value: null },
+    disableAddToDeal: false,
   },
   getters: {},
   mutations: {
+    updateDisableAddToDeal(state, value) {
+      state.disableAddToDeal = value;
+    },
     updateProducts(state, value) {
       state.products = [...value];
     },
@@ -35,8 +47,14 @@ export default {
     update_meta(state, value) {
       state.meta = { ...value };
     },
+    update_meta2(state, value) {
+      state.meta2 = { ...value };
+    },
     updateProductsParams(state, params) {
       Object.assign(state.productsParams, params);
+    },
+    updateProductsParams2(state, params) {
+      Object.assign(state.productsParams2, params);
     },
     updateSelectedWirePerLead(state, params) {
       const noOneSources = state.selectedWirePerLead.sources.length == 0;
