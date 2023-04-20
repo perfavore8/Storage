@@ -90,68 +90,88 @@ export default {
   },
   actions: {
     async getProductsAutocompleteW(context, params) {
-      const myPromise = await new Promise((resolve) => {
-        const url = BaseURL + "get-products-autocomplete";
-        let response = [];
-        (async () => {
-          const res = await fetch(url + preparation_params(params), {});
-          response = await res.json();
-          context.commit("updateProductsAutocomplete", response);
-          resolve(response);
-        })();
-      });
-      return myPromise;
+      const url = BaseURL + "get-products-autocomplete";
+
+      const res = await fetch(url + preparation_params(params), {});
+      const response = await res.json();
+      context.commit("updateProductsAutocomplete", response);
+
+      return response;
     },
     async getProductsW(context, params) {
-      const myPromise = await new Promise((resolve) => {
-        const url = BaseURL + "products";
-        let response = [];
-        (async () => {
-          const res = await fetch(url + preparation_params(params), {});
-          response = await res.json();
-          context.commit("updateProducts", response);
-          resolve(response);
-        })();
+      const url = BaseURL + "products";
+
+      const res = await fetch(url + preparation_params(params), {});
+      const response = await res.json();
+      context.commit("updateProducts", response);
+
+      return response;
+    },
+    async getProducts2W(context, params) {
+      const url = BaseURL + "products-v2";
+
+      const res = await fetch(url + preparation_params(params), {});
+      const response = await res.json();
+      context.commit("updateProducts", response.data);
+      context.commit("update_meta2", {
+        meta: response.meta,
+        links: response.links,
       });
-      return myPromise;
+
+      return response;
     },
     async getAllProductsW(context, params) {
-      const myPromise = await new Promise((resolve) => {
-        const url = BaseURL + "products/filtered";
-        let response = [];
-        (async () => {
-          const res = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-          });
-          response = await res.json();
-          context.commit("updateAllProducts", response.data);
-          context.commit("update_meta", {
-            links: response.links,
-            meta: response.meta,
-          });
-          resolve(response);
-        })();
+      const url = BaseURL + "products/filtered";
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
       });
-      return myPromise;
+      const response = await res.json();
+      context.commit("updateAllProducts", response.data);
+      context.commit("update_meta", {
+        links: response.links,
+        meta: response.meta,
+      });
+
+      return response;
     },
     async addProductW(context, params) {
+      context.commit("updateDisableAddToDeal", true);
       const url = BaseURL + "add-product";
       let response = [];
       const res = await fetch(url + preparation_params(params));
       response = await res.json();
+      context.commit("updateDisableAddToDeal", false);
 
       return response;
     },
     async addProduct2W(context, params) {
+      context.commit("updateDisableAddToDeal", true);
       const url = BaseURL + "add-product-v2";
       let response = [];
 
       const res = await fetch(url + preparation_params(params));
       response = await res.json();
+      context.commit("updateDisableAddToDeal", false);
+
+      return response;
+    },
+    async addProduct3(context, params) {
+      context.commit("updateDisableAddToDeal", true);
+      const url = BaseURL + "add-product-v3";
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      context.commit("updateDisableAddToDeal", false);
 
       return response;
     },
