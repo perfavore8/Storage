@@ -89,6 +89,12 @@ export default {
       code: "",
       prev_order: "",
     });
+    const dropOrder = () => {
+      Object.assign(order, {
+        code: "",
+        prev_order: "",
+      });
+    };
     const sort = (code) => {
       const order_values = ["asc", "desc"];
       let new_order = "";
@@ -173,6 +179,7 @@ export default {
       changeAllSelectedProducts,
       dropAllSelectedProducts,
       openTableSettings,
+      dropOrder,
     };
   },
 };
