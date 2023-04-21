@@ -245,6 +245,14 @@ export default {
       await this.$store.dispatch("update_user", { is_in_wh: this.is_in_wh });
       this.updateProducts();
     },
+    selectedWH() {
+      this.$store.commit("updateProductsParams", {
+        warehouse:
+          this.selectedWH.value === "whs" || this.isServicePage
+            ? ""
+            : this.selectedWH.value,
+      });
+    },
   },
   methods: {
     confirmFilters() {

@@ -344,8 +344,6 @@ export default {
     },
     async get_products(params) {
       if (this.isServicePage.value) params = { ...params, is_service: 1 };
-      if (this.selectedWH.value != "whs" && !this.isServicePage.value)
-        params = { ...params, warehouse: this.selectedWH.value };
       await this.$store.dispatch("get_products", params);
       this.setSelectedProducts();
       this.bar?.dropAllSelectedProducts();
