@@ -62,7 +62,7 @@ export default {
       const json = await res.json();
       context.commit("updateFields", json);
     },
-    async addClientsContacts(context, params) {
+    async addClientsContactsField(context, params) {
       const url = BaseURL + "contact/field/add";
       await fetch(url + preparation_params(params), {
         method: "POST",
@@ -72,7 +72,7 @@ export default {
       });
       context.dispatch("getClientsContactsList");
     },
-    async updateClientsContacts(context, params) {
+    async updateClientsContactsField(context, params) {
       const url = BaseURL + "contact/field/update";
       await fetch(url + preparation_params(params), {
         method: "POST",
@@ -82,7 +82,7 @@ export default {
       });
       context.dispatch("getClientsContactsList");
     },
-    async deleteClientsContacts(context, params) {
+    async deleteClientsContactsField(context, params) {
       const url = BaseURL + "contact/field/delete";
       await fetch(url + preparation_params(params), {
         method: "POST",

@@ -67,8 +67,9 @@ export default {
 
     const close = () => context.emit("close");
     const accept = () => {
-      store.dispatch("addClientsContacts", copyItem);
+      // store.dispatch("addClientsContacts", copyItem);
       context.emit("accept");
+      close();
     };
 
     const change_value = (value, code) => (copyItem[code] = value);
