@@ -57,6 +57,11 @@ const routes = [
     name: "addToDeal",
     component: () => import("../views/AddToDealView.vue"),
   },
+  {
+    path: "/clients",
+    name: "clients",
+    component: () => import("../views/ClientsView.vue"),
+  },
 ];
 
 const router = createRouter({
