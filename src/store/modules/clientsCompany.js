@@ -9,13 +9,13 @@ export default {
   },
   getters: {},
   mutations: {
-    updateClientList(state, value) {
+    updateCompanyList(state, value) {
       state.list = [...value];
     },
-    updateClientTypes(state, value) {
+    updateCompanyTypes(state, value) {
       state.types = [...Object.values(value)];
     },
-    updateClientFields(state, value) {
+    updateCompanyFields(state, value) {
       const componentsList = {
         1: "EditInteger",
         2: "EditFloat",
@@ -32,65 +32,65 @@ export default {
     },
   },
   actions: {
-    async getClientsContactsList(context) {
-      const url = BaseURL + "contact/field/list";
+    async getClientsCompanyList(context) {
+      const url = BaseURL + "company/field/list";
       const res = await fetch(url, {
         headers: {
           Authorization: TOKEN,
         },
       });
       const json = await res.json();
-      context.commit("updateClientList", json);
+      context.commit("updateCompanyList", json);
     },
-    async getClientsContactsTypes(context) {
-      const url = BaseURL + "contact/field/types";
+    async getClientsCompanyTypes(context) {
+      const url = BaseURL + "company/field/types";
       const res = await fetch(url, {
         headers: {
           Authorization: TOKEN,
         },
       });
       const json = await res.json();
-      context.commit("updateClientTypes", json);
+      context.commit("updateCompanyTypes", json);
     },
-    async getClientsContactsFields(context) {
-      const url = BaseURL + "contact/field/list";
+    async getClientsCompanyFields(context) {
+      const url = BaseURL + "company/field/list";
       const res = await fetch(url, {
         headers: {
           Authorization: TOKEN,
         },
       });
       const json = await res.json();
-      context.commit("updateClientFields", json);
+      context.commit("updateCompanyFields", json);
     },
-    async addClientsContactsField(context, params) {
-      const url = BaseURL + "contact/field/add";
+    async addClientsCompanyField(context, params) {
+      const url = BaseURL + "company/field/add";
       await fetch(url + preparation_params(params), {
         method: "POST",
         headers: {
           Authorization: TOKEN,
         },
       });
-      context.dispatch("getClientsContactsList");
+      context.dispatch("getClientsCompanyList");
     },
-    async updateClientsContactsField(context, params) {
-      const url = BaseURL + "contact/field/update";
+    async updateClientsCompanyField(context, params) {
+      const url = BaseURL + "company/field/update";
       await fetch(url + preparation_params(params), {
         method: "POST",
         headers: {
           Authorization: TOKEN,
         },
       });
-      context.dispatch("getClientsContactsList");
+      context.dispatch("getClientsCompanyList");
     },
-    async deleteClientsContactsField(context, params) {
-      const url = BaseURL + "contact/field/delete";
+    async deleteClientsCompanyField(context, params) {
+      const url = BaseURL + "company/field/delete";
       await fetch(url + preparation_params(params), {
         method: "POST",
         headers: {
           Authorization: TOKEN,
         },
       });
-      context.dispatch("getClientsContactsList");
+      context.dispatch("getClientsCompanyList");
     },
   },
 };

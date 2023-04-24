@@ -13,6 +13,7 @@ import widjetCategories from "./modulesWidget/categoriesW";
 import widjetProducts from "./modulesWidget/productsW";
 import widjetFields from "./modulesWidget/fieldsW";
 import clientsContacts from "./modules/clientsContacts";
+import clientsCompany from "./modules/clientsCompany";
 
 export default createStore({
   modules: {
@@ -30,5 +31,6 @@ export default createStore({
     widjetProducts,
     widjetFields,
     clientsContacts,
+    clientsCompany,
   },
 });
