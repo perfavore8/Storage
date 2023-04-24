@@ -241,7 +241,7 @@ export default {
       this.total.cost_sum = this.round(this.total.cost_sum);
       this.total.prib = this.round(this.total.prib);
       if (this.reportType.selected.value == "sales")
-        this.total.leads = this.total?.leads?.split(",").length;
+        this.total.leads = this.total?.leads_count;
       this.total["name"] = "Общее";
       this.total["company"] = "Общее";
       this.total["poz"] = "";
