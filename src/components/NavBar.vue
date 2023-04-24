@@ -13,6 +13,7 @@
       "
       :disabled="isNavBarDisabled"
       :key="page"
+      :style="{ order: isTest ? page.testOrder : 'unset' }"
     >
       {{ page.name }}
     </button>

@@ -7,20 +7,24 @@ export default {
         value: "orders",
         isTest: false,
         hideId: [148],
+        testOrder: 1,
       },
       {
         name: "Документы",
         value: "documents",
         isTest: false,
+        testOrder: 4,
       },
       {
         name: "Остатки",
         value: "remnants",
+        testOrder: 2,
       },
       {
         name: "Аналитика",
         value: "analytics",
         isAdmin: true,
+        testOrder: 5,
       },
       {
         name: "Архив",
@@ -31,6 +35,7 @@ export default {
         name: "Клиенты",
         value: "clients",
         isTest: true,
+        testOrder: 3,
       },
     ],
   },
