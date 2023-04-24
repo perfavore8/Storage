@@ -3,19 +3,51 @@
     <div class="header">
       <AppHeader />
     </div>
-    <div class="content"></div>
+    <div class="content">
+      <AppRadioBtnsGroupUnderlined
+        class="w-1/2 mx-auto"
+        :list="tabs.list"
+        :selected="tabs.selected"
+        @select="(option) => tabs.select(option)"
+      />
+      <ClientsSection :selectedTab="tabs.selected" />
+    </div>
   </div>
 </template>
 
 <script>
 import AppHeader from "@/components/AppHeader.vue";
+import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
+import ClientsSection from "@/components/ClientSection/ClientsSections.vue";
+import { reactive } from "vue";
 export default {
   name: "AnalyticsView",
   components: {
     AppHeader,
+    AppRadioBtnsGroupUnderlined,
+    ClientsSection,
   },
   setup() {
-    return {};
+    const tabs = reactive({
+      selected: {
+        name: "Контакты",
+        value: "contacts",
+        component: "EditContactsSection",
+      },
+      list: [
+        {
+          name: "Контакты",
+          value: "contacts",
+          component: "EditContactsSection",
+        },
+        { name: "Компании", value: "company", component: "EditCompanySection" },
+      ],
+      select: function (option) {
+        this.selected = option;
+      },
+    });
+
+    return { tabs };
   },
 };
 </script>
@@ -23,7 +55,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: 100vw;
+  width: calc(100vw - 8px);
   height: 100vh;
   padding: 0 30px;
 
