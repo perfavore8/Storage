@@ -25,6 +25,12 @@ export default {
       {
         name: "Архив",
         value: "archive",
+        isProduction: true,
+      },
+      {
+        name: "Клиенты",
+        value: "clients",
+        isTest: true,
       },
     ],
   },

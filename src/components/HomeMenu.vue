@@ -154,6 +154,9 @@
                 Настройки аккаунта
               </div>
             </a>
+            <a v-if="isTest">
+              <div class="modal_container" @click="openArchive()">Архив</div>
+            </a>
           </div>
         </transition>
       </template>
@@ -166,6 +169,7 @@ import TaskCenter from "@/components/TaskCenter.vue";
 import { computed, ref } from "@vue/runtime-core";
 import store from "@/store";
 import { useNotification } from "@/composables/notification";
+import router from "@/router";
 export default {
   components: {
     TaskCenter,
@@ -242,6 +246,7 @@ export default {
       store.commit("open_close_product_properties", true);
     const open_close_document_setting = (val) =>
       store.commit("open_close_document_setting", val);
+    const openArchive = () => router.push("/archive");
 
     return {
       showTaskCenter,
@@ -270,6 +275,7 @@ export default {
       openImportXlsl,
       closeImportXlsl,
       isColored,
+      openArchive,
     };
   },
 };

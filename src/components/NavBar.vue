@@ -7,6 +7,7 @@
       v-for="page in catalog"
       v-show="
         !(page.isTest && !isTest) &&
+        !(page.isProduction && isTest) &&
         !(page.isAdmin && !isAdmin) &&
         !page.hideId?.includes(accountId)
       "
