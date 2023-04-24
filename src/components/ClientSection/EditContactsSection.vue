@@ -2,17 +2,11 @@
   <div
     class="w-full m-4 p-4 flex flex-col gap-6 items-center rounded-xl border h-fit shadow-lg shadow-slate-100"
   >
-    <div class="w-11/12 p-5 flex flex-col gap-4">
-      <div class="row" v-for="field in fields" :key="field.id">
-        <component
-          :is="field.component"
-          :item="field.type == 5 || field.type == 5 ? field : field.name"
-          :selected_option="copyItem.fields?.[field.code]"
-          :idx="field.code"
-          @change_value="change_value"
-        />
-      </div>
-    </div>
+    <EditSectionFields
+      :fields="fields"
+      :copyItem="copyItem"
+      @change_value="change_value"
+    />
     <BtnsSaveClose :show_close="false" class="self-end" @save="accept">
       <template v-slot:other_btns>
         <button class="btn bg-transparent" @click="close()">Назад</button>
@@ -22,48 +16,36 @@
 </template>
 
 <script>
-import EditInteger from "@/components/EditItemSelections/EditInteger.vue";
-import EditFloat from "@/components/EditItemSelections/EditFloat.vue";
-import EditString from "@/components/EditItemSelections/EditString.vue";
-import EditText from "@/components/EditItemSelections/EditText.vue";
-import EditSelector from "@/components/EditItemSelections/EditSelector.vue";
-import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector.vue";
-import EditDate from "@/components/EditItemSelections/EditDate.vue";
-import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
-import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
-import { computed, onMounted, reactive } from "vue";
+import EditSectionFields from "./EditSectionFields.vue";
+import { computed, onMounted, reactive, watch } from "vue";
 import store from "@/store";
 export default {
-  components: {
-    EditInteger,
-    EditFloat,
-    EditString,
-    EditText,
-    EditSelector,
-    EditMultiSelector,
-    EditDate,
-    EditDateTime,
-    EditFlag,
-    BtnsSaveClose,
-  },
+  components: { BtnsSaveClose, EditSectionFields },
   props: {
     isNew: { type: Boolean, required: true },
     item: { type: Object, required: false },
   },
   setup(props, context) {
-    const copyItem = reactive({});
+    const copyItem = reactive({ fields: {} });
 
     const fields = computed(() => store.state.clientsContacts.fields);
 
     onMounted(async () => {
       await store.dispatch("getClientsContactsFields");
-      if (props.isNew) {
-        123;
-      } else {
+      fillCopyItem();
+    });
+
+    const fillCopyItem = () => {
+      if (!props.isNew) {
+        Object.keys(copyItem.fields).forEach((key) => {
+          delete copyItem.fields[key];
+        });
         Object.assign(copyItem, props.item);
       }
-    });
+    };
+    const itemProp = computed(() => props.item);
+    watch(itemProp, () => fillCopyItem());
 
     const close = () => context.emit("close");
     const accept = () => {
@@ -72,7 +54,7 @@ export default {
       close();
     };
 
-    const change_value = (value, code) => (copyItem[code] = value);
+    const change_value = (value, code) => (copyItem.fields[code] = value);
 
     return { copyItem, fields, close, accept, change_value };
   },

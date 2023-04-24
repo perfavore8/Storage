@@ -19,7 +19,7 @@
 import AppHeader from "@/components/AppHeader.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import ClientsSection from "@/components/ClientSection/ClientsSections.vue";
-import { reactive } from "vue";
+import { useClientsTabs } from "@/composables/clientsTabs";
 export default {
   name: "AnalyticsView",
   components: {
@@ -28,24 +28,7 @@ export default {
     ClientsSection,
   },
   setup() {
-    const tabs = reactive({
-      selected: {
-        name: "Контакты",
-        value: "contacts",
-        component: "EditContactsSection",
-      },
-      list: [
-        {
-          name: "Контакты",
-          value: "contacts",
-          component: "EditContactsSection",
-        },
-        { name: "Компании", value: "company", component: "EditCompanySection" },
-      ],
-      select: function (option) {
-        this.selected = option;
-      },
-    });
+    const { tabs } = useClientsTabs();
 
     return { tabs };
   },
