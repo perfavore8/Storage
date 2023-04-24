@@ -62,6 +62,11 @@
       <document-setting />
     </div>
   </transition>
+  <transition name="modal_window">
+    <div v-if="showClientsFieldsSettings" class="ClientsFieldsSettings">
+      <ClientsFieldsSettings />
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -77,6 +82,7 @@ import SyncSettings from "@/components/SyncSattings.vue";
 import MoveProductsBetweenWhs from "@/components/MoveProductsBetweenWhs.vue";
 import ImportStuff from "@/components/ImportStuff.vue";
 import AccountSattings from "@/components/AccountSattings.vue";
+import ClientsFieldsSettings from "@/components/ClientsFieldsSettings.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -92,6 +98,7 @@ export default {
     MoveProductsBetweenWhs,
     ImportStuff,
     AccountSattings,
+    ClientsFieldsSettings,
   },
   props: {
     selectedWH: Object,
@@ -114,6 +121,7 @@ export default {
       "showEditPrice",
       "showMoveProductsBetweenWhs",
       "showImportStuff",
+      "showClientsFieldsSettings",
     ]),
     isTest() {
       return (

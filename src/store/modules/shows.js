@@ -21,6 +21,7 @@ export default {
     showTaskCenter: false,
     showMoveProductsBetweenWhs: false,
     showReportCreate: false,
+    showClientsFieldsSettings: false,
   },
   getters: {
     show_modals(state, getters) {
@@ -47,7 +48,8 @@ export default {
         state.showEditPrice ||
         state.showMoveProductsBetweenWhs ||
         state.showAccountSattings ||
-        state.showImportStuff
+        state.showImportStuff ||
+        state.showClientsFieldsSettings
       );
     },
     show_edit_modal(state) {
@@ -112,6 +114,9 @@ export default {
     },
     showReportCreate(state) {
       return state.showReportCreate;
+    },
+    showClientsFieldsSettings(state) {
+      return state.showClientsFieldsSettings;
     },
   },
   mutations: {
@@ -184,6 +189,9 @@ export default {
     },
     openCloseAccountSattings(state, value) {
       state.showAccountSattings = value;
+    },
+    openCloseClientsFieldsSettings(state, value) {
+      state.showClientsFieldsSettings = value;
     },
     toggleReportCreate(state, value) {
       if (value !== undefined) {

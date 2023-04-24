@@ -1,6 +1,4 @@
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 import { BaseURL, TOKEN } from "@/composables/BaseURL";
-const { preparation_params } = usePreparationQueryParams();
 export default {
   state: {
     types: [],
@@ -43,7 +41,7 @@ export default {
       context.commit("updateClientList", json);
     },
     async getClientsContactsTypes(context) {
-      const url = BaseURL + "contact/field/types";
+      const url = BaseURL + "company/field/types"; //!!!!!!!!!!!!!<-company
       const res = await fetch(url, {
         headers: {
           Authorization: TOKEN,
@@ -64,31 +62,39 @@ export default {
     },
     async addClientsContactsField(context, params) {
       const url = BaseURL + "contact/field/add";
-      await fetch(url + preparation_params(params), {
+      const res = await fetch(url, {
         method: "POST",
         headers: {
           Authorization: TOKEN,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify(params),
       });
+      const json = await res.json();
       context.dispatch("getClientsContactsList");
+      return json;
     },
     async updateClientsContactsField(context, params) {
       const url = BaseURL + "contact/field/update";
-      await fetch(url + preparation_params(params), {
+      await fetch(url, {
         method: "POST",
         headers: {
           Authorization: TOKEN,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify(params),
       });
       context.dispatch("getClientsContactsList");
     },
     async deleteClientsContactsField(context, params) {
       const url = BaseURL + "contact/field/delete";
-      await fetch(url + preparation_params(params), {
+      await fetch(url, {
         method: "POST",
         headers: {
           Authorization: TOKEN,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify(params),
       });
       context.dispatch("getClientsContactsList");
     },

@@ -155,6 +155,11 @@
               </div>
             </a>
             <a v-if="isTest">
+              <div class="modal_container" @click="openClientsFieldsSettings()">
+                Настройки полей клиентов
+              </div>
+            </a>
+            <a v-if="isTest">
               <div class="modal_container" @click="openArchive()">Архив</div>
             </a>
           </div>
@@ -241,6 +246,8 @@ export default {
       store.commit("openCloseThirdPpartyIntegrations", true);
     const openAccountSattings = () =>
       store.commit("openCloseAccountSattings", true);
+    const openClientsFieldsSettings = () =>
+      store.commit("openCloseClientsFieldsSettings", true);
     const openSyncSettings = () => store.commit("openCloseSyncSettings", true);
     const open_product_properties = () =>
       store.commit("open_close_product_properties", true);
@@ -267,6 +274,7 @@ export default {
       open_product_category,
       openThirdPpartyIntegrations,
       openAccountSattings,
+      openClientsFieldsSettings,
       openSyncSettings,
       open_product_properties,
       open_close_document_setting,
