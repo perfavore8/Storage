@@ -1,8 +1,11 @@
 <template>
   <div v-if="selectedTab" class="flex flex-col gap-4">
-    <button class="btn btn_light_dark_blue self-end" @click="add()">
-      Добавить
-    </button>
+    <div class="flex flex-row items-center justify-between relative">
+      <AppSeatchWithFilters class="absolute left-1/2 -translate-x-1/2" />
+      <button class="btn btn_light_dark_blue self-end" @click="add()">
+        Добавить
+      </button>
+    </div>
 
     <div class="grid grid-cols-2">
       <ul class="flex flex-col divide-y p-4 divide-gray-100">
@@ -70,10 +73,12 @@ import EditContactsSection from "./EditContactsSection.vue";
 import EditCompanySection from "./EditCompanySection.vue";
 import { computed, nextTick, reactive, ref, watch } from "vue";
 import { useClients } from "@/composables/clients";
+import AppSeatchWithFilters from "../AppSeatchWithFilters.vue";
 export default {
   components: {
     EditContactsSection,
     EditCompanySection,
+    AppSeatchWithFilters,
   },
   props: {
     selectedTab: { type: Object, required: false },
