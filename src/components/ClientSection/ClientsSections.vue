@@ -73,7 +73,7 @@ import EditContactsSection from "./EditContactsSection.vue";
 import EditCompanySection from "./EditCompanySection.vue";
 import { computed, nextTick, reactive, ref, watch } from "vue";
 import { useClients } from "@/composables/clients";
-import AppSeatchWithFilters from "../AppSeatchWithFilters.vue";
+import AppSeatchWithFilters from "../AppSearchWithFilters.vue";
 export default {
   components: {
     EditContactsSection,

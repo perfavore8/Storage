@@ -1,6 +1,9 @@
 <template>
   <div class="filter">
-    <button @click="option == 1 ? (option = 0) : (option += 1)">
+    <button
+      @click="option == 1 ? (option = 0) : (option += 1)"
+      class="type_btn"
+    >
       <span>{{ options[option] }}</span>
     </button>
     <input v-model="filterValue" type="text" />

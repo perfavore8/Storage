@@ -1,6 +1,9 @@
 <template>
   <div class="filter">
-    <button @click="option == 4 ? (option = 0) : (option += 1)">
+    <button
+      @click="option == 4 ? (option = 0) : (option += 1)"
+      class="type_btn"
+    >
       <span :class="{ big: option == 0 }">{{ options[option] }}</span>
     </button>
     <input
