@@ -40,6 +40,15 @@
             Вы не авторизированы в сервисе Google Drive
             <button @click="autorization()">Войти</button>
           </div>
+          <a
+            :href="
+              'https://drive.google.com/drive/folders/' +
+              account.config.google_folder_id
+            "
+            target="blank"
+            v-if="account.config?.google_folder_id"
+            >Папка с документами</a
+          >
         </div>
         <div class="right">
           <button
@@ -589,5 +598,10 @@ export default {
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+}
+a {
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>
