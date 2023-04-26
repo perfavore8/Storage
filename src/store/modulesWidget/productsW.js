@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL } from "@/components/WidgetAddToDeal/src/composables/BaseURL";
+import { TOKEN, BaseURL } from "@/composables/BaseURL";
 import { usePreparationProducts } from "@/components/WidgetAddToDeal/src/composables/preparationProducts";
 const { preparationProducts } = usePreparationProducts();
 const { preparation_params } = usePreparationQueryParams();
@@ -90,90 +90,111 @@ export default {
   },
   actions: {
     async getProductsAutocompleteW(context, params) {
-      const url = BaseURL + "get-products-autocomplete";
+      const url = BaseURL + "orders/get-products-autocomplete";
 
-      const res = await fetch(url + preparation_params(params), {});
-      const response = await res.json();
-      context.commit("updateProductsAutocomplete", response);
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateProductsAutocomplete", json);
 
-      return response;
+      return json;
     },
     async getProductsW(context, params) {
-      const url = BaseURL + "products";
+      const url = BaseURL + "orders/products";
 
-      const res = await fetch(url + preparation_params(params), {});
-      const response = await res.json();
-      context.commit("updateProducts", response);
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateProducts", json);
 
-      return response;
+      return json;
     },
     async getProducts2W(context, params) {
-      const url = BaseURL + "products-v2";
+      const url = BaseURL + "orders/products-v2";
 
-      const res = await fetch(url + preparation_params(params), {});
-      const response = await res.json();
-      context.commit("updateProducts", response.data);
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateProducts", json.data);
       context.commit("update_meta2", {
-        meta: response.meta,
-        links: response.links,
+        meta: json.meta,
+        links: json.links,
       });
 
-      return response;
+      return json;
     },
     async getAllProductsW(context, params) {
-      const url = BaseURL + "products/filtered";
+      const url = BaseURL + "orders/products/filtered";
 
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          Authorization: TOKEN,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
       });
-      const response = await res.json();
-      context.commit("updateAllProducts", response.data);
+      const json = await res.json();
+      context.commit("updateAllProducts", json.data);
       context.commit("update_meta", {
-        links: response.links,
-        meta: response.meta,
+        links: json.links,
+        meta: json.meta,
       });
 
-      return response;
+      return json;
     },
     async addProductW(context, params) {
       context.commit("updateDisableAddToDeal", true);
-      const url = BaseURL + "add-product";
-      let response = [];
-      const res = await fetch(url + preparation_params(params));
-      response = await res.json();
+      const url = BaseURL + "orders/add-product";
+
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
       context.commit("updateDisableAddToDeal", false);
 
-      return response;
+      return json;
     },
     async addProduct2W(context, params) {
       context.commit("updateDisableAddToDeal", true);
-      const url = BaseURL + "add-product-v2";
-      let response = [];
+      const url = BaseURL + "orders/add-product-v2";
 
-      const res = await fetch(url + preparation_params(params));
-      response = await res.json();
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
       context.commit("updateDisableAddToDeal", false);
 
-      return response;
+      return json;
     },
     async addProduct3W(context, params) {
       context.commit("updateDisableAddToDeal", true);
-      const url = BaseURL + "add-product-v3";
+      const url = BaseURL + "orders/add-product-v3";
 
-      const response = await fetch(url, {
+      const json = await fetch(url, {
         method: "POST",
         headers: {
+          Authorization: TOKEN,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
       });
       context.commit("updateDisableAddToDeal", false);
 
-      return response;
+      return json;
     },
   },
 };

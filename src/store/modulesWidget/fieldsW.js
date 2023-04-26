@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL } from "@/components/WidgetAddToDeal/src/composables/BaseURL";
+import { TOKEN, BaseURL } from "@/composables/BaseURL";
 const { preparation_params } = usePreparationQueryParams();
 
 export default {
@@ -34,47 +34,55 @@ export default {
   },
   actions: {
     async getFieldsW(context, params) {
-      const url = BaseURL + "fields";
-      let response = [];
+      const url = BaseURL + "orders/fields";
 
-      const res = await fetch(url + preparation_params(params), {});
-      response = await res.json();
-      context.commit("updateFields", response);
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateFields", json);
 
-      return response;
+      return json;
     },
     async getAllFieldsW(context, params) {
-      const url = BaseURL + "fields/all";
-      let response = [];
+      const url = BaseURL + "orders/fields/all";
 
-      const res = await fetch(url + preparation_params(params), {});
-      response = await res.json();
-      context.commit("update_all_fields", response);
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("update_all_fields", json);
 
-      return response;
+      return json;
     },
     async getTableConfigW(context, params) {
-      const url = BaseURL + "products/filtered/config";
-      let response = [];
+      const url = BaseURL + "orders/products/filtered/config";
 
-      const res = await fetch(url + preparation_params(params), {});
-      response = await res.json();
-      context.commit("updateTableConfigW", response?.table);
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateTableConfigW", json?.table);
 
-      return response;
+      return json;
     },
     async updateTableConfigW(context, params) {
-      const url = BaseURL + "products/filtered/config/update";
-      let response = [];
+      const url = BaseURL + "orders/products/filtered/config/update";
 
       await fetch(url, {
         method: "POST",
         headers: {
+          Authorization: TOKEN,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
       });
-      return response;
     },
   },
 };

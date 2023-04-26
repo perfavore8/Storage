@@ -68,7 +68,7 @@
             </div>
             <template v-else>
               <div class="path">
-                <div class="categories grid">
+                <div class="categories sls_grid">
                   <div
                     class="card"
                     v-for="cat in categories"
@@ -89,7 +89,7 @@
                 :page="page"
                 @changePage="changePage"
               />
-              <div class="products grid">
+              <div class="products sls_grid">
                 <label v-if="products.length == 0" class="text">
                   Ничего не найдено
                 </label>
@@ -566,7 +566,7 @@ export default {
         this.getCategoriesW(cat.id),
         this.getProducts(cat.id),
       ]);
-      if (this.selectedCategories.length === 1) await this.getFieldsW(cat.id);
+      if (this.selectedCategories.length === 1) await this.getFields(cat.id);
       this.showSpinner = false;
     },
     async getCategoriesW(id) {
@@ -946,7 +946,7 @@ export default {
           }
         }
 
-        .grid {
+        .sls_grid {
           display: flex;
           flex-direction: row;
           flex-wrap: wrap;
