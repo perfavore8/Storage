@@ -35,6 +35,10 @@ body {
   overflow: auto;
   font-family: "Inter";
 }
+#app {
+  background: white;
+  min-height: 100vh;
+}
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
