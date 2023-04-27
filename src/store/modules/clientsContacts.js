@@ -1,19 +1,36 @@
 import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { computed } from "vue";
+import { useClients } from "@/composables/clients";
+import { useClientsTabs } from "@/composables/clientsTabs";
+
+const { tabs } = useClientsTabs();
+const selectedTabComp = computed(() => tabs.selected);
+const { getClientsList } = useClients(selectedTabComp);
+
 export default {
   state: {
     types: [],
     fields: [],
     list: [],
+    meta: {
+      links: {},
+      meta: {},
+    },
+    params: {
+      page: 1,
+      filter: {},
+      sort: {},
+    },
   },
   getters: {},
   mutations: {
-    updateClientList(state, value) {
+    updateContactsList(state, value) {
       state.list = [...value];
     },
-    updateClientTypes(state, value) {
+    updateContactsTypes(state, value) {
       state.types = [...Object.values(value)];
     },
-    updateClientFields(state, value) {
+    updateContactsFields(state, value) {
       const componentsList = {
         1: "EditInteger",
         2: "EditFloat",
@@ -28,18 +45,73 @@ export default {
       value.map((field) => (field.component = componentsList[field.type]));
       state.fields = [...value];
     },
+    updateContactsMeta(state, value) {
+      state.meta = { ...value };
+    },
+    updateContactsParams(state, params) {
+      Object.assign(state.params, params);
+    },
   },
   actions: {
-    async getClientsContactsList(context) {
-      const url = BaseURL + "contact/field/list";
+    async getClientsContactsList(context, params) {
+      const url = BaseURL + "contact/list";
       const res = await fetch(url, {
+        method: "POST",
         headers: {
           Authorization: TOKEN,
         },
+        body: JSON.stringify(params),
       });
       const json = await res.json();
-      context.commit("updateClientList", json);
+      context.commit("updateContactsMeta", {
+        links: json.links,
+        meta: json.meta,
+      });
+      context.commit("updateContactsList", json.data);
     },
+    async addClientsContacts(context, params) {
+      const url = BaseURL + "contact/add";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+
+      getClientsList();
+
+      return json;
+    },
+    async updateClientsContacts(context, params) {
+      const url = BaseURL + "contact/update";
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+
+      getClientsList();
+    },
+    async deleteClientsContacts(context, params) {
+      const url = BaseURL + "contact/delete";
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+
+      getClientsList();
+    },
+
     async getClientsContactsTypes(context) {
       const url = BaseURL + "company/field/types"; //!!!!!!!!!!!!!<-company
       const res = await fetch(url, {
@@ -48,8 +120,9 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("updateClientTypes", json);
+      context.commit("updateContactsTypes", json);
     },
+
     async getClientsContactsFields(context) {
       const url = BaseURL + "contact/field/list";
       const res = await fetch(url, {
@@ -58,7 +131,7 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("updateClientFields", json);
+      context.commit("updateContactsFields", json);
     },
     async addClientsContactsField(context, params) {
       const url = BaseURL + "contact/field/add";
@@ -71,7 +144,6 @@ export default {
         body: JSON.stringify(params),
       });
       const json = await res.json();
-      context.dispatch("getClientsContactsList");
       return json;
     },
     async updateClientsContactsField(context, params) {
@@ -84,7 +156,6 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      context.dispatch("getClientsContactsList");
     },
     async deleteClientsContactsField(context, params) {
       const url = BaseURL + "contact/field/delete";
@@ -96,7 +167,6 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      context.dispatch("getClientsContactsList");
     },
   },
 };

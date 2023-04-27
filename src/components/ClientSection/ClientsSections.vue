@@ -8,53 +8,11 @@
     </div>
 
     <div class="grid grid-cols-2">
-      <ul class="flex flex-col divide-y p-4 divide-gray-100">
-        <li
-          v-for="item in clientsList"
-          :key="item.id"
-          class="flex justify-between px-6 py-5 cursor-pointer rounded-xl hover:bg-slate-50"
-          :class="{ 'bg-slate-100': selected.id === item.id }"
-          @click="() => selected.select(item.id)"
-        >
-          <div class="min-w-0 flex-auto text-left">
-            <p class="text-lg font-semibold leading-6 text-gray-800">
-              {{ item[placeholders[selectedTab.value].title] }}
-            </p>
-            <p class="mt-1 truncate text-sm leading-5 text-gray-500">
-              {{ item[placeholders[selectedTab.value].subTitle] }}
-            </p>
-          </div>
-          <div class="sm:flex sm:flex-col sm:items-end">
-            <p class="text-base leading-6 text-gray-900">
-              {{ item[placeholders[selectedTab.value].descriton] }}
-            </p>
-            <div class="flex flex-row gap-2 items-center mt-1">
-              <div
-                class="w-4 h-4 rounded-full flex items-center justify-center"
-                :style="{
-                  'background-color':
-                    getColor(
-                      item[placeholders[selectedTab.value].subDescriton] * 10
-                    ) + '50',
-                }"
-              >
-                <div
-                  class="w-2 h-2 rounded-full"
-                  :style="{
-                    'background-color':
-                      getColor(
-                        item[placeholders[selectedTab.value].subDescriton] * 10
-                      ) + '99',
-                  }"
-                ></div>
-              </div>
-              <p class="text-sm leading-5 text-gray-500">
-                {{ item[placeholders[selectedTab.value].subDescriton] }}
-              </p>
-            </div>
-          </div>
-        </li>
-      </ul>
+      <client-sections-fields
+        :list="clientsList"
+        :selected="selected"
+        :selectedTab="selectedTab"
+      />
       <div class="h-full" @click.self="closeAdd()">
         <component
           :is="selectedTab.component"
@@ -74,32 +32,22 @@ import EditCompanySection from "./EditCompanySection.vue";
 import { computed, nextTick, reactive, ref, watch } from "vue";
 import { useClients } from "@/composables/clients";
 import AppSeatchWithFilters from "../AppSearchWithFilters.vue";
+import ClientSectionsFields from "./ClientSectionsFields.vue";
 export default {
   components: {
     EditContactsSection,
     EditCompanySection,
     AppSeatchWithFilters,
+    ClientSectionsFields,
   },
   props: {
     selectedTab: { type: Object, required: false },
   },
   setup(props) {
-    const { clientsList, getClientsList, getColor } = useClients();
+    const selectedTabComp = computed(() => props.selectedTab);
+    watch(selectedTabComp, () => (getClientsList(), closeAdd()));
 
-    const placeholders = {
-      Company: {
-        title: "name",
-        subTitle: "signatory",
-        descriton: "director",
-        subDescriton: "rating",
-      },
-      Contacts: {
-        title: "name",
-        subTitle: "phoneNumber",
-        descriton: "position",
-        subDescriton: "rating",
-      },
-    };
+    const { clientsList, getClientsList } = useClients(selectedTabComp);
 
     const selected = reactive({
       ref: null,
@@ -125,12 +73,7 @@ export default {
       addNew.value = false;
     };
 
-    getClientsList(props.selectedTab.value);
-    const selectedTabComp = computed(() => props.selectedTab);
-    watch(
-      selectedTabComp,
-      () => (getClientsList(props.selectedTab.value), closeAdd())
-    );
+    getClientsList();
 
     return {
       selected,
@@ -138,9 +81,7 @@ export default {
       clientsList,
       add,
       closeAdd,
-      placeholders,
       selectedItem,
-      getColor,
     };
   },
 };

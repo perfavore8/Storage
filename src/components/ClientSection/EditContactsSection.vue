@@ -10,6 +10,7 @@
     <BtnsSaveClose :show_close="false" class="self-end" @save="accept">
       <template v-slot:other_btns>
         <button class="btn bg-transparent" @click="close()">Назад</button>
+        <AppDelBtnSwipe v-if="!isNew" @del="del" />
       </template>
     </BtnsSaveClose>
   </div>
@@ -18,10 +19,11 @@
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditSectionFields from "./EditSectionFields.vue";
+import AppDelBtnSwipe from "../AppDelBtnSwipe.vue";
 import { computed, onMounted, reactive, watch } from "vue";
 import store from "@/store";
 export default {
-  components: { BtnsSaveClose, EditSectionFields },
+  components: { BtnsSaveClose, EditSectionFields, AppDelBtnSwipe },
   props: {
     isNew: { type: Boolean, required: true },
     item: { type: Object, required: false },
@@ -49,14 +51,22 @@ export default {
 
     const close = () => context.emit("close");
     const accept = () => {
-      // store.dispatch("addClientsContacts", copyItem);
+      store.dispatch(
+        props.isNew ? "addClientsContacts" : "updateClientsContacts",
+        { contacts: [copyItem] }
+      );
       context.emit("accept");
+      close();
+    };
+
+    const del = () => {
+      store.dispatch("deleteClientsContacts", { id: copyItem.id });
       close();
     };
 
     const change_value = (value, code) => (copyItem.fields[code] = value);
 
-    return { copyItem, fields, close, accept, change_value };
+    return { copyItem, fields, close, accept, change_value, del };
   },
 };
 </script>
@@ -90,5 +100,7 @@ export default {
     outline: 0;
     box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
   }
+}
+.del_swipe {
 }
 </style>

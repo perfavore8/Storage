@@ -1,9 +1,26 @@
 import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { computed } from "vue";
+import { useClients } from "@/composables/clients";
+import { useClientsTabs } from "@/composables/clientsTabs";
+
+const { tabs } = useClientsTabs();
+const selectedTabComp = computed(() => tabs.selected);
+const { getClientsList } = useClients(selectedTabComp);
+
 export default {
   state: {
     types: [],
     fields: [],
     list: [],
+    meta: {
+      links: {},
+      meta: {},
+    },
+    params: {
+      page: 1,
+      filter: {},
+      sort: {},
+    },
   },
   getters: {},
   mutations: {
@@ -28,18 +45,73 @@ export default {
       value.map((field) => (field.component = componentsList[field.type]));
       state.fields = [...value];
     },
+    updateCompanyMeta(state, value) {
+      state.meta = { ...value };
+    },
+    updateCompanyParams(state, params) {
+      Object.assign(state.params, params);
+    },
   },
   actions: {
-    async getClientsCompanyList(context) {
-      const url = BaseURL + "company/field/list";
+    async getClientsCompanyList(context, params) {
+      const url = BaseURL + "company/list";
       const res = await fetch(url, {
+        method: "POST",
         headers: {
           Authorization: TOKEN,
         },
+        body: JSON.stringify(params),
       });
       const json = await res.json();
-      context.commit("updateCompanyList", json);
+      context.commit("updateCompanyMeta", {
+        links: json.links,
+        meta: json.meta,
+      });
+      context.commit("updateCompanyList", json.data);
     },
+    async addClientsCompany(context, params) {
+      const url = BaseURL + "company/add";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+
+      getClientsList();
+
+      return json;
+    },
+    async updateClientsCompany(context, params) {
+      const url = BaseURL + "company/update";
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+
+      getClientsList();
+    },
+    async deleteClientsCompany(context, params) {
+      const url = BaseURL + "company/delete";
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+
+      getClientsList();
+    },
+
     async getClientsCompanyTypes(context) {
       const url = BaseURL + "company/field/types";
       const res = await fetch(url, {
@@ -50,6 +122,7 @@ export default {
       const json = await res.json();
       context.commit("updateCompanyTypes", json);
     },
+
     async getClientsCompanyFields(context) {
       const url = BaseURL + "company/field/list";
       const res = await fetch(url, {
@@ -71,7 +144,6 @@ export default {
         body: JSON.stringify(params),
       });
       const json = await res.json();
-      context.dispatch("getClientsCompanyList");
       return json;
     },
     async updateClientsCompanyField(context, params) {
@@ -84,7 +156,6 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      context.dispatch("getClientsCompanyList");
     },
     async deleteClientsCompanyField(context, params) {
       const url = BaseURL + "company/field/delete";
@@ -96,7 +167,6 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      context.dispatch("getClientsCompanyList");
     },
   },
 };
