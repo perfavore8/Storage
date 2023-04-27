@@ -2,6 +2,15 @@
   <div
     class="w-full m-4 p-4 flex flex-col gap-6 items-center rounded-xl border h-fit shadow-lg shadow-slate-100"
   >
+    <AppInputSelect
+      :list="binding.list"
+      :countLettersReq="3"
+      :requestDelay="300"
+      :selected="binding.selected"
+      :placeholder="'Привязка'"
+      @changeInputValue="((val) => (binding.value = val), binding.getList())"
+      @select="() => binding.add()"
+    />
     <EditSectionFields
       :fields="fields"
       :copyItem="copyItem"
@@ -20,15 +29,27 @@
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditSectionFields from "./EditSectionFields.vue";
 import AppDelBtnSwipe from "../AppDelBtnSwipe.vue";
+import AppInputSelect from "../AppInputSelect.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import store from "@/store";
+import { useClientBinding } from "@/composables/clientEditSectionBinding";
+import { useClientsTabs } from "@/composables/clientsTabs";
 export default {
-  components: { BtnsSaveClose, EditSectionFields, AppDelBtnSwipe },
+  components: {
+    BtnsSaveClose,
+    EditSectionFields,
+    AppDelBtnSwipe,
+    AppInputSelect,
+  },
   props: {
     isNew: { type: Boolean, required: true },
     item: { type: Object, required: false },
   },
   setup(props, context) {
+    const { tabs } = useClientsTabs();
+    const selectedTabComp = computed(() => tabs.selected);
+    const { binding } = useClientBinding(selectedTabComp);
+
     const copyItem = ref({ fields: {} });
 
     const fields = computed(() => store.state.clientsContacts.fields);
@@ -63,41 +84,11 @@ export default {
 
     const change_value = (value, code) => (copyItem.value.fields[code] = value);
 
-    return { copyItem, fields, close, accept, change_value, del };
+    return { copyItem, fields, close, accept, change_value, del, binding };
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/app.scss";
-.row {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  width: 100%;
-  label {
-    padding: 7px 0;
-  }
-  input {
-    width: 100%;
-    height: 34px;
-    padding: 6px 12px;
-    @include font(400, 16px);
-    background-color: white;
-    border: 1px solid #ced4da;
-    appearance: none;
-    border-radius: 4px;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  }
-  input:focus {
-    color: #212529;
-    background-color: white;
-    border-color: #86b7fe;
-    outline: 0;
-    box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
-  }
-}
-.del_swipe {
-}
 </style>
