@@ -13,14 +13,16 @@
         :selected="selected"
         :selectedTab="selectedTab"
       />
-      <div class="h-full" @click.self="closeAdd()">
-        <component
-          :is="selectedTab.component"
-          :isNew="addNew"
-          :item="selectedItem"
-          v-if="selected.id || addNew"
-          @close="closeAdd"
-        />
+      <div class="h-full relative" @click.self="closeAdd()">
+        <transition name="modal">
+          <component
+            :is="selectedTab.component"
+            :isNew="addNew"
+            :item="selectedItem"
+            v-if="selected.id || addNew"
+            @close="closeAdd"
+          />
+        </transition>
       </div>
     </div>
   </div>

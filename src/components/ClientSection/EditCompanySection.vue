@@ -20,7 +20,7 @@
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditSectionFields from "./EditSectionFields.vue";
 import AppDelBtnSwipe from "../AppDelBtnSwipe.vue";
-import { computed, onMounted, reactive, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import store from "@/store";
 export default {
   components: { BtnsSaveClose, EditSectionFields, AppDelBtnSwipe },
@@ -29,7 +29,7 @@ export default {
     item: { type: Object, required: false },
   },
   setup(props, context) {
-    const copyItem = reactive({ fields: {} });
+    const copyItem = ref({ fields: {} });
 
     const fields = computed(() => store.state.clientsCompany.fields);
 
@@ -40,10 +40,7 @@ export default {
 
     const fillCopyItem = () => {
       if (!props.isNew) {
-        Object.keys(copyItem.fields).forEach((key) => {
-          delete copyItem.fields[key];
-        });
-        Object.assign(copyItem, props.item);
+        copyItem.value = JSON.parse(JSON.stringify(props.item));
       }
     };
     const itemProp = computed(() => props.item);
@@ -53,18 +50,18 @@ export default {
     const accept = () => {
       store.dispatch(
         props.isNew ? "addClientsCompany" : "updateClientsCompany",
-        { companies: [copyItem] }
+        { companies: [copyItem.value] }
       );
       context.emit("accept");
       close();
     };
 
     const del = () => {
-      store.dispatch("deleteClientsContacts", { id: copyItem.id });
+      store.dispatch("deleteClientsContacts", { id: copyItem.value.id });
       close();
     };
 
-    const change_value = (value, code) => (copyItem.fields[code] = value);
+    const change_value = (value, code) => (copyItem.value.fields[code] = value);
 
     return { copyItem, fields, close, accept, change_value, del };
   },
