@@ -9,13 +9,15 @@
 
     <div class="grid grid-cols-2">
       <client-sections-fields
+        ref="refList"
         :list="clientsList"
         :selected="selected"
         :selectedTab="selectedTab"
       />
-      <div class="h-full relative" @click.self="closeAdd()">
+      <div class="h-full relative">
         <transition name="modal">
           <component
+            ref="target"
             :is="selectedTab.component"
             :isNew="addNew"
             :item="selectedItem"
@@ -31,10 +33,11 @@
 <script>
 import EditContactsSection from "./EditContactsSection.vue";
 import EditCompanySection from "./EditCompanySection.vue";
-import { computed, nextTick, reactive, ref, watch } from "vue";
-import { useClients } from "@/composables/clients";
 import AppSeatchWithFilters from "../AppSearchWithFilters.vue";
 import ClientSectionsFields from "./ClientSectionsFields.vue";
+import { computed, nextTick, reactive, ref, watch } from "vue";
+import { useClients } from "@/composables/clients";
+import { onClickOutside } from "@vueuse/core";
 export default {
   components: {
     EditContactsSection,
@@ -46,6 +49,10 @@ export default {
     selectedTab: { type: Object, required: false },
   },
   setup(props) {
+    const target = ref(null);
+    const refList = ref(null);
+    onClickOutside(target, () => closeAdd(), { ignore: [refList] });
+
     const selectedTabComp = computed(() => props.selectedTab);
     watch(selectedTabComp, () => (getClientsList(), closeAdd()));
 
@@ -78,6 +85,8 @@ export default {
     getClientsList();
 
     return {
+      target,
+      refList,
       selected,
       addNew,
       clientsList,
