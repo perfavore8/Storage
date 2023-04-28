@@ -3,7 +3,7 @@ import { computed, watch } from "vue";
 import { ref } from "vue";
 import { reactive } from "vue";
 
-export function useSearchFilters(showFilters) {
+export function useSearchFilters(showFilters, selectedTab) {
   const searchValue = ref("");
 
   watch(showFilters, () => {
@@ -13,8 +13,10 @@ export function useSearchFilters(showFilters) {
     fillFilters();
   });
 
-  const fields = computed(() => store.state.clientsCompany.fields);
-  store.dispatch("getClientsCompanyFields");
+  const fields = computed(
+    () => store.state?.[`clients${selectedTab.value.value}`].fields
+  );
+  store.dispatch(`getClients${selectedTab.value.value}Fields`);
 
   const filteredFiltersValue = computed(() =>
     filtersValue.filter((filter) =>

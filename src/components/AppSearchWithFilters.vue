@@ -32,7 +32,7 @@
           <AppInputSelect
             :list="spacialFilteredfiltersValueNotSelected"
             :placeholder="'Добавить фильтр'"
-            :requestDelay="0"
+            :requestDelay="100"
             :countLettersReq="0"
             @select="(val) => (val.selected = true)"
             @changeInputValue="(val) => (specialFiltersSearchValue = val)"
@@ -63,7 +63,8 @@ import SearchFiltersGroup from "./SearchFiltersGroup.vue";
 import AppInput from "./AppInput.vue";
 import { useToggle, onClickOutside } from "@vueuse/core";
 import { useSearchFilters } from "@/composables/searchFilters";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useClientsTabs } from "@/composables/clientsTabs";
 export default {
   components: {
     AppInput,
@@ -72,6 +73,9 @@ export default {
     SearchFiltersGroup,
   },
   setup() {
+    const { tabs } = useClientsTabs();
+    const selectedTabComp = computed(() => tabs.selected);
+
     const target = ref(null);
 
     onClickOutside(target, () => toggleFilters(false));
@@ -82,7 +86,7 @@ export default {
       showFilters,
       toggleFilters,
       target,
-      ...useSearchFilters(showFilters),
+      ...useSearchFilters(showFilters, selectedTabComp),
     };
   },
 };
