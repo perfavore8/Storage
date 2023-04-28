@@ -12,12 +12,17 @@ export function useClientBinding(selectedTab) {
     del: function (idx) {
       this.selected.splice(idx, 1);
     },
-    getList: function () {
-      store.dispatch(
+    getList: async function (id) {
+      const params = { q: this.value };
+
+      selectedTab.value.value === "Company"
+        ? (params.company_id = id)
+        : (params.contact_id = id);
+      this.list = await store.dispatch(
         `getClients${
           selectedTab.value.value === "Company" ? "Contacts" : "Company"
-        }Autocomlite`,
-        this.value
+        }Autocomplete`,
+        params
       );
     },
   });
