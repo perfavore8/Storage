@@ -17,7 +17,6 @@ export function useClients(selectedTab) {
       `getClients${selectedTab.value.value}List`,
       params.value
     );
-    console.log(selectedTab.value.value);
     clientsList.length = 0;
     Object.assign(clientsList, products.value);
   };
