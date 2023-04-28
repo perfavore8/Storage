@@ -42,6 +42,7 @@
               account.config.google_folder_id
             "
             target="blank"
+            class="a"
             v-if="account.config?.google_folder_id"
             >Папка с документами</a
           >
@@ -589,7 +590,7 @@ export default {
 .modal-leave-to {
   opacity: 0;
 }
-a {
+.a {
   color: -webkit-link;
   cursor: pointer;
   text-decoration: underline;
