@@ -1,5 +1,5 @@
 <template>
-  <ul class="flex flex-col divide-y p-4 divide-gray-100">
+  <ul class="flex flex-col divide-y p-4 divide-gray-100 h-fit">
     <li
       v-for="item in list"
       :key="item.id"
