@@ -16,12 +16,8 @@
       </span>
     </template>
   </document-setting-add-new>
-  <document-setting-fields
-    v-if="showFields && !isTest"
-    @close="close_fields"
-  ></document-setting-fields>
   <DocumentSettingFieldsV2
-    v-if="showFields && isTest"
+    v-if="showFields"
     @close="close_fields"
   ></DocumentSettingFieldsV2>
   <div class="app" ref="app" @click="show_settings ? close_settings() : null">
@@ -176,7 +172,6 @@
 <script>
 import SelectorVue from "@/components/SelectorVue.vue";
 import DocumentSettingAddNew from "@/components/DocumentSettingAddNew.vue";
-import DocumentSettingFields from "@/components/DocumentSettingFields.vue";
 import DocumentSettingFieldsV2 from "@/components/DocumentSettingFieldsV2.vue";
 import DocumentSettingDocRow from "@/components/DocumentSettingDocRow.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
@@ -184,7 +179,6 @@ export default {
   components: {
     SelectorVue,
     DocumentSettingAddNew,
-    DocumentSettingFields,
     DocumentSettingFieldsV2,
     DocumentSettingDocRow,
     BtnsSaveClose,
@@ -240,12 +234,8 @@ export default {
     },
   },
   async mounted() {
-    if (this.isTest) {
-      await this.$store.dispatch("get_documents_v2");
-    } else {
-      this.$store.dispatch("get_documents");
-    }
     await Promise.all([
+      this.$store.dispatch("get_documents_v2"),
       this.$store.dispatch("get_account"),
       this.$store.dispatch("getLeadFieldsList"),
     ]);

@@ -4,7 +4,7 @@
     <div class="container">
       <div class="header">
         <div class="left">
-          <label>Поля для шаблонов документов (Только на тесте)</label>
+          <label>Поля для шаблонов документов</label>
         </div>
         <div class="right">
           <button class="btn_del" @click="close()">
