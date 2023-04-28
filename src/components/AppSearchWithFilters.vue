@@ -1,5 +1,5 @@
 <template>
-  <div class="w-1/2 relative" ref="target">
+  <div class="w-1/2 relative z-20" ref="target">
     <div
       class="seacrh relative w-full"
       @click="toggleFilters(true)"
