@@ -1,8 +1,10 @@
+import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 import { BaseURL, TOKEN } from "@/composables/BaseURL";
 import { computed } from "vue";
 import { useClients } from "@/composables/clients";
 import { useClientsTabs } from "@/composables/clientsTabs";
 
+const { preparation_params } = usePreparationQueryParams();
 const { tabs } = useClientsTabs();
 const selectedTabComp = computed(() => tabs.selected);
 const { getClientsList } = useClients(selectedTabComp);
@@ -59,6 +61,7 @@ export default {
         method: "POST",
         headers: {
           Authorization: TOKEN,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
       });
@@ -100,13 +103,8 @@ export default {
     },
     async deleteClientsContacts(context, params) {
       const url = BaseURL + "contact/delete";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: TOKEN,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      await fetch(url + preparation_params(params), {
+        headers: { Authorization: TOKEN },
       });
 
       getClientsList();
@@ -115,9 +113,7 @@ export default {
     async getClientsContactsTypes(context) {
       const url = BaseURL + "company/field/types"; //!!!!!!!!!!!!!<-company
       const res = await fetch(url, {
-        headers: {
-          Authorization: TOKEN,
-        },
+        headers: { Authorization: TOKEN },
       });
       const json = await res.json();
       context.commit("updateContactsTypes", json);
@@ -126,9 +122,7 @@ export default {
     async getClientsContactsFields(context) {
       const url = BaseURL + "contact/field/list";
       const res = await fetch(url, {
-        headers: {
-          Authorization: TOKEN,
-        },
+        headers: { Authorization: TOKEN },
       });
       const json = await res.json();
       context.commit("updateContactsFields", json);
@@ -167,6 +161,16 @@ export default {
         },
         body: JSON.stringify(params),
       });
+    },
+
+    async getClientsContactsAutocomplete(context, params) {
+      const url = BaseURL + "contact/autocomplete";
+      const res = await fetch(url + preparation_params(params), {
+        headers: { Authorization: TOKEN },
+      });
+      const json = await res.json();
+
+      return json;
     },
   },
 };
