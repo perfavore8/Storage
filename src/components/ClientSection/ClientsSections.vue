@@ -16,9 +16,8 @@
       />
       <div class="h-full relative">
         <transition name="modal">
-          <component
+          <ClientsEditSection
             ref="target"
-            :is="selectedTab.component"
             :isNew="addNew"
             :item="selectedItem"
             v-if="selected.id || addNew"
@@ -31,8 +30,7 @@
 </template>
 
 <script>
-import EditContactsSection from "./EditContactsSection.vue";
-import EditCompanySection from "./EditCompanySection.vue";
+import ClientsEditSection from "./ClientsEditSection.vue";
 import AppSeatchWithFilters from "../AppSearchWithFilters.vue";
 import ClientSectionsFields from "./ClientSectionsFields.vue";
 import { computed, nextTick, reactive, ref, watch } from "vue";
@@ -40,8 +38,7 @@ import { useClients } from "@/composables/clients";
 import { onClickOutside } from "@vueuse/core";
 export default {
   components: {
-    EditContactsSection,
-    EditCompanySection,
+    ClientsEditSection,
     AppSeatchWithFilters,
     ClientSectionsFields,
   },
@@ -80,6 +77,7 @@ export default {
       selected.ref = null;
       selected.id = null;
       addNew.value = false;
+      getClientsList();
     };
 
     getClientsList();

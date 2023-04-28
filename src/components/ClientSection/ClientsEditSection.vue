@@ -2,23 +2,37 @@
   <div
     class="w-full m-4 p-4 flex flex-col gap-6 items-center rounded-xl border h-fit shadow-lg shadow-slate-100"
   >
-    <AppInputSelect
-      v-if="!isNew"
-      :list="binding.list"
-      :countLettersReq="3"
-      :requestDelay="300"
-      :selected="binding.selected"
-      :placeholder="'Привязка'"
-      @changeInputValue="
-        (val) => ((binding.value = val), binding.getList(copyItem.id))
-      "
-      @select="() => binding.add()"
-    />
-    <EditSectionFields
-      :fields="fields"
-      :copyItem="copyItem"
-      @change_value="change_value"
-    />
+    <div class="w-full">
+      <div class="flex flex-col gap-3 items-center p-5">
+        <AppInputSelect
+          v-if="!isNew"
+          :list="binding.list"
+          :countLettersReq="3"
+          :requestDelay="300"
+          :placeholder="'Привязка'"
+          @changeInputValue="
+            (val) => ((binding.value = val), binding.getList(copyItem.id))
+          "
+          @select="(val) => binding.add(copyItem.id, val)"
+        />
+        <div class="flex flex-row gap-1 flex-wrap">
+          <span
+            v-for="(sel, idx) in binding.selected"
+            :key="sel.id"
+            class="cursor-pointer font-medium py-1 px-2 text-xs text-green-700 bg-green-50 ring-inset ring-1 ring-green-600 ring-opacity-20 hover:text-red-700 hover:bg-red-50 hover:ring-red-600 hover:ring-opacity-10 rounded-md w-fit"
+            :class="{ grey: sel.isNew }"
+            @click="binding.del(copyItem.id, sel.id, idx)"
+          >
+            {{ sel.name }}
+          </span>
+        </div>
+      </div>
+      <EditSectionFields
+        :fields="fields"
+        :copyItem="copyItem"
+        @change_value="change_value"
+      />
+    </div>
     <BtnsSaveClose :show_close="false" class="self-end" @save="accept">
       <template v-slot:other_btns>
         <button class="btn bg-transparent" @click="close()">Назад</button>
@@ -57,6 +71,13 @@ export default {
 
     const fields = computed(() => store.state.clientsContacts.fields);
 
+    const addCurrentLinks = () => {
+      if (copyItem.value?.[`${selectedTabComp.value.oppositeValue3}`])
+        binding.addCurrentLinks(
+          copyItem.value?.[`${selectedTabComp.value.oppositeValue3}`]
+        );
+    };
+
     onMounted(async () => {
       await store.dispatch("getClientsContactsFields");
       fillCopyItem();
@@ -65,6 +86,7 @@ export default {
     const fillCopyItem = () => {
       if (!props.isNew) {
         copyItem.value = JSON.parse(JSON.stringify(props.item));
+        addCurrentLinks();
       }
     };
     const itemProp = computed(() => props.item);
@@ -72,10 +94,16 @@ export default {
 
     const close = () => context.emit("close");
     const accept = () => {
+      const params = {};
+      params[`${selectedTabComp.value.value3}`] = [copyItem.value];
+
       store.dispatch(
-        props.isNew ? "addClientsContacts" : "updateClientsContacts",
-        { contacts: [copyItem.value] }
+        props.isNew
+          ? `addClients${selectedTabComp.value.value}`
+          : `updateClients${selectedTabComp.value.value}`,
+        params
       );
+
       context.emit("accept");
       close();
     };
@@ -94,4 +122,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+.grey {
+  @apply text-gray-600 bg-gray-50 ring-gray-500 ring-opacity-10;
+}
 </style>
