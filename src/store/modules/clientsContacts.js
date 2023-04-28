@@ -110,6 +110,35 @@ export default {
       getClientsList();
     },
 
+    async linkClientsContacts(context, params) {
+      const url = BaseURL + "contact/companies/link";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async unlinkClientsContacts(context, params) {
+      const url = BaseURL + "contact/companies/unlink";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+
+      return json;
+    },
+
     async getClientsContactsTypes(context) {
       const url = BaseURL + "company/field/types"; //!!!!!!!!!!!!!<-company
       const res = await fetch(url, {
