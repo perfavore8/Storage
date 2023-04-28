@@ -3,12 +3,15 @@
     class="w-full m-4 p-4 flex flex-col gap-6 items-center rounded-xl border h-fit shadow-lg shadow-slate-100"
   >
     <AppInputSelect
+      v-if="!isNew"
       :list="binding.list"
       :countLettersReq="3"
       :requestDelay="300"
       :selected="binding.selected"
       :placeholder="'Привязка'"
-      @changeInputValue="((val) => (binding.value = val), binding.getList())"
+      @changeInputValue="
+        (val) => ((binding.value = val), binding.getList(copyItem.id))
+      "
       @select="() => binding.add()"
     />
     <EditSectionFields
