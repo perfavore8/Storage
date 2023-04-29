@@ -36,7 +36,7 @@
     <BtnsSaveClose :show_close="false" class="self-end" @save="accept">
       <template v-slot:other_btns>
         <button class="btn bg-transparent" @click="close()">Назад</button>
-        <AppDelBtnSwipe v-if="!isNew" @del="del" />
+        <AppDelBtnSwipe v-if="!isNew" @del="del" :key="copyItem" />
       </template>
     </BtnsSaveClose>
   </div>
@@ -69,7 +69,9 @@ export default {
 
     const copyItem = ref({ fields: {} });
 
-    const fields = computed(() => store.state.clientsContacts.fields);
+    const fields = computed(
+      () => store.state?.[`clients${selectedTabComp.value.value}`].fields
+    );
 
     const addCurrentLinks = () => {
       if (copyItem.value?.[`${selectedTabComp.value.oppositeValue3}`])
@@ -79,7 +81,7 @@ export default {
     };
 
     onMounted(async () => {
-      await store.dispatch("getClientsContactsFields");
+      await store.dispatch(`getClients${selectedTabComp.value.value}Fields`);
       fillCopyItem();
     });
 
@@ -123,6 +125,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .grey {
-  @apply text-gray-600 bg-gray-50 ring-gray-500 ring-opacity-10;
+  @apply text-gray-600 bg-gray-50 ring-gray-500 ring-opacity-10 hover:text-red-700 hover:bg-red-50 hover:ring-red-600 hover:ring-opacity-10;
 }
 </style>

@@ -55,6 +55,10 @@ export default {
         ) {
           left.value = "100%";
           opacity.value = 0;
+          setTimeout(() => {
+            left.value = "0";
+            opacity.value = 1;
+          }, 5000);
         } else {
           left.value = "0";
           opacity.value = 1;
