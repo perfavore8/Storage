@@ -19,7 +19,7 @@
           <span
             v-for="(sel, idx) in binding.selected"
             :key="sel.id"
-            class="cursor-pointer font-medium py-1 px-2 text-xs text-green-700 bg-green-50 ring-inset ring-1 ring-green-600 ring-opacity-20 hover:text-red-700 hover:bg-red-50 hover:ring-red-600 hover:ring-opacity-10 rounded-md w-fit"
+            class="cursor-pointer font-medium py-1 px-2 text-xs text-green-700 bg-green-50 ring-inset ring-1 ring-green-600 ring-opacity-20 hover:text-red-700 hover:bg-red-50 hover:ring-red-600 hover:ring-opacity-10 rounded-md w-fit transition-all"
             :class="{ grey: sel.isNew }"
             @click="binding.del(copyItem.id, sel.id, idx)"
           >
