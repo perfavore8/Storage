@@ -30,6 +30,7 @@
       <EditSectionFields
         :fields="fields"
         :copyItem="copyItem"
+        :tryAccept="tryAccept"
         @change_value="change_value"
       />
     </div>
@@ -72,6 +73,9 @@ export default {
     const fields = computed(
       () => store.state?.[`clients${selectedTabComp.value.value}`].fields
     );
+    const sistemsFields = computed(() =>
+      fields.value.filter((field) => field.is_system)
+    );
 
     const addCurrentLinks = () => {
       if (copyItem.value?.[`${selectedTabComp.value.oppositeValue3}`])
@@ -96,6 +100,8 @@ export default {
 
     const close = () => context.emit("close");
     const accept = () => {
+      tryAccept.value = true;
+      if (checkValues()) return;
       const params = {};
       params[`${selectedTabComp.value.value3}`] = [copyItem.value];
 
@@ -110,6 +116,15 @@ export default {
       close();
     };
 
+    const tryAccept = ref(false);
+    const checkValues = () => {
+      return (
+        sistemsFields.value.some(
+          (field) => !copyItem.value.fields[field.code]
+        ) || copyItem.value.fields?.name?.length < 3
+      );
+    };
+
     const del = () => {
       store.dispatch("deleteClientsContacts", { id: copyItem.value.id });
       close();
@@ -117,7 +132,16 @@ export default {
 
     const change_value = (value, code) => (copyItem.value.fields[code] = value);
 
-    return { copyItem, fields, close, accept, change_value, del, binding };
+    return {
+      copyItem,
+      fields,
+      close,
+      accept,
+      change_value,
+      del,
+      binding,
+      tryAccept,
+    };
   },
 };
 </script>

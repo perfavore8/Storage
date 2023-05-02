@@ -7,7 +7,22 @@
         :selected_option="copyItem.fields?.[field.code]"
         :idx="field.code"
         @change_value="change_value"
+        :class="{
+          tryAccept: checkError(field).value,
+        }"
       />
+      <small
+        v-if="checkError(field).value"
+        class="absolute right-0 top-1 text-xs text-red-700"
+      >
+        {{
+          checkError(field).empty
+            ? "Пустое поле"
+            : checkError(field).short
+            ? "Минимум 3 символа"
+            : ""
+        }}
+      </small>
     </div>
   </div>
 </template>
@@ -37,12 +52,23 @@ export default {
   props: {
     fields: { type: Array, required: true },
     copyItem: { type: Object, required: true },
+    tryAccept: { type: Boolean, required: false, default: () => false },
   },
   setup(props, context) {
     const change_value = (value, code) =>
       context.emit("change_value", value, code);
 
-    return { change_value };
+    const checkError = (field) => {
+      const global = props.tryAccept && field.is_system;
+      const short =
+        field.code === "name"
+          ? props.copyItem.fields?.[field.code]?.length < 3
+          : false;
+      const empty = !props.copyItem.fields?.[field.code];
+      return { value: global && (short || empty), empty: empty, short: short };
+    };
+
+    return { change_value, checkError };
   },
 };
 </script>
@@ -50,6 +76,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .row {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -75,6 +102,11 @@ export default {
     border-color: #86b7fe;
     outline: 0;
     box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
+  }
+}
+.tryAccept {
+  :deep(input) {
+    @extend .input_error;
   }
 }
 </style>
