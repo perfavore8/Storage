@@ -85,7 +85,7 @@
         <BtnsSaveClose
           @close="close"
           @save="save"
-          :disabledSave="noOneSelectedFields"
+          :disabledSave="noOneSelectedFields || disabledSave"
         >
           <template v-slot:save>Импортировать</template>
         </BtnsSaveClose>
@@ -254,6 +254,7 @@ export default {
     const close = () => store.commit("openCloseImportStuff");
 
     const save = () => {
+      disabledSave.value = true;
       const selectedFields = [];
       templates.selected.selectedFields.forEach((field, idx) => {
         const item = {
@@ -282,7 +283,10 @@ export default {
       store.dispatch("importStart", params);
       addNotification(0, "Добавлена задача", "Импорт товаров");
       close();
+      disabledSave.value = false;
     };
+
+    const disabledSave = ref(false);
 
     const isAnyCompares = computed(() =>
       templates.selected.compares.some((val) => val)
@@ -324,6 +328,7 @@ export default {
       selectedFields,
       noOneSelectedFields,
       max_import_product,
+      disabledSave,
     };
   },
 };
