@@ -36,7 +36,12 @@
     </div>
     <BtnsSaveClose :show_close="false" class="self-end" @save="accept">
       <template v-slot:other_btns>
-        <button class="btn bg-transparent" @click="close()">Назад</button>
+        <button
+          class="btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
+          @click="close()"
+        >
+          Назад
+        </button>
         <AppDelBtnSwipe v-if="!isNew" @del="del" :key="copyItem" />
       </template>
     </BtnsSaveClose>
