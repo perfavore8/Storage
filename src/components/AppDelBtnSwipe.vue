@@ -3,7 +3,11 @@
     ref="container"
     class="bg-gray-200 rounded relative w-full h-full m-auto flex items-center justify-center overflow-hidden"
   >
-    <button class="btn text-white bg-red-600" @click="del(), reset()">
+    <button
+      class="btn text-white bg-red-600"
+      tabindex="-1"
+      @click="del(), reset()"
+    >
       Удалить
     </button>
     <div
