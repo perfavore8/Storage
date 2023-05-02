@@ -20,6 +20,9 @@ export function useClients(selectedTab) {
     clientsList.length = 0;
     Object.assign(clientsList, products.value);
   };
+  const getClientsFields = async () => {
+    await store.dispatch(`getClients${selectedTab.value.value}Fields`);
+  };
 
   const getColor = (value) => {
     const green = Math.min(255, Math.round((value * 255) / 50));
@@ -29,5 +32,5 @@ export function useClients(selectedTab) {
     return "#" + ("00000" + color.toString(16)).slice(-6);
   };
 
-  return { getClientsList, clientsList, getColor };
+  return { getClientsList, clientsList, getClientsFields, getColor };
 }

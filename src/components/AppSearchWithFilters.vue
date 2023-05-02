@@ -36,6 +36,7 @@
             :countLettersReq="0"
             @select="(val) => (val.selected = true)"
             @changeInputValue="(val) => (specialFiltersSearchValue = val)"
+            :key="selectedTabComp.value"
           />
           <SearchFiltersGroup
             :special="true"
@@ -87,6 +88,7 @@ export default {
       toggleFilters,
       target,
       ...useSearchFilters(showFilters, selectedTabComp),
+      selectedTabComp,
     };
   },
 };

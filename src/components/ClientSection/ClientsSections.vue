@@ -51,9 +51,13 @@ export default {
     onClickOutside(target, () => closeAdd(), { ignore: [refList] });
 
     const selectedTabComp = computed(() => props.selectedTab);
-    watch(selectedTabComp, () => (getClientsList(), closeAdd()));
+    watch(
+      selectedTabComp,
+      () => (getClientsList(), getClientsFields(), closeAdd())
+    );
 
-    const { clientsList, getClientsList } = useClients(selectedTabComp);
+    const { clientsList, getClientsList, getClientsFields } =
+      useClients(selectedTabComp);
 
     const selected = reactive({
       ref: null,
