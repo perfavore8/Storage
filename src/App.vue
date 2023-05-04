@@ -35,12 +35,6 @@ body {
   overflow: auto;
   font-family: "Inter";
 }
-div {
-  caret-color: transparent;
-}
-input {
-  caret-color: auto;
-}
 #app {
   background: white;
   min-height: 100vh;
