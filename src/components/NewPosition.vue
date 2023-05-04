@@ -299,6 +299,9 @@
                     :disabled="!row.new && !row.newBatch"
                   />
                 </td>
+                <td class="item">
+                  <input type="text" v-model="row.description" class="input" />
+                </td>
                 <transition name="row">
                   <td class="item">
                     <button
@@ -372,6 +375,7 @@ export default {
         "Цена",
         "НДС",
         "Категория",
+        "Описание",
       ],
       titleWidth: [1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       new_items: [],
@@ -505,6 +509,7 @@ export default {
         type: { name: "Товар", value: 1 },
         article: "",
         name: "",
+        description: "",
         batch_category: { name: "Новая", value: -1 },
         batch: "",
         wh: { name: "Основной склад", value: "wh" },
@@ -559,6 +564,7 @@ export default {
         type: { name: "Товар", value: 1 },
         article: val.fields.article,
         name: val.fields.name,
+        description: val.fields?.description,
         batch_category: { name: "", value: -2 },
         batch_category_options: [{ name: "Новая", value: -1 }],
         batch: val.fields.batch,
@@ -720,6 +726,7 @@ export default {
             is_service: val.type.value - 1,
             fields: {
               name: val.name,
+              description: val.description,
               article: val.article,
               batch: val.batch,
               units: val.units.name,
@@ -919,6 +926,10 @@ export default {
             min-width: 150px;
           }
           .item:nth-child(13) {
+            width: 15%;
+            min-width: 150px;
+          }
+          .item:nth-child(14) {
             width: 5.3%;
             min-width: 44px;
             max-width: 44px;
