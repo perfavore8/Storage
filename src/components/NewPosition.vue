@@ -899,12 +899,13 @@ export default {
           }
           .item:nth-child(6) {
             width: 10%;
-            min-width: 90px;
+            min-width: 120px;
           }
           .item:nth-child(7) {
             width: 7%;
             // max-width: 140px;
-            min-width: 150px;
+            min-width: 130px;
+            max-width: 130px;
           }
           .item:nth-child(8) {
             width: 3%;
