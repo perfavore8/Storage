@@ -1,7 +1,10 @@
 <template>
   <div v-if="selectedTab" class="flex flex-col gap-4">
     <div class="flex flex-row items-center justify-between relative">
-      <AppSeatchWithFilters class="absolute left-1/2 -translate-x-1/2" />
+      <AppSeatchWithFilters
+        class="absolute left-1/2 -translate-x-1/2"
+        :key="selectedTab"
+      />
       <button class="btn btn_light_dark_blue self-end" @click="add()">
         Добавить
       </button>

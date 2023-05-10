@@ -12,6 +12,10 @@ export function useClients(selectedTab) {
     () => store.state[`clients${selectedTab.value.value}`]?.params
   );
 
+  const updateParams = (newParams) => {
+    store.commit(`update${selectedTab.value.value}Params`, newParams);
+  };
+
   const getClientsList = async () => {
     await store.dispatch(
       `getClients${selectedTab.value.value}List`,
@@ -32,5 +36,11 @@ export function useClients(selectedTab) {
     return "#" + ("00000" + color.toString(16)).slice(-6);
   };
 
-  return { getClientsList, clientsList, getClientsFields, getColor };
+  return {
+    getClientsList,
+    clientsList,
+    getClientsFields,
+    getColor,
+    updateParams,
+  };
 }

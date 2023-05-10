@@ -8,9 +8,9 @@
         <component
           :is="filter.component"
           :item="filter"
-          :idx="idx"
+          :idx="filter.code"
           :selector_options="filter.selector_options"
-          change_filter_value="change_filter_value"
+          @change_filter_value="change_filter_value"
         />
       </div>
     </template>
@@ -36,8 +36,8 @@ export default {
     filters: { type: Array, required: false, default: () => [] },
   },
   setup(props, context) {
-    const change_filter_value = (new_obj, idx) =>
-      context.emit("change_filter_value", new_obj, idx);
+    const change_filter_value = (new_obj, code) =>
+      context.emit("change_filter_value", new_obj, code);
 
     return { change_filter_value };
   },

@@ -1,30 +1,24 @@
 import store from "@/store";
-import { computed, watch } from "vue";
+import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import { reactive } from "vue";
 
-export function useSearchFilters(showFilters, selectedTab) {
+export function useSearchFilters(selectedTab) {
   const searchValue = ref("");
-
-  watch(showFilters, () => {
-    if (!showFilters.value) return;
-    if (fields.value.some((field) => field.type === 12))
-      get_categories_options();
-    fillFilters();
-  });
+  const dropSearchValue = () => (searchValue.value = "");
 
   const fields = computed(
     () => store.state?.[`clients${selectedTab.value.value}`].fields
   );
-  store.dispatch(`getClients${selectedTab.value.value}Fields`);
 
   const filteredFiltersValue = computed(() =>
     filtersValue.filter((filter) =>
       filter.name.toUpperCase().includes(searchValue.value.toUpperCase())
     )
   );
-  const change_filter_value = (new_obj, idx) => {
-    Object.assign(filtersValue[idx], new_obj);
+  const change_filter_value = (new_obj, code) => {
+    const item = filtersValue.find((el) => el.code === code);
+    Object.assign(item, new_obj);
   };
 
   const baseFilteredfiltersValue = computed(() =>
@@ -51,7 +45,7 @@ export function useSearchFilters(showFilters, selectedTab) {
 
   const categories_options = reactive([]);
   const get_categories_options = async () => {
-    await this.$store.dispatch("get_fields_properties");
+    await store.dispatch("get_fields_properties");
     store.state.categories.fields_properties.forEach((val) => {
       let spaces = "";
       for (let i = 1; i < val.level; i++) spaces = spaces + "-    ";
@@ -60,6 +54,52 @@ export function useSearchFilters(showFilters, selectedTab) {
         value: val.id,
       });
     });
+  };
+
+  const confirmFilters = () => {
+    const filter = {};
+    filtersValue
+      .filter((val) => val.value != null && val.value !== "")
+      .forEach((val) => {
+        if (val.type == 1 || val.type == 2)
+          filter[val.code] = {
+            compare: val.option,
+            query: val.value,
+          };
+        if (val.type == 3 || val.type == 4)
+          filter[val.code] = {
+            compare: val.option,
+            query: val.value,
+          };
+        if (val.type == 5 || val.type == 6 || val.type == 12)
+          if (val.value?.length)
+            filter[val.code] = {
+              compare: "in",
+              query: val.value,
+            };
+        if (val.type == 7) {
+          const date = val.value.split("~");
+          date.forEach((val, idx) => (date[idx] = val.split("-").join(".")));
+          filter[val.code] = {
+            from: date[0],
+            to: date[1],
+          };
+        }
+        if (val.type == 8) {
+          const date = val.value.split("~");
+          date.forEach((val, idx) => {
+            const split = val.split("T");
+            split[0] = split[0].split("-").join(".");
+            date[idx] = split.join(" ");
+          });
+          filter[val.code] = {
+            from: date[0],
+            to: date[1],
+          };
+        }
+      });
+
+    return filter;
   };
 
   const filterComponents = {
@@ -118,6 +158,12 @@ export function useSearchFilters(showFilters, selectedTab) {
     });
   };
 
+  onMounted(async () => {
+    await store.dispatch(`getClients${selectedTab.value.value}Fields`);
+    await get_categories_options();
+    fillFilters();
+  });
+
   return {
     searchValue,
     fields,
@@ -132,5 +178,7 @@ export function useSearchFilters(showFilters, selectedTab) {
     specialFiltersSearchValue,
     categories_options,
     filterComponents,
+    confirmFilters,
+    dropSearchValue,
   };
 }

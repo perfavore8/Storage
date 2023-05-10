@@ -1,7 +1,7 @@
 <template>
-  <div class="w-1/2 relative z-20" ref="target">
+  <div class="w-1/2 relative z-20" ref="target" @keydown.enter="() => accept()">
     <div
-      class="seacrh relative w-full"
+      class="search relative w-full"
       @click="toggleFilters(true)"
       @focusin="toggleFilters(true)"
     >
@@ -45,11 +45,13 @@
           />
         </div>
       </div>
-      <BtnsSaveClose :show_close="false" class="self-end" @save="accept">
+      <BtnsSaveClose
+        :show_close="false"
+        class="self-end"
+        @save="() => accept()"
+      >
         <template v-slot:other_btns>
-          <button class="btn bg-transparent" @click="fillFilters()">
-            Сбросить
-          </button>
+          <button class="btn bg-transparent" @click="reset()">Сбросить</button>
         </template>
         <template v-slot:save> Применить </template>
       </BtnsSaveClose>
@@ -66,6 +68,7 @@ import { useToggle, onClickOutside } from "@vueuse/core";
 import { useSearchFilters } from "@/composables/searchFilters";
 import { computed, ref } from "vue";
 import { useClientsTabs } from "@/composables/clientsTabs";
+import { useClients } from "@/composables/clients";
 export default {
   components: {
     AppInput,
@@ -76,6 +79,7 @@ export default {
   setup() {
     const { tabs } = useClientsTabs();
     const selectedTabComp = computed(() => tabs.selected);
+    const { updateParams, getClientsList } = useClients(selectedTabComp);
 
     const target = ref(null);
 
@@ -83,12 +87,47 @@ export default {
 
     const [showFilters, toggleFilters] = useToggle();
 
+    const {
+      searchValue,
+      change_filter_value,
+      fillFilters,
+      baseFilteredfiltersValue,
+      spacialFilteredfiltersValueNotSelected,
+      specialFilteredfiltersValueSelected,
+      specialFiltersSearchValue,
+      confirmFilters,
+      dropSearchValue,
+    } = useSearchFilters(selectedTabComp);
+
+    const accept = () => {
+      updateParams({ filter: confirmFilters(), q: searchValue, page: 1 });
+      getClientsList();
+      toggleFilters(false);
+    };
+
+    const reset = () => {
+      fillFilters();
+      dropSearchValue();
+      updateParams({ filter: {}, q: "", page: 1 });
+      getClientsList();
+      toggleFilters(false);
+    };
+
     return {
+      searchValue,
+      change_filter_value,
+      fillFilters,
+      baseFilteredfiltersValue,
+      spacialFilteredfiltersValueNotSelected,
+      specialFilteredfiltersValueSelected,
+      specialFiltersSearchValue,
+      confirmFilters,
       showFilters,
       toggleFilters,
       target,
-      ...useSearchFilters(showFilters, selectedTabComp),
       selectedTabComp,
+      accept,
+      reset,
     };
   },
 };
