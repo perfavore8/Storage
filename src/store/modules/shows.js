@@ -22,6 +22,7 @@ export default {
     showMoveProductsBetweenWhs: false,
     showReportCreate: false,
     showClientsFieldsSettings: false,
+    showSettingEntities: false,
   },
   getters: {
     show_modals(state, getters) {
@@ -49,6 +50,7 @@ export default {
         state.showMoveProductsBetweenWhs ||
         state.showAccountSattings ||
         state.showImportStuff ||
+        state.showSettingEntities ||
         state.showClientsFieldsSettings
       );
     },
@@ -117,6 +119,9 @@ export default {
     },
     showClientsFieldsSettings(state) {
       return state.showClientsFieldsSettings;
+    },
+    showSettingEntities(state) {
+      return state.showSettingEntities;
     },
   },
   mutations: {
@@ -192,6 +197,9 @@ export default {
     },
     openCloseClientsFieldsSettings(state, value) {
       state.showClientsFieldsSettings = value;
+    },
+    toggleSettingEntities(state, value) {
+      state.showSettingEntities = value;
     },
     toggleReportCreate(state, value) {
       if (value !== undefined) {
