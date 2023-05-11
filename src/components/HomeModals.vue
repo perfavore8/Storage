@@ -67,6 +67,11 @@
       <ClientsFieldsSettings />
     </div>
   </transition>
+  <transition name="modal_window">
+    <div v-if="showSettingEntities" class="SettingEntities">
+      <SettingEntities />
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -83,6 +88,7 @@ import MoveProductsBetweenWhs from "@/components/MoveProductsBetweenWhs.vue";
 import ImportStuff from "@/components/ImportStuff.vue";
 import AccountSattings from "@/components/AccountSattings.vue";
 import ClientsFieldsSettings from "@/components/ClientsFieldsSettings.vue";
+import SettingEntities from "@/components/SettingEntities.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -99,6 +105,7 @@ export default {
     ImportStuff,
     AccountSattings,
     ClientsFieldsSettings,
+    SettingEntities,
   },
   props: {
     selectedWH: Object,
@@ -122,6 +129,7 @@ export default {
       "showMoveProductsBetweenWhs",
       "showImportStuff",
       "showClientsFieldsSettings",
+      "showSettingEntities",
     ]),
     isTest() {
       return (
