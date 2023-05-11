@@ -122,7 +122,11 @@
                 Категории товаров
               </div>
             </a>
-
+            <a v-if="isTest">
+              <div class="modal_container" @click="openSettingEntities()">
+                Настройка сущностей
+              </div>
+            </a>
             <a>
               <div class="modal_container" @click="open_product_properties()">
                 Свойства товаров
@@ -253,6 +257,8 @@ export default {
       store.commit("open_close_product_properties", true);
     const open_close_document_setting = (val) =>
       store.commit("open_close_document_setting", val);
+    const openSettingEntities = () =>
+      store.commit("toggleSettingEntities", true);
     const openArchive = () => router.push("/archive");
 
     return {
@@ -284,6 +290,7 @@ export default {
       closeImportXlsl,
       isColored,
       openArchive,
+      openSettingEntities,
     };
   },
 };
