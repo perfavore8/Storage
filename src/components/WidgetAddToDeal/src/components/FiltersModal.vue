@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import MainGrid from "@/components/MainGrid.vue";
+import MainGrid from "./MainGrid.vue";
 import { nextTick, ref } from "vue";
 export default {
   components: {
