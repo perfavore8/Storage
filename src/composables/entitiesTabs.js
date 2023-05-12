@@ -52,6 +52,8 @@ export function useEntitiesTabs() {
         updateName: "update_fields",
         deleteName: "delete_field",
         haveLeadConfig: true,
+        haveFieldsProperties: true,
+        haveCategories: true,
       },
     ],
     select: function (option) {

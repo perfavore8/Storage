@@ -15,6 +15,18 @@
           :selected="tabs.selected"
           @select="(option) => tabs.select(option)"
         />
+        <template v-if="showCategories">
+          <SettingEntitiesCategories
+            v-if="tabs.selected.haveCategories"
+            @toggleCategories="toggleCategories"
+          />
+        </template>
+        <template v-else>
+          <SettingEntitiesFieldsProperties
+            v-if="tabs.selected.haveFieldsProperties"
+            @toggleCategories="toggleCategories"
+          />
+        </template>
         <SettingEntitiesTable
           :selectedTab="tabs.selected"
           :key="tabs.selected.value"
@@ -33,13 +45,18 @@
 import BtnsSaveClose from "./BtnsSaveClose.vue";
 import AppRadioBtnsGroupUnderlined from "./AppRadioBtnsGroupUnderlined.vue";
 import SettingEntitiesTable from "./SettingEntitiesTable.vue";
+import SettingEntitiesFieldsProperties from "./SettingEntitiesFieldsProperties.vue";
 import store from "@/store";
 import { useEntitiesTabs } from "@/composables/entitiesTabs";
+import SettingEntitiesCategories from "./SettingEntitiesCategories.vue";
+import { useToggle } from "@vueuse/core";
 export default {
   components: {
     BtnsSaveClose,
     AppRadioBtnsGroupUnderlined,
     SettingEntitiesTable,
+    SettingEntitiesFieldsProperties,
+    SettingEntitiesCategories,
   },
   setup() {
     const { tabs } = useEntitiesTabs();
@@ -52,7 +69,9 @@ export default {
       store.commit("toggleSettingEntities", false);
     };
 
-    return { close, save, tabs };
+    const [showCategories, toggleCategories] = useToggle(false);
+
+    return { close, save, tabs, showCategories, toggleCategories };
   },
 };
 </script>

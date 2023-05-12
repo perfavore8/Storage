@@ -2,10 +2,7 @@
   <div class="relative mb-14 mt-5">
     <table class="rows">
       <tr class="row">
-        <th
-          class=""
-          v-if="isTest && selected_fields_properties?.length == 1"
-        ></th>
+        <th class="" v-if="isTest && selectedFieldPropertyIsBasic"></th>
         <th class="item item_field title">
           <div class="copy_fields">
             <span>Поле</span>
@@ -101,11 +98,11 @@
         :class="{ load: is_loading }"
         v-for="(row, idx) in copy_fields"
         :key="row.id"
-        v-show="selected_fields_properties?.id === row.category_id || true"
+        v-show="selectedFieldProperty?.id === row.category_id || true"
       >
         <th
           class="p-[10px] border border-[#c9c9c9]"
-          v-if="isTest && selected_fields_properties?.length == 1"
+          v-if="isTest && selectedFieldPropertyIsBasic"
         >
           <div class="flex flex-row">
             <button
@@ -249,7 +246,7 @@
       <tr class="row" v-for="(row, idx) in new_fields" :key="row.id">
         <th
           class="p-[10px] border border-[#c9c9c9]"
-          v-if="isTest && selected_fields_properties?.length == 1"
+          v-if="isTest && selectedFieldPropertyIsBasic"
         ></th>
         <td class="item">
           <input
@@ -350,10 +347,17 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import store from "@/store";
 import SelectorVue from "./SelectorVue.vue";
+import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsProperties";
 export default {
   components: { SelectorVue },
   props: { selectedTab: Object },
   setup(props) {
+    const { selectedFieldProperty, selectedFieldPropertyIsBasic } =
+      useEntitiesFieldsProperties();
+    watch(selectedFieldProperty, () => {
+      if (selectedFieldProperty.value) get_fields();
+    });
+
     const toolTips = reactive({
       visibility: false,
       edit: false,
@@ -371,7 +375,7 @@ export default {
     const changeSelectedTab = async () => {
       is_loading.value = true;
       await store.dispatch(selectedTab.value.getTypesName);
-      await get_fields();
+      if (!props.selectedTab.haveFieldsProperties) await get_fields();
       setTimeout(() => {
         if (is_loading.value) is_loading.value = false;
       }, 5000);
@@ -408,7 +412,7 @@ export default {
     const add_new_field = () => {
       const item = {
         id: copy_fields.length + 1,
-        category_id: props.selected_fields_properties?.id,
+        category_id: selectedFieldProperty.value?.id,
         type: 3,
         name: "",
         data: [],
@@ -523,7 +527,12 @@ export default {
     };
     const get_fields = async () => {
       is_loading.value = true;
-      await store.dispatch(selectedTab.value.getFieldsName, 1);
+      await store.dispatch(
+        selectedTab.value.getFieldsName,
+        props.selectedTab.haveFieldsProperties && selectedFieldProperty.value
+          ? selectedFieldProperty.value?.id
+          : 0
+      );
       copy_fields.length = 0;
       Object.assign(copy_fields, [
         ...store.state[selectedTab.value.storeName]?.[
@@ -630,6 +639,8 @@ export default {
       remove_selector_option,
       add_new_fields_selector_option,
       remove_new_fields_selector_option,
+      selectedFieldProperty,
+      selectedFieldPropertyIsBasic,
     };
   },
 };
