@@ -25,6 +25,7 @@ export default {
       });
       const json = await res.json();
       context.commit("update_fields_properties", json);
+      return json;
     },
     async add_fields_properties(context, params) {
       const url = BaseURL + "category/add";
