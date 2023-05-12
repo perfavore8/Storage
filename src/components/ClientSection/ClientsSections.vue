@@ -24,12 +24,35 @@
             :isNew="addNew"
             :item="selectedItem"
             v-if="selected.id || addNew"
-            @close="closeAdd"
+            @close="() => closeAdd(true)"
           />
         </transition>
       </div>
     </div>
   </div>
+  <template v-if="confirmClose">
+    <teleport to="body">
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-4 border border-slate-300 rounded-lg shadow-md"
+      >
+        <span>Вы уверены что хотите выйти без сохранения?</span>
+        <div class="flex flex-row gap-2 items-center justify-end mt-4">
+          <button
+            class="btn small_btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
+            @click="closeAdd(true)"
+          >
+            Выйти
+          </button>
+          <button
+            class="btn small_btn btn_light_dark_blue"
+            @click="closeAdd(false)"
+          >
+            Сохранить
+          </button>
+        </div>
+      </div>
+    </teleport>
+  </template>
 </template>
 
 <script>
@@ -66,8 +89,11 @@ export default {
       ref: null,
       id: null,
       select: function (id) {
-        addNew.value = false;
-        nextTick(() => (this.id = id));
+        if (addNew.value) {
+          closeAdd();
+        } else {
+          nextTick(() => (this.id = id));
+        }
       },
     });
     const selectedItem = computed(() =>
@@ -80,11 +106,27 @@ export default {
       selected.id = null;
       nextTick(() => (addNew.value = true));
     };
-    const closeAdd = () => {
-      selected.ref = null;
-      selected.id = null;
-      addNew.value = false;
-      getClientsList();
+
+    const confirmClose = ref(false);
+    const closeAdd = (confirm) => {
+      if (addNew.value) {
+        if (confirm === undefined) {
+          confirmClose.value = true;
+        } else if (confirm) {
+          confirmClose.value = false;
+          selected.ref = null;
+          selected.id = null;
+          addNew.value = false;
+          getClientsList();
+        } else {
+          confirmClose.value = false;
+        }
+      } else {
+        selected.ref = null;
+        selected.id = null;
+        addNew.value = false;
+        getClientsList();
+      }
     };
 
     getClientsList();
@@ -98,6 +140,7 @@ export default {
       add,
       closeAdd,
       selectedItem,
+      confirmClose,
     };
   },
 };
