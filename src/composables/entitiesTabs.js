@@ -54,6 +54,7 @@ export function useEntitiesTabs() {
         haveLeadConfig: true,
         haveFieldsProperties: true,
         haveCategories: true,
+        haveSort: true,
       },
     ],
     select: function (option) {

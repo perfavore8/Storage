@@ -2,7 +2,10 @@
   <div class="relative mb-14 mt-5">
     <table class="rows">
       <tr class="row">
-        <th class="" v-if="isTest && selectedFieldPropertyIsBasic"></th>
+        <th
+          class=""
+          v-if="isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort"
+        ></th>
         <th class="item item_field title">
           <div class="copy_fields">
             <span>Поле</span>
@@ -98,11 +101,14 @@
         :class="{ load: is_loading }"
         v-for="(row, idx) in copy_fields"
         :key="row.id"
-        v-show="selectedFieldProperty?.id === row.category_id || true"
+        v-show="
+          selectedFieldProperty?.id === row.category_id ||
+          !selectedTab.haveFieldsProperties
+        "
       >
         <th
           class="p-[10px] border border-[#c9c9c9]"
-          v-if="isTest && selectedFieldPropertyIsBasic"
+          v-if="isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort"
         >
           <div class="flex flex-row">
             <button
@@ -126,7 +132,7 @@
             :class="{ error: row.nameError }"
             v-model="row.name"
             @keyup.enter="update_field(idx, ['name'])"
-            @change="row.changeName = true"
+            @input="row.changeName = true"
           />
         </td>
         <td class="item selectors">
@@ -246,7 +252,7 @@
       <tr class="row" v-for="(row, idx) in new_fields" :key="row.id">
         <th
           class="p-[10px] border border-[#c9c9c9]"
-          v-if="isTest && selectedFieldPropertyIsBasic"
+          v-if="isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort"
         ></th>
         <td class="item">
           <input
@@ -515,10 +521,10 @@ export default {
       });
       if (copy_fields[idx]?.is_system) delete params?.name;
       const error = await store.dispatch(selectedTab.value.updateName, params);
-      const nameError = error.error == "This field name exist.";
+      const nameError = error?.error == "This field name exist.";
 
       copy_fields[idx]["nameError"] = nameError;
-      if (!error.error) {
+      if (!error?.error) {
         copy_fields[idx].changeName = false;
         copy_fields[idx].changeData = false;
         copy_fields[idx].changeLeadConfig = false;
@@ -819,6 +825,21 @@ export default {
     height: min-content;
     width: min-content;
     @include font(400, 12px);
+  }
+}
+.bar_item_icon {
+  margin: 0 auto;
+  height: 16px;
+  width: 16px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  &_up {
+    @include bg_image("@/assets/sort_up.svg");
+  }
+  &_down {
+    @include bg_image("@/assets/sort_down.svg");
   }
 }
 .checkbox + label::before {
