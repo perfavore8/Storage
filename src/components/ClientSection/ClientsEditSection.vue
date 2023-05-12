@@ -5,15 +5,18 @@
     <div class="w-full">
       <div class="flex flex-col gap-3 items-center p-5">
         <AppInputSelect
-          v-if="!isNew"
-          :list="binding.list"
-          :countLettersReq="3"
+          v-if="!isNew || true"
+          :list="isNew ? binding.filteredOppositeList : binding.list"
+          :countLettersReq="isNew ? 0 : 3"
           :requestDelay="300"
           :placeholder="'Привязка'"
           @changeInputValue="
-            (val) => ((binding.value = val), binding.getList(copyItem.id))
+            (val) => (
+              (binding.value = val),
+              isNew ? binding.getOppositeList() : binding.getList(copyItem.id)
+            )
           "
-          @select="(val) => binding.add(copyItem.id, val)"
+          @select="(val) => binding.add(copyItem.id, val, isNew ? true : false)"
         />
         <div class="flex flex-row gap-1 flex-wrap">
           <span
@@ -21,7 +24,7 @@
             :key="sel.id"
             class="cursor-pointer font-medium py-1 px-2 text-xs text-green-700 bg-green-50 ring-inset ring-1 ring-green-600 ring-opacity-20 hover:text-red-700 hover:bg-red-50 hover:ring-red-600 hover:ring-opacity-10 rounded-md w-fit transition-all"
             :class="{ grey: sel.isNew }"
-            @click="binding.del(copyItem.id, sel.id, idx)"
+            @click="binding.del(copyItem.id, sel.id, idx, isNew ? true : false)"
           >
             {{ sel.name }}
           </span>
@@ -98,24 +101,27 @@ export default {
       if (!props.isNew) {
         copyItem.value = JSON.parse(JSON.stringify(props.item));
         addCurrentLinks();
+      } else {
+        binding.getOppositeList();
       }
     };
     const itemProp = computed(() => props.item);
     watch(itemProp, () => fillCopyItem());
 
     const close = () => context.emit("close");
-    const accept = () => {
+    const accept = async () => {
       tryAccept.value = true;
       if (checkValues()) return;
       const params = {};
       params[`${selectedTabComp.value.value3}`] = [copyItem.value];
 
-      store.dispatch(
+      const { added } = await store.dispatch(
         props.isNew
           ? `addClients${selectedTabComp.value.value}`
           : `updateClients${selectedTabComp.value.value}`,
         params
       );
+      binding.addAll(added[0]);
 
       context.emit("accept");
       close();
