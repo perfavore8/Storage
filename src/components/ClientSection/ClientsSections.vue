@@ -1,9 +1,9 @@
 <template>
-  <div v-if="selectedTab" class="flex flex-col gap-4">
+  <div v-if="selectedTabComp" class="flex flex-col gap-4">
     <div class="flex flex-row items-center justify-between relative">
       <AppSeatchWithFilters
         class="absolute left-1/2 -translate-x-1/2"
-        :key="selectedTab"
+        :key="selectedTabComp"
       />
       <button class="btn btn_light_dark_blue self-end" @click="add()">
         Добавить
@@ -15,7 +15,7 @@
         ref="refList"
         :list="clientsList"
         :selected="selected"
-        :selectedTab="selectedTab"
+        :selectedTab="selectedTabComp"
       />
       <div class="h-full relative">
         <transition name="modal">
@@ -25,6 +25,7 @@
             :item="selectedItem"
             v-if="selected.id || addNew"
             @close="() => closeAdd(true)"
+            @follow="follow"
           />
         </transition>
       </div>
@@ -62,24 +63,23 @@ import ClientSectionsFields from "./ClientSectionsFields.vue";
 import { computed, nextTick, reactive, ref, watch } from "vue";
 import { useClients } from "@/composables/clients";
 import { onClickOutside } from "@vueuse/core";
+import { useClientsTabs } from "@/composables/clientsTabs";
 export default {
   components: {
     ClientsEditSection,
     AppSeatchWithFilters,
     ClientSectionsFields,
   },
-  props: {
-    selectedTab: { type: Object, required: false },
-  },
-  setup(props) {
+  setup() {
     const target = ref(null);
     const refList = ref(null);
     onClickOutside(target, () => closeAdd(), { ignore: [refList] });
 
-    const selectedTabComp = computed(() => props.selectedTab);
+    const { tabs } = useClientsTabs();
+    const selectedTabComp = computed(() => tabs.selected);
     watch(
       selectedTabComp,
-      () => (getClientsList(), getClientsFields(), closeAdd())
+      () => (getClientsList(), getClientsFields(), closeAdd(true))
     );
 
     const { clientsList, getClientsList, getClientsFields } =
@@ -99,6 +99,13 @@ export default {
     const selectedItem = computed(() =>
       clientsList.find((el) => el.id === selected.id)
     );
+    const follow = (id) => {
+      const oppsite = tabs.list.find(
+        (el) => el.oppositeValue === selectedTabComp.value.value
+      );
+      tabs.select(oppsite);
+      selected.select(id);
+    };
 
     const addNew = ref(false);
     const add = () => {
@@ -146,6 +153,8 @@ export default {
       selectedItem,
       confirmClose,
       save,
+      follow,
+      selectedTabComp,
     };
   },
 };

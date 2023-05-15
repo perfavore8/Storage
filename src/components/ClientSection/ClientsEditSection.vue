@@ -22,14 +22,38 @@
           <span
             v-for="(sel, idx) in binding.selected"
             :key="sel.id"
-            class="cursor-pointer font-medium py-1 px-2 text-xs text-green-700 bg-green-50 ring-inset ring-1 ring-green-600 ring-opacity-20 hover:text-red-700 hover:bg-red-50 hover:ring-red-600 hover:ring-opacity-10 rounded-md w-fit transition-all"
-            :class="{ grey: sel.isNew }"
-            @click="binding.del(copyItem.id, sel.id, idx, isNew ? true : false)"
+            class="cursor-pointer relative font-medium py-1 px-2 text-xs text-green-700 bg-green-50 ring-inset ring-1 ring-green-600 ring-opacity-20 hover:text-big-stone-600 hover:bg-big-stone-50 hover:ring-big-stone-500 hover:ring-opacity-20 rounded-md w-fit transition-all"
+            :class="{ blue: selectedBind.id === sel.id }"
+            @click.self="() => selectedBind.select(sel.id, idx)"
+            :ref="
+              (el) =>
+                selectedBind.id === sel.id ? (selectedBind.ref = el) : null
+            "
           >
             {{ sel.name }}
           </span>
         </div>
       </div>
+      <teleport :to="selectedBind.ref" v-if="selectedBind.ref">
+        <OnClickOutside @trigger="() => selectedBind.close()">
+          <div
+            class="absolute right-0 z-10 mt-2 w-24 origin-top-right transform scale-100 rounded-md bg-white opacity-100 shadow-lg ring-1 ring-gray-900 ring-opacity-5 transition-all"
+          >
+            <a
+              class="text-gray-900 text-sm leading-6 py-1 px-3 block hover:bg-gray-50 rounded-[inherit]"
+              @click="selectedBind.follow()"
+            >
+              Перейти
+            </a>
+            <a
+              class="text-gray-900 text-sm leading-6 py-1 px-3 block hover:bg-gray-50 rounded-[inherit]"
+              @click="selectedBind.del()"
+            >
+              Удалить
+            </a>
+          </div>
+        </OnClickOutside>
+      </teleport>
       <EditSectionFields
         :fields="fields"
         :copyItem="copyItem"
@@ -56,16 +80,18 @@ import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditSectionFields from "./EditSectionFields.vue";
 import AppDelBtnSwipe from "../AppDelBtnSwipe.vue";
 import AppInputSelect from "../AppInputSelect.vue";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import store from "@/store";
 import { useClientBinding } from "@/composables/clientEditSectionBinding";
 import { useClientsTabs } from "@/composables/clientsTabs";
+import { OnClickOutside } from "@vueuse/components";
 export default {
   components: {
     BtnsSaveClose,
     EditSectionFields,
     AppDelBtnSwipe,
     AppInputSelect,
+    OnClickOutside,
   },
   props: {
     isNew: { type: Boolean, required: true },
@@ -143,6 +169,28 @@ export default {
 
     const change_value = (value, code) => (copyItem.value.fields[code] = value);
 
+    const selectedBind = reactive({
+      ref: null,
+      id: null,
+      idx: null,
+      select: function (id, idx) {
+        this.id = id;
+        this.idx = idx;
+      },
+      close: function () {
+        this.id = null;
+        this.idx = null;
+        this.ref = null;
+      },
+      del: function () {
+        binding.del(copyItem.value.id, this.id, this.idx, !!props.isNew);
+        this.close();
+      },
+      follow() {
+        context.emit("follow", this.id);
+      },
+    });
+
     return {
       copyItem,
       fields,
@@ -152,6 +200,7 @@ export default {
       del,
       binding,
       tryAccept,
+      selectedBind,
     };
   },
 };
@@ -159,7 +208,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
-.grey {
-  @apply text-gray-600 bg-gray-50 ring-gray-500 ring-opacity-10 hover:text-red-700 hover:bg-red-50 hover:ring-red-600 hover:ring-opacity-10;
+.blue {
+  @apply text-big-stone-600 bg-big-stone-50 ring-big-stone-500 ring-opacity-20;
 }
 </style>

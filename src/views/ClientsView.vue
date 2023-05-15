@@ -10,7 +10,7 @@
         :selected="tabs.selected"
         @select="(option) => tabs.select(option)"
       />
-      <ClientsSection :selectedTab="tabs.selected" />
+      <ClientsSection />
     </div>
   </div>
 </template>
