@@ -161,7 +161,7 @@ export default {
         val[1].statuses.forEach((stat) =>
           list.push({
             name: stat.name,
-            value: stat.id,
+            value: val[0] + "#" + stat.id,
             color: stat.color,
             optgroup: true,
           })
@@ -210,11 +210,15 @@ export default {
       if (Object.keys(this.cur_doc).length > 0) {
         this.name = this.cur_doc.name;
         this.file = this.cur_doc.file;
-        const serch_selected_item = (options, name, value) => {
+        const serch_selected_item = (options, name, value, isSpecial) => {
           let obj = { name: "Не выбрано", value: -1 };
           options.forEach((val) => {
             if (val[value] == name) {
               Object.assign(obj, val);
+            } else if (isSpecial) {
+              if (`${val[value]}`?.split("#")[1] == name) {
+                Object.assign(obj, val);
+              }
             }
           });
           return obj;
@@ -229,10 +233,12 @@ export default {
           this.cur_doc.orientation,
           "value"
         );
+        console.log(this.cur_doc.status_id);
         this.status_id = serch_selected_item(
           this.copyPipelinesList,
           this.cur_doc.status_id,
-          "value"
+          "value",
+          true
         );
         this.url_field = serch_selected_item(
           this.lead_fields_options,

@@ -103,21 +103,25 @@ export default {
     },
     async update_template(context, params) {
       const url = BaseURL + "document/update";
-      await fetch(url + preparation_params(params), {
+      await fetch(url, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: TOKEN,
         },
+        body: JSON.stringify(params),
       });
       context.dispatch("get_documents");
     },
     async add_template(context, params) {
       const url = BaseURL + "document/add";
-      await fetch(url + preparation_params(params), {
+      await fetch(url, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: TOKEN,
         },
+        body: JSON.stringify(params),
       });
       context.dispatch("get_documents");
     },
