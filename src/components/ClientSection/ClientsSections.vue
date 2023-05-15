@@ -45,7 +45,7 @@
           </button>
           <button
             class="btn small_btn btn_light_dark_blue"
-            @click="closeAdd(false)"
+            @click="closeAdd(false), save()"
           >
             Сохранить
           </button>
@@ -129,6 +129,10 @@ export default {
       }
     };
 
+    const save = () => {
+      target.value?.accept();
+    };
+
     getClientsList();
 
     return {
@@ -141,6 +145,7 @@ export default {
       closeAdd,
       selectedItem,
       confirmClose,
+      save,
     };
   },
 };
