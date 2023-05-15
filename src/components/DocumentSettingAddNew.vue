@@ -233,7 +233,6 @@ export default {
           this.cur_doc.orientation,
           "value"
         );
-        console.log(this.cur_doc.status_id);
         this.status_id = serch_selected_item(
           this.copyPipelinesList,
           this.cur_doc.status_id,
