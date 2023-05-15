@@ -1,4 +1,4 @@
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
+import { usePreparationQueryParams } from "@/components/WidgetAddToDeal/src/composables/preparationQueryParams";
 import { TOKEN, BaseURL } from "@/composables/BaseURL";
 import { usePreparationProducts } from "@/components/WidgetAddToDeal/src/composables/preparationProducts";
 const { preparationProducts } = usePreparationProducts();
