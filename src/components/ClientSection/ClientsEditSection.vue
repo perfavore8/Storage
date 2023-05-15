@@ -35,9 +35,13 @@
         </div>
       </div>
       <teleport :to="selectedBind.ref" v-if="selectedBind.ref">
-        <OnClickOutside @trigger="() => selectedBind.close()">
+        <OnClickOutside
+          @trigger="() => selectedBind.close()"
+          :options="{ ignore: [selectedBind.ref] }"
+        >
           <div
             class="absolute right-0 z-10 mt-2 w-24 origin-top-right transform scale-100 rounded-md bg-white opacity-100 shadow-lg ring-1 ring-gray-900 ring-opacity-5 transition-all"
+            :class="animationStarted ? 'in' : 'out'"
           >
             <a
               class="text-gray-900 text-sm leading-6 py-1 px-3 block hover:bg-gray-50 rounded-[inherit]"
@@ -148,6 +152,18 @@ export default {
         params
       );
       binding.addAll(added[0]);
+      if (props.isNew) {
+        const { added } = await store.dispatch(
+          `addClients${selectedTabComp.value.value}`,
+          params
+        );
+        binding.addAll(added[0]);
+      } else {
+        await store.dispatch(
+          `updateClients${selectedTabComp.value.value}`,
+          params
+        );
+      }
 
       context.emit("accept");
       close();
@@ -174,13 +190,19 @@ export default {
       id: null,
       idx: null,
       select: function (id, idx) {
+        if (this.id !== null) {
+          this.close();
+          return;
+        }
         this.id = id;
         this.idx = idx;
       },
       close: function () {
-        this.id = null;
         this.idx = null;
-        this.ref = null;
+        setTimeout(() => {
+          this.id = null;
+          this.ref = null;
+        }, 100);
       },
       del: function () {
         binding.del(copyItem.value.id, this.id, this.idx, !!props.isNew);
@@ -190,6 +212,12 @@ export default {
         context.emit("follow", this.id);
       },
     });
+
+    const animationStarted = ref(false);
+    watch(
+      () => selectedBind.idx,
+      (val) => (animationStarted.value = val !== null)
+    );
 
     return {
       copyItem,
@@ -201,6 +229,7 @@ export default {
       binding,
       tryAccept,
       selectedBind,
+      animationStarted,
     };
   },
 };
@@ -210,5 +239,31 @@ export default {
 @import "@/app.scss";
 .blue {
   @apply text-big-stone-600 bg-big-stone-50 ring-big-stone-500 ring-opacity-20;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+.in {
+  animation: fadeIn 0.1s ease-out forwards;
+}
+.out {
+  animation: fadeOut 0.1s ease-out forwards;
 }
 </style>

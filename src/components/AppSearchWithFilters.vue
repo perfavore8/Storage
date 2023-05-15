@@ -17,7 +17,7 @@
     </div>
     <div
       v-show="showFilters"
-      class="absolute top-full mt-2 border border-slate-200 bg-white bg-opacity-80 backdrop-blur-md shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-max max-w-[150%] min-w-full flex flex-col gap-2"
+      class="absolute top-full mt-2 border border-slate-200 bg-white bg-opacity-80 backdrop-blur-md shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-max max-w-[150%] min-w-[550px] flex flex-col gap-2"
     >
       <div class="filters">
         <div>
