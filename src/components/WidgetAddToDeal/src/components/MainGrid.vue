@@ -239,13 +239,10 @@ export default {
     this.isLoading = true;
     await Promise.all([
       this.$store.dispatch("getTableConfigW", {
-        account_id: 30214471,
         code: "widget",
       }),
-      this.$store.dispatch("get_fields_properties2W", {
-        account_id: 30214471,
-      }),
-      this.$store.dispatch("getAllFieldsW", { account_id: 30214471 }),
+      this.$store.dispatch("get_fields_properties2W"),
+      this.$store.dispatch("getAllFieldsW"),
       this.get_products(this.productsParams),
     ]);
     this.isLoading = false;
@@ -273,7 +270,6 @@ export default {
         whs?.forEach((wh) => {
           if (wh.specialValue) {
             const params = {
-              account_id: 30214471,
               productId: wh.is_service
                 ? wh.product_id
                 : wh.product_id + "%%%" + wh.code,
@@ -285,7 +281,6 @@ export default {
       });
       this.$store.dispatch("addProduct3W", {
         products: products,
-        account_id: 30214471,
       });
       this.savedAllWhsList = [];
       this.allWhsList = [];
@@ -393,7 +388,6 @@ export default {
       this.showSpinner = true;
       await this.$store.dispatch("getAllProductsW", {
         ...params,
-        account_id: 30214471,
         leadId: 29768593,
       });
       this.fillInputValues();
@@ -417,10 +411,9 @@ export default {
       this.isLoading = true;
       await Promise.all([
         this.$store.dispatch("getTableConfigW", {
-          account_id: 30214471,
           code: "widget",
         }),
-        this.$store.dispatch("getAllFieldsW", { account_id: 30214471 }),
+        this.$store.dispatch("getAllFieldsW"),
         this.get_products(this.productsParams),
       ]);
       this.isLoading = false;

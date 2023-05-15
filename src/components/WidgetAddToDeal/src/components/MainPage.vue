@@ -440,10 +440,8 @@ export default {
     // this.feel_available_data();
     await Promise.all([
       this.getCategoriesW(0),
-      this.$store.dispatch("getAllFieldsW", { account_id: 30214471 }),
-      this.$store.dispatch("get_fields_properties2W", {
-        account_id: 30214471,
-      }),
+      this.$store.dispatch("getAllFieldsW"),
+      this.$store.dispatch("get_fields_properties2W"),
     ]);
     this.selectCategories(this.categories[0]);
   },
@@ -498,7 +496,6 @@ export default {
     },
     async addToLeadAutocomplete(id) {
       await this.$store.dispatch("addProductW", {
-        account_id: 30214471,
         productId: id,
       });
       this.updateProductsList();
@@ -509,7 +506,6 @@ export default {
 
       if (await product.is_service) {
         await this.$store.dispatch("addProduct2W", {
-          account_id: 30214471,
           productId: id,
           count: this.allWhsList[idx][0].specialValue,
         });
@@ -518,7 +514,6 @@ export default {
         this.allWhsList[idx].forEach((wh) => {
           if (wh.specialValue) {
             const params = {
-              account_id: 30214471,
               productId: [id, wh.code].join("%%%"),
               count: wh.specialValue,
             };
@@ -527,7 +522,6 @@ export default {
         });
         await this.$store.dispatch("addProduct3W", {
           products: products,
-          account_id: 30214471,
         });
       }
 
@@ -545,7 +539,7 @@ export default {
     async getProductsAutocomplete(q) {
       this.search.value = q;
       const category_id = this.selectedCategories.at(-1)?.id;
-      const params = { account_id: 30214471, q: q };
+      const params = { q: q };
       if (this.selectedWirePerLead.value)
         params.selected_wh = this.selectedWirePerLead.value;
       if (category_id) params.category_id = category_id;
@@ -571,14 +565,12 @@ export default {
     },
     async getCategoriesW(id) {
       await this.$store.dispatch("getCategoriesW", {
-        account_id: 30214471,
         parent_id: id,
       });
     },
     async getProducts(id) {
       this.useSkeletonCard = true;
       await this.$store.dispatch("getProducts2W", {
-        account_id: 30214471,
         category_id: id,
         ...this.productsParams,
       });
@@ -588,7 +580,6 @@ export default {
     },
     async getFields(id) {
       await this.$store.dispatch("getFieldsW", {
-        account_id: 30214471,
         category_id: id,
         with_parents: 1,
       });

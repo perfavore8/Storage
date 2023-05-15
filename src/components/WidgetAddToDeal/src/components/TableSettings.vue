@@ -58,7 +58,6 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("getTableConfigW", {
-      account_id: 30214471,
       code: "widget",
     });
     const list = [];
@@ -78,7 +77,6 @@ export default {
       const params = {
         config: [],
         code: "widget",
-        account_id: 30214471,
       };
       this.list.forEach((val) => {
         if (val.visible) params.config.push(val.code);

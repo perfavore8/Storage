@@ -129,12 +129,8 @@ export default {
   },
   async mounted() {
     Promise.all([
-      this.$store.dispatch("get_fields_propertiesW", {
-        account_id: 30214471,
-      }),
-      this.$store.dispatch("get_fields_properties2W", {
-        account_id: 30214471,
-      }),
+      this.$store.dispatch("get_fields_propertiesW"),
+      this.$store.dispatch("get_fields_properties2W"),
     ]);
     this.get_categories_options();
     this.feelFilters();
