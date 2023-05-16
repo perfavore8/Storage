@@ -87,7 +87,7 @@ export default {
     const target = ref(null);
     onClickOutside(target, () => {
       toggle(false);
-      scrollTop();
+      if (show) scrollTop();
     });
 
     return { change_value, show, toggle, target };
