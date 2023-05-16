@@ -92,10 +92,14 @@ export default {
     background-color: white;
     border: 1px solid #c4c4c4;
     border-radius: 4px 0 0 4px;
+    display: none;
 
     > span {
       @apply text-slate-800;
     }
+  }
+  input {
+    margin-left: 0;
   }
 }
 </style>
