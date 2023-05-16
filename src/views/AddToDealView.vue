@@ -35,12 +35,13 @@
 </template>
 
 <script>
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import router from "@/router";
 import ProductsTab from "@/components/AddToDealSelections/ProductsTab.vue";
 import DocumentsTab from "@/components/AddToDealSelections/DocumentsTab.vue";
 import ClientTab from "@/components/AddToDealSelections/ClientTab.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
+import { useNewDeal } from "@/composables/newDeal";
 export default {
   components: {
     ProductsTab,
@@ -49,6 +50,8 @@ export default {
     AppRadioBtnsGroupUnderlined,
   },
   setup() {
+    const { add } = useNewDeal();
+
     const tabs = reactive({
       selected: { name: "Товары", value: "products", code: "ProductsTab" },
       list: [
@@ -63,6 +66,10 @@ export default {
 
     const back = () => router.push("/");
 
+    onMounted(async () => {
+      add();
+    });
+
     return { tabs, back };
   },
 };
@@ -71,7 +78,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .app {
-  width: 100vw;
+  width: calc(100vw - 8px);
   height: 100vh;
   padding: 0 30px;
 

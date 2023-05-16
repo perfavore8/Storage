@@ -1,8 +1,10 @@
 import { usePreparationQueryParams } from "@/components/WidgetAddToDeal/src/composables/preparationQueryParams";
 import { TOKEN, BaseURL } from "@/composables/BaseURL";
 import { usePreparationProducts } from "@/components/WidgetAddToDeal/src/composables/preparationProducts";
+import { useNewDeal } from "@/composables/newDeal";
 const { preparationProducts } = usePreparationProducts();
 const { preparation_params } = usePreparationQueryParams();
+const { newDealParams } = useNewDeal();
 
 export default {
   state: {
@@ -154,12 +156,15 @@ export default {
     },
     async addProductW(context, params) {
       context.commit("updateDisableAddToDeal", true);
-      const url = BaseURL + "orders/add-product";
+      const url = BaseURL + "orders/product/add";
 
-      const res = await fetch(url + preparation_params(params), {
+      const res = await fetch(url, {
+        method: "POST",
         headers: {
           Authorization: TOKEN,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
       const json = await res.json();
       context.commit("updateDisableAddToDeal", false);
@@ -168,12 +173,15 @@ export default {
     },
     async addProduct2W(context, params) {
       context.commit("updateDisableAddToDeal", true);
-      const url = BaseURL + "orders/add-product-v2";
+      const url = BaseURL + "orders/product/add";
 
-      const res = await fetch(url + preparation_params(params), {
+      const res = await fetch(url, {
+        method: "POST",
         headers: {
           Authorization: TOKEN,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
       const json = await res.json();
       context.commit("updateDisableAddToDeal", false);
@@ -182,7 +190,7 @@ export default {
     },
     async addProduct3W(context, params) {
       context.commit("updateDisableAddToDeal", true);
-      const url = BaseURL + "orders/add-product-v3";
+      const url = BaseURL + "orders/product/add";
 
       const json = await fetch(url, {
         method: "POST",
@@ -190,7 +198,7 @@ export default {
           Authorization: TOKEN,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(params),
+        body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
       context.commit("updateDisableAddToDeal", false);
 

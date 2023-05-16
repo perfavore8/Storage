@@ -265,23 +265,22 @@ export default {
   },
   methods: {
     async accept() {
-      const products = {};
+      const arr = [];
       this.savedAllWhsList.forEach((whs) => {
         whs?.forEach((wh) => {
           if (wh.specialValue) {
             const params = {
-              productId: wh.is_service
+              product_id: wh.is_service
                 ? wh.product_id
                 : wh.product_id + "%%%" + wh.code,
               count: wh.specialValue,
             };
-            products[params.productId] = params.count;
+            arr.push(this.$store.dispatch("addProduct3W", params));
           }
         });
       });
-      this.$store.dispatch("addProduct3W", {
-        products: products,
-      });
+      await Promise.all(arr);
+
       this.savedAllWhsList = [];
       this.allWhsList = [];
       this.$emit("changeSavedAllWhsList", this.savedAllWhsList);

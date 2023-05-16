@@ -1,4 +1,8 @@
 import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
+import { useNewDeal } from "@/composables/newDeal";
+const { preparation_params } = usePreparationQueryParams();
+const { newDealParams } = useNewDeal();
 export default {
   state: {
     orders: {},
@@ -105,6 +109,57 @@ export default {
     },
     async deleteOrdersField(context, params) {
       const url = BaseURL + "orders/field/delete";
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+    },
+
+    async getOrder(context, params) {
+      const url = BaseURL + "orders/order";
+      const res = await fetch(
+        url + preparation_params({ ...params, order_id: newDealParams.id }),
+        {
+          headers: {
+            Authorization: TOKEN,
+          },
+        }
+      );
+      const json = await res.json();
+
+      return json;
+    },
+    async addOrder(context, params) {
+      const url = BaseURL + "orders/add";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async updateOrder(context, params) {
+      const url = BaseURL + "orders/update";
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+    },
+    async deleteOrder(context, params) {
+      const url = BaseURL + "orders/delete";
       await fetch(url, {
         method: "POST",
         headers: {

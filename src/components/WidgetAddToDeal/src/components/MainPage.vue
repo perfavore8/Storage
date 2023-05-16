@@ -3,6 +3,14 @@
     <div class="container1">
       <div class="header"></div>
       <div class="content">
+        <div class="flex flex-col">
+          <ProductCard
+            v-for="product in addedProducts"
+            :key="product.id"
+            :fields="fields"
+            :copyItem="product"
+          />
+        </div>
         <div class="top">
           <AppInputSelect
             :list="search.list"
@@ -329,15 +337,16 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import AppInputSelect from "../components/AppInputSelect.vue";
-import FiltersModal from "../components/FiltersModal.vue";
-import AppPaginator from "../components/AppPaginator.vue";
+import AppInputSelect from "./AppInputSelect.vue";
+import FiltersModal from "./FiltersModal.vue";
+import AppPaginator from "./AppPaginator.vue";
+import ProductCard from "./ProductCard.vue";
 export default {
   components: {
     AppInputSelect,
     FiltersModal,
     AppPaginator,
+    ProductCard,
   },
   data() {
     return {
@@ -352,29 +361,17 @@ export default {
       allWhsList: [],
       showSpinner: false,
       useSkeletonCard: false,
-      // fields: [
-      //   { name: "Количество", change: true },
-      //   { name: "Поставщик", change: true },
-      //   { name: "Группа", change: false },
-      //   { name: "Артикул", change: false },
-      //   { name: "На складе", change: false },
-      //   { name: "В резерве", change: false },
-      //   { name: "Цена", change: true },
-      //   { name: "Себестоимость", change: false },
-      //   { name: "№ партии", change: false },
-      //   { name: "Описание", change: true },
-      //   { name: "Единицы измерений", change: false },
-      //   { name: "Поступление", change: false },
-      //   { name: "Сумма ₽", change: false },
-      //   { name: "Итого к оплате ₽", change: false },
-      //   { name: "Прибыль ₽", change: false },
-      // ],
+      addedProducts: [],
     };
   },
   computed: {
-    ...mapGetters(["data", "params"]),
     categories() {
       return this.$store.state.widjetCategories.categories;
+    },
+    addedProductsId() {
+      const arr = [];
+      this.addedProducts.forEach((val) => arr.push(val.id));
+      return arr;
     },
     page() {
       const obj = {
@@ -496,9 +493,10 @@ export default {
     },
     async addToLeadAutocomplete(id) {
       await this.$store.dispatch("addProductW", {
-        productId: id,
+        product_id: id,
       });
       this.updateProductsList();
+      this.updateAddedProducts();
     },
     async addToLead(id) {
       const product = this.products.find((product) => product.id === id);
@@ -506,26 +504,24 @@ export default {
 
       if (await product.is_service) {
         await this.$store.dispatch("addProduct2W", {
-          productId: id,
+          product_id: id,
           count: this.allWhsList[idx][0].specialValue,
         });
       } else {
-        const products = {};
+        const arr = [];
         this.allWhsList[idx].forEach((wh) => {
           if (wh.specialValue) {
             const params = {
-              productId: [id, wh.code].join("%%%"),
+              product_id: [id, wh.code].join("%%%"),
               count: wh.specialValue,
             };
-            products[params.productId] = params.count;
+            arr.push(this.$store.dispatch("addProduct3W", params));
           }
         });
-        await this.$store.dispatch("addProduct3W", {
-          products: products,
-        });
+        await Promise.all(arr);
       }
-
       this.updateProductsList();
+      this.updateAddedProducts();
     },
     updateProductsList() {
       if (this.show_cards) {
@@ -535,6 +531,14 @@ export default {
           this.getProducts(this.selectedCategories.at(-1)?.id);
         }
       }
+    },
+    async updateAddedProducts() {
+      const order = await this.$store.dispatch("getOrder");
+      order.positions.forEach((item) =>
+        !this.addedProductsId.includes(item.id)
+          ? this.addedProducts.push(item)
+          : null
+      );
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;
@@ -589,6 +593,7 @@ export default {
     },
     accept_filters() {
       this.updateProductsList();
+      this.updateAddedProducts();
     },
     feel_available_data() {
       this.data.forEach((val, idx) => {

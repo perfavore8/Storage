@@ -15,6 +15,18 @@ export default {
       state.showTableSettings = value;
     },
     updateFields(state, value) {
+      const componentsList = {
+        1: "EditInteger",
+        2: "EditFloat",
+        3: "EditString",
+        4: "EditText",
+        5: "EditSelector",
+        6: "EditMultiSelector",
+        7: "EditDate",
+        8: "EditDateTime",
+        9: "EditFlag",
+      };
+      value.map((field) => (field.component = componentsList[field.type]));
       state.fields = [...value];
     },
     updateTableConfigW(state, value) {
