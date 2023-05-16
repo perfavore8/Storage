@@ -35,6 +35,9 @@ body {
   overflow: auto;
   font-family: "Inter";
 }
+html {
+  scroll-behavior: smooth;
+}
 #app {
   background: white;
   min-height: 100vh;
