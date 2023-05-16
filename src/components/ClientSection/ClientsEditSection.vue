@@ -73,7 +73,7 @@
         >
           Назад
         </button>
-        <AppDelBtnSwipe v-if="!isNew" @del="del" :key="copyItem" />
+        <AppDelBtnAccept v-if="!isNew" @confirm="del" :key="copyItem" />
       </template>
     </BtnsSaveClose>
   </div>
@@ -82,7 +82,7 @@
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditSectionFields from "./EditSectionFields.vue";
-import AppDelBtnSwipe from "../AppDelBtnSwipe.vue";
+import AppDelBtnAccept from "../AppDelBtnAccept.vue";
 import AppInputSelect from "../AppInputSelect.vue";
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import store from "@/store";
@@ -93,7 +93,7 @@ export default {
   components: {
     BtnsSaveClose,
     EditSectionFields,
-    AppDelBtnSwipe,
+    AppDelBtnAccept,
     AppInputSelect,
     OnClickOutside,
   },
