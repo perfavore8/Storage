@@ -3,7 +3,7 @@
     <div class="row" v-for="field in fields" :key="field.id">
       <component
         :is="field.component"
-        :item="field.type == 5 || field.type == 5 ? field : field.name"
+        :item="field.type == 5 || field.type == 6 ? field : field.name"
         :selected_option="copyItem.fields?.[field.code]"
         :idx="field.code"
         @change_value="change_value"
