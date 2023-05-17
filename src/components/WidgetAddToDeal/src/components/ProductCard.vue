@@ -1,7 +1,7 @@
 <template>
   <div
     class="w-full p-5 my-2 flex flex-col gap-4 origin-top rounded-md bg-white shadow-lg ring-1 ring-gray-900 ring-opacity-5 transition-all"
-    :class="{ small: !show }"
+    :class="{ pcsmall: !show }"
     ref="target"
   >
     <div
@@ -33,7 +33,7 @@
       </button>
     </div>
     <template v-if="show">
-      <div class="row">
+      <div class="pcrow">
         <EditSelector
           :item="{ name: 'Тип цены', data: PRICES }"
           :selected_option="copyItem?.price_field"
@@ -41,7 +41,7 @@
           @change_value="(value, code, value2) => change_value(value2, code)"
         />
       </div>
-      <div class="row">
+      <div class="pcrow">
         <EditFloat
           :item="'Цена'"
           :selected_option="copyItem?.price"
@@ -49,7 +49,7 @@
           @change_value="change_value"
         />
       </div>
-      <div class="row">
+      <div class="pcrow">
         <EditSelector
           :item="{ name: 'Склад', data: WHS }"
           :selected_option="copyItem?.wh_field"
@@ -57,7 +57,7 @@
           @change_value="(value, code, value2) => change_value(value2, code)"
         />
       </div>
-      <div class="row">
+      <div class="pcrow">
         <EditFloat
           :item="'Количество'"
           :selected_option="copyItem?.count"
@@ -67,7 +67,7 @@
         />
       </div>
       <div
-        class="row"
+        class="pcrow"
         v-for="field in fields"
         :key="field.id"
         v-show="field.lead_config.visible > 0 && field.component"
@@ -170,9 +170,12 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "@/app.scss";
-.row {
+body {
+  overflow: hidden;
+}
+.pcrow {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -201,7 +204,7 @@ export default {
     box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
   }
 }
-.small {
+.pcsmall {
   @apply py-1 bg-slate-100 shadow-none;
 }
 </style>
