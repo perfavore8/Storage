@@ -16,31 +16,33 @@
       </div>
       <div class="filters">
         <div class="row">
-          <div class="type self-start items-center" v-if="isTest">
-            <button
-              class="btn"
-              :class="{ selected: view.selected.value === item.value }"
-              v-for="(item, idx) in view.list"
-              :key="item.value"
-              @click="view.select(item)"
-            >
-              <span
-                class="material-icons-round"
-                v-if="
-                  (view.list.indexOf(
-                    view.list.find((val) => val.value === view.selected.value)
-                  ) +
-                    1) %
-                    view.list.length ==
-                  idx
-                "
+          <div class="type self-start items-center">
+            <template v-if="isTest">
+              <button
+                class="btn"
+                :class="{ selected: view.selected.value === item.value }"
+                v-for="(item, idx) in view.list"
+                :key="item.value"
+                @click="view.select(item)"
               >
-                {{ item.class }}
-              </span>
-            </button>
+                <span
+                  class="material-icons-round"
+                  v-if="
+                    (view.list.indexOf(
+                      view.list.find((val) => val.value === view.selected.value)
+                    ) +
+                      1) %
+                      view.list.length ==
+                    idx
+                  "
+                >
+                  {{ item.class }}
+                </span>
+              </button>
+            </template>
             <button
               class="test_btn"
-              title="Экспорт таблицы в xlsx"
+              title="Экспорт в xlsx"
               @click="exportXlsx()"
             >
               <span class="material-icons-outlined"> upload_file </span>
