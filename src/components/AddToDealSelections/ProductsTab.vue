@@ -6,9 +6,9 @@
       <h2 class="font-semibold text-gray-700 mb-4 w-full text-start">
         Список позиций
       </h2>
-      <main-page />
+      <main-page ref="widjet" />
     </div>
-    <ProductsTabFields />
+    <ProductsTabFields :total="total" />
     <ProductsTabCastomFields />
   </div>
 </template>
@@ -17,9 +17,15 @@
 import MainPage from "../WidgetAddToDeal/src/components/MainPage.vue";
 import ProductsTabFields from "./ProductsTabFields.vue";
 import ProductsTabCastomFields from "./ProductsTabCastomFields.vue";
+import { computed, ref } from "vue";
 export default {
   components: { MainPage, ProductsTabFields, ProductsTabCastomFields },
-  setup() {},
+  setup() {
+    const widjet = ref(null);
+    const total = computed(() => widjet.value?.total);
+
+    return { widjet, total };
+  },
 };
 </script>
 

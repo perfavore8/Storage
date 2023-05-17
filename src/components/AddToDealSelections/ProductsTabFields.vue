@@ -12,7 +12,7 @@
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ item.label }}
         </div>
-        <div class="text-base font-medium">{{ item.value }}</div>
+        <div class="text-base font-medium">{{ total?.[item.value] }}</div>
       </div>
     </div>
   </div>
@@ -21,14 +21,13 @@
 <script>
 import { reactive } from "vue";
 export default {
+  props: { total: Object },
   setup() {
     const list = reactive([
-      { label: "Сумма заказа:", value: "12 784 руб." },
-      { label: "Себестоимость:", value: "7 286 руб. " },
-      { label: "Прибыль:", value: "5 498 руб. " },
-      { label: "Сотрудник:", value: "Иванов Иван " },
-      { label: "Бонус сотрудника:", value: "1 278 руб. " },
-      { label: "Создан:", value: "08.04.2023г." },
+      { label: "Сумма заказа:", value: "price" },
+      { label: "Себестоимость:", value: "cost_price" },
+      { label: "Прибыль:", value: "prib" },
+      { label: "Сотрудник:", value: "user_name" },
     ]);
 
     return { list };

@@ -440,6 +440,26 @@ export default {
     isLastProductPerPage() {
       return this.meta.meta.from === this.meta.meta.to;
     },
+    total() {
+      const res = {
+        cost_price: 0,
+        price: 0,
+        prib: 0,
+        user_name: "",
+        price_currency: "",
+      };
+      this.addedProducts.forEach((prod) => {
+        res.cost_price += prod.cost_price * prod.count;
+        res.price += prod.price * prod.count;
+        res.prib += prod.price * prod.count - prod.cost_price * prod.count;
+        res.user_name = prod.user_name;
+        res.price_currency = prod.price_currency;
+      });
+      res.cost_price += " " + res.price_currency;
+      res.price += " " + res.price_currency;
+      res.prib += " " + res.price_currency;
+      return res;
+    },
   },
   async mounted() {
     this.$router.beforeResolve((to, from, next) => {

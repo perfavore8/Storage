@@ -9,7 +9,11 @@
       @click="toggle()"
     >
       <span class="text-slate-900">
-        {{ copyItem.fields?.name }} | склад 'Основной склад': 99 шт | 1000 RUB
+        {{ copyItem?.name }} | склад '{{ selectedWhName }}':
+        {{ copyItem?.count }}
+        {{ copyItem?.units ? copyItem?.units : copyItem.fields?.units }} |
+        {{ copyItem?.price }}
+        {{ copyItem?.price_currency }}
       </span>
       <button
         class="p-2 h-fit w-fit rounded-xl outline-0 outline-slate-300 focus-visible:outline-1 transition-all"
@@ -143,13 +147,25 @@ export default {
       return arr;
     });
 
+    const selectedWhName = computed(
+      () => WHS.value.find((wh) => wh.value === props.copyItem?.wh_field)?.name
+    );
+
     const target = ref(null);
     onClickOutside(target, () => {
       toggle(false);
       if (show) scrollTop();
     });
 
-    return { change_value, show, toggle, target, PRICES, WHS };
+    return {
+      change_value,
+      show,
+      toggle,
+      target,
+      PRICES,
+      WHS,
+      selectedWhName,
+    };
   },
 };
 </script>
