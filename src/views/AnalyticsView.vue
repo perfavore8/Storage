@@ -277,6 +277,7 @@ export default {
             ? await this.$store.dispatch(rows.resName, {
                 filter: this.filter,
                 product: val.name,
+                company: val.company,
               })
             : [];
           this.reports.data.map((report) => {
