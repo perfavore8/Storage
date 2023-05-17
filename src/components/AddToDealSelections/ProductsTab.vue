@@ -2,7 +2,7 @@
   <div
     class="grid grid-cols-3 gap-10 mx-auto justify-items-start items-start w-4/5"
   >
-    <div class="w-full">
+    <div class="w-full cont px-1">
       <h2 class="font-semibold text-gray-700 mb-4 w-full text-start">
         Список позиций
       </h2>
@@ -25,4 +25,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+.cont {
+  overflow-y: scroll;
+  height: calc(100vh - 122px);
+}
 </style>

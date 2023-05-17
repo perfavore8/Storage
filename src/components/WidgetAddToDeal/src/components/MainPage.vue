@@ -1,14 +1,22 @@
 <template>
   <div class="app">
     <div class="container1">
-      <div class="header"></div>
+      <div class="header">
+        <input
+          type="text"
+          class="sls_input"
+          v-model="orderName"
+          placeholder="Название сделки"
+        />
+      </div>
       <div class="content">
         <div class="flex flex-col">
           <ProductCard
-            v-for="product in addedProducts"
+            v-for="(product, idx) in addedProducts"
             :key="product.id"
             :fields="fields"
             :copyItem="product"
+            @change_value="(...args) => change_value(idx, ...args)"
           />
         </div>
         <div class="top">
@@ -357,6 +365,7 @@ export default {
         value: "",
         list: [],
       },
+      orderName: "",
       inputValues: [],
       allWhsList: [],
       showSpinner: false,
@@ -433,6 +442,19 @@ export default {
     },
   },
   async mounted() {
+    this.$router.beforeResolve((to, from, next) => {
+      if (to.query?.order_id != from.query?.order_id || to.path != from.path)
+        this.checkSave();
+      // console.log(
+      //   to,
+      //   from,
+      //   next,
+      //   to.query?.order_id != from.query?.order_id,
+      //   to.path != from.path,
+      //   from.query.order_id
+      // );
+      next();
+    });
     // this.get_data_categories();
     // this.feel_available_data();
     await Promise.all([
@@ -638,6 +660,15 @@ export default {
           value: res,
         });
     },
+    change_value(idx, value, code) {
+      this.addedProducts[idx][code] = value;
+    },
+    checkSave() {
+      this.$store.dispatch("updateOrder", {
+        positions: this.addedProducts,
+        fields: { name: this.orderName },
+      });
+    },
   },
 };
 </script>
@@ -648,7 +679,7 @@ export default {
   box-sizing: border-box;
 }
 .app {
-  height: 100%;
+  height: fit-content;
   .container1 {
     box-sizing: border-box;
     // overflow-y: auto;
@@ -1147,7 +1178,7 @@ export default {
         .products {
           margin-top: 30px;
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
           .card {
             width: 100%;
             display: flex;

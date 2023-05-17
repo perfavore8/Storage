@@ -28,21 +28,60 @@
         </svg>
       </button>
     </div>
-    <div
-      class="row"
-      v-for="field in fields"
-      :key="field.id"
-      v-show="field.lead_config.visible > 0 && field.component && show"
-    >
-      <component
-        :is="field.component"
-        :item="field.type == 5 || field.type == 6 ? field : field.name"
-        :selected_option="copyItem.fields?.[field.code]"
-        :idx="field.code"
-        :disabled="field.lead_config.editable < 1"
-        @change_value="change_value"
-      />
-    </div>
+    <template v-if="show">
+      <div class="row">
+        <EditSelector
+          :item="{ name: 'Тип цены', data: PRICES }"
+          :selected_option="copyItem?.price_field"
+          :idx="'price_field'"
+          @change_value="(value, code, value2) => change_value(value2, code)"
+        />
+      </div>
+      <div class="row">
+        <EditFloat
+          :item="'Цена'"
+          :selected_option="copyItem?.price"
+          :idx="'price'"
+          @change_value="change_value"
+        />
+      </div>
+      <div class="row">
+        <EditSelector
+          :item="{ name: 'Склад', data: WHS }"
+          :selected_option="copyItem?.wh_field"
+          :idx="'wh_field'"
+          @change_value="(value, code, value2) => change_value(value2, code)"
+        />
+      </div>
+      <div class="row">
+        <EditFloat
+          :item="'Количество'"
+          :selected_option="copyItem?.count"
+          :idx="'count'"
+          :max="copyItem?.['available-count']"
+          @change_value="change_value"
+        />
+      </div>
+      <div
+        class="row"
+        v-for="field in fields"
+        :key="field.id"
+        v-show="field.lead_config.visible > 0 && field.component"
+      >
+        <component
+          :is="field.component"
+          :item="field.type == 5 || field.type == 6 ? field : field.name"
+          :selected_option="
+            copyItem?.[field.code]
+              ? copyItem?.[field.code]
+              : copyItem?.fields?.[field.code]
+          "
+          :idx="field.code"
+          :disabled="field.lead_config.editable < 1"
+          @change_value="change_value"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -57,7 +96,7 @@ import EditDate from "@/components/EditItemSelections/EditDate.vue";
 import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
 import { useToggle, onClickOutside } from "@vueuse/core";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 export default {
   components: {
     EditInteger,
@@ -84,13 +123,33 @@ export default {
       window.scrollTo(0, target.value?.getBoundingClientRect()?.y + 184);
     };
 
+    const PRICES = computed(() => {
+      const arr = [];
+      props.fields.forEach((field) =>
+        field.type === 11
+          ? arr.push({ name: field.name, value: field.code })
+          : null
+      );
+      return arr;
+    });
+
+    const WHS = computed(() => {
+      const arr = [];
+      props.fields.forEach((field) =>
+        field.type === 13
+          ? arr.push({ name: field.name, value: field.code })
+          : null
+      );
+      return arr;
+    });
+
     const target = ref(null);
     onClickOutside(target, () => {
       toggle(false);
       if (show) scrollTop();
     });
 
-    return { change_value, show, toggle, target };
+    return { change_value, show, toggle, target, PRICES, WHS };
   },
 };
 </script>

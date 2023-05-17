@@ -155,7 +155,7 @@ export default {
           Authorization: TOKEN,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(params),
+        body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
     },
     async deleteOrder(context, params) {
