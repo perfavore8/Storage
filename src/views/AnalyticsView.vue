@@ -16,7 +16,7 @@
       </div>
       <div class="filters">
         <div class="row">
-          <div class="type self-start" v-if="isTest">
+          <div class="type self-start items-center" v-if="isTest">
             <button
               class="btn"
               :class="{ selected: view.selected.value === item.value }"
@@ -37,6 +37,13 @@
               >
                 {{ item.class }}
               </span>
+            </button>
+            <button
+              class="test_btn"
+              title="Экспорт таблицы в xlsx"
+              @click="exportXlsx()"
+            >
+              <span class="material-icons-outlined"> upload_file </span>
             </button>
           </div>
           <ReportFIlters
@@ -120,7 +127,7 @@ export default {
         list: [
           { name: "Отчет по клиентам", value: "customers" },
           { name: "Отчет по продажам", value: "sales" },
-          { name: "Движение товаров", value: "stuffMove" },
+          { name: "Движение товаров", value: "stuffMove", value2: "movement" },
         ],
       },
       titles: {
@@ -437,6 +444,15 @@ export default {
         });
       }
     },
+    exportXlsx() {
+      const params = {
+        filter: this.filter,
+        type: this.reportType.selected?.value2
+          ? this.reportType.selected.value2
+          : this.reportType.selected.value,
+      };
+      this.$store.dispatch("analyticsExport", params);
+    },
   },
 };
 </script>
@@ -577,5 +593,17 @@ export default {
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+}
+
+.test_btn {
+  margin-bottom: -1px;
+  border: none;
+  background-color: transparent;
+  color: #757575;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+.test_btn:disabled {
+  color: #7575758a;
 }
 </style>

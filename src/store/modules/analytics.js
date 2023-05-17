@@ -1,6 +1,8 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { useNotification } from "@/composables/notification";
 const { preparation_params } = usePreparationQueryParams();
+const { addNotification } = useNotification();
 export default {
   state: {
     autocomplete: [],
@@ -193,5 +195,20 @@ export default {
     //   const json = await res.json();
     //   context.commit("updateStuffMoveTotal", json);
     // },
+    async analyticsExport(context, params) {
+      const url = BaseURL + `analytics/${params.type}/export/xlsx`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+      addNotification(0, "Добавлена задача", "Экспорт отчета в xlsx");
+
+      return json;
+    },
   },
 };
