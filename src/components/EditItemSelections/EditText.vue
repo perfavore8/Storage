@@ -73,7 +73,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .text_area {
-  width: calc(100% - 24px);
+  width: 100%;
   min-height: 100px;
   max-height: 200px;
   @include font(400, 16px, 20px);
