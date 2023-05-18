@@ -1,49 +1,107 @@
 <template>
+  <AppInputSelect
+    class="w-1/2 mx-auto"
+    :placeholder="'Поиск компаний'"
+    :list="autocomplete.list"
+    :selected="autocomplete.selected"
+    :countLettersReq="3"
+    @changeInputValue="(value) => autocomplete.changeInputValue(value)"
+    @select="(option) => autocomplete.select(option)"
+  />
   <div
-    class="grid grid-cols-3 justify-items-start items-start w-4/5 mx-auto gap-10 mt-4"
+    class="grid grid-cols-2 justify-items-center items-start w-4/5 mx-auto gap-10 mt-4"
   >
-    <div
-      class="max-w-md min-w-[40%] w-fit text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
-      v-for="col in list"
-      :key="col"
-    >
-      <div
-        class="flex flex-col pb-3 items-start w-full"
-        v-for="item in col"
-        :key="item.label"
-      >
-        <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
-          {{ item.label }}
-        </div>
-        <div class="text-base font-medium">{{ item.value }}</div>
-      </div>
+    <div v-for="col in list" :key="col" class="w-full">
+      <h2 class="font-semibold text-gray-700 w-full text-center my-2">
+        {{ col.name }}
+      </h2>
+      <template v-for="item in col.items" :key="item?.id">
+        <ClientTabItem
+          :item="item"
+          :fields="col.fields"
+          :placeholders="col.placeholders"
+          :alwaysShow="col.items.length === 1"
+          v-show="item"
+        />
+      </template>
+      <!-- <ClientTabCastomFields /> -->
     </div>
-    <ClientTabCastomFields />
   </div>
 </template>
 
 <script>
-import ClientTabCastomFields from "./ClientTabCastomFields.vue";
-import { reactive } from "vue";
+// import ClientTabCastomFields from "./ClientTabCastomFields.vue";
+import AppInputSelect from "../AppInputSelect.vue";
+import ClientTabItem from "./ClientTabItem.vue";
+import { computed, onMounted, reactive } from "vue";
+import store from "@/store";
+import { useNewDeal } from "@/composables/newDeal";
 export default {
-  components: { ClientTabCastomFields },
+  components: {
+    // ClientTabCastomFields,
+    AppInputSelect,
+    ClientTabItem,
+  },
   setup() {
+    const { order, getOrder, saveOrder } = useNewDeal();
+
+    onMounted(() => {
+      list.forEach((item) =>
+        item.fields.length ? null : store.dispatch(item.getFieldsUrl)
+      );
+    });
+
     const list = reactive([
-      [
-        { label: "Название:", value: 'ТОО "Умный Дом"' },
-        { label: "Адрес:", value: "г. Алматы, ул. Желтоксан, дом 25, кв. 15" },
-        { label: "ИНН:", value: "1234567890" },
-        { label: "КПП:", value: "0987654321" },
-        { label: "ОГРН(ИП):", value: "112233445566778" },
-        { label: "Банк:", value: 'АО "Банк Развития"' },
-        { label: "Р/С:", value: "98765432101234567890" },
-        { label: "БИК:", value: "044525100" },
-        { label: "К/С:", value: "09876543210987654321" },
-      ],
-      [{ label: "Контактное лицо:", value: "Иванов Иван Иванович" }],
+      {
+        name: "Компания",
+        code: "Company",
+        getFieldsUrl: "getClientsCompanyFields",
+        fields: computed(() => store.state.clientsCompany.fields),
+        items: computed(() => [order?.company]),
+        placeholders: {
+          title: "name",
+          subTitle: "signatory",
+          descriton: "director",
+          subDescriton: "rating",
+        },
+      },
+      {
+        name: "Контакт",
+        code: "Contacts",
+        getFieldsUrl: "getClientsContactsFields",
+        fields: computed(() => store.state.clientsContacts.fields),
+        items: computed(() => order?.company?.contacts),
+        placeholders: {
+          title: "name",
+          subTitle: "phone",
+          descriton: "email",
+          subDescriton: "rating",
+        },
+      },
     ]);
 
-    return { list };
+    const autocomplete = reactive({
+      selected: {},
+      value: "",
+      list: [],
+      getList: async function () {
+        this.list = await store.dispatch("getClientsCompanyAutocomplete", {
+          q: this.value,
+        });
+        this.list.map((item) => (item.name = item.label));
+      },
+      changeInputValue: function (value) {
+        this.value = value;
+        this.getList();
+      },
+      select: async function (option) {
+        order.company_id = option.id;
+        await saveOrder();
+        getOrder();
+      },
+    });
+
+    return { list, autocomplete };
   },
 };
 </script>

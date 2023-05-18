@@ -363,6 +363,7 @@ export default {
       showSpinner: false,
       useSkeletonCard: false,
       addedProducts: [],
+      routeWatcher: null,
     };
   },
   computed: {
@@ -454,17 +455,13 @@ export default {
     },
   },
   async mounted() {
-    this.$router.beforeResolve((to, from, next) => {
-      if (to.query?.order_id != from.query?.order_id || to.path != from.path)
+    this.routeWatcher = this.$router.beforeResolve((to, from, next) => {
+      if (
+        (to.query?.order_id != from.query?.order_id || to.path != from.path) &&
+        from.query?.order_id
+      )
         this.checkSave();
-      // console.log(
-      //   to,
-      //   from,
-      //   next,
-      //   to.query?.order_id != from.query?.order_id,
-      //   to.path != from.path,
-      //   from.query.order_id
-      // );
+
       next();
     });
     // this.get_data_categories();
@@ -474,7 +471,10 @@ export default {
       this.$store.dispatch("getAllFieldsW"),
       this.$store.dispatch("get_fields_properties2W"),
     ]);
-    this.selectCategories(this.categories[0]);
+    await this.selectCategories(this.categories[0]);
+    setTimeout(() => {
+      this.updateAddedProducts();
+    }, 500);
   },
   watch: {
     async show_cards() {
@@ -568,7 +568,7 @@ export default {
     },
     async updateAddedProducts() {
       const order = await this.$store.dispatch("getOrder");
-      order.positions.forEach((item) =>
+      order.positions?.forEach((item) =>
         !this.addedProductsId.includes(item.id)
           ? this.addedProducts.push(item)
           : null

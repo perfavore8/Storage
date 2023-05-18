@@ -145,13 +145,6 @@ export default {
       const params = {};
       params[`${selectedTabComp.value.value3}`] = [copyItem.value];
 
-      const { added } = await store.dispatch(
-        props.isNew
-          ? `addClients${selectedTabComp.value.value}`
-          : `updateClients${selectedTabComp.value.value}`,
-        params
-      );
-      binding.addAll(added[0]);
       if (props.isNew) {
         const { added } = await store.dispatch(
           `addClients${selectedTabComp.value.value}`,

@@ -9,6 +9,7 @@
         v-show="field.component"
       >
         <component
+          v-if="field.code !== 'name'"
           :is="field.component"
           :item="field.type == 5 || field.type == 6 ? field : field.name"
           :selected_option="order?.fields?.[field.code]"

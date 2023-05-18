@@ -29,7 +29,9 @@
       />
     </div>
     <div class="content mt-4">
-      <component :is="tabs.selected.code" />
+      <keep-alive>
+        <component :is="tabs.selected.code" />
+      </keep-alive>
     </div>
   </div>
 </template>
