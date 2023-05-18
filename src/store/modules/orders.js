@@ -2,7 +2,7 @@ import { BaseURL, TOKEN } from "@/composables/BaseURL";
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 import { useNewDeal } from "@/composables/newDeal";
 const { preparation_params } = usePreparationQueryParams();
-const { newDealParams } = useNewDeal();
+const { newDealParams, order } = useNewDeal();
 export default {
   state: {
     orders: {},
@@ -155,7 +155,10 @@ export default {
           Authorization: TOKEN,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...params, order_id: newDealParams.id }),
+        body: JSON.stringify({
+          ...Object.assign(order, params),
+          order_id: newDealParams.id,
+        }),
       });
     },
     async deleteOrder(context, params) {

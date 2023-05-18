@@ -1,14 +1,7 @@
 <template>
   <div class="app">
     <div class="container1">
-      <div class="header">
-        <input
-          type="text"
-          class="sls_input"
-          v-model="orderName"
-          placeholder="Название сделки"
-        />
-      </div>
+      <div class="header"></div>
       <div class="content">
         <div class="flex flex-col">
           <ProductCard
@@ -365,7 +358,6 @@ export default {
         value: "",
         list: [],
       },
-      orderName: "",
       inputValues: [],
       allWhsList: [],
       showSpinner: false,
@@ -686,7 +678,6 @@ export default {
     checkSave() {
       this.$store.dispatch("updateOrder", {
         positions: this.addedProducts,
-        fields: { name: this.orderName },
       });
     },
   },
