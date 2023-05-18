@@ -235,7 +235,6 @@ export default {
       ).forEach(([key, value]) => {
         arr.push({ name: value, value: key });
       });
-      console.log(arr);
       return arr;
     });
     const isTest = computed(() => {
