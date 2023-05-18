@@ -7,7 +7,7 @@ export default {
   state: {
     orders: {},
     meta: {},
-    types: [],
+    types: {},
     fields: [],
     filters: {
       page: 1,
@@ -30,7 +30,7 @@ export default {
       state.meta = { ...value };
     },
     updateOrdersTypes(state, value) {
-      state.types = [...Object.values(value)];
+      Object.assign(state.types, value);
     },
     updateOrdersFields(state, value) {
       const componentsList = {

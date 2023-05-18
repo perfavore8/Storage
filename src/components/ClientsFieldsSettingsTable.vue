@@ -230,11 +230,12 @@ export default {
     const types = computed(() => {
       const arr = [];
 
-      store.state[`clients${props.selectedTab.value}`].types.forEach(
-        (val, idx) => {
-          arr.push({ name: val, value: idx + 1 });
-        }
-      );
+      Object.entries(
+        store.state[`clients${props.selectedTab.value}`].types
+      ).forEach(([key, value]) => {
+        arr.push({ name: value, value: key });
+      });
+      console.log(arr);
       return arr;
     });
     const isTest = computed(() => {
@@ -284,7 +285,7 @@ export default {
       is_loading.value = false;
     };
     const search_type = (id) => {
-      return types.value.filter((val) => val.value == id)[0];
+      return types.value.find((val) => val.value == id);
     };
     const delete_new_field = (idx) => {
       new_fields.splice(idx, 1);

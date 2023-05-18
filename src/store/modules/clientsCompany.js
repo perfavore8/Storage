@@ -11,7 +11,7 @@ const { getClientsList } = useClients(selectedTabComp);
 
 export default {
   state: {
-    types: [],
+    types: {},
     fields: [],
     list: [],
     meta: {
@@ -30,7 +30,7 @@ export default {
       state.list = [...value];
     },
     updateCompanyTypes(state, value) {
-      state.types = [...Object.values(value)];
+      Object.assign(state.types, value);
     },
     updateCompanyFields(state, value) {
       const componentsList = {

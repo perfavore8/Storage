@@ -172,9 +172,6 @@ export default {
 
 <style lang="scss">
 @import "@/app.scss";
-body {
-  overflow: hidden;
-}
 .pcrow {
   position: relative;
   display: flex;
@@ -202,6 +199,13 @@ body {
     border-color: #86b7fe;
     outline: 0;
     box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
+  }
+  .row {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
   }
 }
 .pcsmall {

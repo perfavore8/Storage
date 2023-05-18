@@ -408,8 +408,8 @@ export default {
       const arr = [];
       Object.entries(
         store.state[selectedTab.value.storeName]?.[selectedTab.value.typesName]
-      ).forEach((val) => {
-        arr.push({ name: val[1], value: val[0] });
+      ).forEach(([key, value]) => {
+        arr.push({ name: value, value: key });
       });
       return arr;
     });
