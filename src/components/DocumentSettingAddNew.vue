@@ -99,22 +99,22 @@ export default {
   data() {
     return {
       type_options: [],
-      type: { name: "docx", value: 1 },
+      type: { name: "docx", value: "1" },
       export_type_options: [],
-      export_type: { name: "Исходный", value: 1 },
+      export_type: { name: "Исходный", value: "1" },
       lead_fields_options: [],
       try_accept: false,
       name: "",
       file: "",
       copyPipelinesList: [],
-      status_id: { name: "Не выбрано", value: 1 },
-      url_field: { name: "Не выбрано", value: 1 },
+      status_id: { name: "Не выбрано", value: "1" },
+      url_field: { name: "Не выбрано", value: "1" },
       orientation: {
         label: "Ориентация",
         selected: { name: "Книжная", value: 0 },
         list: [
-          { name: "Книжная", value: 0 },
-          { name: "Альбомная", value: 1 },
+          { name: "Книжная", value: "0" },
+          { name: "Альбомная", value: "1" },
         ],
         select: (option) => {
           this.orientation.selected = option;

@@ -99,7 +99,7 @@ export default {
           Authorization: TOKEN,
         },
       });
-      context.dispatch("get_documents");
+      context.dispatch("get_documents_v2");
     },
     async update_template(context, params) {
       const url = BaseURL + "document/update";
@@ -111,7 +111,7 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      context.dispatch("get_documents");
+      context.dispatch("get_documents_v2");
     },
     async add_template(context, params) {
       const url = BaseURL + "document/add";
@@ -123,7 +123,7 @@ export default {
         },
         body: JSON.stringify(params),
       });
-      context.dispatch("get_documents");
+      context.dispatch("get_documents_v2");
     },
     async refresh_fields(context) {
       const url = BaseURL + "document/refresh-fields";
@@ -132,7 +132,7 @@ export default {
           Authorization: TOKEN,
         },
       });
-      context.dispatch("get_documents");
+      context.dispatch("get_documents_v2");
     },
   },
 };
