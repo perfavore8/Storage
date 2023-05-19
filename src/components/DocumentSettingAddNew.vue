@@ -183,8 +183,13 @@ export default {
           status_id: this.status_id.value,
           url_field: this.url_field.value,
         };
+        if (new_doc.status_id == "-1" || new_doc.status_id == "1")
+          delete new_doc.status_id;
         if (Object.keys(this.cur_doc).length > 0) {
-          this.$store.dispatch("update_template", { ...new_doc, id: this.id });
+          this.$store.dispatch("update_template", {
+            ...new_doc,
+            id: this.id,
+          });
         } else {
           this.$store.dispatch("add_template", new_doc);
         }
