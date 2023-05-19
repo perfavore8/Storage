@@ -81,7 +81,8 @@ export default {
 @import "@/app.scss";
 .app {
   width: calc(100vw - 8px);
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   padding: 0 30px;
 
   display: flex;
@@ -90,8 +91,11 @@ export default {
   text-align: center;
 
   .header {
-    position: relative;
-    margin-top: 20px;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    padding-top: 20px;
+    padding-bottom: 20px;
     z-index: 50;
     display: flex;
     justify-content: center;

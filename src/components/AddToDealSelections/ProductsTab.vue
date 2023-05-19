@@ -32,7 +32,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .cont {
-  overflow-y: scroll;
-  height: calc(100vh - 122px);
+  // overflow-y: scroll;
+  // height: calc(100vh - 122px);
 }
 </style>
