@@ -34,6 +34,7 @@ export function useNewDeal() {
     if (Array.isArray(newOrder.fields)) newOrder.fields = {};
     Object.assign(order, newOrder);
     if (!order.fields) order.fields = {};
+    if (!order.fields.name) order.fields.name = `Заказ №${newDealParams.id}`;
   };
 
   const saveOrder = async () => {
