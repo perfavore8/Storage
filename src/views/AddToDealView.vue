@@ -37,13 +37,14 @@
 </template>
 
 <script>
-import { onMounted, reactive } from "vue";
+import { onMounted } from "vue";
 import router from "@/router";
 import ProductsTab from "@/components/AddToDealSelections/ProductsTab.vue";
 import DocumentsTab from "@/components/AddToDealSelections/DocumentsTab.vue";
 import ClientTab from "@/components/AddToDealSelections/ClientTab.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import { useNewDeal } from "@/composables/newDeal";
+import { useAddToDealTabs } from "@/composables/addToDealTabs";
 export default {
   components: {
     ProductsTab,
@@ -53,18 +54,7 @@ export default {
   },
   setup() {
     const { add } = useNewDeal();
-
-    const tabs = reactive({
-      selected: { name: "Товары", value: "products", code: "ProductsTab" },
-      list: [
-        { name: "Товары", value: "products", code: "ProductsTab" },
-        { name: "Документы", value: "documents", code: "DocumentsTab" },
-        { name: "Клиент", value: "client", code: "ClientTab" },
-      ],
-      select: function (option) {
-        this.selected = option;
-      },
-    });
+    const { tabs } = useAddToDealTabs();
 
     const back = () => router.push("/");
 

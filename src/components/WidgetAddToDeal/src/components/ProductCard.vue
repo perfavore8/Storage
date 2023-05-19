@@ -99,8 +99,14 @@ import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector
 import EditDate from "@/components/EditItemSelections/EditDate.vue";
 import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
-import { useToggle, onClickOutside } from "@vueuse/core";
+import {
+  useToggle,
+  onClickOutside,
+  useWindowScroll,
+  useElementBounding,
+} from "@vueuse/core";
 import { computed, ref } from "vue";
+import { useAddToDealTabs } from "@/composables/addToDealTabs";
 export default {
   components: {
     EditInteger,
@@ -118,13 +124,24 @@ export default {
     copyItem: { type: Object, required: true },
   },
   setup(props, context) {
+    const { isProductTab } = useAddToDealTabs();
+
     const change_value = (value, code) =>
       context.emit("change_value", value, code);
+
+    const target = ref(null);
+    const { y: targetY } = useElementBounding(target);
+    onClickOutside(target, () => {
+      scrollTop();
+      toggle(false);
+    });
+    const { y: sclrollY } = useWindowScroll();
 
     const [show, toggle] = useToggle(false);
 
     const scrollTop = () => {
-      window.scrollTo(0, target.value?.getBoundingClientRect()?.y + 184);
+      if (isProductTab.value && show.value)
+        window.scrollTo(0, sclrollY.value + targetY.value - 204);
     };
 
     const PRICES = computed(() => {
@@ -150,12 +167,6 @@ export default {
     const selectedWhName = computed(
       () => WHS.value.find((wh) => wh.value === props.copyItem?.wh_field)?.name
     );
-
-    const target = ref(null);
-    onClickOutside(target, () => {
-      toggle(false);
-      if (show) scrollTop();
-    });
 
     return {
       change_value,
