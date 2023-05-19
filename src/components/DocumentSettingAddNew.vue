@@ -147,15 +147,15 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].fields = arr;
-        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
-        val[1].selected = { name: "Не выбрано", value: -1 };
+        val[1].fields.unshift({ name: "Не выбрано", value: "-1" });
+        val[1].selected = { name: "Не выбрано", value: "-1" };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
     },
     pipelinesList() {
       const list = [];
-      list.push({ name: "Не выбрано", value: -1 });
+      list.push({ name: "Не выбрано", value: "-1" });
       Object.entries(this.$store.state.account.pipelinesListV2).map((val) => {
         list.push({ name: val[1].name, value: "optgroup" });
         val[1].statuses.forEach((stat) =>
@@ -211,7 +211,7 @@ export default {
         this.name = this.cur_doc.name;
         this.file = this.cur_doc.file;
         const serch_selected_item = (options, name, value, isSpecial) => {
-          let obj = { name: "Не выбрано", value: -1 };
+          let obj = { name: "Не выбрано", value: "-1" };
           options.forEach((val) => {
             if (val[value] == name) {
               Object.assign(obj, val);
@@ -252,7 +252,7 @@ export default {
       }
     },
     set_lead_fields_options() {
-      this.lead_fields_options.push({ name: "Не выбрано", value: -1 });
+      this.lead_fields_options.push({ name: "Не выбрано", value: "-1" });
       this.copyLeadFieldsList.forEach((val) => {
         const optgroup = val.name;
         this.lead_fields_options.push({ name: optgroup, value: "optgroup" });
