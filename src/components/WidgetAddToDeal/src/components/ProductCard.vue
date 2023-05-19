@@ -85,6 +85,13 @@
           @change_value="change_value"
         />
       </div>
+      <div
+        class="flex flex-row justify-end gap-2 cursor-pointer focus:ring-1 focus:ring-red-200"
+        @click="del()"
+      >
+        <span class="material-icons-outlined text-red-600"> delete </span>
+        <span>Удалить позицию</span>
+      </div>
     </template>
   </div>
 </template>
@@ -168,6 +175,8 @@ export default {
       () => WHS.value.find((wh) => wh.value === props.copyItem?.wh_field)?.name
     );
 
+    const del = () => context.emit("del");
+
     return {
       change_value,
       show,
@@ -176,6 +185,7 @@ export default {
       PRICES,
       WHS,
       selectedWhName,
+      del,
     };
   },
 };

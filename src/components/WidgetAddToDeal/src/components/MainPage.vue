@@ -10,6 +10,7 @@
             :fields="fields"
             :copyItem="product"
             @change_value="(...args) => change_value(idx, ...args)"
+            @del="() => deleteAddedProduct(idx)"
           />
         </div>
         <div class="top">
@@ -679,6 +680,9 @@ export default {
       this.$store.dispatch("updateOrder", {
         positions: this.addedProducts,
       });
+    },
+    deleteAddedProduct(idx) {
+      this.addedProducts.splice(idx, 1);
     },
   },
 };
