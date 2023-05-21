@@ -1,5 +1,5 @@
 <template>
-  <div class="filters">
+  <div class="filters2">
     <template v-for="(filter, idx) in filters" :key="idx">
       <div class="item bg-transparent" :class="{ special: special }">
         <div class="title" @click="special ? (filter.selected = false) : null">
@@ -46,9 +46,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
-.filters {
+.filters2 {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto;
   justify-items: stretch;
   align-items: start;
   gap: 5px;
@@ -100,6 +100,10 @@ export default {
   }
   input {
     margin-left: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
   }
 }
 </style>

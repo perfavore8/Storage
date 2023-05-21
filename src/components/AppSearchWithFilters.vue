@@ -17,19 +17,18 @@
     </div>
     <div
       v-show="showFilters"
-      class="absolute top-full mt-2 border border-slate-200 bg-white bg-opacity-80 backdrop-blur-md shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-max max-w-[150%] min-w-[550px] flex flex-col gap-2"
+      class="absolute top-full mt-2 border border-slate-200 bg-white bg-opacity-80 backdrop-blur-md shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-full max-w-[150%] min-w-[550px] flex flex-col gap-2"
     >
       <div class="filters">
         <div>
-          <span class="text-lg font-medium">Системные</span>
           <SearchFiltersGroup
             :filters="baseFilteredfiltersValue"
             @change_filter_value="change_filter_value"
           />
         </div>
         <div>
-          <span class="text-lg font-medium">Кастомные</span>
           <AppInputSelect
+            v-if="false"
             :list="spacialFilteredfiltersValueNotSelected"
             :placeholder="'Добавить фильтр'"
             :requestDelay="100"
@@ -39,19 +38,21 @@
             :key="selectedTabComp.value"
           />
           <SearchFiltersGroup
-            :special="true"
-            :filters="specialFilteredfiltersValueSelected"
+            :special="false"
+            :filters="spacialFilteredfiltersValueNotSelected"
             @change_filter_value="change_filter_value"
           />
         </div>
       </div>
       <BtnsSaveClose
         :show_close="false"
-        class="self-end"
+        class="self-start"
         @save="() => accept()"
       >
         <template v-slot:other_btns>
-          <button class="btn bg-transparent" @click="reset()">Сбросить</button>
+          <button class="btn bg-transparent order-2" @click="reset()">
+            Сбросить
+          </button>
         </template>
         <template v-slot:save> Применить </template>
       </BtnsSaveClose>
@@ -137,7 +138,7 @@ export default {
 @import "@/app.scss";
 .filters {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 1fr 1fr;
   justify-items: stretch;
   align-items: start;
   gap: 5px;
