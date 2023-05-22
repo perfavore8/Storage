@@ -85,7 +85,7 @@ export default {
 }
 .item:deep(.filter) {
   min-width: 80px;
-  width: min-content;
+  // width: min-content;
   margin: 0;
   // max-width: none;
   .type_btn {

@@ -141,7 +141,7 @@ export default {
   grid-template-columns: 1fr 1fr;
   justify-items: stretch;
   align-items: start;
-  gap: 5px;
+  gap: 24px;
   // background-color: rgba(0, 0, 0, 0.05);
 }
 </style>
