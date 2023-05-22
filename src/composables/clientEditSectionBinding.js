@@ -49,7 +49,7 @@ export function useClientBinding(selectedTab) {
         `getClients${selectedTab.value.oppositeValue}Autocomplete`,
         params
       );
-      this.list.map((item) => (item.name = item.label));
+      this.list.map((item) => (item.fields.name = item.fields?.label));
     },
     oppositeList: [],
     filteredOppositeList: [],
@@ -62,7 +62,7 @@ export function useClientBinding(selectedTab) {
           ...store.state[`clients${selectedTab.value.oppositeValue}`]?.list,
         ]?.forEach((item) =>
           this.oppositeList.push({
-            name: item?.fields?.name,
+            fields: { name: item?.fields?.name },
             id: item?.id,
             value: item?.id,
           })
@@ -71,7 +71,7 @@ export function useClientBinding(selectedTab) {
       this.filteredOppositeList = this.oppositeList.filter(
         (val) =>
           !this.selected.some((sel) => sel?.id === val.id) &&
-          val?.name?.toLowerCase()?.includes(this.value?.toLowerCase())
+          val?.fields?.name?.toLowerCase()?.includes(this.value?.toLowerCase())
       );
     },
 
