@@ -583,7 +583,7 @@ export default {
       new_fields.splice(idx, 1);
     };
     const delete_field = async (id) => {
-      await store.dispatch(selectedTab.value.deleteName, id);
+      await store.dispatch(selectedTab.value.deleteName, { id: id });
       get_fields();
     };
     const option_select_type = (option, idx) => {
