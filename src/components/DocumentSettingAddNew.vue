@@ -183,8 +183,8 @@ export default {
           status_id: this.status_id.value,
           url_field: this.url_field.value,
         };
-        if (new_doc.status_id == "-1" || new_doc.status_id == "1")
-          delete new_doc.status_id;
+        // if (new_doc.status_id == "-1" || new_doc.status_id == "1")
+        //   delete new_doc.status_id;
         if (Object.keys(this.cur_doc).length > 0) {
           this.$store.dispatch("update_template", {
             ...new_doc,
@@ -221,7 +221,7 @@ export default {
             if (val[value] == name) {
               Object.assign(obj, val);
             } else if (isSpecial) {
-              if (`${val[value]}`?.split("#")[1] == name) {
+              if (`${val[value]}`?.split("#")[1] === name) {
                 Object.assign(obj, val);
               }
             }
