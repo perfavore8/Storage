@@ -16,9 +16,11 @@
             <button
               class="btn order-1 max-h-[34px] pointer-events-auto relative inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
               @click="toggleOrderHistory(true)"
+              v-if="!isNew"
             >
               История заказов
             </button>
+            <div class="order-1" v-else />
             <AppInputSelect
               class="order-3 xl:order-2 lg:col-span-2 xl:col-span-1"
               :list="isNew ? binding.filteredOppositeList : binding.list"
@@ -43,7 +45,22 @@
                 type="text"
                 class="input"
                 v-model="copyItem.fields.rating"
+                :class="{
+                  tryAccept: checkError(rating).value,
+                }"
               />
+              <small
+                v-if="checkError(rating).value"
+                class="absolute right-0 -top-5 text-xs text-red-700"
+              >
+                {{
+                  checkError(rating).empty
+                    ? "Пустое поле"
+                    : checkError(rating).short
+                    ? "Минимум 3 символа"
+                    : ""
+                }}
+              </small>
               <label
                 for="rating"
                 class="absolute -top-[10px] left-4 text-sm bg-white/80 text-slate-700/80 px-2"
@@ -93,7 +110,7 @@
           </OnClickOutside>
         </teleport>
         <EditSectionFields
-          :fields="fields"
+          :fields="filteredFields"
           :copyItem="copyItem"
           :tryAccept="tryAccept"
           @change_value="change_value"
@@ -126,6 +143,7 @@ import { useClientBinding } from "@/composables/clientEditSectionBinding";
 import { useClientsTabs } from "@/composables/clientsTabs";
 import { OnClickOutside } from "@vueuse/components";
 import { useToggle } from "@vueuse/core";
+import { useCheckError } from "@/composables/checkError";
 export default {
   components: {
     BtnsSaveClose,
@@ -146,10 +164,14 @@ export default {
 
     const copyItem = ref({ fields: {} });
 
-    const fields = computed(() =>
-      store.state?.[`clients${selectedTabComp.value.value}`].fields.filter(
-        (field) => field.code != "rating"
-      )
+    const fields = computed(
+      () => store.state?.[`clients${selectedTabComp.value.value}`].fields
+    );
+    const filteredFields = computed(() =>
+      fields.value.filter((field) => field.code !== "rating")
+    );
+    const rating = computed(() =>
+      fields.value.find((field) => field.code === "rating")
     );
     const sistemsFields = computed(() =>
       fields.value.filter((field) => field.is_system)
@@ -210,6 +232,7 @@ export default {
         ) || copyItem.value.fields?.name?.length < 3
       );
     };
+    const { checkError } = useCheckError(reactive(copyItem.value), tryAccept);
 
     const del = () => {
       store.dispatch("deleteClientsContacts", { id: copyItem.value.id });
@@ -267,6 +290,9 @@ export default {
       animationStarted,
       showOrderHistory,
       toggleOrderHistory,
+      filteredFields,
+      checkError,
+      rating,
     };
   },
 };
@@ -302,5 +328,8 @@ export default {
 }
 .out {
   animation: fadeOut 0.1s ease-out forwards;
+}
+.tryAccept {
+  @extend .input_error;
 }
 </style>

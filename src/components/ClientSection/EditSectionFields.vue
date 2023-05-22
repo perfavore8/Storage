@@ -37,6 +37,8 @@ import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector
 import EditDate from "@/components/EditItemSelections/EditDate.vue";
 import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
+import { useCheckError } from "@/composables/checkError";
+import { computed } from "vue";
 export default {
   components: {
     EditInteger,
@@ -55,18 +57,13 @@ export default {
     tryAccept: { type: Boolean, required: false, default: () => false },
   },
   setup(props, context) {
+    const { checkError } = useCheckError(
+      props.copyItem,
+      computed(() => props.tryAccept)
+    );
+
     const change_value = (value, code) =>
       context.emit("change_value", value, code);
-
-    const checkError = (field) => {
-      const global = props.tryAccept && field.is_system;
-      const short =
-        field.code === "name"
-          ? props.copyItem.fields?.[field.code]?.length < 3
-          : false;
-      const empty = !props.copyItem.fields?.[field.code];
-      return { value: global && (short || empty), empty: empty, short: short };
-    };
 
     return { change_value, checkError };
   },
