@@ -493,7 +493,7 @@ export default {
   }
 }
 .grid {
-  margin-left: 30px;
+  padding: 0 30px;
 }
 .button {
   cursor: pointer;
