@@ -96,7 +96,11 @@
           </button>
         </th>
       </tr>
-      <tr class="row" :class="{ load: is_loading }">
+      <tr
+        class="row"
+        :class="{ load: is_loading }"
+        v-if="selectedTab.value === 'Orders'"
+      >
         <td class="item">Статус</td>
         <td class="item selectors">
           <div class="type_selector_options">
