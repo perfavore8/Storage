@@ -58,7 +58,7 @@ export default {
   },
   setup(props, context) {
     const { checkError } = useCheckError(
-      props.copyItem,
+      computed(() => props.copyItem),
       computed(() => props.tryAccept)
     );
 

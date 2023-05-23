@@ -9,6 +9,29 @@
     </template>
     <template v-else>
       <div class="w-full flex flex-col items-center">
+        <BtnsSaveClose
+          v-show="!downButtonsIsVisible"
+          :show_close="false"
+          class="self-end"
+          @save="accept"
+        >
+          <template v-slot:other_btns>
+            <button
+              class="btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
+              @click="close()"
+            >
+              Назад
+            </button>
+            <AppDelBtnAccept
+              v-if="!isNew"
+              @confirm="del"
+              :key="copyItem"
+              :btnClass="'btn_grey'"
+            >
+              <template v-slot:label> Архивировать </template>
+            </AppDelBtnAccept>
+          </template>
+        </BtnsSaveClose>
         <div class="flex flex-col gap-3 items-center p-5">
           <div
             class="grid grid-cols-1 gap-2 justify-items-center items-center lg:grid-cols-2 xl:grid-cols-3"
@@ -116,7 +139,12 @@
           @change_value="change_value"
         />
       </div>
-      <BtnsSaveClose :show_close="false" class="self-end" @save="accept">
+      <BtnsSaveClose
+        :show_close="false"
+        class="self-end"
+        @save="accept"
+        ref="downButtons"
+      >
         <template v-slot:other_btns>
           <button
             class="btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
@@ -124,7 +152,14 @@
           >
             Назад
           </button>
-          <AppDelBtnAccept v-if="!isNew" @confirm="del" :key="copyItem" />
+          <AppDelBtnAccept
+            v-if="!isNew"
+            @confirm="del"
+            :key="copyItem"
+            :btnClass="'btn_grey'"
+          >
+            <template v-slot:label> Архивировать </template>
+          </AppDelBtnAccept>
         </template>
       </BtnsSaveClose>
     </template>
@@ -137,12 +172,12 @@ import EditSectionFields from "./EditSectionFields.vue";
 import AppDelBtnAccept from "../AppDelBtnAccept.vue";
 import AppInputSelect from "../AppInputSelect.vue";
 import ClientsEditSectionOrdersHistory from "./ClientsEditSectionOrdersHistory.vue";
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, unref, watch } from "vue";
 import store from "@/store";
 import { useClientBinding } from "@/composables/clientEditSectionBinding";
 import { useClientsTabs } from "@/composables/clientsTabs";
 import { OnClickOutside } from "@vueuse/components";
-import { useToggle } from "@vueuse/core";
+import { useElementVisibility, useToggle } from "@vueuse/core";
 import { useCheckError } from "@/composables/checkError";
 export default {
   components: {
@@ -232,7 +267,7 @@ export default {
         ) || copyItem.value.fields?.name?.length < 3
       );
     };
-    const { checkError } = useCheckError(reactive(copyItem.value), tryAccept);
+    const { checkError } = useCheckError(copyItem, tryAccept);
 
     const del = () => {
       store.dispatch("deleteClientsContacts", { id: copyItem.value.id });
@@ -277,6 +312,12 @@ export default {
 
     const [showOrderHistory, toggleOrderHistory] = useToggle(false);
 
+    const downButtons = ref(null);
+    let downButtonsIsVisible = ref(true);
+    onMounted(() => {
+      downButtonsIsVisible.value = unref(useElementVisibility(downButtons));
+    });
+
     return {
       copyItem,
       fields,
@@ -293,6 +334,8 @@ export default {
       filteredFields,
       checkError,
       rating,
+      downButtons,
+      downButtonsIsVisible,
     };
   },
 };

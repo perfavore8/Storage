@@ -3,10 +3,11 @@
     <button
       ref="btn"
       class="btn text-white bg-red-600"
+      :class="[btnClass]"
       tabindex="1"
       @click="toggleAccept()"
     >
-      Удалить
+      <slot name="label">Удалить</slot>
     </button>
     <transition name="fade">
       <div
@@ -36,6 +37,7 @@
 import { onClickOutside, useToggle } from "@vueuse/core";
 import { ref } from "vue";
 export default {
+  props: { btnClass: { type: String, required: false } },
   setup(props, context) {
     const target = ref(null);
     const btn = ref(null);
