@@ -247,7 +247,7 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 18px;
+    padding: 24px 18px;
     .sls_row {
       width: 100%;
       .value {
