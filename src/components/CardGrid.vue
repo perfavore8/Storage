@@ -38,103 +38,82 @@
         <button class="btn btn_blue" @click="sort()">Применить</button>
       </div>
     </div>
+    <CardGridCategories @selectCat="selectCat" />
     <div class="grid" ref="grid">
       <label v-if="products.length == 0" class="text">
         Ничего не найдено
       </label>
-      <div
-        class="card"
-        :class="{ card__flip: flip[idx] }"
-        @click="flip[idx] = !flip[idx]"
-        v-for="(row, idx) in products"
-        :key="row.id"
-      >
-        <div class="bg_image">
-          <img
-            :src="src[idx % src.length]"
-            class="img"
-            v-show="!isDataLoading"
-          />
-          <img
-            src="https://img2.freepng.ru/20180518/rpa/kisspng-parcel-computer-icons-package-tracking-mail-5aff95be3be2a8.2770409315266994542453.jpg"
-            class="img"
-            v-show="isDataLoading"
-          />
-        </div>
-        <div class="back">
-          <div class="row" v-for="item in sortedFields" :key="item">
-            <div class="name">{{ item[1].name }}<span> :</span></div>
-            <div class="value">
-              <span v-if="item[0].split('.').length < 2">
-                {{
-                  item[0] == "category"
-                    ? categories[row.fields[item[0]]]
-                    : item[1].type == 9
-                    ? !!row.fields[item[0]]
-                      ? "Да"
-                      : "Нет"
-                    : item[0] == "cost_price"
-                    ? row.fields[item[0]]
-                      ? Math.round(row.fields[item[0]] * 100) / 100
-                      : "0"
-                    : row.fields[item[0]]
-                }}
-              </span>
-              <span v-else>
-                {{
-                  item[0].split(".")[1] == "cost"
-                    ? row.fields?.[item[0].split(".")[0]]?.[
-                        item[0].split(".")[1]
-                      ] == undefined
-                      ? "0"
-                      : row.fields?.[item[0].split(".")[0]]?.[
-                          item[0].split(".")[1]
-                        ] +
-                        " " +
-                        (row.fields?.[item[0].split(".")[0]]?.currency ==
-                          undefined ||
-                        row.fields?.[item[0].split(".")[0]]?.currency == null
-                          ? ""
-                          : row.fields?.[item[0].split(".")[0]]?.currency)
-                    : item[1].type == 9
-                    ? !!row.fields?.[item[0].split(".")[0]]?.[
-                        item[0].split(".")[1]
-                      ]
-                      ? "Да"
-                      : "Нет"
+      <div class="card shadow-lg" v-for="(row, idx) in products" :key="row.id">
+        <div class="row" v-for="item in sortedFields" :key="item">
+          <div class="name">{{ item[1].name }}<span> :</span></div>
+          <div class="value">
+            <span v-if="item[0].split('.').length < 2">
+              {{
+                item[0] == "category"
+                  ? categories[row.fields[item[0]]]
+                  : item[1].type == 9
+                  ? !!row.fields[item[0]]
+                    ? "Да"
+                    : "Нет"
+                  : item[0] == "cost_price"
+                  ? row.fields[item[0]]
+                    ? Math.round(row.fields[item[0]] * 100) / 100
+                    : "0"
+                  : row.fields[item[0]]
+              }}
+            </span>
+            <span v-else>
+              {{
+                item[0].split(".")[1] == "cost"
+                  ? row.fields?.[item[0].split(".")[0]]?.[
+                      item[0].split(".")[1]
+                    ] == undefined
+                    ? "0"
                     : row.fields?.[item[0].split(".")[0]]?.[
                         item[0].split(".")[1]
-                      ]
-                }}
-              </span>
-              &nbsp;
-              <button
-                class="edit_icon"
-                style="width: 16px; heigth: 16px"
-                v-if="item[0].split('.')[1] == 'cost'"
-                @click.stop="openGridEditPrice(row, item[0].split('.')[0])"
-                title="Редактирование цены"
-              ></button>
-            </div>
-          </div>
-          <div class="card_footer">
-            <template v-if="!oneC">
-              <input
-                type="checkbox"
-                class="checkbox"
-                :id="row.id"
-                v-if="selectedProducts[idx] != undefined"
-                v-model="selectedProducts[idx].value"
-                @change="selectedProducts[idx].item = row"
-              />
-              <label :for="row.id"></label>
-            </template>
-            <div
+                      ] +
+                      " " +
+                      (row.fields?.[item[0].split(".")[0]]?.currency ==
+                        undefined ||
+                      row.fields?.[item[0].split(".")[0]]?.currency == null
+                        ? ""
+                        : row.fields?.[item[0].split(".")[0]]?.currency)
+                  : item[1].type == 9
+                  ? !!row.fields?.[item[0].split(".")[0]]?.[
+                      item[0].split(".")[1]
+                    ]
+                    ? "Да"
+                    : "Нет"
+                  : row.fields?.[item[0].split(".")[0]]?.[item[0].split(".")[1]]
+              }}
+            </span>
+            &nbsp;
+            <button
               class="edit_icon"
-              @click.stop="open_edit_modal(row)"
-              title="Редактирование товара"
-            />
+              style="width: 16px; heigth: 16px"
+              v-if="item[0].split('.')[1] == 'cost'"
+              @click.stop="openGridEditPrice(row, item[0].split('.')[0])"
+              title="Редактирование цены"
+            ></button>
           </div>
+        </div>
+        <div class="card_footer">
+          <template v-if="!oneC">
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="row.id"
+              v-if="selectedProducts[idx] != undefined"
+              v-model="selectedProducts[idx].value"
+              @change="selectedProducts[idx].item = row"
+            />
+            <label :for="row.id"></label>
+          </template>
+          <div
+            class="edit_icon"
+            @click.stop="open_edit_modal(row)"
+            title="Редактирование товара"
+          />
         </div>
       </div>
     </div>
@@ -160,6 +139,7 @@ import SelectorVue from "@/components/SelectorVue.vue";
 // import CardGridLinks from "@/components/CardGridLinks.vue";
 import { mapGetters } from "vuex";
 import { nextTick } from "@vue/runtime-core";
+import CardGridCategories from "./CardGridCategories.vue";
 export default {
   name: "CardGrid",
   components: {
@@ -169,6 +149,7 @@ export default {
     // CardGridLinks,
     GridEditPrice,
     SelectorVue,
+    CardGridCategories,
   },
   props: {
     selectedWH: {
@@ -182,37 +163,6 @@ export default {
       edit_data: {},
       selectedProducts: [],
       showArrow: false,
-      flip: [],
-      src: [
-        "https://spb.wadoo.ru/upload/iblock/370/370d7dd8a236c788f7f7758e5b342ed0.jpg",
-        "https://diamondelectric.ru/images/3809/3808559/ydarnaya_akkymylyatornaya_drelshyrypovert_bosch_gsb_180li_liion_1.jpg",
-        "https://redhome.by/image/cache/catalog/i/nk/ka/1023c718bea479e2011bcb8107182120-1000x1000.jpg",
-        "https://skladom.ru/images/detailed/282/SKRZYNKA-NARZEDZIOWA-NA-KOLKACH-QBRICK-TWO-BIG-SET.jpg",
-        "https://media.garwin.ru/images/products/09/2e/092e4949-c7e3-4315-9f24-8e0fce706885-w768p.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/52/525000874-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/52/525000719-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/64/643000059-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/64/643000055-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/50/507000318-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/50/507000694-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/50/507000656-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/70/700000627-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/70/700000504-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/70/700000626-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/51/515000914-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/35/351003750-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/35/351003527-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/45/453000554-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/45/453000555-0.webp",
-        "https://baucenter.ru/preview/r/200x200/c/200x200/q/95/upload/pictures/40/405002166-0.webp",
-      ],
-      // link: {
-      //   path: null,
-      //   selected_categoryes: null,
-      //   sel_idx: null,
-      //   show_categoryes: null,
-      //   categoryes: null,
-      // },
       orderList: ["desc", "asc"],
       selectedSort: { value: { name: "Не выбрано", value: -1 }, order: 1 },
     };
@@ -447,6 +397,13 @@ export default {
     emit_link(obj) {
       Object.assign(this.link, obj);
     },
+    selectCat(cat) {
+      const params = {
+        filter: { category: { compare: "in", query: [cat.id] } },
+      };
+      this.$store.commit("updateProductsParams", params);
+      this.get_products(this.productsParams);
+    },
   },
 };
 </script>
@@ -515,43 +472,9 @@ export default {
     // border: 1px solid #c9c9c9;
     border-radius: 8px;
     padding: 20px;
-    position: relative;
-    transition: 1s ease-in-out;
-    transform-style: preserve-3d;
-    &__flip {
-      transform: rotateY(0.5turn);
-      // background: #c4c4c433;
-      box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
-    }
-    .bg_image {
-      box-sizing: border-box;
-      object-fit: cover;
-      // background-color: #c4c4c433;
-      box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
-      border-radius: 8px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      height: 100%;
-      width: 100%;
-      backface-visibility: hidden;
-      transition: 1s ease-in-out;
-      .img {
-        width: 90%;
-        border-radius: 16px;
-        max-height: 90%;
-        // box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
-      }
-    }
-    .back {
-      backface-visibility: hidden;
-      object-fit: cover;
-      transform: rotateY(0.5turn);
-    }
+    // background: #c4c4c433;
+    // box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
+
     .row {
       display: flex;
       flex-direction: row;
