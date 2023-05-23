@@ -11,12 +11,16 @@
     </div>
 
     <div class="grid grid-cols-2">
-      <client-sections-fields
-        ref="refList"
-        :list="clientsList"
-        :selected="selected"
-        :selectedTab="selectedTabComp"
-      />
+      <div class="flex flex-col items-center">
+        <client-sections-fields
+          class="w-full"
+          ref="refList"
+          :list="clientsList"
+          :selected="selected"
+          :selectedTab="selectedTabComp"
+        />
+        <AppPaginator :page="page" @changePage="changePage" class="w-fit" />
+      </div>
       <div class="h-full relative">
         <transition name="modal">
           <ClientsEditSection
@@ -58,6 +62,7 @@
 
 <script>
 import ClientsEditSection from "./ClientsEditSection.vue";
+import AppPaginator from "../AppPaginator.vue";
 import AppSeatchWithFilters from "../AppSearchWithFilters.vue";
 import ClientSectionsFields from "./ClientSectionsFields.vue";
 import { computed, nextTick, reactive, ref, watch } from "vue";
@@ -69,6 +74,7 @@ export default {
     ClientsEditSection,
     AppSeatchWithFilters,
     ClientSectionsFields,
+    AppPaginator,
   },
   setup() {
     const target = ref(null);
@@ -82,7 +88,7 @@ export default {
       () => (getClientsList(), getClientsFields(), closeAdd(true))
     );
 
-    const { clientsList, getClientsList, getClientsFields } =
+    const { clientsList, getClientsList, getClientsFields, page, changePage } =
       useClients(selectedTabComp);
 
     const selected = reactive({
@@ -155,6 +161,8 @@ export default {
       save,
       follow,
       selectedTabComp,
+      page,
+      changePage,
     };
   },
 };

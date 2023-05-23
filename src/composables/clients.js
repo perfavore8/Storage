@@ -36,11 +36,42 @@ export function useClients(selectedTab) {
     return "#" + ("00000" + color.toString(16)).slice(-6);
   };
 
+  const meta = computed(
+    () => store.state[`clients${selectedTab.value.value}`]?.meta
+  );
+
+  const page = computed(() => {
+    const obj = {
+      first: getPageFromLink(meta.value?.links?.first),
+      prev: getPageFromLink(meta.value?.links?.prev),
+      current: meta.value?.meta?.current_page,
+      next: getPageFromLink(meta.value?.links?.next),
+      last: getPageFromLink(meta.value?.links?.last),
+    };
+    return obj;
+  });
+
+  const changePage = (page) => {
+    const params = { page: page };
+    updateParams(params);
+    getClientsList();
+  };
+
+  const getPageFromLink = (link) => {
+    if (link) {
+      return link.split("?page=")[1];
+    } else {
+      return null;
+    }
+  };
+
   return {
     getClientsList,
     clientsList,
     getClientsFields,
     getColor,
     updateParams,
+    page,
+    changePage,
   };
 }
