@@ -55,24 +55,22 @@
             </div>
             <div class="bot">
               <p>Найдено: {{ totalCountProducts }}</p>
-              <template v-if="isTest">
-                <input
-                  type="checkbox"
-                  class="checkbox grid"
-                  v-model="isGrid"
-                  id="grid"
-                />
-                <label for="grid">
-                  <transition name="modal" mode="out-in">
-                    <span class="material-icons-round icon" v-if="isGrid">
-                      format_list_bulleted
-                    </span>
-                    <span class="material-icons-round icon" v-else>
-                      grid_view
-                    </span>
-                  </transition>
-                </label>
-              </template>
+              <input
+                type="checkbox"
+                class="checkbox grid"
+                v-model="isGrid"
+                id="grid"
+              />
+              <label for="grid">
+                <transition name="modal" mode="out-in">
+                  <span class="material-icons-round icon" v-if="isGrid">
+                    format_list_bulleted
+                  </span>
+                  <span class="material-icons-round icon" v-else>
+                    grid_view
+                  </span>
+                </transition>
+              </label>
               <div v-if="!isServicePage" class="flex items-center">
                 <input
                   type="checkbox"
