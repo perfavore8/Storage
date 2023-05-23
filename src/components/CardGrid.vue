@@ -13,6 +13,7 @@
     <div class="header">
       <transition name="mdl">
         <card-grid-filters
+          v-if="false"
           ref="filters"
           :fields="all_fields"
           :tableConfig="tableConfig"
@@ -189,18 +190,19 @@ export default {
   },
   computed: {
     sortedFields() {
+      return this.sortedFieldsRow.filter((val) => val[1].visible);
+    },
+    sortedFieldsRow() {
       const list = Object.entries(this.tableConfig);
-      return list
-        .sort((a, b) => {
-          if (a[1].sort > b[1].sort) return 1;
-          if (a[1].sort == b[1].sort) return 0;
-          if (a[1].sort < b[1].sort) return -1;
-        })
-        .filter((val) => val[1].visible);
+      return list.sort((a, b) => {
+        if (a[1].sort > b[1].sort) return 1;
+        if (a[1].sort == b[1].sort) return 0;
+        if (a[1].sort < b[1].sort) return -1;
+      });
     },
     sortedFieldsForSort() {
       const arr = [{ name: "Не выбрано", value: -1 }];
-      this.sortedFields
+      this.sortedFieldsRow
         .filter((field) => field[1].sortable && field[1].type != 9)
         .forEach((field) => arr.push({ name: field[1].name, value: field[0] }));
       return arr;

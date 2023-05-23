@@ -83,6 +83,7 @@
                 <label for="is_in_wh">Только положительные остатки</label>
               </div>
               <HomeFilter
+                v-if="!isGrid"
                 @confirmFilters="confirmFilters"
                 @clearFilters="clearFilters"
               />

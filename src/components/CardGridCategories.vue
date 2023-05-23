@@ -1,54 +1,43 @@
 <template>
   <div class="mb-6">
-    <div class="flex flex-row justify-between items-center">
-      <div class="links">
-        <button
-          class="triangle"
-          :class="{
-            triangle_last:
-              !categories.filteredList.length &&
-              categories.selected.length - 1 == idx,
-          }"
-          :disabled="categories.selected.length - 1 == idx"
-          v-for="(cat, idx) in categories.selected"
+    <div class="links">
+      <button
+        class="triangle"
+        :class="{
+          triangle_last:
+            !categories.filteredList.length &&
+            categories.selected.length - 1 == idx,
+        }"
+        :disabled="categories.selected.length - 1 == idx"
+        v-for="(cat, idx) in categories.selected"
+        :key="cat"
+        @click="categories.select(cat)"
+      >
+        {{ cat?.name }}
+      </button>
+    </div>
+    <div class="path">
+      <div class="categories sls_grid">
+        <div
+          class="card"
+          v-for="cat in categories.filteredList"
           :key="cat"
           @click="categories.select(cat)"
         >
-          {{ cat?.name }}
-        </button>
-      </div>
-      <button
-        class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
-        @click="toggleShowCategories()"
-      >
-        {{ showCategories ? "Скрыть" : "Показать" }}
-      </button>
-    </div>
-    <transition name="fade">
-      <div class="path transition-all origin-top-right" v-show="showCategories">
-        <div class="categories sls_grid">
-          <div
-            class="card"
-            v-for="cat in categories.filteredList"
-            :key="cat"
-            @click="categories.select(cat)"
-          >
-            <div class="sls_row title">
-              <div class="name"></div>
-              <div class="value">{{ cat.name }}</div>
-            </div>
-            <div class="sls_row" />
+          <div class="sls_row title">
+            <div class="name"></div>
+            <div class="value">{{ cat.name }}</div>
           </div>
+          <div class="sls_row" />
         </div>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 
 <script>
 import { computed, onMounted, reactive } from "vue";
 import store from "@/store";
-import { useToggle } from "@vueuse/core";
 export default {
   emits: { selectCat: null },
   setup(props, context) {
@@ -76,9 +65,7 @@ export default {
       categories.getList();
     });
 
-    const [showCategories, toggleShowCategories] = useToggle(true);
-
-    return { categories, showCategories, toggleShowCategories };
+    return { categories };
   },
 };
 </script>
@@ -252,7 +239,7 @@ export default {
 }
 .categories {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   .card {
     cursor: pointer;
     width: 100%;
@@ -380,14 +367,5 @@ export default {
       0% 100%
     );
   }
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.2s ease-out;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: scale(0.9);
 }
 </style>
