@@ -96,6 +96,56 @@
           </button>
         </th>
       </tr>
+      <tr class="row" :class="{ load: is_loading }">
+        <td class="item">Статус</td>
+        <td class="item selectors">
+          <div class="type_selector_options">
+            <div
+              class="type_selector_option gap-2"
+              v-for="(stat, idx) in statuses.list"
+              :key="stat.value"
+            >
+              <input
+                type="text"
+                class="input"
+                v-model="stat.name"
+                @change="statuses.isChange = true"
+              />
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="idx + 'nb1'"
+                :checked="statuses.reservation === stat.value"
+                @change="statuses.changeVal('reservation', stat.value)"
+              />
+              <label :for="idx + 'nb1'" title="Резервация"></label>
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="idx + 'nb2'"
+                :disabled="statuses.resIdx > idx"
+                :checked="statuses.write_off === stat.value"
+                @change="statuses.changeVal('write_off', stat.value)"
+              />
+              <label :for="idx + 'nb2'" title="Списание"></label>
+              <button
+                class="del_button"
+                :style="{ visibility: stat.base ? 'hidden' : 'visible' }"
+                @click="statuses.del(idx), (statuses.isChange = true)"
+              ></button>
+            </div>
+            <button
+              @click="statuses.add(), (statuses.isChange = true)"
+              class="add_button"
+            ></button>
+          </div>
+        </td>
+        <td class="item del_sell">
+          <button class="btn btn_save btn_blue" v-if="statuses.isChange">
+            Сохранить
+          </button>
+        </td>
+      </tr>
       <tr
         class="row"
         :class="{ load: is_loading }"
@@ -622,6 +672,48 @@ export default {
       new_fields[idx].data.splice(i, 1);
     };
 
+    const statuses = reactive({
+      isChange: false,
+      list: [
+        { name: "Открытый", value: 0, base: true },
+        { name: "Успешный", value: 1, base: true },
+        { name: "Отменен", value: 2, base: true },
+        { name: "Удален", value: 3, base: true },
+      ],
+      reservation: 0,
+      write_off: 1,
+      resIdx: computed(() =>
+        statuses.list.indexOf(
+          statuses.list.find((el) => el.value === statuses.reservation)
+        )
+      ),
+      woIdx: computed(() =>
+        statuses.list.indexOf(
+          statuses.list.find((el) => el.value === statuses.write_off)
+        )
+      ),
+      add: function () {
+        this.list.splice(1, 0, {
+          name: "",
+          value: Math.round(Math.random() * 10 ** 9),
+        });
+      },
+      del: function (idx) {
+        this.list.splice(idx, 1);
+      },
+      changeVal: function (field, val) {
+        statuses.isChange = true;
+        if (this[field] === val) {
+          this[field] = null;
+        } else {
+          this[field] = val;
+        }
+        if (field === "reservation") {
+          if (this.resIdx > this.woIdx) this.write_off = null;
+        }
+      },
+    });
+
     return {
       toolTips,
       copy_fields,
@@ -647,6 +739,7 @@ export default {
       remove_new_fields_selector_option,
       selectedFieldProperty,
       selectedFieldPropertyIsBasic,
+      statuses,
     };
   },
 };
