@@ -16,7 +16,11 @@
       </button>
     </div>
     <transition name="list">
-      <div class="options" v-if="showOptions">
+      <div
+        class="options"
+        :class="{ 'right-0': rightSideSticky }"
+        v-if="showOptions"
+      >
         <p
           v-for="item in list"
           :key="item.value"
@@ -62,6 +66,13 @@ export default {
       required: false,
       default() {
         return "";
+      },
+    },
+    rightSideSticky: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
       },
     },
   },
