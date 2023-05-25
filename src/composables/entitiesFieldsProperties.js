@@ -17,6 +17,7 @@ export function useEntitiesFieldsProperties() {
     Object.assign(copy_fields_properties, [
       ...store.state.categories.fields_properties,
     ]);
+    copyFieldsPropertiesWithSpace.fillList();
     selected_fields_properties.length = 0;
     option_select_fields_properties({
       value: copy_fields_properties.find((val) => val.parent_id === 0),
@@ -50,6 +51,31 @@ export function useEntitiesFieldsProperties() {
     () => selectedFieldProperty.value?.parent_id === 0
   );
 
+  const copyFieldsPropertiesWithSpace = reactive({
+    list: [],
+    newList: function (selectedId) {
+      const selectedIdx = [];
+      this.list.forEach((cat) =>
+        selectedIdx.push({ selected: selectedId.includes(cat.value) })
+      );
+      const c = this.list.reduce((acc, item, index) => {
+        return [...acc, { ...item, ...selectedIdx[index] }];
+      }, []);
+      return c;
+    },
+    fillList: function () {
+      this.list = [];
+      copy_fields_properties.forEach((field) => {
+        let spaces = "";
+        for (let i = 1; i < field.level; i++) spaces = spaces + "    ";
+        this.list.push({
+          name: spaces + field.name,
+          value: field.id,
+        });
+      });
+    },
+  });
+
   return {
     copy_fields_properties,
     selected_fields_properties,
@@ -58,5 +84,6 @@ export function useEntitiesFieldsProperties() {
     prev_cat,
     selectedFieldProperty,
     selectedFieldPropertyIsBasic,
+    copyFieldsPropertiesWithSpace,
   };
 }

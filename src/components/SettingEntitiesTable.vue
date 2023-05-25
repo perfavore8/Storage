@@ -86,6 +86,28 @@
             </div>
           </th>
         </template>
+        <template v-if="isTest">
+          <th
+            class="item item_icon title"
+            v-if="selectedTab.haveFieldsProperties"
+          >
+            <div class="w-min mx-auto">
+              <div
+                class="flex items-center relative"
+                @mouseenter="toolTips.categories = true"
+                @mouseleave="toolTips.categories = false"
+              >
+                <span class="material-icons-round opacity-50"> segment </span>
+                <div
+                  class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                  v-if="toolTips.categories"
+                >
+                  Привязка к категориям
+                </div>
+              </div>
+            </div>
+          </th>
+        </template>
         <th class="item">
           <button
             class="btn btn_save_all btn_yellow"
@@ -269,6 +291,28 @@
             <label :for="idx + 'nd'"></label>
           </td>
         </template>
+        <template v-if="isTest">
+          <td
+            class="box item text-lg relative"
+            v-if="selectedTab.haveFieldsProperties"
+            :ref="
+              (el) =>
+                categories.selected === row ? (categories.ref = el) : null
+            "
+          >
+            <button
+              @click="categories.selected = row"
+              class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
+            >
+              <span
+                class="material-icons-round opacity-70"
+                style="font-size: 20px"
+              >
+                open_in_full
+              </span>
+            </button>
+          </td>
+        </template>
         <td class="item del_sell">
           <button
             class="del_btn"
@@ -387,6 +431,28 @@
             <label :for="idx + 'n3'"></label>
           </td>
         </template>
+        <template v-if="isTest">
+          <td
+            class="box item text-lg relative"
+            v-if="selectedTab.haveFieldsProperties"
+            :ref="
+              (el) =>
+                categories.selected === row ? (categories.ref = el) : null
+            "
+          >
+            <button
+              @click="categories.selected = row"
+              class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
+            >
+              <span
+                class="material-icons-round opacity-70"
+                style="font-size: 20px"
+              >
+                open_in_full
+              </span>
+            </button>
+          </td>
+        </template>
         <td class="item del_sell">
           <button class="del_btn" @click="delete_new_field(idx)"></button>
           <button
@@ -401,6 +467,27 @@
     </table>
     <button @click="add_new_field()" class="add_new_button"></button>
   </div>
+  <transition name="fade">
+    <teleport :to="categories.ref" v-if="categories.ref">
+      <div
+        ref="modalRef"
+        class="absolute top-1/2 right-0 origin-top-right rounded-[4px] w-fit h-fit -translate-y-1/2 shadow-md z-10"
+        :class="animationStarted ? 'in' : 'out'"
+      >
+        <AppMultiSelect
+          :list="
+            copyFieldsPropertiesWithSpace.newList([
+              categories.selected?.category_id,
+              ...categories.list,
+            ])
+          "
+          :placeholder="'Выберите категории'"
+          :rightSideSticky="true"
+          @select="(item) => categories.select(item)"
+        />
+      </div>
+    </teleport>
+  </transition>
 </template>
 
 <script>
@@ -408,12 +495,17 @@ import { computed, onMounted, reactive, ref, watch } from "vue";
 import store from "@/store";
 import SelectorVue from "./SelectorVue.vue";
 import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsProperties";
+import { onClickOutside } from "@vueuse/core";
+import AppMultiSelect from "./AppMultiSelect.vue";
 export default {
-  components: { SelectorVue },
+  components: { SelectorVue, AppMultiSelect },
   props: { selectedTab: Object },
   setup(props) {
-    const { selectedFieldProperty, selectedFieldPropertyIsBasic } =
-      useEntitiesFieldsProperties();
+    const {
+      selectedFieldProperty,
+      selectedFieldPropertyIsBasic,
+      copyFieldsPropertiesWithSpace,
+    } = useEntitiesFieldsProperties();
     watch(selectedFieldProperty, () => {
       if (selectedFieldProperty.value) get_fields();
     });
@@ -423,6 +515,7 @@ export default {
       edit: false,
       title: false,
       content_copy: false,
+      categories: false,
     });
     const copy_fields = reactive([]);
     const new_fields = reactive([]);
@@ -718,6 +811,35 @@ export default {
       },
     });
 
+    const categories = reactive({
+      selected: {},
+      ref: null,
+      list: [],
+      select: function (item) {
+        const idx = this.list.indexOf(item.value);
+        idx === -1 ? this.list.push(item.value) : this.list.splice(idx, 1);
+      },
+    });
+    const modalRef = ref(null);
+    onClickOutside(modalRef, () => {
+      categories.selected.specialList = categories.list;
+      categories.selected = {};
+      setTimeout(() => (categories.ref = null), 150);
+    });
+
+    const animationStarted = ref(false);
+    watch(
+      () => categories.selected,
+      (val) => {
+        animationStarted.value = !!val.id;
+        if (!val.id) {
+          categories.list = [];
+        } else if (categories.selected.specialList?.length) {
+          categories.list = categories.selected.specialList;
+        }
+      }
+    );
+
     return {
       toolTips,
       copy_fields,
@@ -743,7 +865,11 @@ export default {
       remove_new_fields_selector_option,
       selectedFieldProperty,
       selectedFieldPropertyIsBasic,
+      copyFieldsPropertiesWithSpace,
       statuses,
+      categories,
+      modalRef,
+      animationStarted,
     };
   },
 };
@@ -959,5 +1085,43 @@ export default {
   background-color: #e9ecef;
   border-color: #b3d7ff;
   cursor: default;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(-50%);
+  }
+  50% {
+    transform: scaleX(1.2) translateY(-50%);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(-50%);
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(-50%);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scaleX(1.2) translateY(-50%);
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translateY(-50%);
+  }
+}
+.in {
+  transform-origin: center;
+  animation: fadeIn 0.1s ease-out forwards;
+}
+.out {
+  transform-origin: center;
+  animation: fadeOut 0.15s ease-out forwards;
 }
 </style>
