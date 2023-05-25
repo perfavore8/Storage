@@ -31,7 +31,7 @@
           :style="{ backgroundColor: item.color }"
           @click="select(item)"
         >
-          <template v-if="item.selected && item.color">
+          <template v-if="item.selected && (item.color || withTick)">
             <span class="material-icons-outlined opacity-50"> check </span>
           </template>
           <template v-if="item.optgroup">
@@ -69,6 +69,13 @@ export default {
       },
     },
     rightSideSticky: {
+      type: Boolean,
+      required: false,
+      default() {
+        return false;
+      },
+    },
+    withTick: {
       type: Boolean,
       required: false,
       default() {

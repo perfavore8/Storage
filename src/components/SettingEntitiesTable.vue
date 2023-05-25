@@ -1,5 +1,5 @@
 <template>
-  <div class="relative mb-14 mt-5">
+  <div class="relative mb-14 mt-7">
     <table class="rows">
       <tr class="row">
         <th
@@ -131,12 +131,7 @@
               v-for="(stat, idx) in statuses.list"
               :key="stat.value"
             >
-              <input
-                type="text"
-                class="input"
-                v-model="stat.name"
-                @change="statuses.isChange = true"
-              />
+              <input type="text" class="input" v-model="stat.name" />
               <input
                 type="checkbox"
                 class="checkbox"
@@ -157,17 +152,14 @@
               <button
                 class="del_button"
                 :style="{ visibility: stat.base ? 'hidden' : 'visible' }"
-                @click="statuses.del(idx), (statuses.isChange = true)"
+                @click="statuses.del(idx)"
               ></button>
             </div>
-            <button
-              @click="statuses.add(), (statuses.isChange = true)"
-              class="add_button"
-            ></button>
+            <button @click="statuses.add()" class="add_button"></button>
           </div>
         </td>
         <td class="item del_sell">
-          <button class="btn btn_save btn_blue" v-if="statuses.isChange">
+          <button class="btn btn_save btn_blue" v-if="statusesIsChange">
             Сохранить
           </button>
         </td>
@@ -208,7 +200,7 @@
             :class="{ error: row.nameError }"
             v-model="row.name"
             @keyup.enter="update_field(idx, ['name'])"
-            @input="row.changeName = true"
+            @input="row.changeName == true"
           />
         </td>
         <td class="item selectors">
@@ -232,15 +224,15 @@
                 type="text"
                 class="input"
                 v-model="row.data[i]"
-                @change="row.changeData = true"
+                @change="row.changeData == true"
               />
               <button
                 class="del_button"
-                @click="remove_selector_option(idx, i), (row.changeData = true)"
+                @click="remove_selector_option(idx, i), row.changeData == true"
               ></button>
             </div>
             <button
-              @click="add_selector_option(idx), (row.changeData = true)"
+              @click="add_selector_option(idx), row.changeData == true"
               class="add_button"
             ></button>
           </div>
@@ -252,7 +244,7 @@
             :id="idx + 'nb'"
             :disabled="row.lead_config.visible.disabled"
             v-model="row.lead_config.visible.value"
-            @change="row.changeLeadConfig = true"
+            @change="row.changeLeadConfig == true"
           />
           <label :for="idx + 'nb'"></label>
         </td>
@@ -263,7 +255,7 @@
             :id="idx + 'n'"
             :disabled="row.lead_config.editable.disabled"
             v-model="row.lead_config.editable.value"
-            @change="row.changeLeadConfig = true"
+            @change="row.changeLeadConfig == true"
           />
           <label :for="idx + 'n'"></label>
         </td>
@@ -274,7 +266,7 @@
             :id="idx + 'nt'"
             :disabled="row.lead_config.title_visible.disabled"
             v-model="row.lead_config.title_visible.value"
-            @change="row.changeLeadConfig = true"
+            @change="row.changeLeadConfig == true"
           />
           <label :for="idx + 'nt'"></label>
         </td>
@@ -286,7 +278,7 @@
               :id="idx + 'nd'"
               :disabled="row.config.double_in_new_bath.disabled"
               v-model="row.config.double_in_new_bath.value"
-              @change="row.changeConfig = true"
+              @change="row.changeConfig == true"
             />
             <label :for="idx + 'nd'"></label>
           </td>
@@ -301,10 +293,12 @@
             "
           >
             <button
+              id="catBtn"
               @click="categories.selected = row"
               class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
             >
               <span
+                id="catBtn"
                 class="material-icons-round opacity-70"
                 style="font-size: 20px"
               >
@@ -441,10 +435,12 @@
             "
           >
             <button
+              id="catBtn"
               @click="categories.selected = row"
               class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
             >
               <span
+                id="catBtn"
                 class="material-icons-round opacity-70"
                 style="font-size: 20px"
               >
@@ -483,6 +479,7 @@
           "
           :placeholder="'Выберите категории'"
           :rightSideSticky="true"
+          :withTick="true"
           @select="(item) => categories.select(item)"
         />
       </div>
@@ -636,10 +633,10 @@ export default {
             field.changeLeadConfig ? "lead_config" : null,
             field.changeConfig ? "config" : null,
           ]);
-        field.changeName = false;
-        field.changeData = false;
-        field.changeLeadConfig = false;
-        field.changeConfig = false;
+        // field.changeName = false;
+        // field.changeData = false;
+        // field.changeLeadConfig = false;
+        // field.changeConfig = false;
       });
     };
     const update_field = async (idx, params_names) => {
@@ -671,12 +668,12 @@ export default {
       const nameError = error?.error == "This field name exist.";
 
       copy_fields[idx]["nameError"] = nameError;
-      if (!error?.error) {
-        copy_fields[idx].changeName = false;
-        copy_fields[idx].changeData = false;
-        copy_fields[idx].changeLeadConfig = false;
-        copy_fields[idx].changeConfig = false;
-      }
+      // if (!error?.error) {
+      //   copy_fields[idx].changeName = false;
+      //   copy_fields[idx].changeData = false;
+      //   copy_fields[idx].changeLeadConfig = false;
+      //   copy_fields[idx].changeConfig = false;
+      // }
     };
     const get_fields = async () => {
       is_loading.value = true;
@@ -692,12 +689,48 @@ export default {
           selectedTab.value.fieldsName
         ],
       ]);
-      copy_fields.map((val) => {
+      const copy_fields2 = JSON.parse(JSON.stringify(copy_fields));
+      copy_fields2.map((val) => {
+        if (selectedTab.value.haveLeadConfig) {
+          const visible = val.lead_config.visible;
+          val.lead_config.visible = {
+            disabled: visible == -1 || visible == 2,
+            value: visible > 0,
+          };
+          const editable = val.lead_config.editable;
+          val.lead_config.editable = {
+            disabled: editable == -1 || editable == 2,
+            value: editable > 0,
+          };
+          const title_visible = val.lead_config.title_visible;
+          val.lead_config.title_visible = {
+            disabled: title_visible == -1 || title_visible == 2,
+            value: title_visible > 0,
+          };
+          const double_in_new_bath = val.config.double_in_new_bath;
+          val.config.double_in_new_bath = {
+            disabled: double_in_new_bath == -1 || double_in_new_bath == 2,
+            value: double_in_new_bath > 0,
+          };
+        }
+      });
+      copy_fields.map((val, idx) => {
         val["nameError"] = false;
-        val["changeName"] = false;
-        val["changeData"] = false;
-        val["changeLeadConfig"] = false;
-        val["changeConfig"] = false;
+        val["changeName"] = computed(() => val.name !== copy_fields2[idx].name);
+        val["changeData"] = computed(
+          () =>
+            JSON.stringify(val.data) !== JSON.stringify(copy_fields2[idx].data)
+        );
+        val["changeLeadConfig"] = computed(
+          () =>
+            JSON.stringify(val.lead_config) !==
+            JSON.stringify(copy_fields2[idx].lead_config)
+        );
+        val["changeConfig"] = computed(
+          () =>
+            JSON.stringify(val.config) !==
+            JSON.stringify(copy_fields2[idx].config)
+        );
         if (selectedTab.value.haveLeadConfig) {
           const visible = val.lead_config.visible;
           val.lead_config.visible = {
@@ -770,7 +803,6 @@ export default {
     };
 
     const statuses = reactive({
-      isChange: false,
       list: [
         { name: "Открытый", value: 0, base: true },
         { name: "Успешный", value: 1, base: true },
@@ -799,7 +831,6 @@ export default {
         this.list.splice(idx, 1);
       },
       changeVal: function (field, val) {
-        statuses.isChange = true;
         if (this[field] === val) {
           this[field] = null;
         } else {
@@ -810,6 +841,10 @@ export default {
         }
       },
     });
+    const copyStatuses = JSON.parse(JSON.stringify(statuses));
+    const statusesIsChange = computed(
+      () => JSON.stringify(copyStatuses) != JSON.stringify(statuses)
+    );
 
     const categories = reactive({
       selected: {},
@@ -821,10 +856,13 @@ export default {
       },
     });
     const modalRef = ref(null);
-    onClickOutside(modalRef, () => {
+    onClickOutside(modalRef, (e) => {
+      const isOtherBtn = e?.target?.attributes?.id?.value === "catBtn";
       categories.selected.specialList = categories.list;
       categories.selected = {};
-      setTimeout(() => (categories.ref = null), 150);
+      isOtherBtn
+        ? (categories.ref = null)
+        : setTimeout(() => (categories.ref = null), 150);
     });
 
     const animationStarted = ref(false);
@@ -867,6 +905,7 @@ export default {
       selectedFieldPropertyIsBasic,
       copyFieldsPropertiesWithSpace,
       statuses,
+      statusesIsChange,
       categories,
       modalRef,
       animationStarted,
