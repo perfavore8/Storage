@@ -14,7 +14,17 @@
             <transition-group name="row">
               <tr class="row" v-for="(row, idx) in itemsForMove" :key="row">
                 <td class="item">
+                  <AppInputSelect
+                    v-if="row.isNew"
+                    :list="autocomplete.list"
+                    :countLettersReq="3"
+                    @changeInputValue="
+                      (val) => autocomplete.getList('article', val)
+                    "
+                    @select="(item) => autocompleteSelect(item, idx)"
+                  />
                   <input
+                    v-else
                     type="text"
                     v-model="row.fields.article"
                     class="input"
@@ -22,7 +32,17 @@
                   />
                 </td>
                 <td class="item">
+                  <AppInputSelect
+                    v-if="row.isNew"
+                    :list="autocomplete.list"
+                    :countLettersReq="3"
+                    @changeInputValue="
+                      (val) => autocomplete.getList('name', val)
+                    "
+                    @select="(item) => autocompleteSelect(item, idx)"
+                  />
                   <input
+                    v-else
                     type="text"
                     v-model="row.fields.name"
                     class="input"
@@ -49,6 +69,7 @@
                         not_valid_selector:
                           row.fields.whToCancel?.value == -1 && try_accept,
                       }"
+                      :disabled="row.isNew"
                       :idx="idx"
                     />
                   </div>
@@ -66,6 +87,7 @@
                             row.fields.whToMove?.value == -1) &&
                           try_accept,
                       }"
+                      :disabled="row.isNew"
                       :idx="idx"
                     />
                   </div>
@@ -76,6 +98,7 @@
                     v-model="row.fields.countToMove"
                     :max="row.fields?.countToMove?.count"
                     class="input"
+                    :disabled="row.isNew"
                     :class="{
                       not_valid: row.fields?.countToMove == '' && try_accept,
                     }"
@@ -86,6 +109,7 @@
                     type="text"
                     v-model="row.fields.rison"
                     class="input"
+                    :disabled="row.isNew"
                     :class="{
                       not_valid: row.fields?.rison == '' && try_accept,
                     }"
@@ -95,6 +119,9 @@
             </transition-group>
           </tbody>
         </table>
+        <div class="w-full my-2 flex justify-end items-center">
+          <button class="add_new_button" @click="pushNewItem()">+</button>
+        </div>
       </div>
       <div class="footer">
         <btns-save-close @close="close_modal" @save="save" />
@@ -105,11 +132,14 @@
 
 <script>
 import SelectorVue from "@/components/SelectorVue";
+import AppInputSelect from "@/components/AppInputSelect.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
+import store from "@/store";
 export default {
   components: {
     SelectorVue,
+    AppInputSelect,
     BtnsSaveClose,
   },
   props: {
@@ -135,6 +165,24 @@ export default {
       itemsForMove: [],
       whs_options: [],
       try_accept: false,
+      autocomplete: {
+        list: [],
+        value: "",
+        getList: async function (field, value) {
+          this.value = value;
+          const list = await store.dispatch(
+            "autocomplete_" + field,
+            this.value
+          );
+          if (list != undefined) {
+            this.list = [...list];
+            this.list.map((item) => {
+              item.name = item.fields[field];
+              item.value = item.id;
+            });
+          }
+        },
+      },
     };
   },
   async mounted() {
@@ -203,6 +251,27 @@ export default {
     },
   },
   methods: {
+    autocompleteSelect(newItem, idx) {
+      newItem.fields.countToMove = 0;
+      newItem.fields.rison = "";
+      newItem.fields.whs_options = [];
+      newItem.fields.whToCancel = { name: "Не выбрано", value: -1 };
+      newItem.fields.whToMove = { name: "Не выбрано", value: -1 };
+      this.itemsForMove.splice(idx, 1, newItem);
+      this.fillWhs();
+    },
+    pushNewItem() {
+      this.itemsForMove.push({
+        isNew: true,
+        fields: {
+          countToMove: 0,
+          rison: "",
+          whs_options: [],
+          whToCancel: { name: "Не выбрано", value: -1 },
+          whToMove: { name: "Не выбрано", value: -1 },
+        },
+      });
+    },
     fillWhs() {
       this.fields
         .filter((field) => field.type == 13 && field.code != "whs")
@@ -416,5 +485,19 @@ input[type="number"]::-webkit-inner-spin-button {
 .row-enter-from,
 .row-leave-to {
   opacity: 0;
+}
+.add_new_button {
+  margin-right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 34px;
+  height: 20px;
+  color: #fff;
+  background: #4e964d;
+  border: none;
+  border-radius: 4px;
+  @include font(400, 16px, 20px);
 }
 </style>
