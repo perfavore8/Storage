@@ -197,7 +197,7 @@ export default {
       lead_fields_options: [],
       lead_fields: { name: "Не выбрано", value: 1 },
       contact_name_type_options: [],
-      contact_name_type: { name: "Не выбрано", value: 1 },
+      contact_name_type: { name: "Не выбрано", value: -1 },
       showAddNew: false,
       showFields: false,
       show_settings: false,
@@ -307,10 +307,10 @@ export default {
       this.$store.commit("open_close_document_setting", false);
     },
     lead_fields_select(option) {
-      Object.assign(this.lead_fields, option);
+      this.lead_fields = option;
     },
     contact_name_type_select(option) {
-      Object.assign(this.contact_name_type, option);
+      this.contact_name_type = option;
     },
     open_edit(doc) {
       this.cur_doc = { ...doc };
