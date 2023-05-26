@@ -72,10 +72,13 @@
 import { computed, onMounted, reactive } from "vue";
 import AppInputSelect from "../AppInputSelect.vue";
 import store from "@/store";
+import { useNewDeal } from "@/composables/newDeal";
 
 export default {
   components: { AppInputSelect },
   setup() {
+    const { newDealParams } = useNewDeal();
+
     onMounted(() => {
       store.dispatch("get_documents_v2");
     });
@@ -141,7 +144,15 @@ export default {
       },
     });
 
-    return { docs, a };
+    const generate = async () => {
+      const doc = await store.dispatch("generateDoc", {
+        order_id: Number(newDealParams.id),
+        doc_tpl_id: docs.selected.id,
+      });
+      console.log(doc);
+    };
+
+    return { docs, a, generate };
   },
 };
 </script>
