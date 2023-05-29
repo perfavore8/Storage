@@ -172,5 +172,78 @@ export default {
         body: JSON.stringify(params),
       });
     },
+
+    async generateOrderDoc(context, params) {
+      const url = BaseURL + "orders/doc/generate";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params),
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async getOrderDocList(context, params) {
+      const url = BaseURL + "orders/doc/list";
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async deleteOrderDoc(context, params) {
+      const url = BaseURL + "orders/doc/delete";
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+
+      return json;
+    },
+
+    async customDocUpload(context, params) {
+      const url = BaseURL + "orders/custom-doc/upload";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+        body: params,
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async customDocList(context, params) {
+      const url = BaseURL + "orders/custom-doc/list";
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async customDocDelete(context, params) {
+      const url = BaseURL + "orders/custom-doc/delete";
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+
+      return json;
+    },
   },
 };

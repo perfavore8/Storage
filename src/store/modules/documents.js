@@ -134,20 +134,5 @@ export default {
       });
       context.dispatch("get_documents_v2");
     },
-
-    async generateDoc(context, params) {
-      const url = BaseURL + "document/doc-generate";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: TOKEN,
-        },
-        body: JSON.stringify(params),
-      });
-      const json = await res.json();
-
-      return json;
-    },
   },
 };

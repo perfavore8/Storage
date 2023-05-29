@@ -12,52 +12,60 @@
         @changeInputValue="(val) => (docs.value = val)"
         @select="(option) => docs.select(option)"
       />
-      <button
-        class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
-        @click="generate()"
-        :disabled="docs.selected.value === -1"
-      >
-        Сгенерировать
-      </button>
+      <div class="flex flex-row gap-4 items-center">
+        <button
+          class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          @click="generate()"
+          :disabled="docs.selected.value === -1"
+        >
+          Сгенерировать
+        </button>
+        <label
+          for="xlsx"
+          class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          >Загрузить</label
+        >
+        <input
+          type="file"
+          id="xlsx"
+          @change="(ev) => uploadFiles(ev)"
+          class="hidden"
+        />
+      </div>
     </header>
     <div class="mt-10">
       <table class="bg-white divide-y divide-gray-300 w-3/4 mx-auto">
-        <tr v-for="item in a" :key="item.id">
+        <tr v-for="item in [...docsList, ...customDocList]" :key="item.id">
           <td class="cell main">
             <span>{{ item.name }}</span>
           </td>
           <td class="cell">
-            <span>{{ item.date }}</span>
+            <span>{{ item.created_at }}</span>
           </td>
           <td class="cell">
-            <span>{{ item.user }}</span>
+            <span>{{ item.user_name }}</span>
           </td>
           <td class="cell">
             <a
               class="link"
               target="blank"
-              :href="'https://docs.google.com/spreadsheets/d/' + item.url"
+              :href="item.open_url"
+              v-if="item.open_url"
             >
               открыть
             </a>
           </td>
           <td class="cell">
-            <a
-              class="link"
-              target="blank"
-              :href="
-                'https://docs.google.com/spreadsheets/d/' +
-                item.url +
-                '/export?format=' +
-                item.type
-              "
-            >
+            <a class="link" target="blank" :href="item.download_url">
               скачать
             </a>
           </td>
           <td class="cell">
             <button
               class="w-fit h-fit p-2 rounded-lg flex justify-center items-center focus:outline-2 focus:-outline-offset-4 focus:outline-slate-600 active:brightness-125"
+              @click="
+                item.isCustom ? deleteCustomDoc(item.id) : delDoc(item.id)
+              "
             >
               <span class="material-icons-outlined text-red-600"> delete </span>
             </button>
@@ -73,58 +81,31 @@ import { computed, onMounted, reactive } from "vue";
 import AppInputSelect from "../AppInputSelect.vue";
 import store from "@/store";
 import { useNewDeal } from "@/composables/newDeal";
+import { useDocumentsTabCustomDocs } from "@/composables/documentsTabCustomDocs";
 
 export default {
   components: { AppInputSelect },
   setup() {
     const { newDealParams } = useNewDeal();
+    const { uploadFiles, customDocList, getCustomDocList, deleteCustomDoc } =
+      useDocumentsTabCustomDocs();
 
     onMounted(() => {
       store.dispatch("get_documents_v2");
+      getDocs();
+      getCustomDocList();
     });
 
-    const a = reactive([
-      {
-        name: "Тест",
-        id: 1,
-        date: "04.05.23 17:06",
-        user: "GoSklad Support",
-        url: "1lDgIzoYl8bpT_gnhQZRirwkbDoMmO4cu",
-        type: "xlsx",
-      },
-      {
-        name: "Тест",
-        id: 2,
-        date: "04.05.23 17:06",
-        user: "GoSklad Support",
-        url: "1lDgIzoYl8bpT_gnhQZRirwkbDoMmO4cu",
-        type: "xlsx",
-      },
-      {
-        name: "Тест",
-        id: 3,
-        date: "04.05.23 17:06",
-        user: "GoSklad Support",
-        url: "1lDgIzoYl8bpT_gnhQZRirwkbDoMmO4cu",
-        type: "xlsx",
-      },
-      {
-        name: "Тест",
-        id: 4,
-        date: "04.05.23 17:06",
-        user: "GoSklad Support",
-        url: "1lDgIzoYl8bpT_gnhQZRirwkbDoMmO4cu",
-        type: "xlsx",
-      },
-      {
-        name: "Тест",
-        id: 5,
-        date: "04.05.23 17:06",
-        user: "GoSklad Support",
-        url: "1lDgIzoYl8bpT_gnhQZRirwkbDoMmO4cu",
-        type: "xlsx",
-      },
-    ]);
+    const docsList = reactive([]);
+    const getDocs = async () => {
+      docsList.length = 0;
+      Object.assign(
+        docsList,
+        await store.dispatch("getOrderDocList", {
+          order_id: Number(newDealParams.id),
+        })
+      );
+    };
 
     const docs = reactive({
       value: "",
@@ -145,14 +126,32 @@ export default {
     });
 
     const generate = async () => {
-      const doc = await store.dispatch("generateDoc", {
+      const doc = await store.dispatch("generateOrderDoc", {
         order_id: Number(newDealParams.id),
         doc_tpl_id: docs.selected.id,
       });
       console.log(doc);
+      getDocs();
     };
 
-    return { docs, a, generate };
+    const delDoc = async (docId) => {
+      await store.dispatch("deleteOrderDoc", {
+        order_id: newDealParams.id,
+        doc_id: docId,
+      });
+      getDocs();
+    };
+
+    return {
+      docs,
+      generate,
+      docsList,
+      delDoc,
+      uploadFiles,
+      customDocList,
+      getCustomDocList,
+      deleteCustomDoc,
+    };
   },
 };
 </script>
