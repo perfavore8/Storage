@@ -115,6 +115,9 @@
                     }"
                   />
                 </td>
+                <td class="item">
+                  <button class="del_btn" @click="delItem(idx)"></button>
+                </td>
               </tr>
             </transition-group>
           </tbody>
@@ -161,6 +164,7 @@ export default {
         "Склад (куда)",
         "Кол-во",
         "Причина списания",
+        "",
       ],
       itemsForMove: [],
       whs_options: [],
@@ -251,6 +255,9 @@ export default {
     },
   },
   methods: {
+    delItem(idx) {
+      this.itemsForMove.splice(idx, 1);
+    },
     autocompleteSelect(newItem, idx) {
       newItem.fields.countToMove = 0;
       newItem.fields.rison = "";
@@ -499,5 +506,14 @@ input[type="number"]::-webkit-inner-spin-button {
   border: none;
   border-radius: 4px;
   @include font(400, 16px, 20px);
+}
+.del_btn {
+  height: 18px;
+  width: 18px !important;
+  cursor: pointer;
+  background: #dc3545;
+  border: none;
+  border-radius: 4px;
+  @include bg_image("@/assets/cross.svg", 50%);
 }
 </style>
