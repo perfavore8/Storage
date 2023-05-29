@@ -118,52 +118,80 @@
           </button>
         </th>
       </tr>
-      <tr
-        class="row"
-        :class="{ load: is_loading }"
-        v-if="selectedTab.value === 'Orders'"
-      >
-        <td class="item">Статус</td>
-        <td class="item selectors">
-          <div class="type_selector_options">
-            <div
-              class="type_selector_option gap-2"
-              v-for="(stat, idx) in statuses.list"
-              :key="stat.value"
-            >
-              <input type="text" class="input" v-model="stat.name" />
-              <input
-                type="checkbox"
-                class="checkbox"
-                :id="idx + 'nb1'"
-                :checked="statuses.reservation === stat.value"
-                @change="statuses.changeVal('reservation', stat.value)"
-              />
-              <label :for="idx + 'nb1'" title="Резервация"></label>
-              <input
-                type="checkbox"
-                class="checkbox"
-                :id="idx + 'nb2'"
-                :disabled="statuses.resIdx > idx"
-                :checked="statuses.write_off === stat.value"
-                @change="statuses.changeVal('write_off', stat.value)"
-              />
-              <label :for="idx + 'nb2'" title="Списание"></label>
-              <button
-                class="del_button"
-                :style="{ visibility: stat.base ? 'hidden' : 'visible' }"
-                @click="statuses.del(idx)"
-              ></button>
+      <template v-if="selectedTab.value === 'Orders'">
+        <tr
+          class="row"
+          :class="{ load: is_loading }"
+          v-for="({ statuses, statusesIsChange }, statusesIdx) in statusesList"
+          :key="statuses.id"
+        >
+          <td class="item">
+            <span v-if="!statuses.isNew">{{ statuses.name }}</span>
+            <input
+              v-else
+              type="text"
+              class="input new_item_input"
+              v-model="statuses.name"
+            />
+          </td>
+          <td class="item selectors">
+            <div class="type_selector_options">
+              <div
+                class="type_selector_option gap-2"
+                v-for="(stat, idx) in statuses.list"
+                :key="stat.value"
+              >
+                <input type="text" class="input" v-model="stat.name" />
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  :id="idx + 'nb1' + statuses.id"
+                  :checked="statuses.reservation === stat.value"
+                  @change="statuses.changeVal('reservation', stat.value)"
+                />
+                <label
+                  :for="idx + 'nb1' + statuses.id"
+                  title="Резервация"
+                ></label>
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  :id="idx + 'nb2' + statuses.id"
+                  :disabled="statuses.resIdx > idx"
+                  :checked="statuses.write_off === stat.value"
+                  @change="statuses.changeVal('write_off', stat.value)"
+                />
+                <label
+                  :for="idx + 'nb2' + statuses.id"
+                  title="Списание"
+                ></label>
+                <button
+                  class="del_button"
+                  :style="{ visibility: stat.base ? 'hidden' : 'visible' }"
+                  @click="statuses.del(idx)"
+                ></button>
+              </div>
+              <button @click="statuses.add()" class="add_button"></button>
             </div>
-            <button @click="statuses.add()" class="add_button"></button>
-          </div>
-        </td>
-        <td class="item del_sell">
-          <button class="btn btn_save btn_blue" v-if="statusesIsChange">
-            Сохранить
-          </button>
-        </td>
-      </tr>
+          </td>
+          <td class="item del_sell">
+            <button
+              @click="addStatuses()"
+              v-if="!statuses.isNew"
+              class="add_new_button"
+              style="position: static; width: 18px; height: 18px"
+            ></button>
+            <button
+              v-else
+              class="del_btn"
+              @click="removeStatuses(statusesIdx)"
+            />
+            <button class="btn btn_save btn_blue" v-if="statusesIsChange">
+              Сохранить
+            </button>
+          </td>
+        </tr>
+      </template>
       <tr
         class="row"
         :class="{ load: is_loading }"
@@ -494,6 +522,7 @@ import SelectorVue from "./SelectorVue.vue";
 import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsProperties";
 import { onClickOutside } from "@vueuse/core";
 import AppMultiSelect from "./AppMultiSelect.vue";
+import { useStatusesForEntities } from "@/composables/statusesForEntities";
 export default {
   components: { SelectorVue, AppMultiSelect },
   props: { selectedTab: Object },
@@ -802,49 +831,53 @@ export default {
       new_fields[idx].data.splice(i, 1);
     };
 
-    const statuses = reactive({
-      list: [
-        { name: "Открытый", value: 0, base: true },
-        { name: "Успешный", value: 1, base: true },
-        { name: "Отменен", value: 2, base: true },
-        { name: "Удален", value: 3, base: true },
-      ],
-      reservation: 0,
-      write_off: 1,
-      resIdx: computed(() =>
-        statuses.list.indexOf(
-          statuses.list.find((el) => el.value === statuses.reservation)
-        )
-      ),
-      woIdx: computed(() =>
-        statuses.list.indexOf(
-          statuses.list.find((el) => el.value === statuses.write_off)
-        )
-      ),
-      add: function () {
-        this.list.splice(1, 0, {
-          name: "",
-          value: Math.round(Math.random() * 10 ** 9),
-        });
-      },
-      del: function (idx) {
-        this.list.splice(idx, 1);
-      },
-      changeVal: function (field, val) {
-        if (this[field] === val) {
-          this[field] = null;
-        } else {
-          this[field] = val;
-        }
-        if (field === "reservation") {
-          if (this.resIdx > this.woIdx) this.write_off = null;
-        }
-      },
-    });
-    const copyStatuses = JSON.parse(JSON.stringify(statuses));
-    const statusesIsChange = computed(
-      () => JSON.stringify(copyStatuses) != JSON.stringify(statuses)
-    );
+    const statusesList = reactive([useStatusesForEntities(false)]);
+    const addStatuses = () => statusesList.push(useStatusesForEntities(true));
+    const removeStatuses = (idx) => statusesList.splice(idx, 1);
+
+    // const statuses = reactive({
+    //   list: [
+    //     { name: "Открытый", value: 0, base: true },
+    //     { name: "Успешный", value: 1, base: true },
+    //     { name: "Отменен", value: 2, base: true },
+    //     { name: "Удален", value: 3, base: true },
+    //   ],
+    //   reservation: 0,
+    //   write_off: 1,
+    //   resIdx: computed(() =>
+    //     statuses.list.indexOf(
+    //       statuses.list.find((el) => el.value === statuses.reservation)
+    //     )
+    //   ),
+    //   woIdx: computed(() =>
+    //     statuses.list.indexOf(
+    //       statuses.list.find((el) => el.value === statuses.write_off)
+    //     )
+    //   ),
+    //   add: function () {
+    //     this.list.splice(1, 0, {
+    //       name: "",
+    //       value: Math.round(Math.random() * 10 ** 9),
+    //     });
+    //   },
+    //   del: function (idx) {
+    //     this.list.splice(idx, 1);
+    //   },
+    //   changeVal: function (field, val) {
+    //     if (this[field] === val) {
+    //       this[field] = null;
+    //     } else {
+    //       this[field] = val;
+    //     }
+    //     if (field === "reservation") {
+    //       if (this.resIdx > this.woIdx) this.write_off = null;
+    //     }
+    //   },
+    // });
+    // const copyStatuses = JSON.parse(JSON.stringify(statuses));
+    // const statusesIsChange = computed(
+    //   () => JSON.stringify(copyStatuses) != JSON.stringify(statuses)
+    // );
 
     const categories = reactive({
       selected: {},
@@ -904,11 +937,14 @@ export default {
       selectedFieldProperty,
       selectedFieldPropertyIsBasic,
       copyFieldsPropertiesWithSpace,
-      statuses,
-      statusesIsChange,
+      // statuses,
+      // statusesIsChange,
       categories,
       modalRef,
       animationStarted,
+      statusesList,
+      addStatuses,
+      removeStatuses,
     };
   },
 };
