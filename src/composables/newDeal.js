@@ -1,12 +1,14 @@
 import store from "@/store";
 import { onMounted, ref, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useNotification } from "./notification";
 
 const newDealParams = reactive({});
 const order = reactive({ fields: {} });
 
 const routeWatcher = ref(null);
 export function useNewDeal() {
+  const { addNotification } = useNotification();
   const router = useRouter();
   const route = useRoute();
 
@@ -15,6 +17,11 @@ export function useNewDeal() {
     routeWatcher.value = router.afterEach((to) => {
       if (!to.query?.order_id) {
         delete newDealParams.id;
+        addNotification(
+          1,
+          "Сохранение заказа ...",
+          `${order.fields?.name} успешно сохранен`
+        );
       }
     });
   });
