@@ -14,17 +14,30 @@
       />
       <div class="flex flex-row gap-4 items-center">
         <button
-          class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          class="btn pointer-events-auto relative inline-flex transition-all rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
           @click="generate()"
-          :disabled="docs.selected.value === -1"
+          :disabled="docs.selected.value === -1 && false"
         >
-          Сгенерировать
+          <template v-if="docs.isGeneration">
+            Генерация
+            <span class="animate-pulse ml-1">.</span>
+            <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
+            <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
+          </template>
+          <template v-else> Сгенерировать </template>
         </button>
         <label
           for="xlsx"
           class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
-          >Загрузить</label
         >
+          <template v-if="isUpload">
+            Загружаем
+            <span class="animate-pulse ml-1">.</span>
+            <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
+            <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
+          </template>
+          <template v-else> Загрузить </template>
+        </label>
         <input
           type="file"
           id="xlsx"
@@ -87,8 +100,13 @@ export default {
   components: { AppInputSelect },
   setup() {
     const { newDealParams } = useNewDeal();
-    const { uploadFiles, customDocList, getCustomDocList, deleteCustomDoc } =
-      useDocumentsTabCustomDocs();
+    const {
+      uploadFiles,
+      customDocList,
+      getCustomDocList,
+      deleteCustomDoc,
+      isUpload,
+    } = useDocumentsTabCustomDocs();
 
     onMounted(() => {
       store.dispatch("get_documents_v2");
@@ -110,6 +128,7 @@ export default {
     const docs = reactive({
       value: "",
       selected: { name: "", value: -1 },
+      isGeneration: false,
       list: computed(() => {
         const templates = store.state.documents.templates;
         templates?.map((val) => {
@@ -126,10 +145,12 @@ export default {
     });
 
     const generate = async () => {
+      docs.isGeneration = true;
       const doc = await store.dispatch("generateOrderDoc", {
         order_id: Number(newDealParams.id),
         doc_tpl_id: docs.selected.id,
       });
+      docs.isGeneration = false;
       console.log(doc);
       getDocs();
     };
@@ -151,6 +172,7 @@ export default {
       customDocList,
       getCustomDocList,
       deleteCustomDoc,
+      isUpload,
     };
   },
 };

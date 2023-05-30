@@ -1,16 +1,21 @@
 import store from "@/store";
 import { reactive } from "vue";
 import { useNewDeal } from "./newDeal";
+import { ref } from "vue";
 
 export function useDocumentsTabCustomDocs() {
   const { newDealParams } = useNewDeal();
 
+  const isUpload = ref(false);
+
   const uploadFiles = async (ev) => {
+    isUpload.value = true;
     const files = ev.target.files[0];
     const payload = new FormData();
     payload.append("files", files);
     payload.append("order_id", newDealParams.id);
     await store.dispatch("customDocUpload", payload);
+    isUpload.value = false;
     getCustomDocList();
   };
 
@@ -31,5 +36,11 @@ export function useDocumentsTabCustomDocs() {
     getCustomDocList();
   };
 
-  return { uploadFiles, customDocList, getCustomDocList, deleteCustomDoc };
+  return {
+    uploadFiles,
+    customDocList,
+    getCustomDocList,
+    deleteCustomDoc,
+    isUpload,
+  };
 }
