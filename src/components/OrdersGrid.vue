@@ -95,6 +95,14 @@
                     >
                       {{ row.name }}
                     </a>
+                    <template v-if="isTest">
+                      <a
+                        class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
+                        @click="routeToOrder(row.id)"
+                      >
+                        ТЕСТ перейти в сделку
+                      </a>
+                    </template>
                   </div>
                 </td>
                 <!-- <td class="item" v-else-if="title.code === 'poz'">
@@ -321,6 +329,9 @@ export default {
     accountSubdomain() {
       return this.$store.state.account.account.subdomain;
     },
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
+    },
     page() {
       const obj = {
         first: this.getPageFromLink(this.meta?.first_page_url),
@@ -442,6 +453,7 @@ export default {
         if (order.company_name != null && order.contact_name != null)
           client = order.company_name + ", " + order.contact_name;
         const obj = {
+          id: order.id,
           page: {
             first: 1,
             prev: null,
@@ -468,6 +480,9 @@ export default {
         };
         this.products.list.push(obj);
       });
+    },
+    routeToOrder(id) {
+      this.$router.push("addToDeal?order_id=" + id);
     },
   },
 };
