@@ -29,7 +29,17 @@
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ item.label }}
         </div>
-        <div class="text-base font-medium">{{ total?.[item.value] }}</div>
+        <template v-if="item.component">
+          <component
+            :is="item.component"
+            :selected_option="user_name.selected"
+            :options_props="user_name.list"
+            @select="(option) => user_name.select(option)"
+          />
+        </template>
+        <div class="text-base font-medium" v-else>
+          {{ total?.[item.value] }}
+        </div>
       </div>
     </div>
   </div>
@@ -42,14 +52,14 @@ import { useNewDeal } from "@/composables/newDeal";
 export default {
   components: { SelectorVue },
   props: { total: Object },
-  setup() {
+  setup(props) {
     const { order } = useNewDeal();
 
     const list = reactive([
       { label: "Сумма заказа:", value: "price" },
       { label: "Себестоимость:", value: "cost_price" },
       { label: "Прибыль:", value: "prib" },
-      { label: "Сотрудник:", value: "user_name" },
+      { label: "Сотрудник:", value: "user_name", component: "SelectorVue" },
     ]);
 
     const selector = reactive({
@@ -67,7 +77,29 @@ export default {
       },
     });
 
-    return { list, selector, order };
+    const user_name = reactive({
+      selected: computed(() =>
+        user_name.list.find(
+          (el) =>
+            el.value ==
+            (order.fields.user_name
+              ? order.fields.user_name
+              : props.total?.user_name)
+        )
+      ),
+      list: [
+        { name: "Никита", value: "Никита" },
+        { name: "Юзер 1", value: 1 },
+        { name: "Юзер 2", value: 2 },
+        { name: "Юзер 3", value: 3 },
+        { name: "Юзер 4", value: 4 },
+      ],
+      select: function (option) {
+        order.fields.user_name = option.value;
+      },
+    });
+
+    return { list, selector, order, user_name };
   },
 };
 </script>
