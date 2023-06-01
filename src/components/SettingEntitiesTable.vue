@@ -122,7 +122,7 @@
         <tr
           class="row"
           :class="{ load: is_loading }"
-          v-for="({ statuses, statusesIsChange }, statusesIdx) in statusesList"
+          v-for="{ statuses, statusesIsChange, saveStatuses } in statusesList"
           :key="statuses.id"
         >
           <td class="item">
@@ -146,7 +146,8 @@
                   type="checkbox"
                   class="checkbox"
                   :id="idx + 'nb1' + statuses.id"
-                  :checked="statuses.reservation === stat.value"
+                  :disabled="stat.sort > 99"
+                  :checked="statuses.reservation.includes(stat.value)"
                   @change="statuses.changeVal('reservation', stat.value)"
                 />
                 <label
@@ -157,7 +158,7 @@
                   type="checkbox"
                   class="checkbox"
                   :id="idx + 'nb2' + statuses.id"
-                  :disabled="statuses.resIdx > idx"
+                  :disabled="statuses.resIdx > idx - 1"
                   :checked="statuses.write_off === stat.value"
                   @change="statuses.changeVal('write_off', stat.value)"
                 />
@@ -167,8 +168,8 @@
                 ></label>
                 <button
                   class="del_button"
-                  :style="{ visibility: stat.base ? 'hidden' : 'visible' }"
-                  @click="statuses.del(idx)"
+                  :style="{ visibility: stat.is_system ? 'hidden' : 'visible' }"
+                  @click="statuses.del(stat.id)"
                 ></button>
               </div>
               <button @click="statuses.add()" class="add_button"></button>
@@ -184,9 +185,13 @@
             <button
               v-else
               class="del_btn"
-              @click="removeStatuses(statusesIdx)"
+              @click="removeStatuses(statuses.id)"
             />
-            <button class="btn btn_save btn_blue" v-if="statusesIsChange">
+            <button
+              class="btn btn_save btn_blue"
+              v-if="statusesIsChange"
+              @click="saveStatuses()"
+            >
               Сохранить
             </button>
           </td>
@@ -549,6 +554,7 @@ export default {
 
     onMounted(async () => {
       changeSelectedTab();
+      setStatuses();
     });
 
     const changeSelectedTab = async () => {
@@ -831,53 +837,23 @@ export default {
       new_fields[idx].data.splice(i, 1);
     };
 
-    const statusesList = reactive([useStatusesForEntities(false)]);
-    const addStatuses = () => statusesList.push(useStatusesForEntities(true));
-    const removeStatuses = (idx) => statusesList.splice(idx, 1);
-
-    // const statuses = reactive({
-    //   list: [
-    //     { name: "Открытый", value: 0, base: true },
-    //     { name: "Успешный", value: 1, base: true },
-    //     { name: "Отменен", value: 2, base: true },
-    //     { name: "Удален", value: 3, base: true },
-    //   ],
-    //   reservation: 0,
-    //   write_off: 1,
-    //   resIdx: computed(() =>
-    //     statuses.list.indexOf(
-    //       statuses.list.find((el) => el.value === statuses.reservation)
-    //     )
-    //   ),
-    //   woIdx: computed(() =>
-    //     statuses.list.indexOf(
-    //       statuses.list.find((el) => el.value === statuses.write_off)
-    //     )
-    //   ),
-    //   add: function () {
-    //     this.list.splice(1, 0, {
-    //       name: "",
-    //       value: Math.round(Math.random() * 10 ** 9),
-    //     });
-    //   },
-    //   del: function (idx) {
-    //     this.list.splice(idx, 1);
-    //   },
-    //   changeVal: function (field, val) {
-    //     if (this[field] === val) {
-    //       this[field] = null;
-    //     } else {
-    //       this[field] = val;
-    //     }
-    //     if (field === "reservation") {
-    //       if (this.resIdx > this.woIdx) this.write_off = null;
-    //     }
-    //   },
-    // });
-    // const copyStatuses = JSON.parse(JSON.stringify(statuses));
-    // const statusesIsChange = computed(
-    //   () => JSON.stringify(copyStatuses) != JSON.stringify(statuses)
-    // );
+    const setStatuses = async () => {
+      const stats = await store.dispatch("ordersPipelinesList", {});
+      stats.forEach((stat) => stat.statuses.map((s) => (s.value = s.id)));
+      statusesList.length = 0;
+      stats.forEach((stat) =>
+        statusesList.push(useStatusesForEntities(stat, setStatuses))
+      );
+    };
+    const statusesList = reactive([]);
+    const addStatuses = async () => {
+      await store.dispatch("ordersPipelinesAdd", { name: "Статус" });
+      setStatuses();
+    };
+    const removeStatuses = async (id) => {
+      await store.dispatch("ordersPipelinesDelete", { id: id });
+      setStatuses();
+    };
 
     const categories = reactive({
       selected: {},
@@ -1055,7 +1031,7 @@ export default {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
-          input {
+          .input {
             width: calc(100% - 30px);
             height: 24px !important;
             @include font(400, 14px, 18px);

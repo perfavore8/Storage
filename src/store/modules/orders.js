@@ -262,9 +262,10 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: TOKEN,
         },
-        body: params,
+        body: JSON.stringify(params),
       });
       const json = await res.json();
 
@@ -275,9 +276,10 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: TOKEN,
         },
-        body: params,
+        body: JSON.stringify(params),
       });
       const json = await res.json();
 
@@ -288,9 +290,10 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: TOKEN,
         },
-        body: params,
+        body: JSON.stringify(params),
       });
       const json = await res.json();
 
@@ -302,9 +305,10 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: TOKEN,
         },
-        body: params,
+        body: JSON.stringify(params),
       });
       const json = await res.json();
 
@@ -315,9 +319,10 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: TOKEN,
         },
-        body: params,
+        body: JSON.stringify(params),
       });
       const json = await res.json();
 
@@ -328,9 +333,10 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: TOKEN,
         },
-        body: params,
+        body: JSON.stringify(params),
       });
       const json = await res.json();
 
