@@ -245,5 +245,96 @@ export default {
 
       return json;
     },
+
+    async ordersPipelinesList(context, params) {
+      const url = BaseURL + "orders/pipelines/list";
+      const res = await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async ordersPipelinesAdd(context, params) {
+      const url = BaseURL + "orders/pipelines/add";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+        body: params,
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async ordersPipelinesUpdate(context, params) {
+      const url = BaseURL + "orders/pipelines/update";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+        body: params,
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async ordersPipelinesDelete(context, params) {
+      const url = BaseURL + "orders/pipelines/delete";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+        body: params,
+      });
+      const json = await res.json();
+
+      return json;
+    },
+
+    async ordersPipelinesStatusesAdd(context, params) {
+      const url = BaseURL + "orders/pipelines/statuses/add";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+        body: params,
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async ordersPipelinesStatusesUpdate(context, params) {
+      const url = BaseURL + "orders/pipelines/statuses/update";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+        body: params,
+      });
+      const json = await res.json();
+
+      return json;
+    },
+    async ordersPipelinesStatusesDelete(context, params) {
+      const url = BaseURL + "orders/pipelines/statuses/delete";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+        },
+        body: params,
+      });
+      const json = await res.json();
+
+      return json;
+    },
   },
 };
