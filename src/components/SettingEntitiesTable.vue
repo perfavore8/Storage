@@ -742,7 +742,10 @@ export default {
             disabled: title_visible == -1 || title_visible == 2,
             value: title_visible > 0,
           };
-          const double_in_new_bath = val.config.double_in_new_bath;
+          const double_in_new_bath =
+            val.config.double_in_new_bath === undefined
+              ? 0
+              : val.config.double_in_new_bath;
           val.config.double_in_new_bath = {
             disabled: double_in_new_bath == -1 || double_in_new_bath == 2,
             value: double_in_new_bath > 0,
@@ -782,7 +785,10 @@ export default {
             disabled: title_visible == -1 || title_visible == 2,
             value: title_visible > 0,
           };
-          const double_in_new_bath = val.config.double_in_new_bath;
+          const double_in_new_bath =
+            val.config.double_in_new_bath === undefined
+              ? 0
+              : val.config.double_in_new_bath;
           val.config.double_in_new_bath = {
             disabled: double_in_new_bath == -1 || double_in_new_bath == 2,
             value: double_in_new_bath > 0,
