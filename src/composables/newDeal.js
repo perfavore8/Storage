@@ -17,12 +17,13 @@ export function useNewDeal() {
     routeWatcher.value = router.afterEach((to) => {
       if (!to.query?.order_id) {
         delete newDealParams.id;
+      }
+      if (to.path !== "/addToDeal")
         addNotification(
           1,
           "Сохранение заказа ...",
           `${order.fields?.name} успешно сохранен`
         );
-      }
     });
   });
 
