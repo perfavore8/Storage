@@ -14,11 +14,11 @@ export function useNewDeal() {
 
   onMounted(() => {
     if (routeWatcher.value) return;
-    routeWatcher.value = router.afterEach((to) => {
+    routeWatcher.value = router.afterEach((to, from) => {
       if (!to.query?.order_id) {
         delete newDealParams.id;
       }
-      if (to.path !== "/addToDeal")
+      if (to.path !== "/addToDeal" && from.path == "/addToDeal")
         addNotification(
           1,
           "Сохранение заказа ...",
