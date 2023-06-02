@@ -107,181 +107,195 @@
                   <template v-if="!useSkeletonCard">
                     <div
                       class="card"
+                      :class="{ card__flip: flip[idx] }"
+                      @click="flip[idx] = !flip[idx]"
                       v-for="(product, idx) in products"
                       :key="product"
                     >
-                      <div class="sls_row title">
-                        <div class="name"></div>
-                        <div class="value">{{ product?.fields?.name }}</div>
+                      <div class="bg_image">
+                        <img
+                          src="https://img2.freepng.ru/20180518/rpa/kisspng-parcel-computer-icons-package-tracking-mail-5aff95be3be2a8.2770409315266994542453.jpg"
+                          class="img"
+                        />
                       </div>
-                      <div class="rows">
-                        <div class="sls_row">
-                          <div class="name" style="font-weight: 500">Тип :</div>
-                          <div class="value">
-                            {{ product.is_service ? "Услуга" : "Товар" }}
-                          </div>
+                      <div class="back">
+                        <div class="sls_row title">
+                          <div class="name"></div>
+                          <div class="value">{{ product?.fields?.name }}</div>
                         </div>
-                        <template v-for="field in sortedFields" :key="field">
-                          <template v-if="field.type === 11">
-                            <div class="sls_row">
-                              <div class="name" style="font-weight: 500">
-                                {{ field.name }} :
-                              </div>
-                              <div class="value">
-                                {{
-                                  product?.fields[field.code]?.cost
-                                    ? product?.fields[field.code]?.cost
-                                    : "" +
-                                      " " +
-                                      product?.fields[field.code]?.currency
-                                    ? product?.fields[field.code]?.currency
-                                    : ""
-                                }}
-                              </div>
+                        <div class="rows">
+                          <div class="sls_row">
+                            <div class="name" style="font-weight: 500">
+                              Тип :
                             </div>
-                            <template
-                              v-if="product?.fields[field.code]?.is_nds"
-                            >
-                              <div class="sls_row" style="margin-left: 8px">
-                                <div class="name">НДС :</div>
-                                <div class="value">
-                                  {{ product?.fields[field.code]?.nds }}
+                            <div class="value">
+                              {{ product.is_service ? "Услуга" : "Товар" }}
+                            </div>
+                          </div>
+                          <template v-for="field in sortedFields" :key="field">
+                            <template v-if="field.type === 11">
+                              <div class="sls_row">
+                                <div class="name" style="font-weight: 500">
+                                  {{ field.name }} :
                                 </div>
-                              </div>
-                              <div class="sls_row" style="margin-left: 8px">
-                                <div class="name">НДС включен в цену :</div>
                                 <div class="value">
                                   {{
-                                    product?.fields[field.code]
-                                      ?.is_price_include_nds
-                                      ? "Да"
-                                      : "Нет"
+                                    product?.fields[field.code]?.cost
+                                      ? product?.fields[field.code]?.cost
+                                      : "" +
+                                        " " +
+                                        product?.fields[field.code]?.currency
+                                      ? product?.fields[field.code]?.currency
+                                      : ""
+                                  }}
+                                </div>
+                              </div>
+                              <template
+                                v-if="product?.fields[field.code]?.is_nds"
+                              >
+                                <div class="sls_row" style="margin-left: 8px">
+                                  <div class="name">НДС :</div>
+                                  <div class="value">
+                                    {{ product?.fields[field.code]?.nds }}
+                                  </div>
+                                </div>
+                                <div class="sls_row" style="margin-left: 8px">
+                                  <div class="name">НДС включен в цену :</div>
+                                  <div class="value">
+                                    {{
+                                      product?.fields[field.code]
+                                        ?.is_price_include_nds
+                                        ? "Да"
+                                        : "Нет"
+                                    }}
+                                  </div>
+                                </div>
+                              </template>
+                            </template>
+                            <template v-else-if="field.type === 13">
+                              <div class="sls_row">
+                                <div class="name" style="font-weight: 500">
+                                  {{ field.name }}:
+                                </div>
+                                <div class="value"></div>
+                              </div>
+                              <div class="sls_row" style="margin-left: 8px">
+                                <div class="name">Свободно для резерва:</div>
+                                <div class="value">
+                                  {{
+                                    Number(
+                                      product?.fields[field.code]?.count
+                                        ? product?.fields[field.code]?.count
+                                        : 0
+                                    ) +
+                                    Number(
+                                      product?.fields[field.code]?.reserve
+                                        ? product?.fields[field.code]?.reserve
+                                        : 0
+                                    )
                                   }}
                                 </div>
                               </div>
                             </template>
-                          </template>
-                          <template v-else-if="field.type === 13">
-                            <div class="sls_row">
-                              <div class="name" style="font-weight: 500">
-                                {{ field.name }}:
+                            <template v-else-if="field.type === 12">
+                              <div class="sls_row">
+                                <div class="name" style="font-weight: 500">
+                                  {{ field.name }}:
+                                </div>
+                                <div class="value">
+                                  {{
+                                    categoriesForCard?.[
+                                      product?.fields?.[field.code]
+                                    ]
+                                  }}
+                                </div>
                               </div>
-                              <div class="value"></div>
-                            </div>
-                            <div class="sls_row" style="margin-left: 8px">
-                              <div class="name">Свободно для резерва:</div>
+                            </template>
+                            <template v-else-if="field.code === 'name'" />
+                            <div class="sls_row" v-else>
+                              <div class="name">{{ field.name }}:</div>
                               <div class="value">
-                                {{
-                                  Number(
-                                    product?.fields[field.code]?.count
-                                      ? product?.fields[field.code]?.count
-                                      : 0
-                                  ) +
-                                  Number(
-                                    product?.fields[field.code]?.reserve
-                                      ? product?.fields[field.code]?.reserve
-                                      : 0
-                                  )
-                                }}
+                                {{ product?.fields[field.code] }}
                               </div>
                             </div>
                           </template>
-                          <template v-else-if="field.type === 12">
-                            <div class="sls_row">
-                              <div class="name" style="font-weight: 500">
-                                {{ field.name }}:
-                              </div>
-                              <div class="value">
-                                {{
-                                  categoriesForCard?.[
-                                    product?.fields?.[field.code]
-                                  ]
-                                }}
-                              </div>
-                            </div>
+                        </div>
+                        <div class="card_footer">
+                          <template v-if="product.is_service">
+                            <input
+                              v-if="allWhsList?.[idx]?.length"
+                              type="number"
+                              class="sls_input"
+                              style="min-width: 70px"
+                              v-model="allWhsList[idx][0].specialValue"
+                            />
                           </template>
-                          <template v-else-if="field.code === 'name'" />
-                          <div class="sls_row" v-else>
-                            <div class="name">{{ field.name }}:</div>
-                            <div class="value">
-                              {{ product?.fields[field.code] }}
-                            </div>
-                          </div>
-                        </template>
-                      </div>
-                      <div class="card_footer">
-                        <template v-if="product.is_service">
-                          <input
-                            v-if="allWhsList?.[idx]?.length"
-                            type="number"
-                            class="sls_input"
-                            style="min-width: 70px"
-                            v-model="allWhsList[idx][0].specialValue"
-                          />
-                        </template>
-                        <template v-else>
-                          <AppInputSelect
-                            style="min-width: 70px; width: 100%"
-                            v-if="allWhsList?.[idx]?.length"
-                            :list="
-                              allWhsList?.[idx]?.filter(
-                                (val) =>
-                                  (product.allow_add_with_zero_count ||
-                                    !(val.count < 1)) &&
-                                  (selectedWirePerLead.value
-                                    ? val.code == selectedWirePerLead.value
-                                    : true)
-                              )
-                            "
-                            :special="true"
-                            :requestDelay="0"
-                            :countLettersReq="0"
-                            :allow_add_with_zero_count="
-                              product.allow_add_with_zero_count
-                            "
-                            :one_wh_per_lead="product.one_wh_per_lead"
-                            :placeholder="
-                              allWhsList?.[idx]?.reduce(
-                                (sum, wh) => (sum += Number(wh?.specialValue)),
-                                0
-                              )
-                            "
-                            @changeInputValue="
-                              (value) => (inputValues[idx] = value)
-                            "
-                          />
-                        </template>
-                        <div
-                          class="sls_btn btn_green btn_del"
-                          @click="
-                            () =>
-                              disableAddToDeal
-                                ? null
-                                : (
-                                    product.is_service
-                                      ? !allWhsList[idx][0].specialValue
-                                      : allWhsList?.[idx]?.reduce(
-                                          (sum, wh) =>
-                                            (sum += Number(wh?.specialValue)),
-                                          0
-                                        ) == 0
-                                  )
-                                ? null
-                                : addToLead(product.id)
-                          "
-                          :class="{
-                            btn_del_disabled: disableAddToDeal
-                              ? true
-                              : product.is_service
-                              ? !allWhsList[idx][0].specialValue
-                              : allWhsList?.[idx]?.reduce(
+                          <template v-else>
+                            <AppInputSelect
+                              @click.stop=""
+                              style="min-width: 70px; width: 100%"
+                              v-if="allWhsList?.[idx]?.length"
+                              :list="
+                                allWhsList?.[idx]?.filter(
+                                  (val) =>
+                                    (product.allow_add_with_zero_count ||
+                                      !(val.count < 1)) &&
+                                    (selectedWirePerLead.value
+                                      ? val.code == selectedWirePerLead.value
+                                      : true)
+                                )
+                              "
+                              :special="true"
+                              :requestDelay="0"
+                              :countLettersReq="0"
+                              :allow_add_with_zero_count="
+                                product.allow_add_with_zero_count
+                              "
+                              :one_wh_per_lead="product.one_wh_per_lead"
+                              :placeholder="
+                                allWhsList?.[idx]?.reduce(
                                   (sum, wh) =>
                                     (sum += Number(wh?.specialValue)),
                                   0
-                                ) == 0,
-                          }"
-                        >
-                          Добавить к сделке
+                                )
+                              "
+                              @changeInputValue="
+                                (value) => (inputValues[idx] = value)
+                              "
+                            />
+                          </template>
+                          <div
+                            class="sls_btn btn_green btn_del"
+                            @click.stop="
+                              () =>
+                                disableAddToDeal
+                                  ? null
+                                  : (
+                                      product.is_service
+                                        ? !allWhsList[idx][0].specialValue
+                                        : allWhsList?.[idx]?.reduce(
+                                            (sum, wh) =>
+                                              (sum += Number(wh?.specialValue)),
+                                            0
+                                          ) == 0
+                                    )
+                                  ? null
+                                  : addToLead(product.id)
+                            "
+                            :class="{
+                              btn_del_disabled: disableAddToDeal
+                                ? true
+                                : product.is_service
+                                ? !allWhsList[idx][0].specialValue
+                                : allWhsList?.[idx]?.reduce(
+                                    (sum, wh) =>
+                                      (sum += Number(wh?.specialValue)),
+                                    0
+                                  ) == 0,
+                            }"
+                          >
+                            Добавить к сделке
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -365,6 +379,7 @@ export default {
       useSkeletonCard: false,
       addedProducts: [],
       routeWatcher: null,
+      flip: [],
     };
   },
   computed: {
@@ -1115,6 +1130,52 @@ export default {
             border: 1px solid #c9c9c9;
             border-radius: 5px;
             padding: 20px;
+            position: relative;
+            transition: 0.3s ease-in-out;
+            // transform-style: preserve-3d;
+            overflow: hidden;
+            &__flip {
+              // transform: rotateY(0.5turn);
+              // background: #c4c4c433;
+              // box-shadow: 0 8px 16px rgb(0 0 0 / 20%),
+              //   0 8px 8px rgb(0 0 0 / 22%);
+              width: 100%;
+              .bg_image {
+                transform: translateY(-100%);
+              }
+            }
+            .bg_image {
+              background: white;
+              z-index: 10;
+              box-sizing: border-box;
+              object-fit: cover;
+              // background-color: #c4c4c433;
+              // box-shadow: 0 8px 16px rgb(0 0 0 / 20%),
+              //   0 8px 8px rgb(0 0 0 / 22%);
+              border-radius: 8px;
+              position: absolute;
+              top: 0;
+              left: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 16px;
+              height: 100%;
+              width: 100%;
+              backface-visibility: hidden;
+              transition: 1s ease-in-out;
+              .img {
+                width: 90%;
+                border-radius: 16px;
+                max-height: 90%;
+                // box-shadow: 0 8px 16px rgb(0 0 0 / 20%), 0 8px 8px rgb(0 0 0 / 22%);
+              }
+            }
+            .back {
+              // backface-visibility: hidden;
+              object-fit: cover;
+              // transform: rotateY(0.5turn);
+            }
             .rows::-webkit-scrollbar {
               display: none;
             }
