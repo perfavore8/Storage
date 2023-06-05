@@ -47,7 +47,7 @@ export default {
     EditFlag,
   },
   setup() {
-    const { order } = useNewDeal();
+    const { order, toggleSomeChange } = useNewDeal();
 
     onMounted(async () => {
       await Promise.all([
@@ -56,7 +56,9 @@ export default {
       ]);
     });
 
-    const change_value = (value, code) => (order.fields[code] = value);
+    const change_value = (value, code) => (
+      (order.fields[code] = value), toggleSomeChange(true)
+    );
 
     const fields = computed(() => store.state.orders.fields);
 

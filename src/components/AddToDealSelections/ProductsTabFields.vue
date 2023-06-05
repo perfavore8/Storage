@@ -9,7 +9,12 @@
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           Название
         </div>
-        <input type="text" class="input" v-model="order.fields.name" />
+        <input
+          type="text"
+          class="input"
+          v-model="order.fields.name"
+          @input="toggleSomeChange(true)"
+        />
       </div>
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
@@ -54,7 +59,7 @@ export default {
   components: { SelectorVue },
   props: { total: Object },
   setup(props) {
-    const { order } = useNewDeal();
+    const { order, toggleSomeChange } = useNewDeal();
 
     const list = reactive([
       { label: "Сумма заказа:", value: "price" },
@@ -75,6 +80,7 @@ export default {
       ],
       select: function (option) {
         order.status = option.value;
+        toggleSomeChange(true);
       },
     });
 
@@ -96,11 +102,12 @@ export default {
       },
       select: function (option) {
         order.fields.user_name = option.value;
+        toggleSomeChange(true);
       },
     });
     user_name.getList();
 
-    return { list, selector, order, user_name };
+    return { list, selector, order, user_name, toggleSomeChange };
   },
 };
 </script>

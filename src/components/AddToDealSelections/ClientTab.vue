@@ -43,7 +43,7 @@ export default {
     ClientTabItem,
   },
   setup() {
-    const { order, getOrder, saveOrder } = useNewDeal();
+    const { order, getOrder, saveOrder, toggleSomeChange } = useNewDeal();
 
     onMounted(() => {
       list.forEach((item) =>
@@ -95,6 +95,7 @@ export default {
         this.getList();
       },
       select: async function (option) {
+        toggleSomeChange(true);
         order.company_id = option.id;
         await saveOrder();
         getOrder();

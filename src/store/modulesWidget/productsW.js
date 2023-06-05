@@ -4,7 +4,7 @@ import { usePreparationProducts } from "@/components/WidgetAddToDeal/src/composa
 import { useNewDeal } from "@/composables/newDeal";
 const { preparationProducts } = usePreparationProducts();
 const { preparation_params } = usePreparationQueryParams();
-const { newDealParams } = useNewDeal();
+const { newDealParams, toggleSomeChange } = useNewDeal();
 
 export default {
   state: {
@@ -168,6 +168,7 @@ export default {
       });
       const json = await res.json();
       context.commit("updateDisableAddToDeal", false);
+      toggleSomeChange(true);
 
       return json;
     },
@@ -185,6 +186,7 @@ export default {
       });
       const json = await res.json();
       context.commit("updateDisableAddToDeal", false);
+      toggleSomeChange(true);
 
       return json;
     },
@@ -201,6 +203,7 @@ export default {
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
       context.commit("updateDisableAddToDeal", false);
+      toggleSomeChange(true);
 
       return json;
     },

@@ -2,11 +2,15 @@ import store from "@/store";
 import { onMounted, ref, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "./notification";
+import { useToggle } from "@vueuse/core";
 
 const newDealParams = reactive({});
 const order = reactive({ fields: {} });
 
 const routeWatcher = ref(null);
+
+const [someChange, toggleSomeChange] = useToggle(false);
+
 export function useNewDeal() {
   const { addNotification } = useNotification();
   const router = useRouter();
@@ -18,7 +22,11 @@ export function useNewDeal() {
       if (!to.query?.order_id) {
         delete newDealParams.id;
       }
-      if (to.path !== "/addToDeal" && from.path == "/addToDeal")
+      if (
+        to.path !== "/addToDeal" &&
+        from.path == "/addToDeal" &&
+        someChange.value
+      )
         addNotification(
           1,
           "Сохранение заказа ...",
@@ -49,5 +57,12 @@ export function useNewDeal() {
     await store.dispatch("updateOrder", {});
   };
 
-  return { add, newDealParams, getOrder, order, saveOrder };
+  return {
+    add,
+    newDealParams,
+    getOrder,
+    order,
+    saveOrder,
+    toggleSomeChange,
+  };
 }
