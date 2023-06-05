@@ -16,6 +16,7 @@ export function useEntitiesTabs() {
         updateName: "updateOrdersField",
         deleteName: "deleteOrdersField",
         haveStatuses: true,
+        haveSort: true,
       },
       {
         name: "Компании",
@@ -28,6 +29,7 @@ export function useEntitiesTabs() {
         addName: "addClientsCompanyField",
         updateName: "updateClientsCompanyField",
         deleteName: "deleteClientsCompanyField",
+        haveSort: true,
       },
       {
         name: "Контакты",
@@ -40,6 +42,7 @@ export function useEntitiesTabs() {
         addName: "addClientsContactsField",
         updateName: "updateClientsContactsField",
         deleteName: "deleteClientsContactsField",
+        haveSort: true,
       },
       {
         name: "Товары",

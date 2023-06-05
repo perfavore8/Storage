@@ -462,25 +462,6 @@ export default {
         transform-origin: center;
         animation: fadeOut 0.15s ease-out forwards;
       }
-      /* 1. declare transition */
-      .list-move,
-      .list-enter-active,
-      .list-leave-active {
-        transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
-      }
-
-      /* 2. declare enter from and leave to state */
-      .list-enter-from,
-      .list-leave-to {
-        opacity: 0;
-        transform: scaleY(0.01) translate(30px, 0);
-      }
-
-      /* 3. ensure leaving items are taken out of layout flow so that moving
-      animations can be calculated correctly. */
-      .list-leave-active {
-        position: absolute;
-      }
     }
     .footer {
       display: flex;
@@ -502,5 +483,18 @@ export default {
   border-color: #86b7fe;
   outline: 0;
   // box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
+}
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
+}
+.list-leave-active {
+  position: absolute;
 }
 </style>

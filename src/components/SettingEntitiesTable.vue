@@ -1,526 +1,429 @@
 <template>
   <div class="relative mb-14 mt-7">
     <table class="rows">
-      <tr class="row">
-        <th
-          class=""
-          v-if="isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort"
-        ></th>
-        <th class="item item_field title">
-          <div class="copy_fields">
-            <span>Поле</span>
-          </div>
-        </th>
-        <th class="item item_type">Тип</th>
-        <th class="item item_icon title" v-if="selectedTab.haveLeadConfig">
-          <div class="w-min mx-auto">
-            <div
-              class="flex items-center relative"
-              @mouseenter="toolTips.visibility = true"
-              @mouseleave="toolTips.visibility = false"
-            >
-              <span class="material-icons-outlined opacity-50">
-                visibility
-              </span>
-              <div
-                class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
-                v-if="toolTips.visibility"
-              >
-                Видимость в сделке
-              </div>
+      <transition-group name="list" mode="out-in">
+        <tr class="row">
+          <th
+            class="item_sort"
+            v-if="
+              isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort
+            "
+          ></th>
+          <th class="item item_field title">
+            <div class="copy_fields">
+              <span>Поле</span>
             </div>
-          </div>
-        </th>
-        <th class="item item_icon title" v-if="selectedTab.haveLeadConfig">
-          <div class="w-min mx-auto">
-            <div
-              class="flex items-center relative"
-              @mouseenter="toolTips.edit = true"
-              @mouseleave="toolTips.edit = false"
-            >
-              <span class="material-icons-outlined opacity-50"> edit </span>
-              <div
-                class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
-                v-if="toolTips.edit"
-              >
-                Редактирование в сделке
-              </div>
-            </div>
-          </div>
-        </th>
-        <th class="item item_icon title" v-if="selectedTab.haveLeadConfig">
-          <div class="w-min mx-auto">
-            <div
-              class="flex items-center relative"
-              @mouseenter="toolTips.title = true"
-              @mouseleave="toolTips.title = false"
-            >
-              <span class="material-icons-outlined opacity-50"> title </span>
-              <div
-                class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
-                v-if="toolTips.title"
-              >
-                Заголовок товара в сделке
-              </div>
-            </div>
-          </div>
-        </th>
-        <template v-if="isTest">
+          </th>
+          <th class="item item_type">Тип</th>
           <th class="item item_icon title" v-if="selectedTab.haveLeadConfig">
             <div class="w-min mx-auto">
               <div
                 class="flex items-center relative"
-                @mouseenter="toolTips.content_copy = true"
-                @mouseleave="toolTips.content_copy = false"
+                @mouseenter="toolTips.visibility = true"
+                @mouseleave="toolTips.visibility = false"
               >
                 <span class="material-icons-outlined opacity-50">
-                  content_copy
+                  visibility
                 </span>
                 <div
                   class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
-                  v-if="toolTips.content_copy"
+                  v-if="toolTips.visibility"
                 >
-                  Дублировать в новые партии
+                  Видимость в сделке
                 </div>
               </div>
             </div>
           </th>
-        </template>
-        <template v-if="isTest">
-          <th
-            class="item item_icon title"
-            v-if="selectedTab.haveFieldsProperties"
-          >
+          <th class="item item_icon title" v-if="selectedTab.haveLeadConfig">
             <div class="w-min mx-auto">
               <div
                 class="flex items-center relative"
-                @mouseenter="toolTips.categories = true"
-                @mouseleave="toolTips.categories = false"
+                @mouseenter="toolTips.edit = true"
+                @mouseleave="toolTips.edit = false"
               >
-                <span class="material-icons-round opacity-50"> segment </span>
+                <span class="material-icons-outlined opacity-50"> edit </span>
                 <div
                   class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
-                  v-if="toolTips.categories"
+                  v-if="toolTips.edit"
                 >
-                  Привязка к категориям
+                  Редактирование в сделке
                 </div>
               </div>
             </div>
           </th>
-        </template>
-        <th class="item">
-          <button
-            class="btn btn_save_all btn_yellow"
-            v-if="showUpdateAllFieldsBtn"
-            @click="updateAllFields()"
-          >
-            Сохранить все поля
-          </button>
-        </th>
-      </tr>
-      <template v-if="selectedTab.value === 'Orders'">
+          <th class="item item_icon title" v-if="selectedTab.haveLeadConfig">
+            <div class="w-min mx-auto">
+              <div
+                class="flex items-center relative"
+                @mouseenter="toolTips.title = true"
+                @mouseleave="toolTips.title = false"
+              >
+                <span class="material-icons-outlined opacity-50"> title </span>
+                <div
+                  class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                  v-if="toolTips.title"
+                >
+                  Заголовок товара в сделке
+                </div>
+              </div>
+            </div>
+          </th>
+          <template v-if="isTest">
+            <th class="item item_icon title" v-if="selectedTab.haveLeadConfig">
+              <div class="w-min mx-auto">
+                <div
+                  class="flex items-center relative"
+                  @mouseenter="toolTips.content_copy = true"
+                  @mouseleave="toolTips.content_copy = false"
+                >
+                  <span class="material-icons-outlined opacity-50">
+                    content_copy
+                  </span>
+                  <div
+                    class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                    v-if="toolTips.content_copy"
+                  >
+                    Дублировать в новые партии
+                  </div>
+                </div>
+              </div>
+            </th>
+          </template>
+          <template v-if="isTest">
+            <th
+              class="item item_icon title"
+              v-if="selectedTab.haveFieldsProperties"
+            >
+              <div class="w-min mx-auto">
+                <div
+                  class="flex items-center relative"
+                  @mouseenter="toolTips.categories = true"
+                  @mouseleave="toolTips.categories = false"
+                >
+                  <span class="material-icons-round opacity-50"> segment </span>
+                  <div
+                    class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                    v-if="toolTips.categories"
+                  >
+                    Привязка к категориям
+                  </div>
+                </div>
+              </div>
+            </th>
+          </template>
+          <th class="item">
+            <button
+              class="btn btn_save_all btn_yellow"
+              v-if="showUpdateAllFieldsBtn"
+              @click="updateAllFields()"
+            >
+              Сохранить все поля
+            </button>
+          </th>
+        </tr>
         <tr
           class="row"
           :class="{ load: is_loading }"
-          v-for="{ statuses, statusesIsChange, saveStatuses } in statusesList"
-          :key="statuses.id"
+          v-for="(row, idx) in copy_fields"
+          :key="row.id"
+          v-show="
+            selectedFieldProperty?.id === row.category_id ||
+            !selectedTab.haveFieldsProperties
+          "
         >
+          <th
+            class="p-[10px] border border-[#c9c9c9] w-min"
+            v-if="
+              isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort
+            "
+          >
+            <div class="flex flex-row">
+              <button
+                class="bar_item_icon bar_item_icon_up"
+                :disabled="idx === 0"
+                @click="changeTitleSort(idx, true)"
+              />
+              <button
+                class="bar_item_icon bar_item_icon_down"
+                :disabled="idx === copy_fields.length - 1"
+                @click="changeTitleSort(idx, false)"
+              />
+            </div>
+          </th>
           <td class="item">
+            <span v-if="row.is_system">{{ row.name }}</span>
             <input
+              v-else
               type="text"
               class="input new_item_input"
-              v-model="statuses.name"
+              :class="{ error: row.nameError }"
+              v-model="row.name"
+              @keyup.enter="update_field(idx, ['name'])"
+              @input="row.changeName == true"
             />
           </td>
           <td class="item selectors">
-            <div class="type_selector_options">
-              <transition-group name="list" mode="out-in">
-                <div
-                  class="type_selector_option gap-2"
-                  v-for="(stat, idx) in statuses.list"
-                  :key="stat.value"
-                >
-                  <div class="grid grid-cols-2 min-w-[40px]">
-                    <template v-if="stat.sort < 100">
-                      <button
-                        class="up leading-[1] h-min flex justify-center items-center w-fit"
-                        @click="statuses.sort(idx, 'up')"
-                        v-if="idx !== 0"
-                      >
-                        <span class="material-icons-outlined text-[#757575]">
-                          expand_less
-                        </span>
-                      </button>
-                      <div v-else></div>
-                      <button
-                        class="down leading-[1] h-min flex justify-center items-center w-fit"
-                        @click="statuses.sort(idx, 'down')"
-                        v-if="statuses.list[idx + 1].sort < 100"
-                      >
-                        <span
-                          class="material-icons-outlined rotate-180 text-[#757575]"
-                        >
-                          expand_less
-                        </span>
-                      </button>
-                      <div v-else></div>
-                    </template>
-                  </div>
-                  <input type="text" class="input" v-model="stat.name" />
-                  <input
-                    type="checkbox"
-                    class="checkbox"
-                    :id="idx + 'nb1' + statuses.id"
-                    :disabled="stat.sort > 99"
-                    :checked="statuses.reservation.includes(stat.value)"
-                    @change="statuses.changeVal('reservation', stat.value)"
-                  />
-                  <label
-                    :for="idx + 'nb1' + statuses.id"
-                    title="Резервация"
-                  ></label>
-                  <input
-                    type="checkbox"
-                    class="checkbox"
-                    :id="idx + 'nb2' + statuses.id"
-                    :disabled="statuses.resIdx > idx - 1"
-                    :checked="statuses.write_off === stat.value"
-                    @change="statuses.changeVal('write_off', stat.value)"
-                  />
-                  <label
-                    :for="idx + 'nb2' + statuses.id"
-                    title="Списание"
-                  ></label>
-                  <button
-                    class="del_button"
-                    :style="{
-                      visibility: stat.is_system ? 'hidden' : 'visible',
-                    }"
-                    @click="statuses.del(stat.id)"
-                  ></button>
-                </div>
-              </transition-group>
-              <button @click="statuses.add()" class="add_button"></button>
+            <SelectorVue
+              :options_props="types"
+              @select="option_select_type"
+              :selected_option="search_type(row.type)"
+              :disabled="true"
+              :idx="idx"
+            />
+            <div
+              class="type_selector_options"
+              v-if="row.type == 5 || row.type == 6"
+            >
+              <div
+                class="type_selector_option"
+                v-for="(option, i) in row.data"
+                :key="i"
+              >
+                <input
+                  type="text"
+                  class="input"
+                  v-model="row.data[i]"
+                  @change="row.changeData == true"
+                />
+                <button
+                  class="del_button"
+                  @click="
+                    remove_selector_option(idx, i), row.changeData == true
+                  "
+                ></button>
+              </div>
+              <button
+                @click="add_selector_option(idx), row.changeData == true"
+                class="add_button"
+              ></button>
             </div>
           </td>
+          <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="idx + 'nb'"
+              :disabled="row.lead_config.visible.disabled"
+              v-model="row.lead_config.visible.value"
+              @change="row.changeLeadConfig == true"
+            />
+            <label :for="idx + 'nb'"></label>
+          </td>
+          <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="idx + 'n'"
+              :disabled="row.lead_config.editable.disabled"
+              v-model="row.lead_config.editable.value"
+              @change="row.changeLeadConfig == true"
+            />
+            <label :for="idx + 'n'"></label>
+          </td>
+          <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="idx + 'nt'"
+              :disabled="row.lead_config.title_visible.disabled"
+              v-model="row.lead_config.title_visible.value"
+              @change="row.changeLeadConfig == true"
+            />
+            <label :for="idx + 'nt'"></label>
+          </td>
+          <template v-if="isTest">
+            <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="idx + 'nd'"
+                :disabled="row.config.double_in_new_bath.disabled"
+                v-model="row.config.double_in_new_bath.value"
+                @change="row.changeConfig == true"
+              />
+              <label :for="idx + 'nd'"></label>
+            </td>
+          </template>
+          <template v-if="isTest">
+            <td
+              class="box item text-lg relative"
+              v-if="selectedTab.haveFieldsProperties"
+              :ref="
+                (el) =>
+                  categories.selected === row ? (categories.ref = el) : null
+              "
+            >
+              <button
+                id="catBtn"
+                @click="categories.selected = row"
+                class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
+              >
+                <span
+                  id="catBtn"
+                  class="material-icons-round opacity-70"
+                  style="font-size: 20px"
+                >
+                  open_in_full
+                </span>
+              </button>
+            </td>
+          </template>
           <td class="item del_sell">
             <button
-              @click="addStatuses()"
-              v-if="!statuses.isNew"
-              class="add_new_button"
-              style="position: static; width: 18px; height: 18px"
-            ></button>
-            <button
-              v-else
               class="del_btn"
-              @click="removeStatuses(statuses.id)"
+              v-show="!row.is_system"
+              @click="delete_field(row.id)"
             />
             <button
               class="btn btn_save btn_blue"
-              v-if="statusesIsChange"
-              @click="saveStatuses()"
+              v-if="
+                row.changeName ||
+                row.changeData ||
+                row.changeLeadConfig ||
+                row.changeConfig
+              "
+              @click="
+                update_field(idx, [
+                  row.changeName ? 'name' : null,
+                  row.changeData ? 'data' : null,
+                  row.changeLeadConfig ? 'lead_config' : null,
+                  row.changeConfig ? 'config' : null,
+                ])
+              "
             >
               Сохранить
             </button>
           </td>
         </tr>
-      </template>
-      <tr
-        class="row"
-        :class="{ load: is_loading }"
-        v-for="(row, idx) in copy_fields"
-        :key="row.id"
-        v-show="
-          selectedFieldProperty?.id === row.category_id ||
-          !selectedTab.haveFieldsProperties
-        "
-      >
-        <th
-          class="p-[10px] border border-[#c9c9c9]"
-          v-if="isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort"
-        >
-          <div class="flex flex-row">
-            <button
-              class="bar_item_icon bar_item_icon_up"
-              :disabled="idx === 0"
-              @click="changeTitleSort(idx, true)"
-            />
-            <button
-              class="bar_item_icon bar_item_icon_down"
-              :disabled="idx === copy_fields.length - 1"
-              @click="changeTitleSort(idx, false)"
-            />
-          </div>
-        </th>
-        <td class="item">
-          <span v-if="row.is_system">{{ row.name }}</span>
-          <input
-            v-else
-            type="text"
-            class="input new_item_input"
-            :class="{ error: row.nameError }"
-            v-model="row.name"
-            @keyup.enter="update_field(idx, ['name'])"
-            @input="row.changeName == true"
-          />
-        </td>
-        <td class="item selectors">
-          <SelectorVue
-            :options_props="types"
-            @select="option_select_type"
-            :selected_option="search_type(row.type)"
-            :disabled="true"
-            :idx="idx"
-          />
-          <div
-            class="type_selector_options"
-            v-if="row.type == 5 || row.type == 6"
-          >
-            <div
-              class="type_selector_option"
-              v-for="(option, i) in row.data"
-              :key="i"
-            >
-              <input
-                type="text"
-                class="input"
-                v-model="row.data[i]"
-                @change="row.changeData == true"
-              />
-              <button
-                class="del_button"
-                @click="remove_selector_option(idx, i), row.changeData == true"
-              ></button>
-            </div>
-            <button
-              @click="add_selector_option(idx), row.changeData == true"
-              class="add_button"
-            ></button>
-          </div>
-        </td>
-        <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
-          <input
-            type="checkbox"
-            class="checkbox"
-            :id="idx + 'nb'"
-            :disabled="row.lead_config.visible.disabled"
-            v-model="row.lead_config.visible.value"
-            @change="row.changeLeadConfig == true"
-          />
-          <label :for="idx + 'nb'"></label>
-        </td>
-        <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
-          <input
-            type="checkbox"
-            class="checkbox"
-            :id="idx + 'n'"
-            :disabled="row.lead_config.editable.disabled"
-            v-model="row.lead_config.editable.value"
-            @change="row.changeLeadConfig == true"
-          />
-          <label :for="idx + 'n'"></label>
-        </td>
-        <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
-          <input
-            type="checkbox"
-            class="checkbox"
-            :id="idx + 'nt'"
-            :disabled="row.lead_config.title_visible.disabled"
-            v-model="row.lead_config.title_visible.value"
-            @change="row.changeLeadConfig == true"
-          />
-          <label :for="idx + 'nt'"></label>
-        </td>
-        <template v-if="isTest">
-          <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
-            <input
-              type="checkbox"
-              class="checkbox"
-              :id="idx + 'nd'"
-              :disabled="row.config.double_in_new_bath.disabled"
-              v-model="row.config.double_in_new_bath.value"
-              @change="row.changeConfig == true"
-            />
-            <label :for="idx + 'nd'"></label>
-          </td>
-        </template>
-        <template v-if="isTest">
-          <td
-            class="box item text-lg relative"
-            v-if="selectedTab.haveFieldsProperties"
-            :ref="
-              (el) =>
-                categories.selected === row ? (categories.ref = el) : null
-            "
-          >
-            <button
-              id="catBtn"
-              @click="categories.selected = row"
-              class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
-            >
-              <span
-                id="catBtn"
-                class="material-icons-round opacity-70"
-                style="font-size: 20px"
-              >
-                open_in_full
-              </span>
-            </button>
-          </td>
-        </template>
-        <td class="item del_sell">
-          <button
-            class="del_btn"
-            v-show="!row.is_system"
-            @click="delete_field(row.id)"
-          />
-          <button
-            class="btn btn_save btn_blue"
-            v-if="
-              row.changeName ||
-              row.changeData ||
-              row.changeLeadConfig ||
-              row.changeConfig
-            "
-            @click="
-              update_field(idx, [
-                row.changeName ? 'name' : null,
-                row.changeData ? 'data' : null,
-                row.changeLeadConfig ? 'lead_config' : null,
-                row.changeConfig ? 'config' : null,
-              ])
-            "
-          >
-            Сохранить
-          </button>
-        </td>
-      </tr>
-      <!-- ///
+        <!-- ///
               //////
               //////
               //////
               //////
               /////
               /// -->
-      <tr class="row" v-for="(row, idx) in new_fields" :key="row.id">
-        <th
-          class="p-[10px] border border-[#c9c9c9]"
-          v-if="isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort"
-        ></th>
-        <td class="item">
-          <input
-            type="text"
-            class="input new_item_input"
-            :class="{ error: row.nameError }"
-            v-model="row.name"
-            @keyup.enter="add_new(row, idx)"
-          />
-        </td>
-        <td class="item selectors">
-          <SelectorVue
-            :options_props="types"
-            @select="option_select_new_field_type"
-            :selected_option="search_type(row.type)"
-            :idx="idx"
-          />
-          <div
-            class="type_selector_options"
-            v-if="new_fields[idx].type == 5 || new_fields[idx].type == 6"
-          >
+        <tr class="row" v-for="(row, idx) in new_fields" :key="row.id">
+          <th
+            class="p-[10px] border border-[#c9c9c9]"
+            v-if="
+              isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort
+            "
+          ></th>
+          <td class="item">
+            <input
+              type="text"
+              class="input new_item_input"
+              :class="{ error: row.nameError }"
+              v-model="row.name"
+              @keyup.enter="add_new(row, idx)"
+            />
+          </td>
+          <td class="item selectors">
+            <SelectorVue
+              :options_props="types"
+              @select="option_select_new_field_type"
+              :selected_option="search_type(row.type)"
+              :idx="idx"
+            />
             <div
-              class="type_selector_option"
-              v-for="(option, i) in row.data"
-              :key="i"
+              class="type_selector_options"
+              v-if="new_fields[idx].type == 5 || new_fields[idx].type == 6"
             >
-              <input type="text" class="input" v-model="row.data[i]" />
+              <div
+                class="type_selector_option"
+                v-for="(option, i) in row.data"
+                :key="i"
+              >
+                <input type="text" class="input" v-model="row.data[i]" />
+                <button
+                  class="del_button"
+                  @click="remove_new_fields_selector_option(idx, i)"
+                ></button>
+              </div>
               <button
-                class="del_button"
-                @click="remove_new_fields_selector_option(idx, i)"
+                @click="add_new_fields_selector_option(idx)"
+                class="add_button"
               ></button>
             </div>
-            <button
-              @click="add_new_fields_selector_option(idx)"
-              class="add_button"
-            ></button>
-          </div>
-        </td>
-        <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
-          <input
-            type="checkbox"
-            class="checkbox"
-            :id="idx + 'nb1'"
-            :disabled="new_fields[idx].disabled?.visible.value"
-            v-model="new_fields[idx].lead_config.visible.value"
-          />
-          <label :for="idx + 'nb1'"></label>
-        </td>
-        <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
-          <input
-            type="checkbox"
-            class="checkbox"
-            :id="idx + 'n1'"
-            :disabled="new_fields[idx].disabled?.editable.value"
-            v-model="new_fields[idx].lead_config.editable.value"
-          />
-          <label :for="idx + 'n1'"></label>
-        </td>
-        <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
-          <input
-            type="checkbox"
-            class="checkbox"
-            :id="idx + 'n2'"
-            :disabled="new_fields[idx].lead_config.title_visible.disabled"
-            v-model="new_fields[idx].lead_config.title_visible.value"
-          />
-          <label :for="idx + 'n2'"></label>
-        </td>
-        <template v-if="isTest">
+          </td>
           <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
             <input
               type="checkbox"
               class="checkbox"
-              :id="idx + 'n3'"
-              :disabled="new_fields[idx].config.double_in_new_bath.disabled"
-              v-model="new_fields[idx].config.double_in_new_bath.value"
+              :id="idx + 'nb1'"
+              :disabled="new_fields[idx].disabled?.visible.value"
+              v-model="new_fields[idx].lead_config.visible.value"
             />
-            <label :for="idx + 'n3'"></label>
+            <label :for="idx + 'nb1'"></label>
           </td>
-        </template>
-        <template v-if="isTest">
-          <td
-            class="box item text-lg relative"
-            v-if="selectedTab.haveFieldsProperties"
-            :ref="
-              (el) =>
-                categories.selected === row ? (categories.ref = el) : null
-            "
-          >
-            <button
-              id="catBtn"
-              @click="categories.selected = row"
-              class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
+          <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="idx + 'n1'"
+              :disabled="new_fields[idx].disabled?.editable.value"
+              v-model="new_fields[idx].lead_config.editable.value"
+            />
+            <label :for="idx + 'n1'"></label>
+          </td>
+          <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
+            <input
+              type="checkbox"
+              class="checkbox"
+              :id="idx + 'n2'"
+              :disabled="new_fields[idx].lead_config.title_visible.disabled"
+              v-model="new_fields[idx].lead_config.title_visible.value"
+            />
+            <label :for="idx + 'n2'"></label>
+          </td>
+          <template v-if="isTest">
+            <td class="box item text-lg" v-if="selectedTab.haveLeadConfig">
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="idx + 'n3'"
+                :disabled="new_fields[idx].config.double_in_new_bath.disabled"
+                v-model="new_fields[idx].config.double_in_new_bath.value"
+              />
+              <label :for="idx + 'n3'"></label>
+            </td>
+          </template>
+          <template v-if="isTest">
+            <td
+              class="box item text-lg relative"
+              v-if="selectedTab.haveFieldsProperties"
+              :ref="
+                (el) =>
+                  categories.selected === row ? (categories.ref = el) : null
+              "
             >
-              <span
+              <button
                 id="catBtn"
-                class="material-icons-round opacity-70"
-                style="font-size: 20px"
+                @click="categories.selected = row"
+                class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
               >
-                open_in_full
-              </span>
+                <span
+                  id="catBtn"
+                  class="material-icons-round opacity-70"
+                  style="font-size: 20px"
+                >
+                  open_in_full
+                </span>
+              </button>
+            </td>
+          </template>
+          <td class="item del_sell">
+            <button class="del_btn" @click="delete_new_field(idx)"></button>
+            <button
+              class="btn btn_save btn_blue"
+              v-if="row.name != ''"
+              @click="add_new(row, idx)"
+            >
+              Сохранить
             </button>
           </td>
-        </template>
-        <td class="item del_sell">
-          <button class="del_btn" @click="delete_new_field(idx)"></button>
-          <button
-            class="btn btn_save btn_blue"
-            v-if="row.name != ''"
-            @click="add_new(row, idx)"
-          >
-            Сохранить
-          </button>
-        </td>
-      </tr>
+        </tr>
+      </transition-group>
     </table>
     <button @click="add_new_field()" class="add_new_button"></button>
   </div>
@@ -840,18 +743,19 @@ export default {
       new_fields[idx].type = option.value;
     };
     const changeTitleSort = (idx, isUp) => {
+      const currentSort = copy_fields[idx].sort;
       if (isUp) {
-        copy_fields[idx].lead_config.title_sort -= 1;
-        copy_fields[idx - 1].lead_config.title_sort += 1;
+        copy_fields[idx].sort = copy_fields[idx - 1].sort;
+        copy_fields[idx - 1].sort = currentSort;
       } else {
-        copy_fields[idx].lead_config.title_sort += 1;
-        copy_fields[idx + 1].lead_config.title_sort -= 1;
+        copy_fields[idx].sort = copy_fields[idx + 1].sort;
+        copy_fields[idx + 1].sort = currentSort;
       }
-      update_field(idx, ["lead_config"]);
+      update_field(idx, ["sort"]);
       if (isUp) {
-        update_field(idx - 1, ["lead_config"]);
+        update_field(idx - 1, ["sort"]);
       } else {
-        update_field(idx + 1, ["lead_config"]);
+        update_field(idx + 1, ["sort"]);
       }
       get_fields();
     };
@@ -993,6 +897,9 @@ export default {
         box-shadow: 0 0 0 4px rgba(219, 54, 71, 0.25);
       }
     }
+    .item_sort {
+      width: 0.1%;
+    }
     .item_field {
       width: 30%;
       text-align: center;
@@ -1113,7 +1020,7 @@ export default {
   }
 }
 .bar_item_icon {
-  margin: 0 auto;
+  // margin: 0 auto;
   height: 16px;
   width: 16px;
   background-color: transparent;
@@ -1185,5 +1092,20 @@ export default {
 .out {
   transform-origin: center;
   animation: fadeOut 0.15s ease-out forwards;
+}
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  transform-origin: left;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
+}
+.list-leave-active {
+  position: absolute;
 }
 </style>
