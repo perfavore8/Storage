@@ -21,16 +21,33 @@
             @toggleCategories="toggleCategories"
           />
         </template>
+        <template v-else-if="showStatuses">
+          <SettingEntitiesStatuses
+            v-if="tabs.selected.haveStatuses"
+            @toggleStatuses="toggleStatuses"
+          />
+        </template>
         <template v-else>
           <SettingEntitiesFieldsProperties
             v-if="tabs.selected.haveFieldsProperties"
             @toggleCategories="toggleCategories"
           />
+          <div
+            v-if="tabs.selected.haveStatuses && !showStatuses"
+            class="w-full flex justify-end"
+          >
+            <button
+              class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
+              @click="toggleStatuses(true)"
+            >
+              Статусы
+            </button>
+          </div>
+          <SettingEntitiesTable
+            :selectedTab="tabs.selected"
+            :key="tabs.selected.value"
+          />
         </template>
-        <SettingEntitiesTable
-          :selectedTab="tabs.selected"
-          :key="tabs.selected.value"
-        />
       </div>
       <div class="footer">
         <BtnsSaveClose @save="save" @close="close" :show_save="false">
@@ -49,6 +66,7 @@ import SettingEntitiesFieldsProperties from "./SettingEntitiesFieldsProperties.v
 import store from "@/store";
 import { useEntitiesTabs } from "@/composables/entitiesTabs";
 import SettingEntitiesCategories from "./SettingEntitiesCategories.vue";
+import SettingEntitiesStatuses from "./SettingEntitiesStatuses.vue";
 import { useToggle } from "@vueuse/core";
 export default {
   components: {
@@ -57,6 +75,7 @@ export default {
     SettingEntitiesTable,
     SettingEntitiesFieldsProperties,
     SettingEntitiesCategories,
+    SettingEntitiesStatuses,
   },
   setup() {
     const { tabs } = useEntitiesTabs();
@@ -70,8 +89,17 @@ export default {
     };
 
     const [showCategories, toggleCategories] = useToggle(false);
+    const [showStatuses, toggleStatuses] = useToggle(false);
 
-    return { close, save, tabs, showCategories, toggleCategories };
+    return {
+      close,
+      save,
+      tabs,
+      showCategories,
+      toggleCategories,
+      showStatuses,
+      toggleStatuses,
+    };
   },
 };
 </script>

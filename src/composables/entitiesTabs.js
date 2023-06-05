@@ -15,6 +15,7 @@ export function useEntitiesTabs() {
         addName: "addOrdersField",
         updateName: "updateOrdersField",
         deleteName: "deleteOrdersField",
+        haveStatuses: true,
       },
       {
         name: "Компании",

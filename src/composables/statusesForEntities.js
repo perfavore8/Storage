@@ -51,6 +51,24 @@ export function useStatusesForEntities(stat, setStatuses) {
         }
       }
     },
+    sort: function (idx, sort) {
+      const prev = idx - 1;
+      const next = idx + 1;
+      const curSort = this.list[idx].sort;
+      const curItem = this.list[idx];
+      if (sort === "up" && this.list[prev].sort !== undefined) {
+        this.list[idx].sort = this.list[prev].sort;
+        this.list[prev].sort = curSort;
+        this.list[idx] = this.list[prev];
+        this.list[prev] = curItem;
+      }
+      if (sort === "down" && this.list[next].sort < 100) {
+        this.list[idx].sort = this.list[next].sort;
+        this.list[next].sort = curSort;
+        this.list[idx] = this.list[next];
+        this.list[next] = curItem;
+      }
+    },
   });
 
   statuses.reservation.push(

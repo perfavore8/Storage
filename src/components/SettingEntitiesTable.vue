@@ -126,9 +126,7 @@
           :key="statuses.id"
         >
           <td class="item">
-            <span v-if="!statuses.isNew">{{ statuses.name }}</span>
             <input
-              v-else
               type="text"
               class="input new_item_input"
               v-model="statuses.name"
@@ -136,42 +134,72 @@
           </td>
           <td class="item selectors">
             <div class="type_selector_options">
-              <div
-                class="type_selector_option gap-2"
-                v-for="(stat, idx) in statuses.list"
-                :key="stat.value"
-              >
-                <input type="text" class="input" v-model="stat.name" />
-                <input
-                  type="checkbox"
-                  class="checkbox"
-                  :id="idx + 'nb1' + statuses.id"
-                  :disabled="stat.sort > 99"
-                  :checked="statuses.reservation.includes(stat.value)"
-                  @change="statuses.changeVal('reservation', stat.value)"
-                />
-                <label
-                  :for="idx + 'nb1' + statuses.id"
-                  title="Резервация"
-                ></label>
-                <input
-                  type="checkbox"
-                  class="checkbox"
-                  :id="idx + 'nb2' + statuses.id"
-                  :disabled="statuses.resIdx > idx - 1"
-                  :checked="statuses.write_off === stat.value"
-                  @change="statuses.changeVal('write_off', stat.value)"
-                />
-                <label
-                  :for="idx + 'nb2' + statuses.id"
-                  title="Списание"
-                ></label>
-                <button
-                  class="del_button"
-                  :style="{ visibility: stat.is_system ? 'hidden' : 'visible' }"
-                  @click="statuses.del(stat.id)"
-                ></button>
-              </div>
+              <transition-group name="list" mode="out-in">
+                <div
+                  class="type_selector_option gap-2"
+                  v-for="(stat, idx) in statuses.list"
+                  :key="stat.value"
+                >
+                  <div class="grid grid-cols-2 min-w-[40px]">
+                    <template v-if="stat.sort < 100">
+                      <button
+                        class="up leading-[1] h-min flex justify-center items-center w-fit"
+                        @click="statuses.sort(idx, 'up')"
+                        v-if="idx !== 0"
+                      >
+                        <span class="material-icons-outlined text-[#757575]">
+                          expand_less
+                        </span>
+                      </button>
+                      <div v-else></div>
+                      <button
+                        class="down leading-[1] h-min flex justify-center items-center w-fit"
+                        @click="statuses.sort(idx, 'down')"
+                        v-if="statuses.list[idx + 1].sort < 100"
+                      >
+                        <span
+                          class="material-icons-outlined rotate-180 text-[#757575]"
+                        >
+                          expand_less
+                        </span>
+                      </button>
+                      <div v-else></div>
+                    </template>
+                  </div>
+                  <input type="text" class="input" v-model="stat.name" />
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    :id="idx + 'nb1' + statuses.id"
+                    :disabled="stat.sort > 99"
+                    :checked="statuses.reservation.includes(stat.value)"
+                    @change="statuses.changeVal('reservation', stat.value)"
+                  />
+                  <label
+                    :for="idx + 'nb1' + statuses.id"
+                    title="Резервация"
+                  ></label>
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    :id="idx + 'nb2' + statuses.id"
+                    :disabled="statuses.resIdx > idx - 1"
+                    :checked="statuses.write_off === stat.value"
+                    @change="statuses.changeVal('write_off', stat.value)"
+                  />
+                  <label
+                    :for="idx + 'nb2' + statuses.id"
+                    title="Списание"
+                  ></label>
+                  <button
+                    class="del_button"
+                    :style="{
+                      visibility: stat.is_system ? 'hidden' : 'visible',
+                    }"
+                    @click="statuses.del(stat.id)"
+                  ></button>
+                </div>
+              </transition-group>
               <button @click="statuses.add()" class="add_button"></button>
             </div>
           </td>
@@ -527,7 +555,6 @@ import SelectorVue from "./SelectorVue.vue";
 import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsProperties";
 import { onClickOutside } from "@vueuse/core";
 import AppMultiSelect from "./AppMultiSelect.vue";
-import { useStatusesForEntities } from "@/composables/statusesForEntities";
 export default {
   components: { SelectorVue, AppMultiSelect },
   props: { selectedTab: Object },
@@ -554,7 +581,6 @@ export default {
 
     onMounted(async () => {
       changeSelectedTab();
-      setStatuses();
     });
 
     const changeSelectedTab = async () => {
@@ -843,24 +869,6 @@ export default {
       new_fields[idx].data.splice(i, 1);
     };
 
-    const setStatuses = async () => {
-      const stats = await store.dispatch("ordersPipelinesList", {});
-      stats.forEach((stat) => stat.statuses.map((s) => (s.value = s.id)));
-      statusesList.length = 0;
-      stats.forEach((stat) =>
-        statusesList.push(useStatusesForEntities(stat, setStatuses))
-      );
-    };
-    const statusesList = reactive([]);
-    const addStatuses = async () => {
-      await store.dispatch("ordersPipelinesAdd", { name: "Статус" });
-      setStatuses();
-    };
-    const removeStatuses = async (id) => {
-      await store.dispatch("ordersPipelinesDelete", { id: id });
-      setStatuses();
-    };
-
     const categories = reactive({
       selected: {},
       ref: null,
@@ -924,9 +932,6 @@ export default {
       categories,
       modalRef,
       animationStarted,
-      statusesList,
-      addStatuses,
-      removeStatuses,
     };
   },
 };
