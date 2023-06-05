@@ -515,7 +515,7 @@ export default {
   gap: 8px;
   .img_wrapper {
     position: relative;
-    z-index: -1;
+    // z-index: -1;
   }
 }
 .bar_row {
