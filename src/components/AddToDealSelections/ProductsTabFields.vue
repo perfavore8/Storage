@@ -88,13 +88,7 @@ export default {
               : props.total?.user_name)
         )
       ),
-      list: [
-        { name: "Никита", value: "Никита" },
-        { name: "Юзер 1", value: 1 },
-        { name: "Юзер 2", value: 2 },
-        { name: "Юзер 3", value: 3 },
-        { name: "Юзер 4", value: 4 },
-      ],
+      list: [],
       getList: async function () {
         const res = await store.dispatch("getUsersList");
         this.list = [];
