@@ -49,6 +49,7 @@
 import { computed, reactive } from "vue";
 import SelectorVue from "../SelectorVue.vue";
 import { useNewDeal } from "@/composables/newDeal";
+import store from "@/store";
 export default {
   components: { SelectorVue },
   props: { total: Object },
@@ -94,10 +95,16 @@ export default {
         { name: "Юзер 3", value: 3 },
         { name: "Юзер 4", value: 4 },
       ],
+      getList: async function () {
+        const res = await store.dispatch("getUsersList");
+        this.list = [];
+        res.forEach((user) => this.list.push({ ...user, value: user.name }));
+      },
       select: function (option) {
         order.fields.user_name = option.value;
       },
     });
+    user_name.getList();
 
     return { list, selector, order, user_name };
   },

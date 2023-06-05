@@ -236,5 +236,17 @@ export default {
         },
       });
     },
+
+    async getUsersList() {
+      const url = BaseURL + "account/users";
+      const res = await fetch(url, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+
+      return json;
+    },
   },
 };
