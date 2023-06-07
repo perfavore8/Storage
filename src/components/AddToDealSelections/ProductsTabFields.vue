@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { computed, reactive } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import SelectorVue from "../SelectorVue.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import store from "@/store";
@@ -59,7 +59,7 @@ export default {
   components: { SelectorVue },
   props: { total: Object },
   setup(props) {
-    const { order, toggleSomeChange } = useNewDeal();
+    const { order, toggleSomeChange, isOrederLoaded } = useNewDeal();
 
     const list = reactive([
       { label: "Сумма заказа:", value: "price" },
@@ -72,16 +72,47 @@ export default {
       selected: computed(() =>
         selector.list.find((el) => el.value == order.status)
       ),
-      list: [
-        { name: "Открытый", value: 0 },
-        { name: "Успешный", value: 1 },
-        { name: "Отменен", value: 2 },
-        { name: "Удален", value: 3 },
-      ],
+      list: [],
+      getStatuses: async function () {
+        const stats = await store.dispatch("ordersPipelinesList", {});
+        const list = [];
+        stats.map((stat) => {
+          stat.value = "optgroup";
+          list.push(stat);
+          stat.statuses.map((s) => {
+            s.value = s.id;
+            s.optgroup = true;
+            list.push(s);
+          });
+        });
+        this.list.length = 0;
+        this.list = list;
+      },
+      setSelected: function () {
+        const catItem = this.list.find(
+          (el) => el.is_system && el.value === "optgroup"
+        );
+        const idx = this.list.indexOf(catItem);
+        order.status = this.list[idx + 1].id;
+      },
+      checkSelStat: function (id) {
+        const ids = [];
+        this.list.forEach((el) => ids.push(el.value));
+        return ids.includes(id);
+      },
       select: function (option) {
         order.status = option.value;
         toggleSomeChange(true);
       },
+    });
+
+    onMounted(async () => {
+      const prom = new Promise((resolve) =>
+        setInterval(() => (isOrederLoaded.value ? resolve() : null), 100)
+      );
+      await prom;
+      await selector.getStatuses();
+      if (!selector.checkSelStat(order.status)) selector.setSelected();
     });
 
     const user_name = reactive({

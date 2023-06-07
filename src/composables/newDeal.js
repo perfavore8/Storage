@@ -3,6 +3,7 @@ import { onMounted, ref, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "./notification";
 import { useToggle } from "@vueuse/core";
+import { computed } from "vue";
 
 const newDealParams = reactive({});
 const order = reactive({ fields: {} });
@@ -53,6 +54,8 @@ export function useNewDeal() {
     if (!order.fields.name) order.fields.name = `Заказ №${newDealParams.id}`;
   };
 
+  const isOrederLoaded = computed(() => Boolean(order.id));
+
   const saveOrder = async () => {
     await store.dispatch("updateOrder", {});
   };
@@ -64,5 +67,6 @@ export function useNewDeal() {
     order,
     saveOrder,
     toggleSomeChange,
+    isOrederLoaded,
   };
 }
