@@ -50,7 +50,9 @@
           <div class="value">
             <span v-if="item[0].split('.').length < 2">
               {{
-                item[0] == "category"
+                item[0] === "free_4_reserve" && row.fields[item[0]] == -1
+                  ? "&infin;"
+                  : item[0] == "category"
                   ? categories[row.fields[item[0]]]
                   : item[1].type == 9
                   ? !!row.fields[item[0]]
