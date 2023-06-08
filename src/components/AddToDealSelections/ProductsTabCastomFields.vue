@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col gap-4 justify-center items-center">
+  <div class="flex flex-col gap-4 justify-center items-center w-full">
     <h2 class="font-semibold text-gray-700 w-full text-start"></h2>
-    <div class="max-w-md min-w-[40%] w-fit text-gray-900">
+    <div class="max-w-md min-w-[40%] w-full text-gray-900">
       <div
         class="row"
         v-for="field in fields"

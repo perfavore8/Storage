@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col gap-4 justify-center items-center sticky top-[142px]"
+    class="flex flex-col gap-4 justify-center items-center sticky top-[142px] w-[90%] mx-auto"
   >
     <div
       class="max-w-md min-w-[40%] w-fit text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
