@@ -337,7 +337,11 @@
         </ul>
       </teleport>
       <div class="footer">
-        <btns-save-close @close="close" @save="save" />
+        <btns-save-close
+          @close="close"
+          @save="save"
+          :disabledSave="acceptBtnDisable"
+        />
       </div>
     </div>
   </div>
@@ -401,6 +405,7 @@ export default {
       fieldsForValidation: ["article", "name", "batch", "count", "cost_price"],
       fieldsServiceForValidation: ["article", "name", "cost_price"],
       try_accept: false,
+      acceptBtnDisable: false,
     };
   },
   computed: {
@@ -718,6 +723,7 @@ export default {
     },
     async save() {
       this.try_accept = true;
+      this.acceptBtnDisable = true;
       if (this.isValid) {
         const params = { products: [] };
         const paramsNew = { products: [] };
@@ -766,6 +772,7 @@ export default {
         }
         this.close();
       }
+      this.acceptBtnDisable = false;
     },
   },
 };
