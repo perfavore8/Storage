@@ -38,7 +38,7 @@
                 </label>
                 <SelectorVue
                   :options_props="[
-                    { name: 'Не выбрано', value: -1 },
+                    { name: 'Не выбрано', value: '' },
                     ...copyLeadFieldGroupsList,
                   ]"
                   @select="
@@ -71,7 +71,7 @@
                 </div>
               </div>
             </div> -->
-            <template v-if="isTest">
+            <template>
               <div class="autosync">
                 <div
                   class="list"

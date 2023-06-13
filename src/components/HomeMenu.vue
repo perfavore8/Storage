@@ -71,7 +71,7 @@
                 Синхронизировать товары amoCRM -> GoСклад
               </div>
             </a>
-            <template v-if="isTest">
+            <template>
               <a :class="{ disable: is_empty_amo_product_list }">
                 <div
                   class="modal_container"
