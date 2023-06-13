@@ -71,13 +71,13 @@
                 </div>
               </div>
             </div> -->
-            <template>
-              <div class="autosync">
-                <div
-                  class="list"
-                  v-for="autosync in autosyncValues"
-                  :key="autosync"
-                >
+            <div class="autosync">
+              <div
+                class="list"
+                v-for="autosync in autosyncValues"
+                :key="autosync"
+              >
+                <template v-if="!(autosync.test && !isTest)">
                   <h6>{{ autosync.label }}</h6>
                   <div
                     class="row"
@@ -94,9 +94,9 @@
                       {{ item.label }}
                     </label>
                   </div>
-                </div>
+                </template>
               </div>
-            </template>
+            </div>
             <div class="fields">
               <h6>
                 Настройка соответствий полей amoCRM-товаров и свойств товаров на
@@ -208,6 +208,7 @@ export default {
         {
           value: "listProductValue",
           label: "Автосинхронизация списка товаров в сделке",
+          test: true,
         },
       ],
     };
