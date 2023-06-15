@@ -77,22 +77,26 @@
                 v-for="autosync in autosyncValues"
                 :key="autosync"
               >
-                <template v-if="!(autosync.test && !isTest)">
+                <template v-if="!(autosync.test?.value && !isTest)">
                   <h6>{{ autosync.label }}</h6>
                   <div
                     class="row"
                     v-for="item in autosyncProducts"
                     :key="item.id"
                   >
-                    <input
-                      type="checkbox"
-                      class="checkbox"
-                      :id="item.id + autosync.value"
-                      v-model="item[autosync.value]"
-                    />
-                    <label :for="item.id + autosync.value">
-                      {{ item.label }}
-                    </label>
+                    <template
+                      v-if="!(autosync.test?.id === item.id && !isTest)"
+                    >
+                      <input
+                        type="checkbox"
+                        class="checkbox"
+                        :id="item.id + autosync.value"
+                        v-model="item[autosync.value]"
+                      />
+                      <label :for="item.id + autosync.value">
+                        {{ item.label }}
+                      </label>
+                    </template>
                   </div>
                 </template>
               </div>
@@ -208,7 +212,7 @@ export default {
         {
           value: "listProductValue",
           label: "Автосинхронизация списка товаров в сделке",
-          test: true,
+          test: { value: false, id: 2 },
         },
       ],
     };
