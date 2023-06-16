@@ -20,6 +20,12 @@
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 export default {
   components: { BtnsSaveClose },
+  created() {
+    document.body.style.overflowY = "hidden";
+  },
+  unmounted() {
+    document.body.style.overflowY = "auto";
+  },
   methods: {
     close() {
       this.$emit("close");
@@ -36,7 +42,7 @@ export default {
 .bg {
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1001;
