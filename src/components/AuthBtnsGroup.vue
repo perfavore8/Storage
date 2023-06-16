@@ -1,8 +1,8 @@
 <template>
   <AppRadioBtnsGroup
     :selected="notificationSystem.selected"
-    :list="notificationSystem.list"
-    @select="notificationSystem.select"
+    :list="notificationSystem.list.filter((el) => !(isSignUp && el.signUpHide))"
+    @select="(option) => notificationSystem.select(option)"
   >
     <template
       v-for="(item, idx) in notificationSystem.list"
@@ -18,42 +18,15 @@
 </template>
 
 <script>
-import { reactive } from "vue";
 import AppRadioBtnsGroup from "./AppRadioBtnsGroup.vue";
 export default {
   components: { AppRadioBtnsGroup },
+  props: {
+    notificationSystem: { type: Object, required: true },
+    isSignUp: Boolean,
+  },
   setup() {
-    const notificationSystem = reactive({
-      selected: {
-        name: "",
-        value: "telegram",
-        iconUrl:
-          "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
-      },
-      list: [
-        // {
-        //   name: "",
-        //   value: "amoCrm",
-        //   iconUrl: "https://graph.digiseller.ru/img.ashx?idd=3380359",
-        // },
-        {
-          name: "",
-          value: "telegram",
-          iconUrl:
-            "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
-        },
-        {
-          name: "",
-          value: "whatsapp",
-          iconUrl: "https://www.svgrepo.com/show/217789/whatsapp.svg",
-        },
-      ],
-      select: (option) => {
-        notificationSystem.selected = option;
-      },
-    });
-
-    return { notificationSystem };
+    return {};
   },
 };
 </script>
