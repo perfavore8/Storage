@@ -186,7 +186,7 @@ export default {
       copyProductLists: [],
       selectedAmoProductList: { name: "Не выбрано", value: -1 },
       amoLeadsGroupHide: [],
-      selectedAmoLeadsGroupHide: { name: "Не выбрано", value: -1 },
+      selectedAmoLeadsGroupHide: { name: "Не выбрано", value: "" },
       fieldsProductComparison: [
         { name: "по названию", value: 1 },
         { name: "по названию и артикулу", value: 2 },
@@ -390,7 +390,7 @@ export default {
     },
 
     fillAmoLeadsGroupHide() {
-      this.amoLeadsGroupHide.push({ name: "Не выбрано", value: -1 });
+      this.amoLeadsGroupHide.push({ name: "Не выбрано", value: "" });
       this.copyLeadFieldsList.forEach((val) => {
         this.amoLeadsGroupHide.push({ name: val.name, value: val.value });
       });
