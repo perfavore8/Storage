@@ -1,36 +1,80 @@
 <template>
   <div class="w-screen h-screen flex items-start justify-center bg-slate-50">
     <div
-      class="w-80 sm:w-96 relative overflow-hidden flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-24 border-slate-200"
+      class="w-80 sm:w-96 relative overflow-hidden flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-4 md:mt-24 border-slate-200"
     >
       <img src="@/assets/logo_transparent.png" class="w-3/4" />
       <h1 class="font-bold text-3xl text-slate-700 mb-5">Авторизация</h1>
       <template v-if="!showPin">
         <div class="flex flex-col gap-5">
-          <SelectorVue
-            :options_props="codes.list"
-            :selected_option="codes.selected"
-            @select="selectPhone"
-          />
-          <input
-            class="input"
-            type="tel"
-            :class="{
-              input_error:
-                inputErrors.trySubmit && inputErrors.phone && !isSignUp,
-            }"
-            v-model="imask.numberModel"
-            masked="false"
-            v-mask="imask.mask"
-            :placeholder="imask.mask"
-          />
+          <template v-if="notificationSystem.selected.value === 'telegram'">
+            <div class="min-h-[88px]">
+              <input
+                class="input"
+                type="text"
+                name="login"
+                v-model="form.tgLogin"
+                :class="{
+                  input_error:
+                    inputErrors.trySubmit && inputErrors.tgLogin && !isSignUp,
+                }"
+                :placeholder="'Логин в Telegram (@login)'"
+              />
+            </div>
+          </template>
+          <template v-else-if="notificationSystem.selected.value === 'email'">
+            <input
+              class="input"
+              type="email"
+              name="email"
+              v-model="form.email"
+              :class="{
+                input_error:
+                  inputErrors.trySubmit && inputErrors.email && !isSignUp,
+              }"
+              :placeholder="'Адресс почты'"
+            />
+            <input
+              class="input"
+              type="password"
+              name="password"
+              v-model="form.password"
+              :class="{
+                input_error:
+                  inputErrors.trySubmit && inputErrors.password && !isSignUp,
+              }"
+              :placeholder="'Пароль от GoСклад'"
+            />
+          </template>
+          <template v-else>
+            <SelectorVue
+              :options_props="codes.list"
+              :selected_option="codes.selected"
+              @select="selectPhone"
+            />
+            <input
+              class="input"
+              type="tel"
+              :class="{
+                input_error:
+                  inputErrors.trySubmit && inputErrors.phone && !isSignUp,
+              }"
+              v-model="form.phone"
+              masked="false"
+              v-mask="imask.mask"
+              :placeholder="imask.mask"
+            />
+          </template>
         </div>
-        <AuthBtnsGroup />
+        <AuthBtnsGroup
+          :notificationSystem="notificationSystem"
+          :isSignUp="isSignUp"
+        />
         <div class="w-1/2 flex justify-center mt-5 mb-16">
           <button class="btn btn_blue" @click="submit()">Отправить код</button>
         </div>
         <div
-          class="login flex flex-col gap-8 p-12 pt-[34px] items-center"
+          class="login flex flex-col gap-8 p-12 pt-[34px] items-center translate-y-5 sm:translate-y-10"
           ref="loginRef"
           :class="{ login_short: !isSignUp }"
           @click="toggleSignUp(true)"
@@ -41,36 +85,66 @@
               class="input"
               type="text"
               name="name"
-              v-model="name"
+              v-model="form.name"
               :class="{
                 input_error:
                   inputErrors.trySubmit && inputErrors.name && isSignUp,
               }"
               :placeholder="'Фамилия Имя'"
             />
-            <SelectorVue
-              :options_props="codes.list"
-              :selected_option="codes.selected"
-              @select="selectPhone"
-            />
-            <input
-              class="input"
-              type="tel"
-              name="phone-number"
-              :class="{
-                input_error:
-                  inputErrors.trySubmit && inputErrors.phone && isSignUp,
-              }"
-              v-model="imask.numberModel"
-              masked="false"
-              v-mask="imask.mask"
-              :placeholder="imask.mask"
-            />
+            <template v-if="notificationSystem.selected.value === 'telegram'">
+              <div class="min-h-[88px]">
+                <input
+                  class="input"
+                  type="text"
+                  name="login"
+                  v-model="form.tgLogin"
+                  :class="{
+                    input_error:
+                      inputErrors.trySubmit && inputErrors.tgLogin && isSignUp,
+                  }"
+                  :placeholder="'Логин в Telegram (@login)'"
+                />
+              </div>
+            </template>
+            <template v-else>
+              <SelectorVue
+                :options_props="codes.list"
+                :selected_option="codes.selected"
+                @select="selectPhone"
+              />
+              <input
+                class="input"
+                type="tel"
+                name="phone-number"
+                :class="{
+                  input_error:
+                    inputErrors.trySubmit && inputErrors.phone && isSignUp,
+                }"
+                v-model="form.phone"
+                masked="false"
+                v-mask="imask.mask"
+                :placeholder="imask.mask"
+              />
+            </template>
           </div>
-          <AuthBtnsGroup />
-          <div class="w-1/2 flex justify-center mt-5 mb">
+          <AuthBtnsGroup
+            :notificationSystem="notificationSystem"
+            :isSignUp="isSignUp"
+          />
+          <div class="w-1/2 flex justify-center mt-3 mb">
             <button class="btn btn_blue" @click="submit()">
               Отправить код
+            </button>
+          </div>
+          <div class="flex justify-center -mt-[20px] w-full">
+            <button
+              class="flex justify-center items-center p-2 rounded-full text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+              @click.stop="closeSignUp()"
+            >
+              <span class="material-icons-outlined text-[#757575]">
+                close
+              </span>
             </button>
           </div>
         </div>
@@ -79,7 +153,7 @@
         <span>
           {{ isSignUp ? name + ", отправили" : "Отправили" }} сообщение на
           номер:<br />
-          {{ imask.numberModel }}
+          {{ form.phone }}
         </span>
         <div class="pinBox">
           <input
@@ -104,10 +178,10 @@
 
 <script>
 import SelectorVue from "@/components/SelectorVue.vue";
+import AuthBtnsGroup from "@/components/AuthBtnsGroup.vue";
 import { usePhoneCodes } from "../composables/phoneCodes";
 import { usePhoneCode } from "../composables/phoneCode";
 import { computed, reactive, ref, watch } from "vue";
-import AuthBtnsGroup from "@/components/AuthBtnsGroup.vue";
 import { onClickOutside, useToggle } from "@vueuse/core";
 
 export default {
@@ -115,26 +189,41 @@ export default {
   setup() {
     const [showPin, togglePin] = useToggle(false);
     const [isSignUp, toggleSignUp] = useToggle(false);
-    watch(isSignUp, () => dropErrorInput());
+    watch(isSignUp, () => {
+      dropErrorInput();
+      dropForm();
+      notificationSystem.dropToDefault();
+    });
 
     const loginRef = ref(null);
     onClickOutside(loginRef, () => {
-      toggleSignUp(false);
-      name.value = "";
+      closeSignUp();
     });
 
-    const name = ref("");
+    const closeSignUp = () => {
+      toggleSignUp(false);
+    };
+
+    const form = reactive({
+      name: "",
+      tgLogin: "",
+      email: "",
+      password: "",
+      phone: "",
+    });
+    const dropForm = () => {
+      Object.keys(form).forEach((key) => (form[key] = ""));
+    };
 
     const imask = reactive({
       mask: Number,
-      numberModel: "",
     });
 
     const { codes, deleteOther } = usePhoneCodes();
 
     const selectPhone = (option) => {
       codes.selected = { ...option, value: 1 };
-      imask.numberModel = "";
+      form.phone = "";
       imask.mask = option.phone;
     };
     selectPhone(codes.list[0]);
@@ -143,12 +232,20 @@ export default {
       trySubmit: false,
       phone: computed(
         () =>
-          deleteOther(imask.numberModel).length !==
+          deleteOther(form.phone).length !==
           deleteOther(codes.selected.phone).length
       ),
-      name: !name.value,
+      name: computed(() => !form.name || form.name.split(" ").length < 2),
+      tgLogin: computed(() => !form.tgLogin),
+      email: computed(() => !form.email),
+      password: computed(() => !form.password),
       global: function () {
-        return this.phone || (this.name && isSignUp.value);
+        let res = false;
+        if (isSignUp.value) res = res || form.name;
+        notificationSystem.selected.formReqFields.forEach(
+          (field) => (res = res || this?.[field])
+        );
+        return res;
       },
     });
     const dropErrorInput = () => {
@@ -162,8 +259,49 @@ export default {
       }
     };
 
+    const notificationSystem = reactive({
+      selected: {},
+      list: [
+        // {
+        //   name: "",
+        //   value: "amoCrm",
+        //   iconUrl: "https://graph.digiseller.ru/img.ashx?idd=3380359",
+        // },
+        {
+          name: "",
+          value: "telegram",
+          default: true,
+          iconUrl:
+            "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
+          formReqFields: ["tgLogin"],
+        },
+        {
+          name: "",
+          value: "whatsapp",
+          iconUrl: "https://www.svgrepo.com/show/217789/whatsapp.svg",
+          formReqFields: ["phone"],
+        },
+        {
+          name: "",
+          value: "email",
+          iconUrl: "https://www.svgrepo.com/show/444193/brand-google-gmail.svg",
+          formReqFields: ["email", "password"],
+          signUpHide: true,
+        },
+      ],
+      select: function (option) {
+        dropErrorInput();
+        this.selected = option;
+      },
+      dropToDefault: function () {
+        const defaultItem = this.list.find((el) => el.default);
+        this.select(defaultItem);
+      },
+    });
+    notificationSystem.dropToDefault();
+
     return {
-      name,
+      form,
       codes,
       imask,
       showPin,
@@ -175,6 +313,8 @@ export default {
       isSignUp,
       toggleSignUp,
       loginRef,
+      closeSignUp,
+      notificationSystem,
     };
   },
 };
@@ -229,7 +369,7 @@ input[type="number"]::-webkit-inner-spin-button {
   position: absolute;
   bottom: -2px;
   height: calc(100% - 80px);
-  transform: translateY(40px);
+  // transform: translateY(40px);
   width: 100%;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
