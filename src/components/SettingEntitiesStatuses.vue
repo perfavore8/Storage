@@ -318,6 +318,7 @@ export default {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
+                align-items: center;
                 .input {
                   width: calc(100% - 30px);
                   height: 24px !important;
@@ -325,12 +326,13 @@ export default {
                 }
                 .del_button {
                   cursor: pointer;
-                  width: 24px;
-                  height: 24px;
+                  width: 18px;
+                  height: 18px;
+                  min-width: 18px;
                   background: #dc3545;
                   border: none;
                   border-radius: 4px;
-                  @include bg_image("@/assets/cross.svg", 40%);
+                  @include bg_image("@/assets/cross.svg", 50%);
                 }
               }
               .add_button {
