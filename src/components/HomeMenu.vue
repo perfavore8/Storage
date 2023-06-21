@@ -71,20 +71,18 @@
                 Синхронизировать товары amoCRM -> GoСклад
               </div>
             </a>
-            <template>
-              <a :class="{ disable: is_empty_amo_product_list }">
-                <div
-                  class="modal_container"
-                  @click="
-                    is_empty_amo_product_list
-                      ? null
-                      : (syncGsAmo(), open_close_sync())
-                  "
-                >
-                  Синхронизировать товары GoСклад -> amoCRM
-                </div>
-              </a>
-            </template>
+            <a :class="{ disable: is_empty_amo_product_list }">
+              <div
+                class="modal_container"
+                @click="
+                  is_empty_amo_product_list
+                    ? null
+                    : (syncGsAmo(), open_close_sync())
+                "
+              >
+                Синхронизировать товары GoСклад -> amoCRM
+              </div>
+            </a>
             <template v-if="oneC">
               <a>
                 <div
