@@ -13,7 +13,11 @@
           class="w-full mx-auto"
           :list="tabs.list"
           :selected="tabs.selected"
-          @select="(option) => tabs.select(option)"
+          @select="
+            (option) => {
+              tabs.select(option), closeAllSubTabs();
+            }
+          "
         />
         <template v-if="showCategories">
           <SettingEntitiesCategories
@@ -91,6 +95,11 @@ export default {
     const [showCategories, toggleCategories] = useToggle(false);
     const [showStatuses, toggleStatuses] = useToggle(false);
 
+    const closeAllSubTabs = () => {
+      toggleCategories(false);
+      toggleStatuses(false);
+    };
+
     return {
       close,
       save,
@@ -99,6 +108,7 @@ export default {
       toggleCategories,
       showStatuses,
       toggleStatuses,
+      closeAllSubTabs,
     };
   },
 };
