@@ -71,10 +71,9 @@ export function useStatusesForEntities(stat, setStatuses) {
     },
   });
 
-  statuses.reservation.push(
-    statuses.list.find((el) => el.name === "Открытый").id
-  );
-  statuses.write_off = statuses.list.find((el) => el.name === "Успешный").id;
+  const systemsStatuses = statuses.list.filter((stat) => stat.is_system);
+  statuses.reservation.push(systemsStatuses[0]?.id);
+  statuses.write_off = systemsStatuses[1]?.id;
 
   const copyName = ref("");
   const setCopy = () => {
