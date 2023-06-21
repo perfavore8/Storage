@@ -55,9 +55,11 @@ export function useEntitiesFieldsProperties() {
     list: [],
     newList: function (selectedId) {
       const selectedIdx = [];
-      this.list.forEach((cat) =>
-        selectedIdx.push({ selected: selectedId.includes(cat.value) })
-      );
+      this.list.forEach((cat) => {
+        let res = false;
+        selectedId.forEach((id) => (res = res || cat.levels.includes(id)));
+        selectedIdx.push({ selected: res });
+      });
       const c = this.list.reduce((acc, item, index) => {
         return [...acc, { ...item, ...selectedIdx[index] }];
       }, []);
@@ -71,6 +73,10 @@ export function useEntitiesFieldsProperties() {
         this.list.push({
           name: spaces + field.name,
           value: field.id,
+          id: field.id,
+          level: field.level,
+          levels: field.levels,
+          parent_id: field.parent_id,
         });
       });
     },
