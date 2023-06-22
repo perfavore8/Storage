@@ -4,7 +4,15 @@
       <AppHeader />
     </div>
     <div class="wrapper">
-      <div class="w-full flex justify-end" v-if="isTest">
+      <div
+        class="w-full flex justify-between items-center relative"
+        v-if="isTest"
+      >
+        <AppSearchWithFilters
+          class="absolute left-1/2 -translate-x-1/2"
+          :setOfInstructions="'orders'"
+          :key="selectedTabComp"
+        />
         <button class="btn btn_dark_blue" @click="addToDeal()">
           Создать заказ
         </button>
@@ -19,12 +27,13 @@
 import AppHeader from "@/components/AppHeader.vue";
 import OrdersFilters from "@/components/OrdersFilters.vue";
 import OrdersGrid from "@/components/OrdersGrid.vue";
+import AppSearchWithFilters from "@/components/AppSearchWithFilters.vue";
 import router from "@/router";
 import store from "@/store";
 import { useRoute } from "vue-router";
 import { computed } from "vue";
 export default {
-  components: { AppHeader, OrdersFilters, OrdersGrid },
+  components: { AppHeader, OrdersFilters, OrdersGrid, AppSearchWithFilters },
   setup() {
     const Route = useRoute();
     const isTest = computed(
