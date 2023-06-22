@@ -87,6 +87,7 @@ export default {
   min-width: 80px;
   // width: min-content;
   margin: 0;
+  width: 100%;
   // max-width: none;
   .type_btn {
     background-color: white;
