@@ -1,7 +1,7 @@
 <template>
   <div v-if="selectedTabComp" class="flex flex-col gap-4">
     <div class="flex flex-row items-center justify-between relative">
-      <AppSeatchWithFilters
+      <AppSearchWithFilters
         class="absolute left-1/2 -translate-x-1/2"
         :key="selectedTabComp"
       />
@@ -63,7 +63,7 @@
 <script>
 import ClientsEditSection from "./ClientsEditSection.vue";
 import AppPaginator from "../AppPaginator.vue";
-import AppSeatchWithFilters from "../AppSearchWithFilters.vue";
+import AppSearchWithFilters from "../AppSearchWithFilters.vue";
 import ClientSectionsFields from "./ClientSectionsFields.vue";
 import { computed, nextTick, reactive, ref, watch } from "vue";
 import { useClients } from "@/composables/clients";
@@ -72,7 +72,7 @@ import { useClientsTabs } from "@/composables/clientsTabs";
 export default {
   components: {
     ClientsEditSection,
-    AppSeatchWithFilters,
+    AppSearchWithFilters,
     ClientSectionsFields,
     AppPaginator,
   },
