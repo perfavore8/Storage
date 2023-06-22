@@ -17,31 +17,53 @@
     </div>
     <div
       v-show="showFilters"
-      class="absolute top-full mt-2 border border-slate-200 bg-white bg-opacity-80 backdrop-blur-md shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-full max-w-[150%] min-w-[550px] flex flex-col gap-2"
+      class="absolute top-full mt-2 border border-slate-200 bg-white bg-opacity-80 backdrop-blur-md shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-full max-w-[150%] min-w-[550px] flex flex-col gap-4"
     >
-      <div class="filters">
-        <div>
-          <SearchFiltersGroup
-            :filters="baseFilteredfiltersValue"
-            @change_filter_value="change_filter_value"
-          />
-        </div>
-        <div>
-          <AppInputSelect
-            v-if="false"
-            :list="spacialFilteredfiltersValueNotSelected"
-            :placeholder="'Добавить фильтр'"
-            :requestDelay="100"
-            :countLettersReq="0"
-            @select="(val) => (val.selected = true)"
-            @changeInputValue="(val) => (specialFiltersSearchValue = val)"
-            :key="selectedTabComp.value"
-          />
-          <SearchFiltersGroup
-            :special="false"
-            :filters="spacialFilteredfiltersValueNotSelected"
-            @change_filter_value="change_filter_value"
-          />
+      <div
+        v-for="source in Config.hasDifferentSources ? Config.sources : 1"
+        :key="source"
+        class="divide-y divide-solid divide-slate-400/40"
+      >
+        <h2
+          v-if="Config.hasDifferentSources"
+          class="font-medium text-lg text-gray-800"
+        >
+          {{ source.title }}
+        </h2>
+        <div class="filters pt-2">
+          <div>
+            <SearchFiltersGroup
+              :filters="
+                Config.hasDifferentSources
+                  ? splitArrays(baseFilteredfiltersValue)?.[source.title]
+                  : baseFilteredfiltersValue
+              "
+              @change_filter_value="change_filter_value"
+            />
+          </div>
+          <div>
+            <AppInputSelect
+              v-if="false"
+              :list="spacialFilteredfiltersValueNotSelected"
+              :placeholder="'Добавить фильтр'"
+              :requestDelay="100"
+              :countLettersReq="0"
+              @select="(val) => (val.selected = true)"
+              @changeInputValue="(val) => (specialFiltersSearchValue = val)"
+              :key="selectedTabComp.value"
+            />
+            <SearchFiltersGroup
+              :special="false"
+              :filters="
+                Config.hasDifferentSources
+                  ? splitArrays(spacialFilteredfiltersValueNotSelected)?.[
+                      source.title
+                    ]
+                  : spacialFilteredfiltersValueNotSelected
+              "
+              @change_filter_value="change_filter_value"
+            />
+          </div>
         </div>
       </div>
       <BtnsSaveClose
@@ -77,7 +99,8 @@ export default {
     AppInputSelect,
     SearchFiltersGroup,
   },
-  setup() {
+  props: { setOfInstructions: String },
+  setup(props) {
     const { tabs } = useClientsTabs();
     const selectedTabComp = computed(() => tabs.selected);
     const { updateParams, getClientsList } = useClients(selectedTabComp);
@@ -98,7 +121,8 @@ export default {
       specialFiltersSearchValue,
       confirmFilters,
       dropSearchValue,
-    } = useSearchFilters(selectedTabComp);
+      Config,
+    } = useSearchFilters(selectedTabComp, props.setOfInstructions);
 
     const accept = () => {
       updateParams({ filter: confirmFilters(), q: searchValue, page: 1 });
@@ -112,6 +136,15 @@ export default {
       updateParams({ filter: {}, q: "", page: 1 });
       getClientsList();
       toggleFilters(false);
+    };
+
+    const splitArrays = (arr) => {
+      return arr.reduce((acc, item) => {
+        const title = item.title;
+        if (!acc[title]) acc[title] = [];
+        acc[title].push(item);
+        return acc;
+      }, {});
     };
 
     return {
@@ -129,6 +162,8 @@ export default {
       selectedTabComp,
       accept,
       reset,
+      Config,
+      splitArrays,
     };
   },
 };
