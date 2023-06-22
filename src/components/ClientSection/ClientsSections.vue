@@ -3,6 +3,7 @@
     <div class="flex flex-row items-center justify-between relative">
       <AppSearchWithFilters
         class="absolute left-1/2 -translate-x-1/2"
+        :setOfInstructions="'clients'"
         :key="selectedTabComp"
       />
       <button class="btn btn_light_dark_blue self-end" @click="add()">
