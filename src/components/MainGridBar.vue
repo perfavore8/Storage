@@ -126,10 +126,6 @@ export default {
     const disableExportXlsx = ref(false);
     const exportXlsx = async () => {
       disableExportXlsx.value = true;
-      // store.commit("openCloseTaskCenter", true);
-      // setTimeout(() => {
-      //   store.commit("openCloseTaskCenter", false);
-      // }, 5000);
       const {
         sort,
         filter,
