@@ -156,7 +156,7 @@ export default {
   },
   data() {
     return {
-      is_in_wh: false,
+      is_in_wh: true,
       paginatedData: [],
       paginatedParams: [],
       selectedWH: { name: "Все склады", value: "whs" },
