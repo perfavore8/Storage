@@ -743,13 +743,19 @@ export default {
       new_fields[idx].type = option.value;
     };
     const changeTitleSort = (idx, isUp) => {
-      const currentSort = copy_fields[idx].sort;
+      const currentSort = copy_fields[idx].config?.sort;
+      if (
+        copy_fields[idx].config?.sort === undefined ||
+        (copy_fields[idx - 1].config?.sort === undefined && isUp) ||
+        (copy_fields[idx + 1].config?.sort === undefined && !isUp)
+      )
+        return;
       if (isUp) {
-        copy_fields[idx].sort = copy_fields[idx - 1].sort;
-        copy_fields[idx - 1].sort = currentSort;
+        copy_fields[idx].config.sort = copy_fields[idx - 1].config?.sort;
+        copy_fields[idx - 1].config.sort = currentSort;
       } else {
-        copy_fields[idx].sort = copy_fields[idx + 1].sort;
-        copy_fields[idx + 1].sort = currentSort;
+        copy_fields[idx].config.sort = copy_fields[idx + 1].config?.sort;
+        copy_fields[idx + 1].config.sort = currentSort;
       }
       update_field(idx, ["sort"]);
       if (isUp) {
