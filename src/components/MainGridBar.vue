@@ -130,7 +130,12 @@ export default {
       // setTimeout(() => {
       //   store.commit("openCloseTaskCenter", false);
       // }, 5000);
-      const { sort, filter } = productsParams.value;
+      const {
+        sort,
+        filter,
+        warehouse = "",
+        is_service = 0,
+      } = productsParams.value;
       const sortedTableConfig = [];
       Object.entries(props.tableConfig)
         .filter((val) => val[1].visible)
@@ -144,6 +149,8 @@ export default {
         sort: sort,
         filter: filter,
         config: sortedTableConfig,
+        warehouse: warehouse,
+        is_service: is_service,
       };
       store.dispatch("exportXlsx", params);
       addNotification(0, "Добавлена задача", "Экспорт списка товаров в xlsx");
