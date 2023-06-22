@@ -157,7 +157,7 @@ export default {
       // const blob = await store.dispatch("exportXlsx", params);
       // const file = window.URL.createObjectURL(blob);
       // window.location.assign(file);
-      // disableExportXlsx.value = false;
+      disableExportXlsx.value = false;
     };
 
     const allSelectedProducts = ref(false);
