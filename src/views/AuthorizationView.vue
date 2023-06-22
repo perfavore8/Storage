@@ -267,17 +267,17 @@ export default {
         //   value: "amoCrm",
         //   iconUrl: "https://graph.digiseller.ru/img.ashx?idd=3380359",
         // },
-        {
-          name: "",
-          value: "telegram",
-          default: true,
-          iconUrl:
-            "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
-          formReqFields: ["tgLogin"],
-        },
+        // {
+        //   name: "",
+        //   value: "telegram",
+        //   iconUrl:
+        //     "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
+        //   formReqFields: ["tgLogin"],
+        // },
         {
           name: "",
           value: "whatsapp",
+          default: true,
           iconUrl: "https://www.svgrepo.com/show/217789/whatsapp.svg",
           formReqFields: ["phone"],
         },
