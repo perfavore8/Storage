@@ -9,10 +9,28 @@ export function useSearchFiltersConfig(selectedTab) {
       needCategories: true,
     },
     orders: {
-      getFieldsUrl: `getOrdersFields`,
-      stateName: "orders",
-      stateFieldsName: "fields",
       needCategories: false,
+      hasDifferentSources: true,
+      sources: [
+        {
+          title: "Заказы",
+          getFieldsUrl: `getOrdersFields`,
+          stateName: "orders",
+          stateFieldsName: "fields",
+        },
+        {
+          title: "Контакты",
+          getFieldsUrl: "getClientsContactsFields",
+          stateName: "clientsContacts",
+          stateFieldsName: "fields",
+        },
+        {
+          title: "Компании",
+          getFieldsUrl: "getClientsCompanyFields",
+          stateName: "clientsCompany",
+          stateFieldsName: "fields",
+        },
+      ],
     },
   });
 

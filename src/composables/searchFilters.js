@@ -2,13 +2,30 @@ import store from "@/store";
 import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import { reactive } from "vue";
+import { useSearchFiltersConfig } from "./searchFiltersConfig";
 
-export function useSearchFilters(selectedTab) {
+export function useSearchFilters(selectedTab, setOfInstructions) {
+  const { config } = useSearchFiltersConfig(selectedTab);
+  const Config = config?.[setOfInstructions];
+
   const searchValue = ref("");
   const dropSearchValue = () => (searchValue.value = "");
 
   const fields = computed(
-    () => store.state?.[`clients${selectedTab.value.value}`].fields
+    // () => store.state?.[`clients${selectedTab.value.value}`].fields
+    () => {
+      let res = [];
+      if (Config.hasDifferentSources) {
+        Config.sources.forEach((source) =>
+          store.state?.[source.stateName][source.stateFieldsName].forEach(
+            (field) => res.push({ ...field, title: source.title })
+          )
+        );
+      } else {
+        res = store.state?.[Config.stateName][Config.stateFieldsName];
+      }
+      return res;
+    }
   );
 
   const filteredFiltersValue = computed(() =>
@@ -153,14 +170,25 @@ export function useSearchFilters(selectedTab) {
           val.type == 12 ? categories_options : preparation_data(val.data),
         value: value,
         name: val.name,
+        title: val.title,
       };
       filtersValue.push(obj);
     });
   };
 
   onMounted(async () => {
-    await store.dispatch(`getClients${selectedTab.value.value}Fields`);
-    await get_categories_options();
+    // await store.dispatch(`getClients${selectedTab.value.value}Fields`);
+    // await get_categories_options();
+    if (Config.hasDifferentSources) {
+      const res = [];
+      Config.sources.forEach((source) =>
+        res.push(store.dispatch(source.getFieldsUrl))
+      );
+      await Promise.all(res);
+    } else {
+      await store.dispatch(Config.getFieldsUrl);
+    }
+    if (Config.needCategories) await get_categories_options();
     fillFilters();
   });
 
@@ -180,5 +208,6 @@ export function useSearchFilters(selectedTab) {
     filterComponents,
     confirmFilters,
     dropSearchValue,
+    Config,
   };
 }
