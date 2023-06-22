@@ -106,5 +106,11 @@ export default {
     border-right: none;
     border-radius: 0;
   }
+  input[type="text"] {
+    background: transparent;
+  }
+  input[type="date"] {
+    background: transparent;
+  }
 }
 </style>
