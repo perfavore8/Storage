@@ -1,5 +1,5 @@
 <template>
-  <div class="links">
+  <div class="links" v-if="false">
     <div
       class="triangle"
       :class="{
@@ -14,12 +14,13 @@
   </div>
   <div class="flex flex-row justify-between items-center">
     <SelectorVue
+      v-if="false"
       :options_props="data_fields_properties.items"
       @select="option_select_fields_properties"
       :selected_option="data_fields_properties.selected"
     />
     <button
-      class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
+      class="btn pointer-events-auto w-full justify-center relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
       @click="openCategories()"
     >
       Категории
