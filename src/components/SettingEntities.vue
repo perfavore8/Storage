@@ -38,10 +38,10 @@
           />
           <div
             v-if="tabs.selected.haveStatuses && !showStatuses"
-            class="w-full flex justify-end"
+            class="w-full"
           >
             <button
-              class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
+              class="btn pointer-events-auto w-full relative inline-flex justify-center rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
               @click="toggleStatuses(true)"
             >
               Статусы

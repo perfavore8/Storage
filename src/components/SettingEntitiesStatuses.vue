@@ -25,7 +25,6 @@
         <div class="top">
           <label>Настройка статусов</label>
         </div>
-        <br />
       </div>
       <div class="content">
         <table class="rows">
@@ -207,8 +206,7 @@ export default {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        border-bottom: 1px solid #c9c9c9;
-        padding-bottom: 10px;
+        padding-bottom: 16px;
         label {
           @include font(500, 28px);
         }
