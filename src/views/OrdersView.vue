@@ -12,13 +12,14 @@
           class="absolute left-1/2 -translate-x-1/2"
           :setOfInstructions="'orders'"
           :key="selectedTabComp"
+          @emitParams="emitParams"
         />
         <button class="btn btn_dark_blue" @click="addToDeal()">
           Создать заказ
         </button>
       </div>
       <OrdersFilters v-if="false" />
-      <OrdersGrid />
+      <OrdersGrid ref="grid" />
     </div>
   </div>
 </template>
@@ -31,7 +32,7 @@ import AppSearchWithFilters from "@/components/AppSearchWithFilters.vue";
 import router from "@/router";
 import store from "@/store";
 import { useRoute } from "vue-router";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 export default {
   components: { AppHeader, OrdersFilters, OrdersGrid, AppSearchWithFilters },
   setup() {
@@ -43,7 +44,10 @@ export default {
 
     const addToDeal = () => router.push("/addToDeal");
 
-    return { addToDeal, isTest };
+    const grid = ref(null);
+    const emitParams = (params) => grid.value.emitParams(params);
+
+    return { addToDeal, isTest, grid, emitParams };
   },
 };
 </script>

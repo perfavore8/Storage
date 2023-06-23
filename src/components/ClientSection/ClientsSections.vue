@@ -5,6 +5,7 @@
         class="absolute left-1/2 -translate-x-1/2"
         :setOfInstructions="'clients'"
         :key="selectedTabComp"
+        @emitParams="emitParams"
       />
       <button class="btn btn_light_dark_blue self-end" @click="add()">
         Добавить
@@ -89,8 +90,19 @@ export default {
       () => (getClientsList(), getClientsFields(), closeAdd(true))
     );
 
-    const { clientsList, getClientsList, getClientsFields, page, changePage } =
-      useClients(selectedTabComp);
+    const {
+      clientsList,
+      getClientsList,
+      getClientsFields,
+      page,
+      changePage,
+      updateParams,
+    } = useClients(selectedTabComp);
+
+    const emitParams = (params) => {
+      updateParams(params);
+      getClientsList();
+    };
 
     const selected = reactive({
       ref: null,
@@ -164,6 +176,7 @@ export default {
       selectedTabComp,
       page,
       changePage,
+      emitParams,
     };
   },
 };
