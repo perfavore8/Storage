@@ -189,6 +189,9 @@
 <script>
 import GridBottom from "@/components/GridBottom.vue";
 import AppPaginator from "./AppPaginator.vue";
+import { computed, onMounted, reactive, ref } from "vue";
+import store from "@/store";
+import { useRouter } from "vue-router";
 // import ReportGridModal from "./ReportGridModal.vue";
 // import { nextTick } from "vue";
 export default {
@@ -198,232 +201,209 @@ export default {
     AppPaginator,
     // ReportGridModal,
   },
+  setup() {
+    const router = useRouter();
 
-  data() {
-    return {
-      selectedProducts: [],
-      showArrow: false,
-      allSelectedProducts: false,
-      maxCount: 10,
-      sorting: {
-        order_by: null,
-        order: "",
-      },
-      whOptions: [],
-      priceCatOptions: [],
-      selectedOrder: {
-        isOpen: false,
-        title: [
-          { name: "Название", code: "name" },
-          { name: "Артикул", code: "article" },
-          // { name: "Партия", code: "batch" },
-          { name: "Склад", code: "wh" },
-          { name: "Цена", code: "price" },
-          { name: "Валюта", code: "price_currency" },
-          { name: "Количество", code: "count" },
-          // { name: "Тип цены", code: "price_type" },
-          { name: "Сумма", code: "sum" },
-        ],
-        list: [],
-      },
-      statList: [
-        {
-          name: "Открытый",
-          value: 0,
-        },
-        {
-          name: "Удален",
-          value: 3,
-        },
-        {
-          name: "Отменен",
-          value: 2,
-        },
-        {
-          name: "Успешный",
-          value: 1,
-        },
+    const selectedProducts = reactive([]);
+    const allSelectedProducts = ref(false);
+    const maxCount = ref(10);
+    const sorting = reactive({
+      order_by: null,
+      order: "",
+    });
+    const whOptions = reactive([]);
+    const priceCatOptions = reactive([]);
+    const selectedOrder = reactive({
+      isOpen: false,
+      title: [
+        { name: "Название", code: "name" },
+        { name: "Артикул", code: "article" },
+        // { name: "Партия", code: "batch" },
+        { name: "Склад", code: "wh" },
+        { name: "Цена", code: "price" },
+        { name: "Валюта", code: "price_currency" },
+        { name: "Количество", code: "count" },
+        // { name: "Тип цены", code: "price_type" },
+        { name: "Сумма", code: "sum" },
       ],
-      products: {
-        titles: [
-          {
-            name: "Название сделки",
-            code: "name",
-            width: 2,
-          },
-          {
-            name: "Статус заказа",
-            code: "stat",
-            width: 1,
-            sortable: true,
-            value: "status",
-          },
-          {
-            name: "Ответственные",
-            code: "otv",
-            width: 1,
-          },
-          {
-            name: "Дата создания",
-            code: "date",
-            width: 1,
-            sortable: true,
-            value: "created_at",
-            // isGroup: true,
-          },
-          {
-            name: "Сумма заказа",
-            code: "sum",
-            width: 1,
-          },
-          {
-            name: "Позиции",
-            code: "poz",
-            width: 1,
-          },
-          {
-            name: "Клиент",
-            code: "client",
-            width: 1,
-          },
-          // {
-          //   name: "",
-          //   code: "btns",
-          //   type: 2,
-          // },
-        ],
-        list: [],
+      list: [],
+    });
+    const statList = reactive([
+      {
+        name: "Открытый",
+        value: 0,
       },
-      filters: {},
-    };
-  },
-  async mounted() {
-    await Promise.all([
-      this.$store.dispatch("get_all_fields"),
-      this.$store.dispatch("get_account"),
-      this.$store.dispatch("getOrders", this.$store.state.orders.filters),
+      {
+        name: "Удален",
+        value: 3,
+      },
+      {
+        name: "Отменен",
+        value: 2,
+      },
+      {
+        name: "Успешный",
+        value: 1,
+      },
     ]);
-    this.fillWhs();
-    this.fillPriceCat();
-    this.filters = { ...this.$store.state.orders.filters };
-    this.fillOrders();
-    this.setSelectedProducts();
-  },
+    const products = reactive({
+      titles: [
+        {
+          name: "Название сделки",
+          code: "name",
+          width: 2,
+        },
+        {
+          name: "Статус заказа",
+          code: "stat",
+          width: 1,
+          sortable: true,
+          value: "status",
+        },
+        {
+          name: "Ответственные",
+          code: "otv",
+          width: 1,
+        },
+        {
+          name: "Дата создания",
+          code: "date",
+          width: 1,
+          sortable: true,
+          value: "created_at",
+          // isGroup: true,
+        },
+        {
+          name: "Сумма заказа",
+          code: "sum",
+          width: 1,
+        },
+        {
+          name: "Позиции",
+          code: "poz",
+          width: 1,
+        },
+        {
+          name: "Клиент",
+          code: "client",
+          width: 1,
+        },
+        // {
+        //   name: "",
+        //   code: "btns",
+        //   type: 2,
+        // },
+      ],
+      list: [],
+    });
 
-  computed: {
-    collsCount() {
-      return this.products.titles.length;
-    },
-    count() {
-      return this.products.list.length;
-    },
-    meta() {
-      return this.$store.state.orders.meta;
-    },
-    fields() {
-      return this.$store.state.fields.all_fields;
-    },
-    orders() {
-      return this.$store.state.orders.orders;
-    },
-    accountSubdomain() {
-      return this.$store.state.account.account.subdomain;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
-    },
-    page() {
+    onMounted(async () => {
+      await Promise.all([
+        store.dispatch("get_all_fields"),
+        store.dispatch("get_account"),
+        store.dispatch("getOrders", store.state.orders.filters),
+      ]);
+      fillWhs();
+      fillPriceCat();
+      fillOrders();
+      setSelectedProducts();
+    });
+
+    const collsCount = computed(() => products.titles.length);
+    const count = computed(() => products.list.length);
+    const meta = computed(() => store.state.orders.meta);
+    const fields = computed(() => store.state.fields.all_fields);
+    const orders = computed(() => store.state.orders.orders);
+    const accountSubdomain = computed(
+      () => store.state.account.account.subdomain
+    );
+    const isTest = computed(() => store.state.account?.account?.id == 1);
+    const params = computed(() => store.state.orders.filters);
+    const page = computed(() => {
       const obj = {
-        first: this.getPageFromLink(this.meta?.first_page_url),
-        prev: this.getPageFromLink(this.meta?.prev_page_url),
-        current: this.meta?.current_page,
-        next: this.getPageFromLink(this.meta?.next_page_url),
-        last: this.getPageFromLink(this.meta?.last_page_url),
+        first: getPageFromLink(meta.value?.first_page_url),
+        prev: getPageFromLink(meta.value?.prev_page_url),
+        current: meta.value?.current_page,
+        next: getPageFromLink(meta.value?.next_page_url),
+        last: getPageFromLink(meta.value?.last_page_url),
       };
       return obj;
-    },
-  },
+    });
 
-  methods: {
-    getPageFromLink(link) {
+    const getPageFromLink = (link) => {
       if (link) {
         return link.split("?page=")[1];
       } else {
         return null;
       }
-    },
-    dateFormater(date) {
+    };
+    const dateFormater = (date) => {
       const [dateTime] = date.split(".");
       const [day, time] = dateTime.split("T");
       return day + " " + time;
-    },
-    changePage(val) {
+    };
+    const changePage = (val) => {
       const params = { page: val };
-      this.$store.commit("updateOrdersFilters", params);
-      this.getOrders();
-    },
-    setSelectedProducts() {
-      this.selectedProducts = [];
-      for (let i = 0; i < this.count; i++)
-        this.selectedProducts.push({ value: false, item: {} });
-    },
-    changeAllSelectedProducts() {
-      this.selectedProducts.map((product, idx) => {
-        product.value = this.allSelectedProducts;
-        this.allSelectedProducts
-          ? (product.item = this.products[idx])
+      store.commit("updateOrdersFilters", params);
+      getOrders();
+    };
+    const setSelectedProducts = () => {
+      selectedProducts.length = 0;
+      for (let i = 0; i < count.value; i++)
+        selectedProducts.push({ value: false, item: {} });
+    };
+    const changeAllSelectedProducts = () => {
+      selectedProducts.map((product, idx) => {
+        product.value = allSelectedProducts.value;
+        allSelectedProducts.value
+          ? (product.item = products[idx])
           : (product.item = {});
       });
-    },
-    async getOrders() {
-      await this.$store.dispatch("getOrders", this.$store.state.orders.filters);
-      this.fillOrders();
-    },
-    fillWhs() {
-      this.fields
+    };
+    const getOrders = async () => {
+      await store.dispatch("getOrders", params.value);
+      fillOrders();
+    };
+    const fillWhs = () => {
+      fields.value
         .filter((val) => val.type == 13 && val.code != "whs")
-        .forEach((val) =>
-          this.whOptions.push({ name: val.name, value: val.code })
-        );
-    },
-    fillPriceCat() {
-      this.fields
+        .forEach((val) => whOptions.push({ name: val.name, value: val.code }));
+    };
+    const fillPriceCat = () => {
+      fields.value
         .filter((val) => val.type == 11)
         .forEach((val) =>
-          this.priceCatOptions.push({ name: val.name, value: val.code })
+          priceCatOptions.push({ name: val.name, value: val.code })
         );
-    },
-    sort(code) {
-      if (this.sorting.order_by != code) {
-        this.sorting.order = "";
-        this.sorting.order_by = code;
+    };
+    const sort = (code) => {
+      if (sorting.order_by != code) {
+        sorting.order = "";
+        sorting.order_by = code;
       }
-      if (this.sorting.order === "desc" || !this.sorting.order) {
-        this.sorting.order = "asc";
+      if (sorting.order === "desc" || !sorting.order) {
+        sorting.order = "asc";
       } else {
-        if (this.sorting.order === "asc") this.sorting.order = "desc";
+        if (sorting.order === "asc") sorting.order = "desc";
       }
-      this.$store.commit("updateOrdersFilters", this.sorting);
-      this.getOrders();
-    },
-    // openModal(list) {
-    //   this.selectedOrder.list = list;
-    //   this.selectedOrder.isOpen = true;
-    // },
-    // closeOrderGridModal() {
-    //   this.selectedOrder.isOpen = false;
-    // },
-    changePageRow(page, idx) {
+      store.commit("updateOrdersFilters", sorting);
+      getOrders();
+    };
+    const emitParams = (params) => {
+      store.commit("updateOrdersFilters", params);
+      getOrders();
+    };
+    const changePageRow = (page, idx) => {
       const obj = {
         prev: page === 1 ? null : page - 1,
         current: page,
-        next: page === this.products?.list?.[idx]?.page?.last ? null : page + 1,
+        next: page === products?.list?.[idx]?.page?.last ? null : page + 1,
       };
-      Object.assign(this.products?.list?.[idx]?.page, obj);
-    },
-    fillOrders() {
-      this.products.list = [];
-      this.orders.forEach((order) => {
+      Object.assign(products?.list?.[idx]?.page, obj);
+    };
+    const fillOrders = () => {
+      products.list = [];
+      orders.value.forEach((order) => {
         const poz = [];
         let posTotalSum = 0;
         order.positions.forEach((pos) => {
@@ -438,8 +418,8 @@ export default {
             price_field: pos?.price_field,
             price: pos?.price,
             price_currency: pos?.price_currency,
-            wh: this.whOptions.find((el) => el.value == pos.wh_field)?.name,
-            price_type: this.priceCatOptions.find(
+            wh: whOptions.find((el) => el.value == pos.wh_field)?.name,
+            price_type: priceCatOptions.find(
               (el) => el.value == pos.price_field
             )?.name,
           };
@@ -458,32 +438,59 @@ export default {
             first: 1,
             prev: null,
             current: 1,
-            next: Math.ceil(poz.length / this.maxCount) > 1 ? 2 : null,
-            last: Math.ceil(poz.length / this.maxCount),
+            next: Math.ceil(poz.length / maxCount.value) > 1 ? 2 : null,
+            last: Math.ceil(poz.length / maxCount.value),
           },
           isOpen: false,
           name: order.lead_name,
           lead_id: order.lead_id,
           client: client,
           otv: order.responsible_name,
-          date: this.dateFormater(order.created_at),
+          date: dateFormater(order.created_at),
           sum:
             (posTotalSum ? Math.round(Number(posTotalSum) * 100) / 100 : "") +
             " " +
             order.price_currency
               ? order.price_currency
               : "",
-          stat: this.statList.find((el) => el.value == order.status)?.name,
+          stat: statList.find((el) => el.value == order.status)?.name,
           poz: poz.length,
           img: "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png",
           list: [...poz],
         };
-        this.products.list.push(obj);
+        products.list.push(obj);
       });
-    },
-    routeToOrder(id) {
-      this.$router.push("addToDeal?order_id=" + id);
-    },
+    };
+    const routeToOrder = (id) => {
+      router.push("addToDeal?order_id=" + id);
+    };
+
+    return {
+      selectedProducts,
+      allSelectedProducts,
+      maxCount,
+      sorting,
+      selectedOrder,
+      statList,
+      products,
+      collsCount,
+      count,
+      meta,
+      orders,
+      accountSubdomain,
+      isTest,
+      page,
+      changePage,
+      setSelectedProducts,
+      changeAllSelectedProducts,
+      getOrders,
+      fillWhs,
+      fillPriceCat,
+      sort,
+      emitParams,
+      changePageRow,
+      routeToOrder,
+    };
   },
 };
 </script>
