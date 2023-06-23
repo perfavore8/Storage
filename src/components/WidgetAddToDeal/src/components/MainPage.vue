@@ -80,16 +80,33 @@
               <div class="path">
                 <div class="categories sls_grid">
                   <div
-                    class="card"
+                    class="card group/card"
                     v-for="cat in categories"
                     :key="cat"
                     @click="selectCategories(cat)"
                   >
-                    <div class="sls_row title">
+                    <div
+                      class="sls_row title relative z-20"
+                      :class="{ 'text-white': cat.img_url }"
+                    >
                       <div class="name"></div>
                       <div class="value">{{ cat.name }}</div>
                     </div>
-                    <div class="sls_row" />
+                    <div class="sls_row" v-if="!cat.img_url" />
+                    <div
+                      v-if="cat.img_url"
+                      class="w-full h-full bg-black/30 absolute left-0 top-0 z-10"
+                    />
+                    <img
+                      v-if="cat.img_url"
+                      :src="cat.img_url"
+                      class="aspect-auto w-3/4 z-[3] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 transition-all duration-300 group-hover/card:scale-[0.6]"
+                    />
+                    <img
+                      v-if="cat.img_url"
+                      :src="cat.img_url"
+                      class="aspect-auto w-3/4 z-[2] blur2 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 transition-all duration-300 group-hover/card:scale-[0.6]"
+                    />
                   </div>
                 </div>
               </div>
@@ -1340,5 +1357,8 @@ export default {
 .sls_paginator {
   width: fit-content;
   margin: 20px auto;
+}
+.blur2 {
+  filter: blur(20px);
 }
 </style>

@@ -107,6 +107,14 @@
               >
                 <div class="rename btn"></div>
               </button>
+              <input
+                type="text"
+                class="input input_uderline ml-2"
+                v-model="item.img_url"
+                placeholder="Url картинки"
+                @input="() => changeImgUrl(item)"
+                v-if="isTest"
+              />
             </div>
             <div>
               <button
@@ -163,6 +171,7 @@ export default {
         id: null,
         level: null,
       },
+      timer: null,
     };
   },
   async mounted() {
@@ -172,6 +181,9 @@ export default {
   computed: {
     copy_fields_properties() {
       return this.$store.state.categories.fields_properties;
+    },
+    isTest() {
+      return this.$store.state.account?.account?.id == 1;
     },
   },
   watch: {
@@ -185,6 +197,18 @@ export default {
     },
   },
   methods: {
+    changeImgUrl(item) {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        const params = {
+          id: item.id,
+          name: item.name,
+          parent_id: item.parent_id,
+          img_url: item.img_url,
+        };
+        this.$store.dispatch("update_fields_properties", params);
+      }, 1000);
+    },
     changeData(event) {
       const newidx = event.moved.newIndex;
       const list = [...this.copy_fields_properties];
