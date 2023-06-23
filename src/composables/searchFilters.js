@@ -4,29 +4,26 @@ import { ref } from "vue";
 import { reactive } from "vue";
 import { useSearchFiltersConfig } from "./searchFiltersConfig";
 
-export function useSearchFilters(selectedTab, setOfInstructions) {
-  const { config } = useSearchFiltersConfig(selectedTab);
+export function useSearchFilters(setOfInstructions) {
+  const { config } = useSearchFiltersConfig();
   const Config = config?.[setOfInstructions];
 
   const searchValue = ref("");
   const dropSearchValue = () => (searchValue.value = "");
 
-  const fields = computed(
-    // () => store.state?.[`clients${selectedTab.value.value}`].fields
-    () => {
-      let res = [];
-      if (Config.hasDifferentSources) {
-        Config.sources.forEach((source) =>
-          store.state?.[source.stateName][source.stateFieldsName].forEach(
-            (field) => res.push({ ...field, title: source.title })
-          )
-        );
-      } else {
-        res = store.state?.[Config.stateName][Config.stateFieldsName];
-      }
-      return res;
+  const fields = computed(() => {
+    let res = [];
+    if (Config.hasDifferentSources) {
+      Config.sources.forEach((source) =>
+        store.state?.[source.stateName][source.stateFieldsName].forEach(
+          (field) => res.push({ ...field, title: source.title })
+        )
+      );
+    } else {
+      res = store.state?.[Config.stateName][Config.stateFieldsName];
     }
-  );
+    return res;
+  });
 
   const filteredFiltersValue = computed(() =>
     filtersValue.filter((filter) =>
@@ -177,8 +174,6 @@ export function useSearchFilters(selectedTab, setOfInstructions) {
   };
 
   onMounted(async () => {
-    // await store.dispatch(`getClients${selectedTab.value.value}Fields`);
-    // await get_categories_options();
     if (Config.hasDifferentSources) {
       const res = [];
       Config.sources.forEach((source) =>

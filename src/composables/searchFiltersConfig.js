@@ -1,6 +1,10 @@
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
+import { useClientsTabs } from "./clientsTabs";
 
-export function useSearchFiltersConfig(selectedTab) {
+export function useSearchFiltersConfig() {
+  const { tabs } = useClientsTabs();
+  const selectedTab = computed(() => tabs.selected);
+
   const config = reactive({
     clients: {
       getFieldsUrl: `getClients${selectedTab.value.value}Fields`,

@@ -91,7 +91,6 @@ import { useToggle, onClickOutside } from "@vueuse/core";
 import { useSearchFilters } from "@/composables/searchFilters";
 import { computed, ref } from "vue";
 import { useClientsTabs } from "@/composables/clientsTabs";
-import { useClients } from "@/composables/clients";
 export default {
   components: {
     AppInput,
@@ -100,10 +99,10 @@ export default {
     SearchFiltersGroup,
   },
   props: { setOfInstructions: String },
-  setup(props) {
+  emits: { emitParams: null },
+  setup(props, context) {
     const { tabs } = useClientsTabs();
     const selectedTabComp = computed(() => tabs.selected);
-    const { updateParams, getClientsList } = useClients(selectedTabComp);
 
     const target = ref(null);
 
@@ -122,19 +121,21 @@ export default {
       confirmFilters,
       dropSearchValue,
       Config,
-    } = useSearchFilters(selectedTabComp, props.setOfInstructions);
+    } = useSearchFilters(props.setOfInstructions);
 
     const accept = () => {
-      updateParams({ filter: confirmFilters(), q: searchValue, page: 1 });
-      getClientsList();
+      context.emit("emitParams", {
+        filter: confirmFilters(),
+        q: searchValue,
+        page: 1,
+      });
       toggleFilters(false);
     };
 
     const reset = () => {
       fillFilters();
       dropSearchValue();
-      updateParams({ filter: {}, q: "", page: 1 });
-      getClientsList();
+      context.emit("emitParams", { filter: {}, q: "", page: 1 });
       toggleFilters(false);
     };
 
