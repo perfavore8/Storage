@@ -116,8 +116,8 @@
                 v-if="isTest"
               />
             </div>
-            <div>
-              <button
+            <div class="flex flex-row items-center gap-1">
+              <!-- <button
                 @click.stop="setRemoveModalConfig(item.id, item.level)"
                 v-if="
                   item.parent_id !== 0 &&
@@ -129,8 +129,43 @@
                 title="Удаление категории"
               >
                 <div class="remove btn"></div>
+              </button> -->
+              <button
+                @click.stop="setRemoveModalConfig(item.id, item.level)"
+                v-if="
+                  item.parent_id !== 0 &&
+                  (copy_fields_properties[idx + 1]
+                    ? copy_fields_properties[idx + 1]?.level <= item.level
+                    : true)
+                "
+                class="w-10 h-10 p-1 pointer transition-all duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-valencia-50 hover:text-valencia-500 rounded-lg inline-flex justify-center items-center"
+                title="Удаление категории"
+              >
+                <span
+                  class="material-icons-round absolute rotate-45"
+                  style="font-size: 38px; font-weight: bold"
+                >
+                  add
+                </span>
               </button>
               <button
+                :id="item.id"
+                @click="selected_category_id = item.id"
+                class="w-10 h-10 p-1 pointer transition-all duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-fruit-salad-100/80 hover:text-fruit-salad-500 rounded-lg inline-flex justify-center items-center"
+                :ref="
+                  (el) =>
+                    item.id === selected_category_id ? (target = el) : null
+                "
+                :title="target === null ? 'Добавлние новой подкатегории' : null"
+              >
+                <span
+                  class="material-icons-round absolute"
+                  style="font-size: 38px; font-weight: bold"
+                >
+                  add
+                </span>
+              </button>
+              <!-- <button
                 :id="item.id"
                 @click="selected_category_id = item.id"
                 class="btns"
@@ -141,7 +176,7 @@
                 :title="target === null ? 'Добавлние новой подкатегории' : null"
               >
                 <div class="add btn"></div>
-              </button>
+              </button> -->
             </div>
           </div>
         </draggable>
@@ -382,52 +417,55 @@ export default {
           outline: none;
           position: relative;
           cursor: pointer;
-          .add_teleport {
-            position: absolute;
-            top: 90%;
-            left: -150%;
+        }
+        .add_teleport {
+          color: #212529;
+          position: absolute;
+          top: 90%;
+          // left: -150%;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          height: 30px;
+          .input_teleport {
+            box-sizing: border-box;
+            width: 100px;
+            height: 100%;
+            border-radius: 0.25rem 0 0 0.25rem;
+            padding: 4px 8px;
+            background-color: white;
+            border: 1px solid #ced4da;
+            outline: none;
+            appearance: none;
+            transition: all 0.2s ease-in-out;
+            @include font(400, 16px, 20px);
+          }
+          .input_teleport:focus {
+            color: #212529;
+            background-color: white;
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 1px rgb(13 110 253 / 25%);
+          }
+          .button_teleport {
+            cursor: pointer;
+            border: 1px solid #ced4da;
+            border-left: none;
+            border-radius: 0 0.25rem 0.25rem 0;
+            outline: none;
+            width: 30px;
+            height: 100%;
+            padding: 0;
+            background-color: white;
             display: flex;
-            flex-direction: row;
-            align-items: center;
             justify-content: center;
-            height: 30px;
-            .input_teleport {
-              box-sizing: border-box;
-              width: 100px;
-              height: 100%;
-              border-radius: 0.25rem 0 0 0.25rem;
-              padding: 4px 8px;
-              background-color: white;
-              border: 1px solid #ced4da;
-              outline: none;
-              appearance: none;
-              transition: all 0.2s ease-in-out;
-              @include font(400, 16px, 20px);
-            }
-            .input_teleport:focus {
-              color: #212529;
-              background-color: white;
-              border-color: #86b7fe;
-              box-shadow: 0 0 0 1px rgb(13 110 253 / 25%);
-            }
-            .button_teleport {
-              cursor: pointer;
-              border: 1px solid #ced4da;
-              border-left: none;
-              border-radius: 0 0.25rem 0.25rem 0;
-              outline: none;
-              width: 30px;
-              height: 100%;
-              padding: 0;
-              background-color: white;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              @include font(400, 16px);
-            }
-            .button_teleport:active {
-              background-color: rgba(0, 0, 0, 0.125);
-            }
+            align-items: center;
+            @include font(400, 16px);
+          }
+          .button_teleport:active {
+            background-color: rgba(0, 0, 0, 0.125);
           }
         }
         .btn {
