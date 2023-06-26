@@ -76,7 +76,7 @@
               <div title="Изменение названия категории" class="text_block">
                 <input
                   type="text"
-                  class="input"
+                  class="input_uderline"
                   @keyup.enter="rename(item.id)"
                   v-model="item.name"
                   :disabled="item.parent_id === 0"
@@ -116,7 +116,9 @@
                 v-if="isTest"
               />
             </div>
-            <div class="flex flex-row items-center gap-1">
+            <div
+              class="flex flex-row items-center justify-end gap-1 min-w-[84px]"
+            >
               <!-- <button
                 @click.stop="setRemoveModalConfig(item.id, item.level)"
                 v-if="
@@ -138,20 +140,20 @@
                     ? copy_fields_properties[idx + 1]?.level <= item.level
                     : true)
                 "
-                class="w-10 h-10 p-1 pointer transition-all duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-valencia-50 hover:text-valencia-500 rounded-lg inline-flex justify-center items-center"
+                class="w-10 h-10 p-1 pointer transition-all overflow-hidden duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-valencia-50 hover:text-valencia-500 rounded-lg inline-flex justify-center items-center"
                 title="Удаление категории"
               >
                 <span
-                  class="material-icons-round absolute rotate-45"
-                  style="font-size: 38px; font-weight: bold"
+                  class="material-icons-round absolute"
+                  style="font-size: 30px; font-weight: bold"
                 >
-                  add
+                  close
                 </span>
               </button>
               <button
                 :id="item.id"
                 @click="selected_category_id = item.id"
-                class="w-10 h-10 p-1 pointer transition-all duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-fruit-salad-100/80 hover:text-fruit-salad-500 rounded-lg inline-flex justify-center items-center"
+                class="w-10 h-10 p-1 pointer justify-self-end transition-all duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-fruit-salad-100/80 hover:text-fruit-salad-500 rounded-lg inline-flex justify-center items-center"
                 :ref="
                   (el) =>
                     item.id === selected_category_id ? (target = el) : null
@@ -160,7 +162,7 @@
               >
                 <span
                   class="material-icons-round absolute"
-                  style="font-size: 38px; font-weight: bold"
+                  style="font-size: 38px; font-weight: 400"
                 >
                   add
                 </span>
@@ -390,6 +392,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 16px;
         padding: 8px 16px;
         margin-top: -1px;
         cursor: grab;
@@ -402,7 +405,9 @@ export default {
         .input_name {
           display: flex;
           flex-direction: row;
+          width: 100%;
           .text_block {
+            width: 100%;
             position: relative;
           }
         }
@@ -579,5 +584,9 @@ export default {
   border-radius: 6px;
   box-sizing: border-box;
   @include font(400, 16px, 20px);
+}
+.input_uderline {
+  flex-shrink: 2;
+  min-width: 30%;
 }
 </style>
