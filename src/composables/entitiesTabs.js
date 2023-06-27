@@ -15,6 +15,7 @@ export function useEntitiesTabs() {
         addName: "addOrdersField",
         updateName: "updateOrdersField",
         deleteName: "deleteOrdersField",
+        isBase: true,
         haveStatuses: true,
         haveSort: true,
       },
@@ -66,7 +67,7 @@ export function useEntitiesTabs() {
     },
   });
 
-  tabs.select(tabs.list[0]);
+  tabs.select(tabs.list.find((el) => el.isBase));
 
   return { tabs };
 }
