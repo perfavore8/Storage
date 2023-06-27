@@ -442,7 +442,7 @@ export default {
             last: Math.ceil(poz.length / maxCount.value),
           },
           isOpen: false,
-          name: order.lead_name,
+          name: isTest.value ? order.fields?.name : order.lead_name,
           lead_id: order.lead_id,
           client: client,
           otv: order.responsible_name,
