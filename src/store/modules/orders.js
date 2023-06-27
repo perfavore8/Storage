@@ -1,8 +1,11 @@
 import { BaseURL, TOKEN } from "@/composables/BaseURL";
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 import { useNewDeal } from "@/composables/newDeal";
+import store from "..";
+import { computed } from "vue";
 const { preparation_params } = usePreparationQueryParams();
 const { newDealParams, order } = useNewDeal();
+const isTest = computed(() => store.state.account.account?.id === 1);
 export default {
   state: {
     orders: {},
@@ -51,7 +54,7 @@ export default {
   actions: {
     async getOrders(context, params) {
       context.commit("updateIsLoading", true);
-      const url = BaseURL + "orders/list";
+      const url = BaseURL + (isTest.value ? "orders/list-v2" : "orders/list");
       const res = await fetch(url, {
         method: "POST",
         headers: {
