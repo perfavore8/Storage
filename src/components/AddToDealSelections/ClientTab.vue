@@ -82,7 +82,10 @@ export default {
         getFieldsUrl: "getClientsContactsFields",
         getAutocompeteUrl: "getClientsContactsAutocomplete",
         fields: computed(() => store.state.clientsContacts.fields),
-        items: computed(() => order?.company?.contacts),
+        items: computed(() => [
+          ...order?.company?.contacts,
+          ...order?.contacts,
+        ]),
         placeholderForSearch: "Поиск контактов",
         orderFieldForSave: "contact_id",
         isMultiSave: true,
