@@ -406,7 +406,7 @@ export default {
       orders.value.forEach((order) => {
         const poz = [];
         let posTotalSum = 0;
-        order.positions.forEach((pos) => {
+        order.positions?.forEach((pos) => {
           posTotalSum += pos?.sum;
           const a = {
             name: pos?.name,
