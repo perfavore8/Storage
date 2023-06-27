@@ -1,6 +1,6 @@
 <template>
   <li
-    class="flex justify-between px-6 py-5 rounded-xl w-full transition-all relative"
+    class="flex justify-between max-w-xl px-6 py-5 rounded-xl w-full transition-all relative"
     :class="{
       'bg-slate-100': show,
       'cursor-pointer, hover:bg-slate-50': !alwaysShow,
