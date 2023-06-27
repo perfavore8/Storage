@@ -27,6 +27,7 @@
           :fields="col.fields"
           :placeholders="col.placeholders"
           :alwaysShow="col.items.length === 1"
+          @unLink="() => unLink(item, col)"
           v-show="item"
         />
       </template>
@@ -50,7 +51,7 @@ export default {
     ClientTabItem,
   },
   setup() {
-    const { order } = useNewDeal();
+    const { order, getOrder, saveOrder, toggleSomeChange } = useNewDeal();
 
     onMounted(() => {
       list.forEach((item) =>
@@ -111,7 +112,22 @@ export default {
       )
     );
 
-    return { list, autocompleteList };
+    const unLink = async (item, params) => {
+      toggleSomeChange(true);
+      if (params.isMultiSave) {
+        if (order[params.field] === undefined)
+          order[params.orderFieldForSave] = [];
+        order[params.orderFieldForSave] = order[
+          params.orderFieldForSave
+        ].filter((el) => el !== item.id);
+      } else {
+        order[params.orderFieldForSave] = null;
+      }
+      await saveOrder();
+      getOrder();
+    };
+
+    return { list, autocompleteList, unLink };
   },
 };
 </script>
