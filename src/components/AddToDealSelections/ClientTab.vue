@@ -69,7 +69,7 @@ export default {
         fields: computed(() => store.state.clientsCompany.fields),
         items: computed(() => [order?.company]),
         placeholderForSearch: "Поиск компаний",
-        field: "company_id",
+        orderFieldForSave: "company_id",
         placeholders: {
           title: "name",
           subTitle: "signatory",
