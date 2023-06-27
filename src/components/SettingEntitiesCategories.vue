@@ -188,75 +188,67 @@
 </template>
 <script>
 import ProductsCategoryRemoveModal from "@/components/ProductsCategoryRemoveModal.vue";
-import { nextTick } from "vue";
+// import { nextTick } from "vue";
+import { ref, watch, computed, nextTick, reactive, onMounted } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
+import store from "@/store";
 export default {
   components: {
     ProductsCategoryRemoveModal,
     draggable: VueDraggableNext,
   },
-  data() {
-    return {
-      fields_cat_name: "",
-      selected_category_id: null,
-      target: null,
-      all_old: {},
-      isDragged: null,
-      confirm: false,
-      del_modal_config: {
-        show: false,
-        id: null,
-        level: null,
-      },
-      timer: null,
-    };
-  },
-  async mounted() {
-    await this.$store.dispatch("get_fields_properties");
-    this.get_all_old();
-  },
-  computed: {
-    copy_fields_properties() {
-      return this.$store.state.categories.fields_properties;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
-    },
-  },
-  watch: {
-    target: {
-      handler: function () {
-        nextTick(() => {
-          if (this.target !== null) this.$refs.input.focus();
-        });
-      },
-      deep: true,
-    },
-  },
-  methods: {
-    changeImgUrl(item) {
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
+  setup(props, context) {
+    const fields_cat_name = ref("");
+    const selected_category_id = ref(null);
+    const target = ref(null);
+    const all_old = reactive({});
+    const isDragged = ref(null);
+    const confirm = ref(false);
+    const del_modal_config = reactive({
+      show: false,
+      id: null,
+      level: null,
+    });
+    const timer = ref(null);
+
+    onMounted(async () => {
+      await store.dispatch("get_fields_properties");
+      get_all_old();
+    });
+
+    const copy_fields_properties = computed(() => {
+      return store.state.categories.fields_properties;
+    });
+
+    const isTest = computed(() => {
+      return store.state.account?.account?.id == 1;
+    });
+
+    const changeImgUrl = (item) => {
+      clearTimeout(timer.value);
+      timer.value = setTimeout(() => {
         const params = {
           id: item.id,
           name: item.name,
           parent_id: item.parent_id,
           img_url: item.img_url,
         };
-        this.$store.dispatch("update_fields_properties", params);
+        store.dispatch("update_fields_properties", params);
       }, 1000);
-    },
-    changeData(event) {
+    };
+
+    const changeData = (event) => {
       const newidx = event.moved.newIndex;
-      const list = [...this.copy_fields_properties];
+      const list = [...copy_fields_properties.value];
       const params = {
         id: list[newidx].id,
         parent_id: list[newidx - 1].id,
         name: "",
       };
-      this.$store.dispatch("update_fields_properties", params);
-    },
-    get_all_old() {
+      store.dispatch("update_fields_properties", params);
+    };
+
+    const get_all_old = () => {
       const list = {
         name: [],
         id: [],
@@ -265,25 +257,27 @@ export default {
         level: [],
         levels: [],
       };
-      this.$store.state.categories.fields_properties.forEach((val) =>
+      store.state.categories.fields_properties.forEach((val) =>
         Object.entries(val).forEach((value) => list[value[0]]?.push(value[1]))
       );
-      Object.assign(this.all_old, list);
-    },
-    add_new() {
-      const parent = this.copy_fields_properties.find(
-        (val) => val.id === this.selected_category_id
+      Object.assign(all_old, list);
+    };
+
+    const add_new = () => {
+      const parent = copy_fields_properties.value.find(
+        (val) => val.id === selected_category_id.value
       );
-      if (parent.level + 1 <= 10 && this.fields_cat_name != "") {
-        this.$store.dispatch("add_fields_properties", {
-          name: this.fields_cat_name,
+      if (parent.level + 1 <= 10 && fields_cat_name.value != "") {
+        store.dispatch("add_fields_properties", {
+          name: fields_cat_name.value,
           parent_id: parent.id,
         });
-        this.reset_fields_cat_name();
+        reset_fields_cat_name();
       }
-    },
-    async rename(id) {
-      const item = [...this.copy_fields_properties].find(
+    };
+
+    const rename = async (id) => {
+      const item = [...copy_fields_properties.value].find(
         (val) => val.id === id
       );
       const params = {
@@ -291,55 +285,99 @@ export default {
         parent_id: "",
         name: item.name,
       };
-      await this.$store.dispatch("update_fields_properties", params);
+      await store.dispatch("update_fields_properties", params);
 
-      this.confirm = true;
+      confirm.value = true;
       setTimeout(() => {
-        this.confirm = false;
-        this.get_all_old();
+        confirm.value = false;
+        get_all_old();
       }, 1000);
-    },
-    prevname(id) {
-      this.$store.state.categories.fields_properties.map((val) => {
+    };
+
+    const prevname = (id) => {
+      store.state.categories.fields_properties.map((val) => {
         const name = () => {
           let res = "";
-          this.all_old.id.forEach((value, idx) =>
-            value === id ? (res = this.all_old.name[idx]) : null
+          all_old.id.forEach((value, idx) =>
+            value === id ? (res = all_old.name[idx]) : null
           );
           return res;
         };
-        if (val.id === id) (val.name = name()), this.rename(id);
+        if (val.id === id) (val.name = name()), rename(id);
       });
-    },
-    reset_fields_cat_name() {
-      this.selected_category_id = null;
-      this.fields_cat_name = "";
-      this.target = null;
-    },
-    calculate_width(level) {
+    };
+
+    const reset_fields_cat_name = () => {
+      selected_category_id.value = null;
+      fields_cat_name.value = "";
+      target.value = null;
+    };
+
+    const calculate_width = (level) => {
       let width = 100;
       width = width * 0.95 ** (level - 1);
       return width;
-    },
-    setRemoveModalConfig(id, level) {
-      this.del_modal_config.level = level;
-      this.del_modal_config.id = id;
-      this.del_modal_config.show = true;
-    },
-    remove() {
-      if (this.del_modal_config.level != 1) {
-        this.$store.dispatch("delete_fields_properties", {
-          id: this.del_modal_config.id,
+    };
+
+    const setRemoveModalConfig = (id, level) => {
+      del_modal_config.level = level;
+      del_modal_config.id = id;
+      del_modal_config.show = true;
+    };
+
+    const remove = () => {
+      if (del_modal_config.level != 1) {
+        store.dispatch("delete_fields_properties", {
+          id: del_modal_config.id,
         });
       }
-      this.closeRemoveModal();
-    },
-    closeRemoveModal() {
-      this.del_modal_config.show = false;
-    },
-    close() {
-      this.$emit("toggleCategories", false);
-    },
+      closeRemoveModal();
+    };
+
+    const closeRemoveModal = () => {
+      del_modal_config.show = false;
+    };
+
+    const close = () => {
+      context.emit("toggleCategories", false);
+    };
+
+    const input = ref(null);
+    watch(
+      target,
+      () => {
+        nextTick(() => {
+          if (target.value !== null) input.value.focus();
+        });
+      },
+      { deep: true }
+    );
+
+    return {
+      fields_cat_name,
+      selected_category_id,
+      target,
+      all_old,
+      isDragged,
+      confirm,
+      del_modal_config,
+      timer,
+      copy_fields_properties,
+      isTest,
+      changeImgUrl,
+      changeData,
+      get_all_old,
+      add_new,
+      rename,
+      prevname,
+      reset_fields_cat_name,
+      calculate_width,
+      setRemoveModalConfig,
+      remove,
+      closeRemoveModal,
+      close,
+      input,
+    };
   },
 };
 </script>
