@@ -1,6 +1,6 @@
 <template>
   <li
-    class="flex justify-between px-6 py-5 rounded-xl w-full transition-all"
+    class="flex justify-between px-6 py-5 rounded-xl w-full transition-all relative"
     :class="{
       'bg-slate-100': show,
       'cursor-pointer, hover:bg-slate-50': !alwaysShow,
@@ -61,6 +61,13 @@
         </div>
       </div>
     </template>
+    <button
+      v-if="alwaysShow || show"
+      class="btn absolute top-5 right-4 bg-transparent focus-visible:underline focus-visible:underline-offset-4 hover:underline hover:underline-offset-4"
+      @click="unLink()"
+    >
+      Отвязать
+    </button>
   </li>
 </template>
 
@@ -74,14 +81,19 @@ export default {
     fields: Array,
     alwaysShow: Boolean,
   },
-  setup() {
+  emits: ["unLink"],
+  setup(props, context) {
     const { getColor } = useClients();
 
     const [show, toggle] = useToggle(false);
 
-    return { show, toggle, getColor };
+    const unLink = () => context.emit("unLink");
+
+    return { show, toggle, getColor, unLink };
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import "@/app.scss";
+</style>
