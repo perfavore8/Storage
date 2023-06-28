@@ -28,6 +28,7 @@
           :placeholders="col.placeholders"
           :alwaysShow="col.items.length === 1"
           @unLink="() => unLink(item, col)"
+          @link="() => link(item)"
           v-show="item"
         />
       </template>
@@ -84,9 +85,17 @@ export default {
         getAutocompeteUrl: "getClientsContactsAutocomplete",
         fields: computed(() => store.state.clientsContacts.fields),
         items: computed(() => [
-          ...order?.company?.contacts,
-          ...order?.contacts,
+          ...(order?.company?.contacts
+            .filter((el) => !list[1].linkedIds.includes(el.id))
+            .map((el) => Object.assign(el, { isUnLink: true })) || []),
+          ...(order?.contacts || []),
         ]),
+        linkedIds: computed(() =>
+          order?.contacts.reduce((acc, item) => {
+            acc.push(item.id);
+            return acc;
+          }, [])
+        ),
         placeholderForSearch: "Поиск контактов",
         orderFieldForSave: "contact_id",
         isMultiSave: true,
@@ -121,13 +130,16 @@ export default {
           params.orderFieldForSave
         ].filter((el) => el !== item.id);
       } else {
-        order[params.orderFieldForSave] = null;
+        order[params.orderFieldForSave] = 0;
       }
       await saveOrder();
       getOrder();
     };
 
-    return { list, autocompleteList, unLink };
+    const link = (item) =>
+      autocompleteList.find((el) => el.code === "Contacts").select(item);
+
+    return { list, autocompleteList, unLink, link };
   },
 };
 </script>

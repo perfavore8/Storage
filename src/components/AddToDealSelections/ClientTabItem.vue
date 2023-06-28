@@ -64,9 +64,9 @@
     <button
       v-if="alwaysShow || show"
       class="btn absolute top-5 right-4 bg-transparent focus-visible:underline focus-visible:underline-offset-4 hover:underline hover:underline-offset-4"
-      @click="unLink()"
+      @click="item.isUnLink ? link() : unLink()"
     >
-      Отвязать
+      {{ item.isUnLink ? "Привязать" : " Отвязать" }}
     </button>
   </li>
 </template>
@@ -81,15 +81,16 @@ export default {
     fields: Array,
     alwaysShow: Boolean,
   },
-  emits: ["unLink"],
+  emits: ["unLink", "link"],
   setup(props, context) {
     const { getColor } = useClients();
 
     const [show, toggle] = useToggle(false);
 
     const unLink = () => context.emit("unLink");
+    const link = () => context.emit("link");
 
-    return { show, toggle, getColor, unLink };
+    return { show, toggle, getColor, unLink, link };
   },
 };
 </script>
