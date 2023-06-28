@@ -151,6 +151,9 @@ export default {
       return json;
     },
     async updateOrder(context, params) {
+      const copy = JSON.parse(JSON.stringify(order));
+      delete copy.contacts;
+      delete copy.company;
       const url = BaseURL + "orders/update";
       await fetch(url, {
         method: "POST",
@@ -159,7 +162,7 @@ export default {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...Object.assign(order, params),
+          ...Object.assign(copy, params),
           order_id: newDealParams.id,
         }),
       });

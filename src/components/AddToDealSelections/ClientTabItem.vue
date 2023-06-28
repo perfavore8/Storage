@@ -4,7 +4,7 @@
     :class="{
       'bg-slate-100': show,
       'cursor-pointer, hover:bg-slate-50': !alwaysShow,
-      'bg-slate-50': !alwaysShow && !item.isUnLink,
+      'bg-slate-50': !alwaysShow && !item?.isUnLink,
     }"
     @click="() => (alwaysShow ? null : toggle())"
   >
@@ -65,9 +65,9 @@
     <button
       v-if="alwaysShow || show"
       class="btn absolute top-5 right-4 bg-transparent focus-visible:underline focus-visible:underline-offset-4 hover:underline hover:underline-offset-4"
-      @click="item.isUnLink ? link() : unLink()"
+      @click="item?.isUnLink ? link() : unLink()"
     >
-      {{ item.isUnLink ? "Привязать" : " Отвязать" }}
+      {{ item?.isUnLink ? "Привязать" : " Отвязать" }}
     </button>
   </li>
 </template>

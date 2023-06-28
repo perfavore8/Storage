@@ -97,7 +97,7 @@ export default {
           }, [])
         ),
         placeholderForSearch: "Поиск контактов",
-        orderFieldForSave: "contact_id",
+        orderFieldForSave: "contacts_id",
         isMultiSave: true,
         placeholders: {
           title: "name",
