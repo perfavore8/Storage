@@ -5,6 +5,7 @@
       type="text"
       class="input"
       v-model="copy_selected_option"
+      @input="() => option_select(copy_selected_option)"
       :disabled="disabled"
     />
   </div>
@@ -52,9 +53,9 @@ export default {
     selected_option() {
       this.change_value();
     },
-    copy_selected_option() {
-      this.option_select(this.copy_selected_option);
-    },
+    // copy_selected_option() {
+    //   this.option_select(this.copy_selected_option);
+    // },
   },
   methods: {
     change_value() {
