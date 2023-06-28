@@ -21,6 +21,21 @@
           />
         </svg>
       </button>
+      <transition name="side">
+        <button
+          class="absolute top-20 left-0 btn pointer-events-auto inline-flex transition-all rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          @click="saveParams.save()"
+          v-if="saveParams.needSave"
+        >
+          <template v-if="saveParams.isSaving">
+            Сохраняем
+            <span class="animate-pulse ml-1">.</span>
+            <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
+            <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
+          </template>
+          <template v-else> Сохранить </template>
+        </button>
+      </transition>
       <AppRadioBtnsGroupUnderlined
         class="w-4/5"
         :list="tabs.list"
@@ -53,7 +68,7 @@ export default {
     AppRadioBtnsGroupUnderlined,
   },
   setup() {
-    const { add } = useNewDeal();
+    const { add, saveParams } = useNewDeal();
     const { tabs } = useAddToDealTabs();
 
     const back = () => router.push("/");
@@ -62,7 +77,7 @@ export default {
       add();
     });
 
-    return { tabs, back };
+    return { tabs, back, saveParams };
   },
 };
 </script>
@@ -92,5 +107,14 @@ export default {
     align-items: center;
     width: 100%;
   }
+}
+.side-enter-active,
+.side-leave-active {
+  transition: all 0.3s ease;
+}
+.side-enter-from,
+.side-leave-to {
+  opacity: 0.5;
+  transform: translateX(calc(-100% - 46px));
 }
 </style>

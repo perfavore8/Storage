@@ -58,7 +58,21 @@ export function useNewDeal() {
 
   const saveOrder = async () => {
     await store.dispatch("updateOrder", {});
+    toggleSomeChange(false);
   };
+
+  const saveParams = reactive({
+    isSaving: false,
+    needSave: computed(() => someChange.value || saveParams.isSaving),
+    save: async function () {
+      this.isSaving = true;
+      await saveOrder();
+      await getOrder();
+      setTimeout(() => {
+        this.isSaving = false;
+      }, 3000);
+    },
+  });
 
   return {
     add,
@@ -68,5 +82,6 @@ export function useNewDeal() {
     saveOrder,
     toggleSomeChange,
     isOrederLoaded,
+    saveParams,
   };
 }
