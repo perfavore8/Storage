@@ -16,9 +16,13 @@ export default {
       page: 1,
     },
     isLoading: false,
+    tableConfig: {},
   },
   getters: {},
   mutations: {
+    updateTableConfig(state, value) {
+      state.tableConfig = { ...value };
+    },
     updateOrders(state, value) {
       state.orders = [...value];
     },
@@ -346,6 +350,35 @@ export default {
       });
       const json = await res.json();
 
+      return json;
+    },
+
+    async getOrdersTableConfig(context, code) {
+      const url = BaseURL + "account/table-config";
+      const res = await fetch(url + "?code=" + code, {
+        headers: {
+          Authorization: TOKEN,
+        },
+      });
+      const json = await res.json();
+      context.commit("updateTableConfig", json);
+
+      return json;
+    },
+    async updateOrdersConfigTable(context, params) {
+      const url = BaseURL + "account/table-config";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: TOKEN,
+        },
+        body: JSON.stringify(params.value),
+      });
+      const json = await res.json();
+      console.log("update_config_table", json);
+      await context.dispatch("getOrdersTableConfig", params.wh);
+      context.dispatch("getOrdersFields");
       return json;
     },
   },
