@@ -3,7 +3,7 @@
     <NavBar />
     <HomeMenu />
   </header>
-  <HomeModals />
+  <HomeModals :selectedWH="selectedWH" />
 </template>
 
 <script>
@@ -12,6 +12,7 @@ import HomeMenu from "@/components/HomeMenu.vue";
 import HomeModals from "@/components/HomeModals.vue";
 export default {
   components: { NavBar, HomeMenu, HomeModals },
+  props: { selectedWH: { type: Object, required: false } },
   setup() {},
 };
 </script>

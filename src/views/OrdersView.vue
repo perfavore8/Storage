@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <div class="header">
-      <AppHeader />
+      <AppHeader :selectedWH="{ name: 'Заказы', value: 'orders' }" />
     </div>
     <div class="wrapper">
       <div
