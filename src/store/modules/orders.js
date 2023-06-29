@@ -353,9 +353,9 @@ export default {
       return json;
     },
 
-    async getOrdersTableConfig(context, code) {
-      const url = BaseURL + "account/table-config";
-      const res = await fetch(url + "?code=" + code, {
+    async getOrdersTableConfig(context) {
+      const url = BaseURL + "orders/table-config";
+      const res = await fetch(url, {
         headers: {
           Authorization: TOKEN,
         },
@@ -366,7 +366,7 @@ export default {
       return json;
     },
     async updateOrdersConfigTable(context, params) {
-      const url = BaseURL + "account/table-config";
+      const url = BaseURL + "orders/table-config";
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -376,8 +376,8 @@ export default {
         body: JSON.stringify(params.value),
       });
       const json = await res.json();
-      console.log("update_config_table", json);
-      await context.dispatch("getOrdersTableConfig", params.wh);
+      console.log("updateOrdersConfigTable", json);
+      await context.dispatch("getOrdersTableConfig");
       context.dispatch("getOrdersFields");
       return json;
     },
