@@ -618,10 +618,16 @@ export default {
               : 0;
             params[val].title_sort = copy_fields[idx][val].title_sort;
           } else if (val == "config") {
-            params[val].double_in_new_bath = copy_fields[idx][val]
-              .double_in_new_bath.value
-              ? 1
-              : 0;
+            params[val] = copy_fields[idx][val];
+            if (copy_fields[idx][val].double_in_new_bath)
+              params[val].double_in_new_bath = copy_fields[idx][val]
+                .double_in_new_bath.value
+                ? 1
+                : 0;
+            if (copy_fields[idx][val]) {
+              params[val].sort = copy_fields[idx][val].sort;
+              params[val].table = copy_fields[idx][val].table;
+            }
           } else {
             params[val] = copy_fields[idx][val];
           }
@@ -746,8 +752,8 @@ export default {
       const currentSort = copy_fields[idx].config?.sort;
       if (
         copy_fields[idx].config?.sort === undefined ||
-        (copy_fields[idx - 1].config?.sort === undefined && isUp) ||
-        (copy_fields[idx + 1].config?.sort === undefined && !isUp)
+        (copy_fields[idx - 1]?.config?.sort === undefined && isUp) ||
+        (copy_fields[idx + 1]?.config?.sort === undefined && !isUp)
       )
         return;
       if (isUp) {
@@ -757,11 +763,11 @@ export default {
         copy_fields[idx].config.sort = copy_fields[idx + 1].config?.sort;
         copy_fields[idx + 1].config.sort = currentSort;
       }
-      update_field(idx, ["sort"]);
+      update_field(idx, ["config"]);
       if (isUp) {
-        update_field(idx - 1, ["sort"]);
+        update_field(idx - 1, ["config"]);
       } else {
-        update_field(idx + 1, ["sort"]);
+        update_field(idx + 1, ["config"]);
       }
       get_fields();
     };
