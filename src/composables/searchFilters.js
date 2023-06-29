@@ -91,10 +91,6 @@ export function useSearchFilters(setOfInstructions) {
       }
     };
 
-    console.log(
-      filtersValue.filter((val) => val.value != null && val.value !== "")
-    );
-
     filtersValue
       .filter((val) => val.value != null && val.value !== "")
       .forEach((val) => {
