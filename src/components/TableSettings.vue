@@ -11,8 +11,8 @@
             >Перетаскивайте колонки для изменения очередности</small
           >
         </div>
-        <draggable class="dragArea" :list="list" @change="changeData">
-          <div class="item" v-for="item in list" :key="item">
+        <draggable class="dragArea" :list="sortedList" @change="changeData">
+          <div class="item" v-for="item in sortedList" :key="item">
             <input
               type="checkbox"
               v-model="item.visible"
@@ -34,64 +34,72 @@
 
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
-// import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
+import { computed, onMounted, reactive } from "vue";
+import store from "@/store";
+import { useTableSettingsConfig } from "@/composables/tableSettingsConfig";
 export default {
   components: {
     draggable: VueDraggableNext,
     BtnsSaveClose,
   },
   props: {
-    selectedWH: {
-      type: Object,
-    },
+    selectedWH: { type: Object },
   },
   emits: {},
-  data() {
-    return {
-      list: [],
-    };
-  },
-  computed: {
-    tableConfig() {
-      return this.$store.state.account.tableConfig;
-    },
-  },
-  async mounted() {
-    await this.$store.dispatch(
-      "getTableConfig",
-      this.selectedWH.value != "whs" ? this.selectedWH.value : ""
+
+  setup(props) {
+    const { currentConfig: config } = useTableSettingsConfig(
+      props.selectedWH.value === "orders" ? "orders" : "stock"
     );
-    const list = [];
-    Object.entries(this.tableConfig).map((val) => {
-      val[1].code = val[0];
-      list.push(val[1]);
+
+    const list = reactive([]);
+    const sortedList = computed(() =>
+      [...list]
+        .sort((a, b) => a.sort - b.sort)
+        .sort((a) => (a.visible ? -1 : 1))
+    );
+
+    const tableConfig = computed(
+      () => store.state[config.value.stateName]?.[config.value.stateConfigField]
+    );
+
+    const currentWH = computed(() =>
+      props.selectedWH.value != "whs" ? props.selectedWH.value : ""
+    );
+
+    onMounted(async () => {
+      await store.dispatch(config.value.getStateReqName, currentWH.value);
+
+      const preparedTC = [];
+      Object.entries(tableConfig.value).map(([key, value]) => {
+        value.code = key;
+        preparedTC.push(value);
+      });
+      Object.assign(list, JSON.parse(JSON.stringify(preparedTC)));
+      list.map((item) => (item.visible = Boolean(item.visible)));
     });
-    this.list = JSON.parse(JSON.stringify(list));
-    this.list.map((item) => {
-      if (item.visible === 1) item.visible = true;
-      if (item.visible === 0) item.visible = false;
-    });
-  },
-  methods: {
-    save() {
-      this.list.map((val, idx) => (val.sort = idx + 1));
+
+    const save = () => {
+      list.map((val, idx) => (val.sort = idx + 1));
       const params = {
         value: {
           config: [],
-          code: this.selectedWH.value != "whs" ? this.selectedWH.value : "",
         },
-        wh: this.selectedWH.value != "whs" ? this.selectedWH.value : "",
       };
-      this.list.forEach((val) => {
+      if (config.value.haveWH)
+        (params.wh = currentWH.value), (params.value.code = currentWH.value);
+      list.forEach((val) => {
         if (val.visible) params.value.config.push(val.code);
       });
-      this.$store.dispatch("update_config_table", params);
-      this.$store.commit("close_table_settings");
-    },
-    close() {
-      this.$store.commit("close_table_settings");
-    },
+      store.dispatch(config.value.updateStateReqName, params);
+      close();
+    };
+    const close = () => {
+      store.commit("close_table_settings");
+    };
+
+    return { list, tableConfig, save, close, sortedList };
   },
 };
 </script>
