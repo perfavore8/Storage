@@ -16,7 +16,13 @@ export function useSearchFilters(setOfInstructions) {
     if (Config.hasDifferentSources) {
       Config.sources.forEach((source) =>
         store.state?.[source.stateName][source.stateFieldsName].forEach(
-          (field) => res.push({ ...field, title: source.title })
+          (field) =>
+            res.push({
+              ...field,
+              title: source.title,
+              titleCode: source.code,
+              code: field.code + "_" + source.code,
+            })
         )
       );
     } else {
@@ -31,7 +37,10 @@ export function useSearchFilters(setOfInstructions) {
     )
   );
   const change_filter_value = (new_obj, code) => {
-    const item = filtersValue.find((el) => el.code === code);
+    const item = filtersValue.find(
+      (el) => el.code === code
+      //  && (titleCode ? el.titleCode === titleCode : true)
+    );
     Object.assign(item, new_obj);
   };
 
@@ -72,32 +81,46 @@ export function useSearchFilters(setOfInstructions) {
 
   const confirmFilters = () => {
     const filter = {};
+    const addToFilter = (val, value) => {
+      const code = val.code.split("_")[0];
+      if (Config.hasDifferentSources) {
+        if (!filter[val.titleCode]) filter[val.titleCode] = {};
+        filter[val.titleCode][code] = value;
+      } else {
+        filter[code] = value;
+      }
+    };
+
+    console.log(
+      filtersValue.filter((val) => val.value != null && val.value !== "")
+    );
+
     filtersValue
       .filter((val) => val.value != null && val.value !== "")
       .forEach((val) => {
         if (val.type == 1 || val.type == 2)
-          filter[val.code] = {
+          addToFilter(val, {
             compare: val.option,
             query: val.value,
-          };
+          });
         if (val.type == 3 || val.type == 4)
-          filter[val.code] = {
+          addToFilter(val, {
             compare: val.option,
             query: val.value,
-          };
+          });
         if (val.type == 5 || val.type == 6 || val.type == 12)
           if (val.value?.length)
-            filter[val.code] = {
+            addToFilter(val, {
               compare: "in",
               query: val.value,
-            };
+            });
         if (val.type == 7) {
           const date = val.value.split("~");
           date.forEach((val, idx) => (date[idx] = val.split("-").join(".")));
-          filter[val.code] = {
+          addToFilter(val, {
             from: date[0],
             to: date[1],
-          };
+          });
         }
         if (val.type == 8) {
           const date = val.value.split("~");
@@ -106,10 +129,10 @@ export function useSearchFilters(setOfInstructions) {
             split[0] = split[0].split("-").join(".");
             date[idx] = split.join(" ");
           });
-          filter[val.code] = {
+          addToFilter(val, {
             from: date[0],
             to: date[1],
-          };
+          });
         }
       });
 
@@ -168,6 +191,7 @@ export function useSearchFilters(setOfInstructions) {
         value: value,
         name: val.name,
         title: val.title,
+        titleCode: val.titleCode,
       };
       filtersValue.push(obj);
     });
