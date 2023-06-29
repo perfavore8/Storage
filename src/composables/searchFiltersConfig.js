@@ -17,18 +17,21 @@ export function useSearchFiltersConfig() {
       hasDifferentSources: true,
       sources: [
         {
+          code: "orders",
           title: "Заказы",
           getFieldsUrl: `getOrdersFields`,
           stateName: "orders",
           stateFieldsName: "fields",
         },
         {
+          code: "contacts",
           title: "Контакты",
           getFieldsUrl: "getClientsContactsFields",
           stateName: "clientsContacts",
           stateFieldsName: "fields",
         },
         {
+          code: "company",
           title: "Компании",
           getFieldsUrl: "getClientsCompanyFields",
           stateName: "clientsCompany",
