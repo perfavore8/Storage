@@ -18,6 +18,7 @@ export function useEntitiesTabs() {
         isBase: true,
         haveStatuses: true,
         haveSort: true,
+        haveVirtual: true,
       },
       {
         name: "Компании",

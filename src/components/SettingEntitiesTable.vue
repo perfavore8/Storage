@@ -657,7 +657,7 @@ export default {
       Object.assign(copy_fields, [
         ...store.state[selectedTab.value.storeName]?.[
           selectedTab.value.fieldsName
-        ],
+        ].filter((el) => !(selectedTab.value.haveVirtual && el.is_virtual)),
       ]);
       const copy_fields2 = JSON.parse(JSON.stringify(copy_fields));
       copy_fields2.map((val) => {
