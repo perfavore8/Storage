@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      option: 0,
+      option: 1,
       filterValue: null,
       options: ["=", "~"],
     };
@@ -56,7 +56,7 @@ export default {
     change_value() {
       nextTick(() => {
         this.filterValue = this.item.value;
-        if (this.item.value == null) this.option = 0;
+        if (this.item.value == null) this.option = 1;
       });
     },
     emit_value() {
