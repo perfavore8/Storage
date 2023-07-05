@@ -49,9 +49,14 @@ export default {
           Authorization: TOKEN,
         },
       });
+
+      if (!res.ok) return { res };
+
       const json = await res.json();
       context.commit("update_account", json.account);
       context.commit("update_user", json.user);
+
+      return { json, res };
     },
     async getTableConfig(context, code) {
       const url = BaseURL + "account/table-config";

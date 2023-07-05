@@ -71,7 +71,11 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  await store.dispatch("get_account");
+  if (to.path == "/authorization") next();
+
+  const { res } = await store.dispatch("get_account");
+  if (res.status == 403) next("/authorization");
+
   const account = store.state.account?.account;
   if (!account?.install && to.path != "/Error_is_not_installed")
     next("/Error_is_not_installed");
