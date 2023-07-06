@@ -11,8 +11,8 @@
             >Перетаскивайте колонки для изменения очередности</small
           >
         </div>
-        <draggable class="dragArea" :list="sortedList" @change="changeData">
-          <div class="item" v-for="item in sortedList" :key="item">
+        <draggable class="dragArea" :list="list">
+          <div class="item" v-for="item in list" :key="item">
             <input
               type="checkbox"
               v-model="item.visible"
@@ -54,11 +54,6 @@ export default {
     );
 
     const list = reactive([]);
-    const sortedList = computed(() =>
-      [...list]
-        .sort((a, b) => a.sort - b.sort)
-        .sort((a) => (a.visible ? -1 : 1))
-    );
 
     const tableConfig = computed(
       () => store.state[config.value.stateName]?.[config.value.stateConfigField]
@@ -99,7 +94,7 @@ export default {
       store.commit("close_table_settings");
     };
 
-    return { list, tableConfig, save, close, sortedList };
+    return { list, tableConfig, save, close };
   },
 };
 </script>
