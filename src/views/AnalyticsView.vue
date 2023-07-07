@@ -158,6 +158,7 @@ export default {
           { name: "Название", code: "title", type: 0 },
           { name: "Партия", code: "party", type: 0 },
           { name: "Колличество", code: "quantity", type: 0 },
+          { name: "Себестоимость", code: "cost_price", type: 0 },
           { name: "Начальный склад", code: "initial_warehouse", type: 0 },
           { name: "Итоговый склад", code: "final_warehouse", type: 0 },
           { name: "Пользователь", code: "user", type: 0 },
