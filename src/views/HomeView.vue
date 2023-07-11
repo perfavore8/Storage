@@ -36,8 +36,9 @@
       <div class="filters" :class="{ blur: show_edit_modal }">
         <div class="filters_left">
           <div class="date">
-            <div class="flex flex-row gap-5 items-center">
+            <div class="flex flex-row gap-5 items-center min-h-[34px]">
               <input
+                v-if="isTest"
                 type="date"
                 id="start"
                 name="trip-start"
