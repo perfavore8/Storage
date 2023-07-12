@@ -26,9 +26,13 @@ export default {
             const data = new Response(value);
 
             cache.put(key, data);
+
+            if (process.env.NODE_ENV === "development")
+              console.log("Сохраненная переменная в кэш:", value);
           })
           .catch((err) => {
-            console.error("Ошибка при сохранении переменной в кэш:", err);
+            if (process.env.NODE_ENV === "development")
+              console.error("Ошибка при сохранении переменной в кэш:", err);
           });
       }
 
