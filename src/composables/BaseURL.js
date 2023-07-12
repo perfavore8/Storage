@@ -40,7 +40,9 @@ let tokenPromise = null;
         resolve();
       })
       .catch((err) => {
-        console.error("Ошибка при извлечении переменной из кэша:", err);
+        if (process.env.NODE_ENV === "development")
+          console.error("Ошибка при извлечении переменной из кэша:", err);
+        resolve();
       });
   });
 })();
