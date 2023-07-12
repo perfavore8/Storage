@@ -1,6 +1,6 @@
 import router from "@/router";
 import { ref, watch } from "vue";
-import { TOKEN } from "../composables/BaseURL";
+import { getTOKEN } from "../composables/BaseURL";
 
 export function usePhoneCode() {
   const phoneCode = ref();
@@ -13,7 +13,7 @@ export function usePhoneCode() {
       if (str === "111111") {
         localStorage.setItem(
           "SalesUpAuthToken",
-          JSON.stringify(TOKEN.split(" ")[1])
+          JSON.stringify(getTOKEN().split(" ")[1])
         );
         router.push("/");
       }

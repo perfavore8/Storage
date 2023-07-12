@@ -71,26 +71,43 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.path == "/authorization") next();
+  if (to.path == "/authorization") {
+    next();
+    return;
+  }
 
   const { res } = await store.dispatch("get_account");
-  if (res.status == 403) next("/authorization");
+  if (res.status == 403) {
+    next("/authorization");
+    return;
+  }
 
   const account = store.state.account?.account;
-  if (!account?.install && to.path != "/Error_is_not_installed")
+  if (!account?.install && to.path != "/Error_is_not_installed") {
     next("/Error_is_not_installed");
+    return;
+  }
+
   if (
     (account?.install && to.path == "/Error_is_not_installed") ||
     (!account?.expired && to.path == "/Error_is_expired")
-  )
+  ) {
     next("/");
-  if (account?.expired && to.path != "/Error_is_expired")
+    return;
+  }
+
+  if (account?.expired && to.path != "/Error_is_expired") {
     next("/Error_is_expired"); // не забудь переключить !expired => expired
+    return;
+  }
+
   if (to.path == "/") {
     if (account.id == 148) {
       next("/documents");
+      return;
     } else {
       next("/orders");
+      return;
     }
   } else next();
 });

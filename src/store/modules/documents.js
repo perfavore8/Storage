@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 const { preparation_params } = usePreparationQueryParams();
 export default {
   state: {
@@ -46,7 +46,7 @@ export default {
         url + params.subUrl + preparation_params(params.value),
         {
           headers: {
-            Authorization: TOKEN,
+            Authorization: getTOKEN(),
           },
         }
       );
@@ -60,7 +60,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -73,7 +73,7 @@ export default {
       const url = BaseURL + "document/list";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -84,7 +84,7 @@ export default {
       const url = BaseURL + "document/listV2";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -96,7 +96,7 @@ export default {
       await fetch(url + preparation_params(params), {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       context.dispatch("get_documents_v2");
@@ -107,7 +107,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -119,7 +119,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -129,7 +129,7 @@ export default {
       const url = BaseURL + "document/refresh-fields";
       await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       context.dispatch("get_documents_v2");

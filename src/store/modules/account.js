@@ -1,4 +1,4 @@
-import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN, getTokenPromise } from "@/composables/BaseURL";
 export default {
   state: {
     account: {},
@@ -43,10 +43,11 @@ export default {
   },
   actions: {
     async get_account(context) {
+      await getTokenPromise();
       const url = BaseURL + "account/config";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
 
@@ -62,7 +63,7 @@ export default {
       const url = BaseURL + "account/table-config";
       const res = await fetch(url + "?code=" + code, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -72,7 +73,7 @@ export default {
       const url = BaseURL + "account/import-old-data ";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -82,7 +83,7 @@ export default {
       const url = BaseURL + "account/google-auth-url";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -92,7 +93,7 @@ export default {
       const url = BaseURL + "account/google-logout";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -102,7 +103,7 @@ export default {
       const url = BaseURL + "account/genezis-" + param;
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -114,7 +115,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params.value),
       });
@@ -128,7 +129,7 @@ export default {
       const url = BaseURL + "account/currencies";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -138,7 +139,7 @@ export default {
       const url = BaseURL + "account/pipelinesV2";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -148,7 +149,7 @@ export default {
       const url = BaseURL + "account/lead-fields";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -158,7 +159,7 @@ export default {
       const url = BaseURL + "account/lead-field-groups";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -168,7 +169,7 @@ export default {
       const url = BaseURL + "account/product-lists";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -178,7 +179,7 @@ export default {
       const url = BaseURL + "account/sync-fields";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -188,7 +189,7 @@ export default {
       const url = BaseURL + "account/import-fields";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -198,7 +199,7 @@ export default {
       const url = BaseURL + "account/import-templates";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -210,7 +211,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -224,7 +225,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -237,7 +238,7 @@ export default {
       const url = BaseURL + "account/genezis/sync";
       await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
     },
@@ -246,7 +247,7 @@ export default {
       const url = BaseURL + "account/users";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();

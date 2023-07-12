@@ -1,4 +1,4 @@
-import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 import store from "..";
 export default {
   state: {
@@ -33,7 +33,7 @@ export default {
       const url = BaseURL + "field/types";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -45,7 +45,7 @@ export default {
         url + "?category_id=" + category_id + "&with_parents=0",
         {
           headers: {
-            Authorization: TOKEN,
+            Authorization: getTOKEN(),
           },
         }
       );
@@ -56,7 +56,7 @@ export default {
       const url = BaseURL + "field/list";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -68,7 +68,7 @@ export default {
         url + "?category_id=" + category_id + "&with_parents=0",
         {
           headers: {
-            Authorization: TOKEN,
+            Authorization: getTOKEN(),
           },
         }
       );
@@ -85,7 +85,7 @@ export default {
           "&sort=created",
         {
           headers: {
-            Authorization: TOKEN,
+            Authorization: getTOKEN(),
           },
         }
       );
@@ -97,7 +97,7 @@ export default {
       const res = await fetch(url + "?id=" + id, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       // context.dispatch("get_fields");
@@ -109,7 +109,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -124,7 +124,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });

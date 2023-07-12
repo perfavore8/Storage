@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/components/WidgetAddToDeal/src/composables/preparationQueryParams";
-import { TOKEN, BaseURL } from "@/composables/BaseURL";
+import { getTOKEN, BaseURL } from "@/composables/BaseURL";
 const { preparation_params } = usePreparationQueryParams();
 
 export default {
@@ -26,7 +26,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -39,7 +39,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -52,7 +52,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();

@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 import { useNotification } from "@/composables/notification";
 const { preparation_params } = usePreparationQueryParams();
 const { addNotification } = useNotification();
@@ -67,7 +67,7 @@ export default {
         url + params.field + preparation_params(params.value),
         {
           headers: {
-            Authorization: TOKEN,
+            Authorization: getTOKEN(),
           },
         }
       );
@@ -80,7 +80,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -93,7 +93,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -107,7 +107,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -120,7 +120,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -133,7 +133,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -147,7 +147,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -160,7 +160,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -174,7 +174,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -188,7 +188,7 @@ export default {
     //     method: "POST",
     //     headers: {
     //       "Content-Type": "application/json",
-    //       Authorization: TOKEN,
+    //       Authorization: getTOKEN(),
     //     },
     //     body: JSON.stringify(params),
     //   });
@@ -201,7 +201,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });

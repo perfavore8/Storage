@@ -1,4 +1,4 @@
-import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 export default {
   state: {
     tasks: [],
@@ -14,7 +14,7 @@ export default {
       const url = BaseURL + "task/list";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -24,7 +24,7 @@ export default {
       const url = BaseURL + "product/sync-gs-amo";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -35,7 +35,7 @@ export default {
       const url = BaseURL + "product/sync-amo-gs";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();

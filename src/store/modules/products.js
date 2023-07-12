@@ -1,4 +1,4 @@
-import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 import { usePreparationProducts } from "@/composables/preparationProducts";
 const { preparationProducts } = usePreparationProducts();
 export default {
@@ -49,7 +49,7 @@ export default {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -62,7 +62,7 @@ export default {
       const url = BaseURL + "product/get";
       const res = await fetch(url + "?id=" + id, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -74,7 +74,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -88,7 +88,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -101,7 +101,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -115,7 +115,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -129,7 +129,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -142,7 +142,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: file,
       });
@@ -155,7 +155,7 @@ export default {
       const url = BaseURL + "product/autocomplete/article";
       const res = await fetch(url + "?query=" + query, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -165,7 +165,7 @@ export default {
       const url = BaseURL + "product/autocomplete/name";
       const res = await fetch(url + "?query=" + query, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -177,7 +177,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });

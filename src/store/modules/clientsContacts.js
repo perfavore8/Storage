@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 import { computed } from "vue";
 import { useClients } from "@/composables/clients";
 import { useClientsTabs } from "@/composables/clientsTabs";
@@ -60,7 +60,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -77,7 +77,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -93,7 +93,7 @@ export default {
       await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -104,7 +104,7 @@ export default {
     async deleteClientsContacts(context, params) {
       const url = BaseURL + "contact/delete";
       await fetch(url + preparation_params(params), {
-        headers: { Authorization: TOKEN },
+        headers: { Authorization: getTOKEN() },
       });
 
       getClientsList();
@@ -115,7 +115,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -129,7 +129,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -142,7 +142,7 @@ export default {
     async getClientsContactsTypes(context) {
       const url = BaseURL + "company/field/types"; //!!!!!!!!!!!!!<-company
       const res = await fetch(url, {
-        headers: { Authorization: TOKEN },
+        headers: { Authorization: getTOKEN() },
       });
       const json = await res.json();
       context.commit("updateContactsTypes", json);
@@ -151,7 +151,7 @@ export default {
     async getClientsContactsFields(context) {
       const url = BaseURL + "contact/field/list";
       const res = await fetch(url, {
-        headers: { Authorization: TOKEN },
+        headers: { Authorization: getTOKEN() },
       });
       const json = await res.json();
       context.commit("updateContactsFields", json);
@@ -161,7 +161,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -174,7 +174,7 @@ export default {
       await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -185,7 +185,7 @@ export default {
       await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -195,7 +195,7 @@ export default {
     async getClientsContactsAutocomplete(context, params) {
       const url = BaseURL + "contact/autocomplete";
       const res = await fetch(url + preparation_params(params), {
-        headers: { Authorization: TOKEN },
+        headers: { Authorization: getTOKEN() },
       });
       const json = await res.json();
 

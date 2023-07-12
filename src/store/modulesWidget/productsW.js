@@ -1,5 +1,5 @@
 import { usePreparationQueryParams } from "@/components/WidgetAddToDeal/src/composables/preparationQueryParams";
-import { TOKEN, BaseURL } from "@/composables/BaseURL";
+import { getTOKEN, BaseURL } from "@/composables/BaseURL";
 import { usePreparationProducts } from "@/components/WidgetAddToDeal/src/composables/preparationProducts";
 import { useNewDeal } from "@/composables/newDeal";
 const { preparationProducts } = usePreparationProducts();
@@ -96,7 +96,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -109,7 +109,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -122,7 +122,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -140,7 +140,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -161,7 +161,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
@@ -179,7 +179,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
@@ -197,7 +197,7 @@ export default {
       const json = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),

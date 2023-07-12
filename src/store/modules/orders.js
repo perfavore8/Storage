@@ -1,4 +1,4 @@
-import { BaseURL, TOKEN } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 import { useNewDeal } from "@/composables/newDeal";
 import store from "..";
@@ -63,7 +63,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -76,7 +76,7 @@ export default {
     async getOrdersTypes(context) {
       const url = BaseURL + "orders/field/types";
       const res = await fetch(url, {
-        headers: { Authorization: TOKEN },
+        headers: { Authorization: getTOKEN() },
       });
       const json = await res.json();
       context.commit("updateOrdersTypes", json);
@@ -85,7 +85,7 @@ export default {
     async getOrdersFields(context) {
       const url = BaseURL + "orders/field/list";
       const res = await fetch(url, {
-        headers: { Authorization: TOKEN },
+        headers: { Authorization: getTOKEN() },
       });
       const json = await res.json();
       context.commit("updateOrdersFields", json);
@@ -95,7 +95,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -108,7 +108,7 @@ export default {
       await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -119,7 +119,7 @@ export default {
       await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -132,7 +132,7 @@ export default {
         url + preparation_params({ ...params, order_id: newDealParams.id }),
         {
           headers: {
-            Authorization: TOKEN,
+            Authorization: getTOKEN(),
           },
         }
       );
@@ -145,7 +145,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -162,7 +162,7 @@ export default {
       await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -176,7 +176,7 @@ export default {
       await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -189,7 +189,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -201,7 +201,7 @@ export default {
       const url = BaseURL + "orders/doc/list";
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -212,7 +212,7 @@ export default {
       const url = BaseURL + "orders/doc/delete";
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -225,7 +225,7 @@ export default {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: params,
       });
@@ -237,7 +237,7 @@ export default {
       const url = BaseURL + "orders/custom-doc/list";
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -248,7 +248,7 @@ export default {
       const url = BaseURL + "orders/custom-doc/delete";
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -260,7 +260,7 @@ export default {
       const url = BaseURL + "orders/pipelines/list";
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -273,7 +273,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -287,7 +287,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -301,7 +301,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -316,7 +316,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -330,7 +330,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -344,7 +344,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params),
       });
@@ -357,7 +357,7 @@ export default {
       const url = BaseURL + "orders/table-config";
       const res = await fetch(url, {
         headers: {
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
       });
       const json = await res.json();
@@ -371,7 +371,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: getTOKEN(),
         },
         body: JSON.stringify(params.value),
       });
