@@ -6,7 +6,7 @@
       <img src="@/assets/logo_transparent.png" class="w-3/4" />
       <h1 class="font-bold text-3xl text-slate-700 mb-5">Авторизация</h1>
       <template v-if="!showPin">
-        <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-5 justify-center min-h-[142px]">
           <template v-if="notificationSystem.selected.value === 'telegram'">
             <div class="min-h-[88px]">
               <input
@@ -64,6 +64,17 @@
               v-mask="imask.mask"
               :placeholder="imask.mask"
             />
+            <input
+              class="input"
+              type="password"
+              name="password"
+              v-model="form.password"
+              :class="{
+                input_error:
+                  inputErrors.trySubmit && inputErrors.password && !isSignUp,
+              }"
+              :placeholder="'Пароль от GoСклад'"
+            />
           </template>
         </div>
         <AuthBtnsGroup
@@ -71,7 +82,7 @@
           :isSignUp="isSignUp"
         />
         <div class="w-1/2 flex justify-center mt-5 mb-16">
-          <button class="btn btn_blue" @click="submit()">Отправить код</button>
+          <button class="btn btn_blue" @click="submit()">Авторизоваться</button>
         </div>
         <div
           class="login flex flex-col gap-8 p-12 pt-[34px] items-center translate-y-5 sm:translate-y-10"
@@ -80,7 +91,7 @@
           @click="toggleSignUp(true)"
         >
           <h1 class="font-bold text-3xl text-slate-700 mb-5">Регистрация</h1>
-          <div class="flex flex-col gap-5">
+          <div class="flex flex-col gap-5 justify-center min-h-[142px]">
             <input
               class="input"
               type="text"
@@ -106,6 +117,19 @@
                   :placeholder="'Логин в Telegram (@login)'"
                 />
               </div>
+            </template>
+            <template v-else-if="notificationSystem.selected.value === 'email'">
+              <input
+                class="input"
+                type="email"
+                name="email"
+                v-model="form.email"
+                :class="{
+                  input_error:
+                    inputErrors.trySubmit && inputErrors.email && !isSignUp,
+                }"
+                :placeholder="'Адресс почты'"
+              />
             </template>
             <template v-else>
               <SelectorVue
@@ -133,11 +157,9 @@
             :isSignUp="isSignUp"
           />
           <div class="w-1/2 flex justify-center mt-3 mb">
-            <button class="btn btn_blue" @click="submit()">
-              Отправить код
-            </button>
+            <button class="btn btn_blue" @click="submit()">Отправить</button>
           </div>
-          <div class="flex justify-center -mt-[20px] w-full">
+          <div class="flex justify-center w-full">
             <button
               class="flex justify-center items-center p-2 rounded-full text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
               @click.stop="closeSignUp()"
@@ -183,10 +205,14 @@ import { usePhoneCodes } from "../composables/phoneCodes";
 import { usePhoneCode } from "../composables/phoneCode";
 import { computed, reactive, ref, watch } from "vue";
 import { onClickOutside, useToggle } from "@vueuse/core";
+import store from "@/store";
+import { useRouter } from "vue-router";
 
 export default {
   components: { SelectorVue, AuthBtnsGroup },
   setup() {
+    const router = useRouter();
+
     const [showPin, togglePin] = useToggle(false);
     const [isSignUp, toggleSignUp] = useToggle(false);
     watch(isSignUp, () => {
@@ -241,19 +267,43 @@ export default {
       password: computed(() => !form.password),
       global: function () {
         let res = false;
-        if (isSignUp.value) res = res || form.name;
-        notificationSystem.selected.formReqFields.forEach(
-          (field) => (res = res || this?.[field])
-        );
+        if (isSignUp.value) res = res || this.name;
+        notificationSystem.selected.formReqFields.forEach((field) => {
+          if (
+            isSignUp.value &&
+            notificationSystem.selected?.signUpOptionalFields?.includes(field)
+          )
+            return;
+          res = res || this?.[field];
+        });
         return res;
       },
     });
     const dropErrorInput = () => {
       inputErrors.trySubmit = false;
     };
-    const submit = () => {
+    const submit = async () => {
       if (!inputErrors.global()) {
-        togglePin(true);
+        if (isSignUp.value) {
+          closeSignUp();
+          await store.dispatch("authRegistration", {
+            login:
+              notificationSystem.selected.value === "email"
+                ? form.email
+                : deleteOther(form.phone),
+            name: form.name,
+          });
+        } else {
+          const res = await store.dispatch("authLogin", {
+            login:
+              notificationSystem.selected.value === "email"
+                ? form.email
+                : deleteOther(form.phone),
+            password: form.password,
+          });
+          if (res.success) router.push("/");
+        }
+        // togglePin(true);
       } else {
         inputErrors.trySubmit = true;
       }
@@ -279,14 +329,16 @@ export default {
           value: "whatsapp",
           default: true,
           iconUrl: "https://www.svgrepo.com/show/217789/whatsapp.svg",
-          formReqFields: ["phone"],
+          formReqFields: ["phone", "password"],
+          signUpOptionalFields: ["password"],
         },
         {
           name: "",
           value: "email",
           iconUrl: "https://www.svgrepo.com/show/444193/brand-google-gmail.svg",
           formReqFields: ["email", "password"],
-          signUpHide: true,
+          signUpOptionalFields: ["password"],
+          signUpHide: false,
         },
       ],
       select: function (option) {

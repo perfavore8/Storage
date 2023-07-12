@@ -1,4 +1,6 @@
 import { BaseURL, cacheName } from "@/composables/BaseURL";
+import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
+const { preparation_params } = usePreparationQueryParams();
 
 export default {
   state: {},
@@ -35,6 +37,13 @@ export default {
               console.error("Ошибка при сохранении переменной в кэш:", err);
           });
       }
+
+      return json;
+    },
+    async authRegistration(context, params) {
+      const url = BaseURL + "auth/sign-up";
+      const res = await fetch(url + preparation_params(params));
+      const json = await res.json();
 
       return json;
     },
