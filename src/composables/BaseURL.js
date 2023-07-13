@@ -1,3 +1,5 @@
+import { useRouter } from "vue-router";
+
 function findGetParameter(parameterName) {
   var result = null,
     tmp = [];
@@ -49,18 +51,22 @@ let tokenPromise = null;
 
 export const getTokenPromise = () => tokenPromise;
 
-(async () => {
-  await getTokenPromise();
+export function useRedirectToAuth() {
+  const router = useRouter();
 
-  if (
-    !(
-      findGetParameter("token") ||
-      savedToken ||
-      location.pathname === "/authorization"
+  (async () => {
+    await getTokenPromise();
+    if (
+      !(
+        findGetParameter("token") ||
+        savedToken ||
+        location.pathname === "/authorization"
+      )
     )
-  )
-    location.replace("/authorization");
-})();
+      // location.replace("/authorization");
+      router.push("/authorization");
+  })();
+}
 
 export const BaseURL = "https://api.gosklad.ru/v1/";
 export let TOKEN = "Bearer " + (findGetParameter("token") || savedToken);
