@@ -1,4 +1,6 @@
+import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { useCheckDevMode } from "./checkDevMode";
 
 function findGetParameter(parameterName) {
   var result = null,
@@ -17,55 +19,60 @@ export const cacheName = "salesup";
 
 let savedToken = "";
 let tokenPromise = null;
-
+const { isDev } = useCheckDevMode();
 // Извлечение переменной из кэша
-(() => {
-  tokenPromise = new Promise((resolve) => {
-    caches
-      .open(cacheName)
-      .then((cache) => {
+const getCachedToken = () =>
+  (tokenPromise = new Promise((resolve) => {
+    const func = async () => {
+      try {
+        const cache = await caches.open(cacheName);
         const key = "TOKEN";
+        const response = await cache.match(key);
 
-        return cache.match(key);
-      })
-      .then((response) => {
         if (response) {
-          return response.text();
+          const value = await response.text();
+          if (isDev.value) {
+            console.log("Извлеченная переменная из кэша:", value);
+          }
+          savedToken = value;
         } else {
           throw new Error("Переменная не найдена в кэше");
         }
-      })
-      .then((value) => {
-        if (process.env.NODE_ENV === "development")
-          console.log("Извлеченная переменная из кэша:", value);
-        savedToken = value;
-        resolve();
-      })
-      .catch((err) => {
-        if (process.env.NODE_ENV === "development")
+      } catch (err) {
+        if (isDev.value) {
           console.error("Ошибка при извлечении переменной из кэша:", err);
+        }
+      } finally {
         resolve();
-      });
-  });
-})();
+      }
+    };
+    func();
+  }));
+
+getCachedToken();
 
 export const getTokenPromise = () => tokenPromise;
 
 export function useRedirectToAuth() {
   const router = useRouter();
 
-  (async () => {
+  const checkPath = async () => {
+    const path = computed(() => router.currentRoute.value.path);
+
     await getTokenPromise();
-    if (
-      !(
-        findGetParameter("token") ||
-        savedToken ||
-        location.pathname === "/authorization"
-      )
-    )
-      // location.replace("/authorization");
+
+    if (!(findGetParameter("token") || savedToken))
       router.push("/authorization");
-  })();
+
+    if (
+      (findGetParameter("token") || savedToken) &&
+      path.value === "/authorization"
+    )
+      router.push("/");
+  };
+  checkPath();
+
+  return { checkPath, getCachedToken };
 }
 
 export const BaseURL = "https://api.gosklad.ru/v1/";
