@@ -1,4 +1,3 @@
-import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useCheckDevMode } from "./checkDevMode";
 
@@ -57,18 +56,10 @@ export function useRedirectToAuth() {
   const router = useRouter();
 
   const checkPath = async () => {
-    const path = computed(() => router.currentRoute.value.path);
-
     await getTokenPromise();
 
     if (!(findGetParameter("token") || savedToken))
       router.push("/authorization");
-
-    if (
-      (findGetParameter("token") || savedToken) &&
-      path.value === "/authorization"
-    )
-      router.push("/");
   };
   checkPath();
 
@@ -79,3 +70,5 @@ export const BaseURL = "https://api.gosklad.ru/v1/";
 export let TOKEN = "Bearer " + (findGetParameter("token") || savedToken);
 export const getTOKEN = () =>
   "Bearer " + (findGetParameter("token") || savedToken);
+export const haveAnyTOKEN = () =>
+  Boolean(findGetParameter("token") || savedToken);

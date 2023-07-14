@@ -1,5 +1,9 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import { haveAnyTOKEN } from "@/composables/BaseURL";
 import store from "../store";
+import { useCheckDevMode } from "@/composables/checkDevMode";
+
+const { isDev } = useCheckDevMode();
 
 const routes = [
   {
@@ -72,6 +76,10 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.path == "/authorization") {
+    if (haveAnyTOKEN() && !isDev.value) {
+      next("/");
+      return;
+    }
     next();
     return;
   }
