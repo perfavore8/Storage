@@ -6,6 +6,7 @@
       v-for="(item, idx) in list"
       :key="item.value"
       @click="select(item)"
+      :disabled="disabled"
     >
       {{ item.name }}
       <slot :name="'item' + idx"></slot>
@@ -18,6 +19,7 @@ export default {
   props: {
     list: Array,
     selected: Object,
+    disabled: { type: Boolean, required: false },
   },
   setup(props, context) {
     const select = (val) => context.emit("select", val);

@@ -2,6 +2,7 @@
   <AppRadioBtnsGroup
     :selected="notificationSystem.selected"
     :list="notificationSystem.list.filter((el) => !(isSignUp && el.signUpHide))"
+    :disabled="disabled"
     @select="(option) => notificationSystem.select(option)"
   >
     <template
@@ -24,6 +25,7 @@ export default {
   props: {
     notificationSystem: { type: Object, required: true },
     isSignUp: Boolean,
+    disabled: { type: Boolean, required: false },
   },
   setup() {
     return {};
