@@ -206,13 +206,11 @@ import { usePhoneCode } from "../composables/phoneCode";
 import { computed, reactive, ref, watch } from "vue";
 import { onClickOutside, useToggle } from "@vueuse/core";
 import store from "@/store";
-// import { useRouter } from "vue-router";
 import { useRedirectToAuth } from "@/composables/BaseURL";
 
 export default {
   components: { SelectorVue, AuthBtnsGroup },
   setup() {
-    // const router = useRouter();
     const { checkPath, getCachedToken } = useRedirectToAuth();
 
     const [showPin, togglePin] = useToggle(false);
