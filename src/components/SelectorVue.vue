@@ -5,7 +5,7 @@
       :class="{ title_checked: show_options, disabled: disabled }"
       @click="open_close_options()"
       @focusout="handleFocusOut"
-      tabindex="0"
+      :tabindex="disabled ? -1 : 0"
     >
       <p>{{ selected_option.name }}</p>
       <div
