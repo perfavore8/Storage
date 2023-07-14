@@ -50,6 +50,11 @@ export default {
     color: rgb(31, 41, 55);
     @apply dark:text-white;
   }
+  .btn:focus-visible:not(:active) {
+    color: rgb(31, 41, 55);
+    background-color: rgba(125, 125, 125, 0.2);
+    @apply dark:text-white;
+  }
   .selected {
     color: hsl(209, 62%, 40%);
     background-color: white;
@@ -60,6 +65,9 @@ export default {
   }
   .selected:hover {
     color: hsl(209, 62%, 40%);
+  }
+  button.selected:focus-visible:not(:active) {
+    background-color: rgba(250, 250, 250, 0.8);
   }
 }
 </style>
