@@ -6,82 +6,93 @@
       <img src="@/assets/logo_transparent.png" class="w-3/4" />
       <h1 class="font-bold text-3xl text-slate-700 mb-5">Авторизация</h1>
       <template v-if="!showPin">
-        <div class="flex flex-col gap-5 justify-center min-h-[142px]">
-          <template v-if="notificationSystem.selected.value === 'telegram'">
-            <div class="min-h-[88px]">
+        <div class="flex items-center justify-center min-h-[142px]">
+          <div class="h-min flex flex-col gap-5 justify-center relative">
+            <template v-if="notificationSystem.selected.value === 'telegram'">
+              <div class="min-h-[88px]">
+                <input
+                  class="input"
+                  type="text"
+                  name="login"
+                  v-model="form.tgLogin"
+                  :class="{
+                    input_error:
+                      inputErrors.trySubmit && inputErrors.tgLogin && !isSignUp,
+                  }"
+                  :placeholder="'Логин в Telegram (@login)'"
+                />
+              </div>
+            </template>
+            <template v-else-if="notificationSystem.selected.value === 'email'">
               <input
                 class="input"
-                type="text"
-                name="login"
-                v-model="form.tgLogin"
+                type="email"
+                name="email"
+                v-model="form.email"
                 :class="{
                   input_error:
-                    inputErrors.trySubmit && inputErrors.tgLogin && !isSignUp,
+                    inputErrors.trySubmit && inputErrors.email && !isSignUp,
                 }"
-                :placeholder="'Логин в Telegram (@login)'"
+                :placeholder="'Адресс почты'"
               />
-            </div>
-          </template>
-          <template v-else-if="notificationSystem.selected.value === 'email'">
-            <input
-              class="input"
-              type="email"
-              name="email"
-              v-model="form.email"
-              :class="{
-                input_error:
-                  inputErrors.trySubmit && inputErrors.email && !isSignUp,
-              }"
-              :placeholder="'Адресс почты'"
-            />
-            <input
-              class="input"
-              type="password"
-              name="password"
-              v-model="form.password"
-              :class="{
-                input_error:
-                  inputErrors.trySubmit && inputErrors.password && !isSignUp,
-              }"
-              :placeholder="'Пароль от GoСклад'"
-            />
-          </template>
-          <template v-else>
-            <SelectorVue
-              :options_props="codes.list"
-              :selected_option="codes.selected"
-              @select="selectPhone"
-            />
-            <input
-              class="input"
-              type="tel"
-              :class="{
-                input_error:
-                  inputErrors.trySubmit && inputErrors.phone && !isSignUp,
-              }"
-              v-model="form.phone"
-              masked="false"
-              v-mask="imask.mask"
-              :placeholder="imask.mask"
-            />
-            <input
-              class="input"
-              type="password"
-              name="password"
-              v-model="form.password"
-              :class="{
-                input_error:
-                  inputErrors.trySubmit && inputErrors.password && !isSignUp,
-              }"
-              :placeholder="'Пароль от GoСклад'"
-            />
-          </template>
+              <input
+                class="input"
+                type="password"
+                name="password"
+                v-model="form.password"
+                :class="{
+                  input_error:
+                    inputErrors.trySubmit && inputErrors.password && !isSignUp,
+                }"
+                :placeholder="'Пароль от GoСклад'"
+              />
+            </template>
+            <template v-else>
+              <SelectorVue
+                :options_props="codes.list"
+                :selected_option="codes.selected"
+                @select="selectPhone"
+              />
+              <input
+                class="input"
+                type="tel"
+                :class="{
+                  input_error:
+                    inputErrors.trySubmit && inputErrors.phone && !isSignUp,
+                }"
+                v-model="form.phone"
+                masked="false"
+                v-mask="imask.mask"
+                :placeholder="imask.mask"
+              />
+              <input
+                class="input"
+                type="password"
+                name="password"
+                v-model="form.password"
+                :class="{
+                  input_error:
+                    inputErrors.trySubmit && inputErrors.password && !isSignUp,
+                }"
+                :placeholder="'Пароль от GoСклад'"
+              />
+            </template>
+            <transition name="fade">
+              <small
+                v-if="isFailAuth"
+                class="text-red-700 text-sm absolute -bottom-2 left-1 translate-y-full origin-top"
+              >
+                Неверный логин или пароль
+              </small>
+            </transition>
+          </div>
         </div>
-        <AuthBtnsGroup
-          :notificationSystem="notificationSystem"
-          :isSignUp="isSignUp"
-        />
-        <div class="w-1/2 flex justify-center mt-5 mb-16">
+        <div class="w-1/2 flex flex-col gap-4 items-center mt-5 mb-16">
+          <AuthBtnsGroup
+            class="w-min"
+            :notificationSystem="notificationSystem"
+            :isSignUp="isSignUp"
+          />
           <button class="btn btn_blue" @click="submit()">Авторизоваться</button>
         </div>
         <div
@@ -207,6 +218,7 @@ import { computed, reactive, ref, watch } from "vue";
 import { onClickOutside, useToggle } from "@vueuse/core";
 import store from "@/store";
 import { useRedirectToAuth } from "@/composables/BaseURL";
+import { useValidate } from "@/composables/validate";
 
 export default {
   components: { SelectorVue, AuthBtnsGroup },
@@ -218,7 +230,7 @@ export default {
     watch(isSignUp, () => {
       dropErrorInput();
       dropForm();
-      notificationSystem.dropToDefault();
+      notificationSystem.dropToDefault(0.3);
     });
 
     const loginRef = ref(null);
@@ -254,6 +266,8 @@ export default {
     };
     selectPhone(codes.list[0]);
 
+    const { validateEmail } = useValidate();
+
     const inputErrors = reactive({
       trySubmit: false,
       phone: computed(
@@ -263,7 +277,7 @@ export default {
       ),
       name: computed(() => !form.name || form.name.split(" ").length < 2),
       tgLogin: computed(() => !form.tgLogin),
-      email: computed(() => !form.email),
+      email: computed(() => !form.email || !validateEmail(form.email)),
       password: computed(() => !form.password),
       global: function () {
         let res = false;
@@ -282,6 +296,7 @@ export default {
     const dropErrorInput = () => {
       inputErrors.trySubmit = false;
     };
+
     const submit = async () => {
       if (!inputErrors.global()) {
         if (isSignUp.value) {
@@ -304,9 +319,10 @@ export default {
           if (res.success) {
             getCachedToken();
             checkPath();
+          } else {
+            toggleFailAuth();
           }
         }
-        // togglePin(true);
       } else {
         inputErrors.trySubmit = true;
       }
@@ -348,12 +364,23 @@ export default {
         dropErrorInput();
         this.selected = option;
       },
-      dropToDefault: function () {
+      dropToDefault: function (delay) {
         const defaultItem = this.list.find((el) => el.default);
-        this.select(defaultItem);
+        if (delay) {
+          setTimeout(() => this.select(defaultItem), delay * 1000);
+        } else {
+          this.select(defaultItem);
+        }
       },
     });
     notificationSystem.dropToDefault();
+
+    const [isFailAuth, toggleFailAuth] = useToggle(false);
+    watch(
+      () => isSignUp && notificationSystem.selected,
+      () => toggleFailAuth(false),
+      { deep: true }
+    );
 
     return {
       form,
@@ -370,6 +397,7 @@ export default {
       loginRef,
       closeSignUp,
       notificationSystem,
+      isFailAuth,
     };
   },
 };
@@ -446,5 +474,14 @@ input[type="number"]::-webkit-inner-spin-button {
     transform: scale(0.8);
     opacity: 0.8;
   }
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.1s ease-out;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
 }
 </style>
