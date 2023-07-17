@@ -1,5 +1,5 @@
 <template>
-  <div class="top">
+  <div class="top" id="report_count_area">
     <p class="count">Найдено: {{ reportsData.total }}</p>
   </div>
   <table class="table" :class="{ blur: openSelectedReportModal || isLoading }">
@@ -262,13 +262,13 @@ export default {
 .top {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
   .count {
     color: #757575;
     @include font(400, 16px);
     margin: 0;
     display: flex;
-    align-self: start;
   }
 }
 .table {

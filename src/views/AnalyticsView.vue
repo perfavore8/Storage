@@ -92,6 +92,21 @@
       </template>
     </div>
   </div>
+
+  <Teleport to="#report_count_area">
+    <div
+      class="inline-flex items-center gap-2"
+      v-if="reportType.selected.value === 'customers'"
+    >
+      <span>Группировать по: </span>
+      <AppRadioBtnsGroup
+        :list="groupBy.list"
+        :selected="groupBy.selected"
+        :small="true"
+        @select="groupBy.select"
+      />
+    </div>
+  </Teleport>
 </template>
 
 <script>
@@ -105,6 +120,7 @@ import AppHeader from "@/components/AppHeader.vue";
 import GridBottom from "@/components/GridBottom.vue";
 import { nextTick } from "@vue/runtime-core";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
+import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
 export default {
   name: "AnalyticsView",
   components: {
@@ -116,6 +132,7 @@ export default {
     AppHeader,
     GridBottom,
     AppRadioBtnsGroupUnderlined,
+    AppRadioBtnsGroup,
   },
   data() {
     return {
@@ -182,6 +199,18 @@ export default {
           this.selected = option;
         },
       },
+      groupBy: {
+        selected: { name: "Компании", value: "companies" },
+        list: [
+          { name: "Компаниям", value: "companies" },
+          { name: "Контактам", value: "contacts" },
+        ],
+        select: (value) => {
+          this.groupBy.selected = value;
+          localStorage.setItem("AnalyticsLastGroupBy", JSON.stringify(value));
+          this.getTitile();
+        },
+      },
     };
   },
   computed: {
@@ -227,7 +256,8 @@ export default {
       return obj;
     },
   },
-  mounted() {
+  created() {
+    this.getAnalyticsLastGroupBy();
     this.getTitile();
     this.$store.dispatch("get_account");
   },
@@ -349,6 +379,10 @@ export default {
             page: this.newPage,
             sort: this.sorted,
           };
+
+          if (this.reportType.selected.value === "customers")
+            params.group_by = this.groupBy.selected.value;
+
           await this.$store.dispatch(`get${capitalizeType}`, params);
           this.reports = this.$store.state.analytics[type];
           if (this.reportType.selected.value !== "stuffMove") {
@@ -455,6 +489,10 @@ export default {
           : this.reportType.selected.value,
       };
       this.$store.dispatch("analyticsExport", params);
+    },
+    getAnalyticsLastGroupBy() {
+      const lastRes = JSON.parse(localStorage.getItem("AnalyticsLastGroupBy"));
+      if (lastRes) this.groupBy.selected = lastRes;
     },
   },
 };
