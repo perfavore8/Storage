@@ -1,8 +1,8 @@
 <template>
-  <div class="btns_group">
+  <div class="btns_group" :class="{ small: small }">
     <button
       class="btn"
-      :class="{ selected: selected.value === item.value }"
+      :class="{ selected: selected.value === item.value, small_btn: small }"
       v-for="(item, idx) in list"
       :key="item.value"
       @click="select(item)"
@@ -20,6 +20,7 @@ export default {
     list: Array,
     selected: Object,
     disabled: { type: Boolean, required: false },
+    small: { type: Boolean, required: false },
   },
   setup(props, context) {
     const select = (val) => context.emit("select", val);
@@ -68,6 +69,15 @@ export default {
   }
   button.selected:focus-visible:not(:active) {
     background-color: rgba(250, 250, 250, 0.8);
+  }
+}
+.small {
+  padding: 4px;
+  .btn {
+    padding: 4px 8px;
+  }
+  .selected {
+    padding: 4px 16px;
   }
 }
 </style>
