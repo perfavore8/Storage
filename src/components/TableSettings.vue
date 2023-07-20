@@ -12,7 +12,7 @@
           >
         </div>
         <draggable class="dragArea" :list="list">
-          <div class="item" v-for="item in list" :key="item">
+          <div class="item" v-for="item in list" :key="item.name">
             <input
               type="checkbox"
               v-model="item.visible"
@@ -35,7 +35,7 @@
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { VueDraggableNext } from "vue-draggable-next";
-import { computed, onMounted, reactive } from "vue";
+import { computed, onMounted, ref } from "vue";
 import store from "@/store";
 import { useTableSettingsConfig } from "@/composables/tableSettingsConfig";
 export default {
@@ -53,7 +53,7 @@ export default {
       props.selectedWH.value === "orders" ? "orders" : "stock"
     );
 
-    const list = reactive([]);
+    const list = ref([]);
 
     const tableConfig = computed(
       () => store.state[config.value.stateName]?.[config.value.stateConfigField]
@@ -71,12 +71,12 @@ export default {
         value.code = key;
         preparedTC.push(value);
       });
-      Object.assign(list, JSON.parse(JSON.stringify(preparedTC)));
-      list.map((item) => (item.visible = Boolean(item.visible)));
+      list.value = JSON.parse(JSON.stringify(preparedTC));
+      list.value.map((item) => (item.visible = Boolean(item.visible)));
     });
 
     const save = () => {
-      list.map((val, idx) => (val.sort = idx + 1));
+      list.value.map((val, idx) => (val.sort = idx + 1));
       const params = {
         value: {
           config: [],
@@ -84,7 +84,7 @@ export default {
       };
       if (config.value.haveWH)
         (params.wh = currentWH.value), (params.value.code = currentWH.value);
-      list.forEach((val) => {
+      list.value.forEach((val) => {
         if (val.visible) params.value.config.push(val.code);
       });
       store.dispatch(config.value.updateStateReqName, params);
