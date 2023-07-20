@@ -135,7 +135,8 @@
                         not_valid:
                           (row.batch === '' || row.batch === undefined) &&
                           try_accept &&
-                          row.type.value != 2,
+                          row.type.value != 2 &&
+                          false,
                       }"
                       :title="
                         (row.batch === '' || row.batch === undefined) &&
@@ -402,7 +403,7 @@ export default {
       timer: 0,
       targetAutocomplete: null,
       copyCurrentItems: [],
-      fieldsForValidation: ["article", "name", "batch", "count", "cost_price"],
+      fieldsForValidation: ["article", "name", "count", "cost_price"],
       fieldsServiceForValidation: ["article", "name", "cost_price"],
       try_accept: false,
       acceptBtnDisable: false,
