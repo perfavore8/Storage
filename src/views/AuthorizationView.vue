@@ -101,7 +101,7 @@
               </a>
               <transition name="fade">
                 <small
-                  v-if="!isFailAuth"
+                  v-if="isFailAuth"
                   class="text-red-700 text-sm origin-top"
                 >
                   Неверный логин или пароль
