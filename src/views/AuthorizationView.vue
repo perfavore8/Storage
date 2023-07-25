@@ -317,7 +317,7 @@ export default {
           deleteOther(form.phone).length !==
           deleteOther(codes.selected.phone).length
       ),
-      name: computed(() => !form.name || form.name.split(" ").length < 1),
+      name: computed(() => !form.name),
       tgLogin: computed(() => !form.tgLogin),
       email: computed(() => !form.email || !validateEmail(form.email)),
       password: computed(() => !form.password),
