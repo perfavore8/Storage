@@ -317,7 +317,7 @@ export default {
           deleteOther(form.phone).length !==
           deleteOther(codes.selected.phone).length
       ),
-      name: computed(() => !form.name || form.name.split(" ").length < 2),
+      name: computed(() => !form.name || form.name.split(" ").length < 1),
       tgLogin: computed(() => !form.tgLogin),
       email: computed(() => !form.email || !validateEmail(form.email)),
       password: computed(() => !form.password),
@@ -356,6 +356,7 @@ export default {
         if (isSignUp.value) {
           closeSignUp();
           await store.dispatch("authRegistration", {
+            mode: notificationSystem.selected.mode,
             login:
               notificationSystem.selected.value === "email"
                 ? form.email
