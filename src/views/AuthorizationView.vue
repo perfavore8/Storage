@@ -364,6 +364,7 @@ export default {
           });
         } else {
           const res = await store.dispatch("authLogin", {
+            mode: notificationSystem.selected.mode,
             login:
               notificationSystem.selected.value === "email"
                 ? form.email
@@ -400,6 +401,7 @@ export default {
         {
           name: "",
           value: "whatsapp",
+          mode: "phone",
           default: true,
           iconUrl: "https://www.svgrepo.com/show/217789/whatsapp.svg",
           formReqFields: ["phone", "password"],
@@ -408,6 +410,7 @@ export default {
         {
           name: "",
           value: "email",
+          mode: "email",
           iconUrl: "https://www.svgrepo.com/show/444193/brand-google-gmail.svg",
           formReqFields: ["email", "password"],
           signUpOptionalFields: ["password"],
