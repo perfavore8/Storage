@@ -34,7 +34,7 @@ const getCachedToken = () =>
             console.log("Извлеченная переменная из кэша:", value);
           }
           savedToken = value;
-        } else {
+        } else if (isDev.value) {
           throw new Error("Переменная не найдена в кэше");
         }
       } catch (err) {
