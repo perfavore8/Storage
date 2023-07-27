@@ -1,4 +1,4 @@
-import { BaseURL, getTOKEN, getTokenPromise } from "@/composables/BaseURL";
+import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 export default {
   state: {
     account: {},
@@ -43,7 +43,6 @@ export default {
   },
   actions: {
     async get_account(context) {
-      await getTokenPromise();
       const url = BaseURL + "account/config";
       const res = await fetch(url, {
         headers: {
