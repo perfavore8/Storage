@@ -128,78 +128,96 @@
           @click="toggleSignUp(true)"
         >
           <h1 class="font-bold text-3xl text-slate-700 mb-5">Регистрация</h1>
-          <div class="flex flex-col gap-5 justify-center min-h-[142px]">
-            <input
-              class="input"
-              type="text"
-              name="name"
-              v-model="form.name"
-              :class="{
-                input_error:
-                  inputErrors.trySubmit && inputErrors.name && isSignUp,
-              }"
-              :placeholder="'Фамилия Имя'"
-              :disabled="!isSignUp"
-            />
-            <template v-if="notificationSystem.selected.value === 'telegram'">
-              <div class="min-h-[88px]">
+          <div class="flex items-center justify-center min-h-[142px]">
+            <div class="h-min flex flex-col gap-5 justify-center relative">
+              <input
+                class="input"
+                type="text"
+                name="name"
+                v-model="form.name"
+                :class="{
+                  input_error:
+                    inputErrors.trySubmit && inputErrors.name && isSignUp,
+                }"
+                :placeholder="'Фамилия Имя'"
+                :disabled="!isSignUp"
+              />
+              <template v-if="notificationSystem.selected.value === 'telegram'">
+                <div class="min-h-[88px]">
+                  <input
+                    class="input"
+                    type="text"
+                    name="login"
+                    v-model="form.tgLogin"
+                    :class="{
+                      input_error:
+                        inputErrors.trySubmit &&
+                        inputErrors.tgLogin &&
+                        isSignUp,
+                    }"
+                    :placeholder="'Логин в Telegram (@login)'"
+                    :disabled="!isSignUp"
+                  />
+                </div>
+              </template>
+              <template
+                v-else-if="notificationSystem.selected.value === 'email'"
+              >
                 <input
                   class="input"
-                  type="text"
-                  name="login"
-                  v-model="form.tgLogin"
+                  type="email"
+                  name="email"
+                  v-model="form.email"
                   :class="{
                     input_error:
-                      inputErrors.trySubmit && inputErrors.tgLogin && isSignUp,
+                      inputErrors.trySubmit && inputErrors.email && !isSignUp,
                   }"
-                  :placeholder="'Логин в Telegram (@login)'"
+                  :placeholder="'Адресс почты'"
                   :disabled="!isSignUp"
                 />
+              </template>
+              <template v-else>
+                <SelectorVue
+                  :options_props="codes.list"
+                  :selected_option="codes.selected"
+                  @select="selectPhone"
+                  :disabled="!isSignUp"
+                />
+                <input
+                  class="input"
+                  type="tel"
+                  name="phone-number"
+                  :class="{
+                    input_error:
+                      inputErrors.trySubmit && inputErrors.phone && isSignUp,
+                  }"
+                  v-model="form.phone"
+                  masked="false"
+                  v-mask="imask.mask"
+                  :placeholder="imask.mask"
+                  :disabled="!isSignUp"
+                />
+              </template>
+              <div
+                class="absolute flex flex-col gap-1 -bottom-1 left-1 translate-y-full"
+              >
+                <transition name="fade">
+                  <small
+                    v-if="isFailAuth"
+                    class="text-red-700 text-sm origin-top"
+                  >
+                    Что-то пошло не так...
+                  </small>
+                </transition>
               </div>
-            </template>
-            <template v-else-if="notificationSystem.selected.value === 'email'">
-              <input
-                class="input"
-                type="email"
-                name="email"
-                v-model="form.email"
-                :class="{
-                  input_error:
-                    inputErrors.trySubmit && inputErrors.email && !isSignUp,
-                }"
-                :placeholder="'Адресс почты'"
-                :disabled="!isSignUp"
-              />
-            </template>
-            <template v-else>
-              <SelectorVue
-                :options_props="codes.list"
-                :selected_option="codes.selected"
-                @select="selectPhone"
-                :disabled="!isSignUp"
-              />
-              <input
-                class="input"
-                type="tel"
-                name="phone-number"
-                :class="{
-                  input_error:
-                    inputErrors.trySubmit && inputErrors.phone && isSignUp,
-                }"
-                v-model="form.phone"
-                masked="false"
-                v-mask="imask.mask"
-                :placeholder="imask.mask"
-                :disabled="!isSignUp"
-              />
-            </template>
+            </div>
           </div>
-          <AuthBtnsGroup
-            :notificationSystem="notificationSystem"
-            :isSignUp="isSignUp"
-            :disabled="!isSignUp"
-          />
-          <div class="w-1/2 flex justify-center mt-3 mb">
+          <div class="w-1/2 flex flex-col gap-4 items-center mt-3">
+            <AuthBtnsGroup
+              :notificationSystem="notificationSystem"
+              :isSignUp="isSignUp"
+              :disabled="!isSignUp"
+            />
             <button
               class="btn btn_blue"
               @click="submit()"
@@ -353,9 +371,9 @@ export default {
 
     const submit = async () => {
       if (!inputErrors.global()) {
+        let res = null;
         if (isSignUp.value) {
-          closeSignUp();
-          await store.dispatch("authRegistration", {
+          res = await store.dispatch("authRegistration", {
             mode: notificationSystem.selected.mode,
             login:
               notificationSystem.selected.value === "email"
@@ -363,8 +381,9 @@ export default {
                 : deleteOther(form.phone),
             name: form.name,
           });
+          if (res.success) closeSignUp();
         } else {
-          const res = await store.dispatch("authLogin", {
+          res = await store.dispatch("authLogin", {
             mode: notificationSystem.selected.mode,
             login:
               notificationSystem.selected.value === "email"
@@ -375,10 +394,9 @@ export default {
           if (res.success) {
             getCachedToken();
             checkPath();
-          } else {
-            toggleFailAuth();
           }
         }
+        if (!res.success) toggleFailAuth(true);
       } else {
         inputErrors.trySubmit = true;
       }

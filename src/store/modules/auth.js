@@ -43,6 +43,7 @@ export default {
     async authRegistration(context, params) {
       const url = BaseURL + "auth/sign-up";
       const res = await fetch(url + preparation_params(params));
+      if (!res.ok) return { success: false };
       const json = await res.json();
 
       return json;
