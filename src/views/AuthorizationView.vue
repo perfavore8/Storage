@@ -139,7 +139,7 @@
                   input_error:
                     inputErrors.trySubmit && inputErrors.name && isSignUp,
                 }"
-                :placeholder="'Фамилия Имя'"
+                :placeholder="'Имя'"
                 :disabled="!isSignUp"
               />
               <template v-if="notificationSystem.selected.value === 'telegram'">
