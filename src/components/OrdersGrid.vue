@@ -115,13 +115,24 @@
                   </template>
                 </div>
               </td>
-              <!-- <td class="item" v-else-if="title.code === 'poz'">
-                  <div class="flex flex-row gap-4 items-center">
-                    <span class="font-medium text-base">{{
-                      row.poz.list.length
-                    }}</span>
-                  </div>
-                </td> -->
+              <td
+                class="item"
+                v-else-if="
+                  title.code === 'stat' && row.stat === 'Успешный' && isTest
+                "
+              >
+                <div class="flex flex-row gap-4 items-center">
+                  <span class="">
+                    {{ row[title.code] }}
+                  </span>
+                  <button
+                    class="btn small_btn order-1 max-h-[34px] pointer-events-auto relative inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-normal leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+                    @click="refundOrder(row.id)"
+                  >
+                    Возврат
+                  </button>
+                </div>
+              </td>
               <!-- <td class="item" v-else-if="title.type === 2">
                   <div class="flex flex-row gap-4 items-center justify-center">
                     <button
@@ -474,6 +485,12 @@ export default {
 
     const openTableSettings = () => store.commit("open_table_settings");
 
+    const refundOrder = async (orderId) => {
+      await store.dispatch("refundOrder", { order_id: orderId });
+      await store.dispatch("getOrders", store.state.orders.filters);
+      fillOrders();
+    };
+
     return {
       selectedProducts,
       allSelectedProducts,
@@ -500,6 +517,7 @@ export default {
       changePageRow,
       routeToOrder,
       openTableSettings,
+      refundOrder,
     };
   },
 };

@@ -182,6 +182,14 @@ export default {
         body: JSON.stringify(params),
       });
     },
+    async refundOrder(context, params) {
+      const url = BaseURL + "orders/refund";
+      await fetch(url + preparation_params(params), {
+        headers: {
+          Authorization: getTOKEN(),
+        },
+      });
+    },
 
     async generateOrderDoc(context, params) {
       const url = BaseURL + "orders/doc/generate";
