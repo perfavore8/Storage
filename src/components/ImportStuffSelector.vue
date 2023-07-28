@@ -73,6 +73,7 @@ export default {
 
   emits: {
     select: null,
+    toggleShowOptions: null,
   },
   setup(props, context) {
     const options = ref([]);
