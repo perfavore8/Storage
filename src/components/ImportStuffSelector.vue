@@ -4,7 +4,6 @@
       class="title"
       :class="{ title_checked: show_options, disabled: disabled }"
       @click="open_close_options()"
-      @focusout="handleFocusOut"
       ref="title"
       tabindex="0"
     >
@@ -15,24 +14,27 @@
         :class="{ rotate_arrow: show_options }"
       ></div>
     </div>
-    <transition name="list">
-      <div class="options" v-if="show_options" key="a1">
-        <p
-          v-for="option in options"
-          :key="option.value"
-          :class="{
-            optgroup: option.value === 'optgroup',
-            selected: option.value == selected_option.value,
-          }"
-          @click="select_option(option)"
-        >
-          <template v-if="option.optgroup">
-            &nbsp;&nbsp;&nbsp;&nbsp;{{ option.name }}
-          </template>
-          <template v-else>{{ option.name }}</template>
-        </p>
-      </div>
-    </transition>
+    <template v-if="show_options">
+      <div class="backdrop" @click.stop="handleFocusOut()" />
+      <transition name="list">
+        <div class="options" key="a1">
+          <p
+            v-for="option in options"
+            :key="option.value"
+            :class="{
+              optgroup: option.value === 'optgroup',
+              selected: option.value == selected_option.value,
+            }"
+            @click="select_option(option)"
+          >
+            <template v-if="option.optgroup">
+              &nbsp;&nbsp;&nbsp;&nbsp;{{ option.name }}
+            </template>
+            <template v-else>{{ option.name }}</template>
+          </p>
+        </div>
+      </transition>
+    </template>
   </div>
 </template>
 
@@ -242,6 +244,7 @@ export default {
     min-width: v-bind(optionsWidth);
     left: v-bind(optionsX);
     top: v-bind(optionsY);
+    max-width: 400px;
     z-index: 5;
     p {
       cursor: pointer;
@@ -269,5 +272,8 @@ export default {
 .disabled {
   background-color: #e9ecef !important;
   cursor: default !important;
+}
+.backdrop {
+  z-index: 4;
 }
 </style>

@@ -4,255 +4,255 @@
     <div class="container max-w-none">
       <div class="header"><label>Добавление товаров</label></div>
       <div class="content">
-        <table class="table">
-          <thead>
-            <tr class="row title">
-              <td
-                class="item"
-                v-for="(tit, idx) in title"
-                :key="tit"
-                :style="{
-                  width: (100 / totalTitleWidth) * titleWidth[idx],
-                }"
-              >
-                {{ tit }}
-              </td>
-              <td class="item"></td>
-            </tr>
-          </thead>
-          <tbody>
-            <transition-group name="row">
-              <tr class="row" v-for="(row, idx) in new_items" :key="idx">
-                <td class="item">
-                  <selector-vue
-                    :options_props="options_type"
-                    @select="
-                      (option, idx) => option_select(option, idx, 'type')
-                    "
-                    :selected_option="row.type"
-                    :idx="idx"
-                    :disabled="!row.new"
-                  />
-                </td>
+        <div class="table_wrapper" ref="tableWrapper">
+          <table class="table">
+            <thead>
+              <tr class="row title">
                 <td
                   class="item"
-                  :ref="
-                    (el) =>
-                      selected_field_autocomplete.idx == idx &&
-                      selected_field_autocomplete.field == 'article'
-                        ? (targetAutocomplete = el)
-                        : null
-                  "
+                  v-for="(tit, idx) in title"
+                  :key="tit"
+                  :style="{
+                    width: (100 / totalTitleWidth) * titleWidth[idx],
+                  }"
                 >
-                  <input
-                    type="text"
-                    v-model="row.article"
-                    @focusin="
-                      set_selected_field_autocomplete(
-                        'article',
-                        row.article,
-                        idx
-                      )
-                    "
-                    @focusout="set_selected_field_autocomplete('', '', idx)"
-                    @input="
-                      set_selected_field_autocomplete(
-                        'article',
-                        row.article,
-                        idx
-                      )
-                    "
-                    class="input"
-                    :class="{
-                      not_valid:
-                        (row.article === '' || row.article === undefined) &&
-                        try_accept,
-                    }"
-                    :title="
-                      (row.article === '' || row.article === undefined) &&
-                      try_accept
-                        ? 'Пустое поле'
-                        : null
-                    "
-                    :disabled="!row.new"
-                  />
+                  {{ tit }}
                 </td>
-                <td
-                  class="item"
-                  :ref="
-                    (el) =>
-                      selected_field_autocomplete.idx == idx &&
-                      selected_field_autocomplete.field == 'name'
-                        ? (targetAutocomplete = el)
-                        : null
-                  "
-                >
-                  <input
-                    type="text"
-                    v-model="row.name"
-                    @focusin="
-                      set_selected_field_autocomplete('name', row.name, idx)
-                    "
-                    @focusout="set_selected_field_autocomplete('', '', idx)"
-                    @input="
-                      set_selected_field_autocomplete('name', row.name, idx)
-                    "
-                    class="input"
-                    :class="{
-                      not_valid:
-                        (row.name === '' || row.name === undefined) &&
-                        try_accept,
-                    }"
-                    :title="
-                      (row.name === '' || row.name === undefined) && try_accept
-                        ? 'Пустое поле'
-                        : null
-                    "
-                    :disabled="!row.new"
-                  />
-                </td>
-                <td class="item">
-                  <div class="select_input">
-                    <selector-vue
-                      :options_props="
-                        row.new
-                          ? batch_category_options
-                          : row.batch_category_options
-                      "
+                <td class="item"></td>
+              </tr>
+            </thead>
+            <tbody>
+              <transition-group name="row">
+                <tr class="row" v-for="(row, idx) in new_items" :key="idx">
+                  <td class="item">
+                    <ImportStuffSelector
+                      :options_props="options_type"
                       @select="
-                        (option, idx) =>
-                          option_select(option, idx, 'batch_category')
+                        (option, idx) => option_select(option, idx, 'type')
                       "
-                      :selected_option="row.batch_category"
+                      @toggleShowOptions="toggleShowOptions"
+                      :selected_option="row.type"
                       :idx="idx"
-                      :disabled="row.type.value == 2"
+                      :disabled="!row.new"
                     />
+                  </td>
+                  <td
+                    class="item"
+                    :ref="
+                      (el) =>
+                        selected_field_autocomplete.idx == idx &&
+                        selected_field_autocomplete.field == 'article'
+                          ? (targetAutocomplete = el)
+                          : null
+                    "
+                  >
                     <input
                       type="text"
-                      v-model="row.batch"
+                      v-model="row.article"
+                      @focusin="
+                        set_selected_field_autocomplete(
+                          'article',
+                          row.article,
+                          idx
+                        )
+                      "
+                      @focusout="set_selected_field_autocomplete('', '', idx)"
+                      @input="
+                        set_selected_field_autocomplete(
+                          'article',
+                          row.article,
+                          idx
+                        )
+                      "
                       class="input"
                       :class="{
                         not_valid:
-                          (row.batch === '' || row.batch === undefined) &&
-                          try_accept &&
-                          row.type.value != 2 &&
-                          false,
+                          (row.article === '' || row.article === undefined) &&
+                          try_accept,
                       }"
                       :title="
-                        (row.batch === '' || row.batch === undefined) &&
-                        try_accept &&
-                        row.type.value != 2
+                        (row.article === '' || row.article === undefined) &&
+                        try_accept
                           ? 'Пустое поле'
                           : null
                       "
-                      :disabled="
-                        row.type.value == 2 || row.batch_category?.value != -1
+                      :disabled="!row.new"
+                    />
+                  </td>
+                  <td
+                    class="item"
+                    :ref="
+                      (el) =>
+                        selected_field_autocomplete.idx == idx &&
+                        selected_field_autocomplete.field == 'name'
+                          ? (targetAutocomplete = el)
+                          : null
+                    "
+                  >
+                    <input
+                      type="text"
+                      v-model="row.name"
+                      @focusin="
+                        set_selected_field_autocomplete('name', row.name, idx)
+                      "
+                      @focusout="set_selected_field_autocomplete('', '', idx)"
+                      @input="
+                        set_selected_field_autocomplete('name', row.name, idx)
+                      "
+                      class="input"
+                      :class="{
+                        not_valid:
+                          (row.name === '' || row.name === undefined) &&
+                          try_accept,
+                      }"
+                      :title="
+                        (row.name === '' || row.name === undefined) &&
+                        try_accept
+                          ? 'Пустое поле'
+                          : null
+                      "
+                      :disabled="!row.new"
+                    />
+                  </td>
+                  <td class="item">
+                    <div class="select_input">
+                      <ImportStuffSelector
+                        :options_props="
+                          row.new
+                            ? batch_category_options
+                            : row.batch_category_options
+                        "
+                        @select="
+                          (option, idx) =>
+                            option_select(option, idx, 'batch_category')
+                        "
+                        @toggleShowOptions="toggleShowOptions"
+                        :selected_option="row.batch_category"
+                        :idx="idx"
+                        :disabled="row.type.value == 2"
+                      />
+                      <input
+                        type="text"
+                        v-model="row.batch"
+                        class="input"
+                        :class="{
+                          not_valid:
+                            (row.batch === '' || row.batch === undefined) &&
+                            try_accept &&
+                            row.type.value != 2 &&
+                            false,
+                        }"
+                        :title="
+                          (row.batch === '' || row.batch === undefined) &&
+                          try_accept &&
+                          row.type.value != 2
+                            ? 'Пустое поле'
+                            : null
+                        "
+                        :disabled="
+                          row.type.value == 2 || row.batch_category?.value != -1
+                        "
+                      />
+                    </div>
+                  </td>
+                  <td class="item">
+                    <ImportStuffSelector
+                      :options_props="row.wh_options"
+                      @select="
+                        (option, idx) => option_select(option, idx, 'wh')
+                      "
+                      @toggleShowOptions="toggleShowOptions"
+                      :selected_option="row.wh"
+                      :idx="idx"
+                      :disabled="row.type.value == 2"
+                    />
+                  </td>
+                  <td class="item">
+                    <input
+                      type="number"
+                      v-model="row.count"
+                      class="input"
+                      :disabled="row.type.value == 2"
+                      min="0"
+                      :class="{
+                        not_valid:
+                          (row.count === '' || row.count == undefined) &&
+                          try_accept &&
+                          row.type != 2,
+                      }"
+                      :title="
+                        (row.count === '' || row.count == undefined) &&
+                        try_accept
+                          ? 'Пустое поле'
+                          : null
                       "
                     />
-                  </div>
-                </td>
-                <td class="item">
-                  <selector-vue
-                    :options_props="row.wh_options"
-                    @select="(option, idx) => option_select(option, idx, 'wh')"
-                    :selected_option="row.wh"
-                    :idx="idx"
-                    :disabled="row.type.value == 2"
-                  />
-                </td>
-                <td class="item">
-                  <input
-                    type="number"
-                    v-model="row.count"
-                    class="input"
-                    :disabled="row.type.value == 2"
-                    min="0"
-                    :class="{
-                      not_valid:
-                        (row.count === '' || row.count == undefined) &&
-                        try_accept &&
-                        row.type != 2,
-                    }"
-                    :title="
-                      (row.count === '' || row.count == undefined) && try_accept
-                        ? 'Пустое поле'
-                        : null
-                    "
-                  />
-                </td>
-                <td class="item">
-                  <selector-vue
-                    :options_props="units_options"
-                    @select="
-                      (option, idx) => option_select(option, idx, 'units')
-                    "
-                    :selected_option="row.units"
-                    :idx="idx"
-                    :disabled="
-                      row.type.value == 2 || (!row.new && !row.newBatch)
-                    "
-                  />
-                </td>
-                <td class="item">
-                  <input
-                    type="number"
-                    v-model="row.cost_price"
-                    class="input"
-                    min="0"
-                    :class="{
-                      not_valid:
+                  </td>
+                  <td class="item">
+                    <ImportStuffSelector
+                      :options_props="units_options"
+                      @select="
+                        (option, idx) => option_select(option, idx, 'units')
+                      "
+                      @toggleShowOptions="toggleShowOptions"
+                      :selected_option="row.units"
+                      :idx="idx"
+                      :disabled="
+                        row.type.value == 2 || (!row.new && !row.newBatch)
+                      "
+                    />
+                  </td>
+                  <td class="item">
+                    <input
+                      type="number"
+                      v-model="row.cost_price"
+                      class="input"
+                      min="0"
+                      :class="{
+                        not_valid:
+                          (row.cost_price === '' ||
+                            row.cost_price === undefined) &&
+                          try_accept,
+                      }"
+                      :title="
                         (row.cost_price === '' ||
                           row.cost_price === undefined) &&
-                        try_accept,
+                        try_accept
+                          ? 'Пустое поле'
+                          : null
+                      "
+                      :disabled="!row.new && !row.newBatch"
+                    />
+                  </td>
+                  <td class="item">
+                    <ImportStuffSelector
+                      :options_props="row.price_cat_options"
+                      @select="
+                        (option, idx) => option_select(option, idx, 'price_cat')
+                      "
+                      @toggleShowOptions="toggleShowOptions"
+                      :selected_option="row.price_cat"
+                      :disabled="!row.new && !row.newBatch"
+                      :idx="idx"
+                    />
+                  </td>
+                  <td class="item">
+                    <input
+                      type="number"
+                      v-model="row.price.cost"
+                      class="input"
+                      min="0"
+                      :disabled="!row.new && !row.newBatch"
+                    />
+                  </td>
+                  <td
+                    class="item"
+                    :class="{
+                      long: row.price.is_nds,
                     }"
-                    :title="
-                      (row.cost_price === '' || row.cost_price === undefined) &&
-                      try_accept
-                        ? 'Пустое поле'
-                        : null
-                    "
-                    :disabled="!row.new && !row.newBatch"
-                  />
-                </td>
-                <td class="item">
-                  <selector-vue
-                    :options_props="row.price_cat_options"
-                    @select="
-                      (option, idx) => option_select(option, idx, 'price_cat')
-                    "
-                    :selected_option="row.price_cat"
-                    :disabled="!row.new && !row.newBatch"
-                    :idx="idx"
-                  />
-                </td>
-                <td class="item">
-                  <input
-                    type="number"
-                    v-model="row.price.cost"
-                    class="input"
-                    min="0"
-                    :disabled="!row.new && !row.newBatch"
-                  />
-                </td>
-                <td
-                  class="item"
-                  :class="{
-                    long: row.price.is_nds,
-                  }"
-                >
-                  <div class="nds">
-                    <div v-if="!row.price.is_nds">
-                      <input
-                        type="checkbox"
-                        v-model="row.price.is_nds"
-                        class="checkbox"
-                        :id="idx + 'nq'"
-                        :disabled="!row.new && !row.newBatch"
-                      />
-                      <label :for="idx + 'nq'"></label>
-                    </div>
-                    <div class="hiden" v-else>
-                      <div class="checkboxes">
+                  >
+                    <div class="nds">
+                      <div v-if="!row.price.is_nds">
                         <input
                           type="checkbox"
                           v-model="row.price.is_nds"
@@ -260,64 +260,81 @@
                           :id="idx + 'nq'"
                           :disabled="!row.new && !row.newBatch"
                         />
-                        <label :for="idx + 'nq'">НДС</label>
-                        <input
-                          type="checkbox"
-                          v-model="row.price.is_price_include_nds"
-                          class="checkbox"
-                          :id="idx + 'nw'"
-                          :disabled="!row.new && !row.newBatch"
-                        />
-                        <label :for="idx + 'nw'">включен в цену</label>
-                        <input
-                          type="checkbox"
-                          v-model="row.price.is_manager_can_change_nds"
-                          class="checkbox"
-                          :id="idx + 'ne'"
-                          :disabled="!row.new && !row.newBatch"
-                        />
-                        <label :for="idx + 'ne'">можно менять %</label>
+                        <label :for="idx + 'nq'"></label>
                       </div>
-                      <input
-                        type="number"
-                        class="input"
-                        v-model="row.price.nds"
-                        placeholder="% НДС"
-                        min="0"
-                        :disabled="!row.new && !row.newBatch"
-                      />
+                      <div class="hiden" v-else>
+                        <div class="checkboxes">
+                          <input
+                            type="checkbox"
+                            v-model="row.price.is_nds"
+                            class="checkbox"
+                            :id="idx + 'nq'"
+                            :disabled="!row.new && !row.newBatch"
+                          />
+                          <label :for="idx + 'nq'">НДС</label>
+                          <input
+                            type="checkbox"
+                            v-model="row.price.is_price_include_nds"
+                            class="checkbox"
+                            :id="idx + 'nw'"
+                            :disabled="!row.new && !row.newBatch"
+                          />
+                          <label :for="idx + 'nw'">включен в цену</label>
+                          <input
+                            type="checkbox"
+                            v-model="row.price.is_manager_can_change_nds"
+                            class="checkbox"
+                            :id="idx + 'ne'"
+                            :disabled="!row.new && !row.newBatch"
+                          />
+                          <label :for="idx + 'ne'">можно менять %</label>
+                        </div>
+                        <input
+                          type="number"
+                          class="input"
+                          v-model="row.price.nds"
+                          placeholder="% НДС"
+                          min="0"
+                          :disabled="!row.new && !row.newBatch"
+                        />
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td class="item">
-                  <selector-vue
-                    :options_props="categories_options"
-                    @select="
-                      (option, idx) => option_select(option, idx, 'category')
-                    "
-                    :selected_option="row.category"
-                    :idx="idx"
-                    :disabled="!row.new && !row.newBatch"
-                  />
-                </td>
-                <td class="item">
-                  <input type="text" v-model="row.description" class="input" />
-                </td>
-                <transition name="row">
-                  <td class="item">
-                    <button
-                      class="del_btn"
-                      v-show="new_items.length > 1"
-                      @click="del_item(idx)"
-                    >
-                      X
-                    </button>
                   </td>
-                </transition>
-              </tr>
-            </transition-group>
-          </tbody>
-        </table>
+                  <td class="item">
+                    <ImportStuffSelector
+                      :options_props="categories_options"
+                      @select="
+                        (option, idx) => option_select(option, idx, 'category')
+                      "
+                      @toggleShowOptions="toggleShowOptions"
+                      :selected_option="row.category"
+                      :idx="idx"
+                      :disabled="!row.new && !row.newBatch"
+                    />
+                  </td>
+                  <td class="item">
+                    <input
+                      type="text"
+                      v-model="row.description"
+                      class="input"
+                    />
+                  </td>
+                  <transition name="row">
+                    <td class="item">
+                      <button
+                        class="del_btn"
+                        v-show="new_items.length > 1"
+                        @click="del_item(idx)"
+                      >
+                        X
+                      </button>
+                    </td>
+                  </transition>
+                </tr>
+              </transition-group>
+            </tbody>
+          </table>
+        </div>
         <div class="content_footer">
           <button class="add_new_button" @click="push_new_item()">+</button>
         </div>
@@ -349,11 +366,11 @@
 </template>
 
 <script>
-import SelectorVue from "@/components/SelectorVue";
+import ImportStuffSelector from "@/components/ImportStuffSelector.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 export default {
   components: {
-    SelectorVue,
+    ImportStuffSelector,
     BtnsSaveClose,
   },
   props: {
@@ -775,6 +792,13 @@ export default {
       }
       this.acceptBtnDisable = false;
     },
+    toggleShowOptions(isOpen) {
+      const changeOverflow = (option) => {
+        document.body.style.overflowY = option;
+        this.$refs.tableWrapper.style.overflowX = option;
+      };
+      isOpen ? changeOverflow("hidden") : changeOverflow("auto");
+    },
   },
 };
 </script>
@@ -799,8 +823,9 @@ export default {
     position: relative;
     z-index: 260;
     width: calc(100% - 60px);
-    width: fit-content;
-    min-width: 1400px;
+    // width: fit-content;
+    // min-width: 1400px;
+    overflow: hidden;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -822,143 +847,148 @@ export default {
       @include font(400, 16px);
       padding: 15px 50px 0;
       // border-bottom: 2px solid #dee2e6;
-      .table {
-        border: 1px solid #c9c9c9;
-        border-collapse: collapse;
+      .table_wrapper {
+        overflow-x: scroll;
         width: 100%;
-        .title {
-          @include font(500, 16px);
-          background-color: rgba(0, 0, 0, 0.15) !important;
-          .item {
-            padding-bottom: 20px !important;
-            text-align: center !important;
+        max-height: 420px;
+        .table {
+          border: 1px solid #c9c9c9;
+          border-collapse: collapse;
+          width: 100%;
+          .title {
+            @include font(500, 16px);
+            background-color: rgba(0, 0, 0, 0.15) !important;
+            .item {
+              padding-bottom: 20px !important;
+              text-align: center !important;
+            }
           }
-        }
-        .row:nth-child(odd) {
-          background-color: rgba(0, 0, 0, 0.05);
-        }
-        .row {
-          .item {
-            position: relative;
-            padding: 10px 5px;
-            border: 1px solid #c9c9c9;
-            border-top: 2px solid #c9c9c9;
-            text-align: left;
-            .nds {
-              // text-align: center;
-              display: flex;
-              flex-direction: row;
-              text-align: center;
-              justify-content: center;
-              .hiden {
+          .row:nth-child(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
+          }
+          .row {
+            .item {
+              position: relative;
+              padding: 10px 5px;
+              border: 1px solid #c9c9c9;
+              border-top: 2px solid #c9c9c9;
+              text-align: left;
+              .nds {
+                // text-align: center;
                 display: flex;
-                flex-direction: column;
-                .checkboxes {
+                flex-direction: row;
+                text-align: center;
+                justify-content: center;
+                .hiden {
                   display: flex;
-                  flex-direction: row;
-                  gap: 7px;
-                  @include font(500, 14px);
-                  > label {
-                    flex-direction: column;
+                  flex-direction: column;
+                  .checkboxes {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 7px;
+                    @include font(500, 14px);
+                    > label {
+                      flex-direction: column;
+                    }
                   }
                 }
               }
-            }
-            .v-select {
-              // width: calc(100% - 26px) !important;
-              width: 100%;
-            }
-            .select_input {
-              display: flex;
-              flex-direction: row;
-              gap: 24px;
               .v-select {
-                flex: 2 2 auto;
-                width: 60% !important;
-                :deep(.title) {
-                  width: 100% !important;
+                // width: calc(100% - 26px) !important;
+                width: 100%;
+              }
+              .select_input {
+                display: flex;
+                flex-direction: row;
+                gap: 24px;
+                .v-select {
+                  flex: 2 2 auto;
+                  width: 60% !important;
+                  :deep(.title) {
+                    width: 100% !important;
+                  }
+                }
+                .input {
+                  flex: 1 1 auto;
+                  width: calc(40% - 24px) !important;
+                  min-width: 30%;
+                  margin-left: -24px;
                 }
               }
-              .input {
-                flex: 1 1 auto;
-                width: calc(40% - 24px) !important;
-                min-width: 30%;
-                margin-left: -24px;
-              }
             }
-          }
-          .item:nth-child(1) {
-            width: 7%;
-          }
-          .item:nth-child(2) {
-            width: 10%;
-          }
-          .item:nth-child(3) {
-            width: 50%;
-          }
-          .item:nth-child(4) {
-            width: 15%;
-            min-width: 160px;
-          }
-          .item:nth-child(5) {
-            width: 15%;
-            min-width: 190px;
-            // max-width: 180px;
-          }
-          .item:nth-child(6) {
-            width: 10%;
-            min-width: 120px;
-          }
-          .item:nth-child(7) {
-            width: 7%;
-            // max-width: 140px;
-            min-width: 130px;
-            max-width: 130px;
-          }
-          .item:nth-child(8) {
-            width: 3%;
-          }
-          .item:nth-child(9) {
-            width: 15%;
-            min-width: 160px;
-            // max-width: 180px;
-          }
-          .item:nth-child(10) {
-            width: 15%;
-            min-width: 110px;
-          }
-          .item:nth-child(11) {
-            width: 5%;
-          }
-          .item:nth-child(12) {
-            width: 15%;
-            min-width: 150px;
-          }
-          .item:nth-child(13) {
-            width: 15%;
-            min-width: 150px;
-          }
-          .item:nth-child(14) {
-            width: 5.3%;
-            min-width: 44px;
-            max-width: 44px;
-          }
-          .long {
-            min-width: 182px;
-          }
-          .del_btn {
-            height: 34px;
-            width: 34px !important;
-            margin: 0 auto;
-            cursor: pointer;
-            color: #fff;
-            background: #dc3545;
-            border: none;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            @include font(400, 16px, 20px);
+            .item:nth-child(1) {
+              width: 7%;
+            }
+            .item:nth-child(2) {
+              width: 10%;
+            }
+            .item:nth-child(3) {
+              width: 50%;
+            }
+            .item:nth-child(4) {
+              width: 15%;
+              min-width: 160px;
+            }
+            .item:nth-child(5) {
+              width: 15%;
+              min-width: 190px;
+              // max-width: 180px;
+            }
+            .item:nth-child(6) {
+              width: 10%;
+              min-width: 120px;
+            }
+            .item:nth-child(7) {
+              width: 7%;
+              // max-width: 140px;
+              min-width: 130px;
+              max-width: 130px;
+            }
+            .item:nth-child(8) {
+              width: 3%;
+            }
+            .item:nth-child(9) {
+              width: 15%;
+              min-width: 160px;
+              // max-width: 180px;
+            }
+            .item:nth-child(10) {
+              width: 15%;
+              min-width: 110px;
+            }
+            .item:nth-child(11) {
+              width: 5%;
+            }
+            .item:nth-child(12) {
+              width: 15%;
+              min-width: 150px;
+            }
+            .item:nth-child(13) {
+              width: 15%;
+              min-width: 150px;
+            }
+            .item:nth-child(14) {
+              width: 5.3%;
+              min-width: 44px;
+              max-width: 44px;
+            }
+            .long {
+              min-width: 182px;
+            }
+            .del_btn {
+              height: 34px;
+              width: 34px !important;
+              margin: 0 auto;
+              cursor: pointer;
+              color: #fff;
+              background: #dc3545;
+              border: none;
+              border-radius: 4px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              @include font(400, 16px, 20px);
+            }
           }
         }
       }
