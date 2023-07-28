@@ -1,4 +1,4 @@
-import { BaseURL } from "@/composables/BaseURL";
+import { BaseURL, TokenName } from "@/composables/BaseURL";
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 const { preparation_params } = usePreparationQueryParams();
 
@@ -20,7 +20,7 @@ export default {
 
       if (json.success && json.access_token) {
         // Сохранение переменной в кэше
-        localStorage.setItem("TOKEN", JSON.stringify(json.access_token));
+        localStorage.setItem(TokenName, JSON.stringify(json.access_token));
       }
 
       return json;
