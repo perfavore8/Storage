@@ -168,6 +168,15 @@
         </transition>
       </template>
     </div>
+    <div v-if="isTest" class="flex flex-col gap-1 items-center">
+      <span class="whitespace-nowrap"> {{ userName }} </span>
+      <button
+        class="btn small_btn order-1 max-h-[34px] pointer-events-auto relative inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-normal leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+        @click="logOut()"
+      >
+        Выйти
+      </button>
+    </div>
   </div>
 </template>
 
@@ -177,18 +186,21 @@ import { computed, ref } from "@vue/runtime-core";
 import store from "@/store";
 import { useNotification } from "@/composables/notification";
 import router from "@/router";
+import { useLogOut } from "@/composables/logOut";
 export default {
   components: {
     TaskCenter,
   },
   setup() {
     const { addNotification } = useNotification();
+    const { logOut } = useLogOut();
 
     const showTaskCenter = computed(() => store.state.shows.showTaskCenter);
     const show_sync = computed(() => store.state.shows.show_sync);
     const show_settings = computed(() => store.state.shows.show_settings);
     const oneC = computed(() => store.state.account.account?.config?.g_enabled);
     const account = computed(() => store.state.account.account);
+    const userName = computed(() => store.state.account.user?.name);
     const isTest = computed(() => store.state.account?.account?.id == 1);
     const is_empty_amo_product_list = computed(
       () =>
@@ -289,6 +301,8 @@ export default {
       isColored,
       openArchive,
       openSettingEntities,
+      userName,
+      logOut,
     };
   },
 };
