@@ -75,6 +75,10 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+  if (!haveAnyTOKEN() && to.path !== "/authorization") {
+    next("/authorization");
+    return;
+  }
   if (to.path == "/authorization") {
     if (haveAnyTOKEN() && !isDev.value) {
       next(from.path === "/authorization" ? "/" : from.path);
