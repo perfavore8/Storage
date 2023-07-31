@@ -170,7 +170,7 @@
     </div>
     <div class="ref" v-if="isTest">
       <button
-        class="ref_2_logo btn hover:scale-105"
+        class="ref_2_logo btn hover:scale-110"
         @click="toggleShowUserMenu()"
         title="Настройки юзера"
       >
