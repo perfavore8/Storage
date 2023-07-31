@@ -89,7 +89,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   const { res } = await store.dispatch("get_account");
-  if (res.status == 403) {
+  if (res.status == 403 && !haveAnyTOKEN()) {
     next("/authorization");
     return;
   }
