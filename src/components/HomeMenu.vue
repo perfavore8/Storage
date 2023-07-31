@@ -168,16 +168,20 @@
         </transition>
       </template>
     </div>
-    <div v-if="isTest" class="flex flex-row gap-3 items-center relative">
-      <span class="whitespace-nowrap font-medium text-lg text-slate-700">
-        {{ userName }}
-      </span>
+    <div class="ref" v-if="isTest">
       <button
-        class="btn relative small_btn order-1 max-h-[34px] pointer-events-auto inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-normal leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
-        @click="logOut()"
+        class="ref_2_logo btn hover:scale-105"
+        @click="toggleShowUserMenu()"
+        title="Настройки юзера"
       >
-        Выйти
+        <span class="material-icons-outlined text-2xl"> account_circle </span>
       </button>
+      <template v-if="showUserMenu">
+        <div class="backdrop" @click="toggleShowUserMenu()" />
+        <transition name="modal">
+          <HomeMenuUser />
+        </transition>
+      </template>
     </div>
   </div>
 </template>
@@ -188,14 +192,15 @@ import { computed, ref } from "@vue/runtime-core";
 import store from "@/store";
 import { useNotification } from "@/composables/notification";
 import router from "@/router";
-import { useLogOut } from "@/composables/logOut";
+import { useToggle } from "@vueuse/core";
+import HomeMenuUser from "./HomeMenuUser.vue";
 export default {
   components: {
     TaskCenter,
+    HomeMenuUser,
   },
   setup() {
     const { addNotification } = useNotification();
-    const { logOut } = useLogOut();
 
     const showTaskCenter = computed(() => store.state.shows.showTaskCenter);
     const show_sync = computed(() => store.state.shows.show_sync);
@@ -273,6 +278,8 @@ export default {
       store.commit("toggleSettingEntities", true);
     const openArchive = () => router.push("/archive");
 
+    const [showUserMenu, toggleShowUserMenu] = useToggle(false);
+
     return {
       showTaskCenter,
       show_sync,
@@ -304,7 +311,8 @@ export default {
       openArchive,
       openSettingEntities,
       userName,
-      logOut,
+      showUserMenu,
+      toggleShowUserMenu,
     };
   },
 };
