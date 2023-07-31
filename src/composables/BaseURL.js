@@ -19,8 +19,7 @@ export const TokenName = "TOKEN";
 
 let savedToken = "";
 const getCachedToken = () => {
-  if (!findGetParameter("token"))
-    savedToken = JSON.parse(localStorage.getItem(TokenName));
+  savedToken = JSON.parse(localStorage.getItem(TokenName));
 };
 getCachedToken();
 
