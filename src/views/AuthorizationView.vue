@@ -288,8 +288,6 @@ export default {
     const [isSignUp, toggleSignUp] = useToggle(false);
     watch(isSignUp, () => {
       dropErrorInput();
-      dropForm();
-      notificationSystem.dropToDefault(0.3);
     });
 
     const loginRef = ref(null);
@@ -310,6 +308,11 @@ export default {
     });
     const dropForm = () => {
       Object.keys(form).forEach((key) => (form[key] = ""));
+    };
+    const dropFormLogins = () => {
+      form.tgLogin = "";
+      form.email = "";
+      form.phone = "";
     };
 
     const imask = reactive({
@@ -438,6 +441,7 @@ export default {
       ],
       select: function (option) {
         dropErrorInput();
+        dropFormLogins();
         this.selected = option;
       },
       dropToDefault: function (delay) {
@@ -485,6 +489,7 @@ export default {
       notificationSystem,
       isFailAuth,
       tryRestorePassword,
+      dropForm,
     };
   },
 };
