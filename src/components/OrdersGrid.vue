@@ -117,9 +117,7 @@
               </td>
               <td
                 class="item"
-                v-else-if="
-                  title.code === 'stat' && row.stat === 'Успешный' && isTest
-                "
+                v-else-if="title.code === 'stat' && row.stat === 'Успешный'"
               >
                 <div class="flex flex-row gap-4 items-center">
                   <span class="">
