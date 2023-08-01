@@ -51,12 +51,22 @@
           >
           <small>Бесплатное дополнение</small>
         </div>
-        <div class="item">
-          <img class="icon" src="@/assets/co.png" />
-          <a><button class="btn btn_dark_blue">Скоро</button></a>
-          <small>
-            Для установки необходимо быть пользователем платформы CoMagic
+        <div class="item" v-if="isTest">
+          <img
+            class="icon"
+            src="https://wp.static-cdn-shsp.com/wp-content/uploads/2017/06/amo_fon.png"
+          />
+          <a>
+            <button class="btn btn_dark_blue" :disabled="account?.install">
+              {{ account?.install ? "Установлено" : "Установить" }}
+            </button>
+          </a>
+          <small v-if="!account?.install">
+            Для установки необходимо быть пользователем платформы amoCRM
           </small>
+          <a @click="route('amoCRM')" v-if="account?.install">
+            <button class="btn btn_dark_blue">Настройки</button>
+          </a>
         </div>
       </div>
       <div class="footer"></div>
@@ -65,23 +75,24 @@
 </template>
 
 <script>
+import { computed } from "vue";
+import store from "@/store";
+import { useRouter } from "vue-router";
 export default {
-  computed: {
-    oneC() {
-      return this.$store.state.account.account?.config?.g_enabled;
-    },
-    account() {
-      return this.$store.state.account.account;
-    },
-  },
-  methods: {
-    route(page_name) {
-      this.close();
-      this.$router.push("/" + page_name);
-    },
-    close() {
-      this.$store.commit("openCloseThirdPpartyIntegrations", false);
-    },
+  setup() {
+    const router = useRouter();
+
+    const oneC = computed(() => store.state.account.account?.config?.g_enabled);
+    const account = computed(() => store.state.account.account);
+    const isTest = computed(() => store.state.account?.account?.id == 1);
+
+    const route = (page_name) => {
+      close();
+      router.push("/" + page_name);
+    };
+    const close = () => store.commit("openCloseThirdPpartyIntegrations", false);
+
+    return { oneC, account, isTest, route, close };
   },
 };
 </script>
