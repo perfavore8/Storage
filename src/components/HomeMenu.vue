@@ -168,7 +168,7 @@
         </transition>
       </template>
     </div>
-    <div class="ref" v-if="isTest">
+    <div class="ref" v-if="isTest || amoTest">
       <button
         class="ref_2_logo btn hover:scale-110"
         @click="toggleShowUserMenu()"
@@ -209,6 +209,7 @@ export default {
     const account = computed(() => store.state.account.account);
     const userName = computed(() => store.state.account.user?.name);
     const isTest = computed(() => store.state.account?.account?.id == 1);
+    const amoTest = computed(() => store.state.account?.account?.id == 454);
     const is_empty_amo_product_list = computed(
       () =>
         !account.value?.config?.amo_product_list ||
@@ -313,6 +314,7 @@ export default {
       userName,
       showUserMenu,
       toggleShowUserMenu,
+      amoTest,
     };
   },
 };
