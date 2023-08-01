@@ -56,8 +56,11 @@
             class="icon"
             src="https://wp.static-cdn-shsp.com/wp-content/uploads/2017/06/amo_fon.png"
           />
-          <a>
-            <button class="btn btn_dark_blue" :disabled="account?.install">
+          <a :href="urlSutupInAmoCrm" target="blank">
+            <button
+              class="btn btn_dark_blue"
+              :disabled="account?.install && !isTest"
+            >
               {{ account?.install ? "Установлено" : "Установить" }}
             </button>
           </a>
@@ -92,7 +95,11 @@ export default {
     };
     const close = () => store.commit("openCloseThirdPpartyIntegrations", false);
 
-    return { oneC, account, isTest, route, close };
+    const urlSutupInAmoCrm = encodeURI(
+      `https://www.amocrm.ru/oauth/?state={"external_source":"gs", "user_id":${account.value?.id}}&client_id=5cd3ee16-5f4c-4b3f-828f-9f575bcaeb2e`
+    );
+
+    return { oneC, account, isTest, route, close, urlSutupInAmoCrm };
   },
 };
 </script>

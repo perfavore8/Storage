@@ -73,7 +73,7 @@
         </div>
       </div>
       <div class="content">
-        <div class="binding">
+        <div class="binding" v-if="account.install">
           <div class="header">
             Привязка полей документов
             <div class="save">
@@ -102,27 +102,29 @@
           </div>
         </div>
         <div class="patterns">
-          <div class="header mb-2">Хуки</div>
-          <div class="main mb-4">
-            <div class="column">
-              <div class="grid grid-cols-[3fr_4fr] items-center">
-                <label>Хук при загрузке документа в сделку</label>
-                <input
-                  type="text"
-                  class="input inputhuk my-2"
-                  v-model="hook_download"
-                />
-              </div>
-              <div class="grid grid-cols-[3fr_4fr] items-center">
-                <label>Хук при генерации документа в сделке</label>
-                <input
-                  type="text"
-                  class="input inputhuk my-2"
-                  v-model="hook_generate_doc"
-                />
+          <template v-if="account.install">
+            <div class="header mb-2">Хуки</div>
+            <div class="main mb-4">
+              <div class="column">
+                <div class="grid grid-cols-[3fr_4fr] items-center">
+                  <label>Хук при загрузке документа в сделку</label>
+                  <input
+                    type="text"
+                    class="input inputhuk my-2"
+                    v-model="hook_download"
+                  />
+                </div>
+                <div class="grid grid-cols-[3fr_4fr] items-center">
+                  <label>Хук при генерации документа в сделке</label>
+                  <input
+                    type="text"
+                    class="input inputhuk my-2"
+                    v-model="hook_generate_doc"
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </template>
           <div class="header">
             <div>Шаблоны документов</div>
             <p class="small">

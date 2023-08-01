@@ -22,7 +22,7 @@
             :class="{ not_valid: try_accept && file == '' }"
           />
         </div>
-        <div class="label_input">
+        <div class="label_input" v-if="account.install">
           <label class="label">Этап авто-генерации:</label>
           <selector-vue
             :options_props="copyPipelinesList"
@@ -38,7 +38,7 @@
             :selected_option="orientation.selected"
           />
         </div>
-        <div class="label_input">
+        <div class="label_input" v-if="account.install">
           <label class="label">Url последнего документа:</label>
           <selector-vue
             :options_props="lead_fields_options"
@@ -168,6 +168,9 @@ export default {
         );
       });
       return list;
+    },
+    account() {
+      return this.$store.state.account.account;
     },
   },
   methods: {
