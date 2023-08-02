@@ -1,5 +1,8 @@
 import { useRouter } from "vue-router";
 import { useCheckDevMode } from "./checkDevMode";
+import { checkInFrame } from "./checkInFrame";
+import store from "@/store";
+import { ref } from "vue";
 const { isDev } = useCheckDevMode();
 
 function findGetParameter(parameterName) {
@@ -23,6 +26,8 @@ const getCachedToken = () => {
 };
 getCachedToken();
 
+const isTokenFail = ref(false);
+
 export function useRedirectToAuth() {
   const router = useRouter();
 
@@ -38,7 +43,19 @@ export function useRedirectToAuth() {
   };
   checkPath();
 
-  return { checkPath, getCachedToken };
+  const startCheckIsValidToken = () => {
+    const f = async () => {
+      const tokenFail = await store.dispatch("accountCheck");
+      isTokenFail.value = tokenFail;
+      if (tokenFail && checkInFrame) {
+        router.push("/Error_token_not_valid");
+      }
+    };
+    f();
+    setInterval(f(), 10000);
+  };
+
+  return { checkPath, getCachedToken, startCheckIsValidToken, isTokenFail };
 }
 
 export const BaseURL = "https://api.gosklad.ru/v1/";

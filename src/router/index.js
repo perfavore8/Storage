@@ -1,9 +1,10 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { haveAnyTOKEN } from "@/composables/BaseURL";
+import { haveAnyTOKEN, useRedirectToAuth } from "@/composables/BaseURL";
 import store from "../store";
 import { useCheckDevMode } from "@/composables/checkDevMode";
 
 const { isDev } = useCheckDevMode();
+const { isTokenFail } = useRedirectToAuth();
 
 const routes = [
   {
@@ -57,6 +58,11 @@ const routes = [
     component: () => import("../views/ErrorIsExpiredView.vue"),
   },
   {
+    path: "/Error_token_not_valid",
+    name: "NotValidToken",
+    component: () => import("../views/NotValidToken.vue"),
+  },
+  {
     path: "/authorization",
     name: "authorization",
     component: () => import("../views/AuthorizationView.vue"),
@@ -90,6 +96,19 @@ router.beforeEach(async (to, from, next) => {
       return;
     }
     next();
+    return;
+  }
+
+  if (
+    from.path === "/Error_token_not_valid" &&
+    to.path !== "/Error_token_not_valid" &&
+    isTokenFail.value
+  ) {
+    next("/Error_token_not_valid");
+    return;
+  }
+  if (to.path === "/Error_token_not_valid" && !isTokenFail.value) {
+    next("/");
     return;
   }
 

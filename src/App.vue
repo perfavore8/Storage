@@ -12,10 +12,13 @@
 import { computed, watch } from "@vue/runtime-core";
 import { useRoute } from "vue-router";
 import NotificationCenter from "./components/NotificationCenter.vue";
+import { useRedirectToAuth } from "./composables/BaseURL";
 export default {
   components: { NotificationCenter },
   setup() {
     const route = useRoute();
+    const { startCheckIsValidToken } = useRedirectToAuth();
+    startCheckIsValidToken();
 
     const isDarkTest = computed(() => route.query.test === "dark");
     watch(isDarkTest, () => {
