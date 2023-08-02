@@ -230,6 +230,7 @@ export default {
     },
   },
   async mounted() {
+    console.log(window.self !== window.top);
     await this.$store.dispatch("get_account");
     this.ref_homeWhs?.changeStoreWhs();
     this.$refs?.oldData?.importOldData("start");

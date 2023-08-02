@@ -4,10 +4,37 @@
       <div class="top">
         <AppHeader />
       </div>
-      <div class="bot">
-        <h1 class="text-2xl font-bold text-slate-900">
-          Настройки интеграции с amoCRM
-        </h1>
+      <div class="flex flex-col items-center">
+        <div class="flex flex-col items-start w-fit">
+          <h1 class="text-3xl font-bold text-slate-700">
+            Настройки интеграции с amoCRM
+          </h1>
+          <div class="flex gap-4">
+            <span>Кабинет amoCRM:</span>
+            <a
+              href=""
+              target="blank"
+              class="flex items-center gap-1 font-medium text-indigo-600 underline dark:text-indigo-500 hover:no-underline focus:outline-offset-4"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.5 10.5L21 3m-5 0h5v5m0 6v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"
+                />
+              </svg>
+              {{ subdomain }}
+            </a>
+          </div>
+        </div>
       </div>
       <div class="bottom">
         <AppRadioBtnsGroupUnderlined
@@ -28,7 +55,8 @@ import AppHeader from "@/components/AppHeader.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import AmoCrmGeneralSettings from "@/components/AmoCrm/AmoCrmGeneralSettings.vue";
 import AmoCrmSyncSettings from "@/components/AmoCrm/AmoCrmSyncSettings.vue";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
+import store from "@/store";
 export default {
   name: "InstructionsView",
   components: {
@@ -63,7 +91,9 @@ export default {
     });
     tabs.dropToDefault();
 
-    return { tabs };
+    const subdomain = computed(() => store.state.account.account?.subdomain);
+
+    return { tabs, subdomain };
   },
 };
 </script>
