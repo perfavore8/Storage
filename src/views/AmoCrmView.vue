@@ -4,6 +4,11 @@
       <div class="top">
         <AppHeader />
       </div>
+      <div class="bot">
+        <h1 class="text-2xl font-bold text-slate-900">
+          Настройки интеграции с amoCRM
+        </h1>
+      </div>
       <div class="bottom">
         <AppRadioBtnsGroupUnderlined
           :list="tabs.list"
