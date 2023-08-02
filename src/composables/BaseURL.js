@@ -52,7 +52,7 @@ export function useRedirectToAuth() {
       }
     };
     f();
-    setInterval(f(), 10000);
+    setInterval(() => f(), 10000);
   };
 
   return { checkPath, getCachedToken, startCheckIsValidToken, isTokenFail };
