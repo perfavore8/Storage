@@ -51,7 +51,7 @@
           >
           <small>Бесплатное дополнение</small>
         </div>
-        <div class="item" v-if="isTest">
+        <div class="item" v-if="isTest || amoTest">
           <img
             class="icon"
             src="https://wp.static-cdn-shsp.com/wp-content/uploads/2017/06/amo_fon.png"
@@ -99,7 +99,9 @@ export default {
       `https://www.amocrm.ru/oauth/?state={"external_source":"gs", "user_id":${account.value?.id}}&client_id=5cd3ee16-5f4c-4b3f-828f-9f575bcaeb2e`
     );
 
-    return { oneC, account, isTest, route, close, urlSutupInAmoCrm };
+    const amoTest = computed(() => store.state.account?.account?.id == 454);
+
+    return { oneC, account, isTest, route, close, urlSutupInAmoCrm, amoTest };
   },
 };
 </script>
