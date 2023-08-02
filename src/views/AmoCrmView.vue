@@ -12,7 +12,7 @@
           <div class="flex gap-4">
             <span>Кабинет amoCRM:</span>
             <a
-              href=""
+              :href="`https://${subdomain}.amocrm.ru/`"
               target="blank"
               class="flex items-center gap-1 font-medium text-indigo-600 underline dark:text-indigo-500 hover:no-underline focus:outline-offset-4"
             >
