@@ -55,6 +55,7 @@ import AppHeader from "@/components/AppHeader.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import AmoCrmGeneralSettings from "@/components/AmoCrm/AmoCrmGeneralSettings.vue";
 import AmoCrmSyncSettings from "@/components/AmoCrm/AmoCrmSyncSettings.vue";
+import AmoCrmDocumentsSettings from "@/components/AmoCrm/AmoCrmDocumentsSettings.vue";
 import { computed, reactive } from "vue";
 import store from "@/store";
 export default {
@@ -64,6 +65,7 @@ export default {
     AppRadioBtnsGroupUnderlined,
     AmoCrmGeneralSettings,
     AmoCrmSyncSettings,
+    AmoCrmDocumentsSettings,
   },
   setup() {
     const tabs = reactive({
@@ -79,6 +81,11 @@ export default {
           name: "Настройки синхронизации товаров",
           value: "sync",
           component: "AmoCrmSyncSettings",
+        },
+        {
+          name: "Настройки документов",
+          value: "docs",
+          component: "AmoCrmDocumentsSettings",
         },
       ],
       select: function (option) {
