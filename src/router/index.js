@@ -100,14 +100,15 @@ router.beforeEach(async (to, from, next) => {
   }
 
   const account = store.state.account?.account;
-  if (!account?.install && to.path != "/Error_is_not_installed") {
-    next("/Error_is_not_installed");
-    return;
-  }
+  // if (!account?.install && to.path != "/Error_is_not_installed") {
+  //   next("/Error_is_not_installed");
+  //   return;
+  // }
 
   if (
-    (account?.install && to.path == "/Error_is_not_installed") ||
-    (!account?.expired && to.path == "/Error_is_expired")
+    // (account?.install && to.path == "/Error_is_not_installed") ||
+    !account?.expired &&
+    to.path == "/Error_is_expired"
   ) {
     next("/");
     return;
