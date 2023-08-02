@@ -28,7 +28,7 @@
           <span class="material-icons-outlined"> settings </span>
           <span>Права доступа</span>
         </li>
-        <li @click="logOut()">
+        <li @click="logOut()" v-if="!inFrame">
           <span class="material-icons-outlined"> logout </span>
           <span>Выйти</span>
         </li>
@@ -41,6 +41,7 @@
 import { computed, onMounted, ref } from "vue";
 import store from "@/store";
 import { useLogOut } from "@/composables/logOut";
+import { inFrame } from "@/composables/checkInFrame";
 
 export default {
   setup() {
@@ -54,7 +55,7 @@ export default {
       img.value.onerror = () => (isImgLoaded.value = false);
     });
 
-    return { userName, img, isImgLoaded, logOut };
+    return { userName, img, isImgLoaded, logOut, inFrame };
   },
 };
 </script>

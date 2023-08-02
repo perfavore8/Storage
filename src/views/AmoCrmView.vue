@@ -9,7 +9,7 @@
           <h1 class="text-3xl font-bold text-slate-700">
             Настройки интеграции с amoCRM
           </h1>
-          <div class="flex gap-4">
+          <div class="flex gap-4" v-if="!inFrame">
             <span>Кабинет amoCRM:</span>
             <a
               :href="`https://${subdomain}.amocrm.ru/`"
@@ -58,6 +58,7 @@ import AmoCrmSyncSettings from "@/components/AmoCrm/AmoCrmSyncSettings.vue";
 import AmoCrmDocumentsSettings from "@/components/AmoCrm/AmoCrmDocumentsSettings.vue";
 import { computed, reactive } from "vue";
 import store from "@/store";
+import { inFrame } from "@/composables/checkInFrame";
 export default {
   name: "InstructionsView",
   components: {
@@ -100,7 +101,7 @@ export default {
 
     const subdomain = computed(() => store.state.account.account?.subdomain);
 
-    return { tabs, subdomain };
+    return { tabs, subdomain, inFrame };
   },
 };
 </script>
