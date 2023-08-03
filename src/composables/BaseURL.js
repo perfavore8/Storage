@@ -1,6 +1,6 @@
 import { useRouter } from "vue-router";
 import { useCheckDevMode } from "./checkDevMode";
-import { checkInFrame } from "./checkInFrame";
+import { inFrame } from "./checkInFrame";
 import store from "@/store";
 import { ref } from "vue";
 const { isDev } = useCheckDevMode();
@@ -47,7 +47,7 @@ export function useRedirectToAuth() {
     const f = async () => {
       const tokenFail = await store.dispatch("accountCheck");
       isTokenFail.value = tokenFail;
-      if (tokenFail && checkInFrame) {
+      if (tokenFail && inFrame) {
         router.push("/Error_token_not_valid");
       }
     };
