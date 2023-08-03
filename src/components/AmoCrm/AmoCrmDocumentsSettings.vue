@@ -38,7 +38,7 @@
                   <input
                     type="text"
                     class="input inputhuk my-2"
-                    v-model="hook_download"
+                    v-model="hooks.download"
                   />
                 </div>
                 <div class="grid grid-cols-[3fr_4fr] items-center">
@@ -46,7 +46,7 @@
                   <input
                     type="text"
                     class="input inputhuk my-2"
-                    v-model="hook_generate_doc"
+                    v-model="hooks.generateDoc"
                   />
                 </div>
               </div>
@@ -109,7 +109,6 @@ export default {
         );
       },
     });
-    leadFields.setList();
 
     const contactNameType = reactive({
       selected: { name: "Не выбрано", value: -1 },
@@ -122,13 +121,12 @@ export default {
           this.list.push({ name: val, value: idx })
         );
         this.list?.forEach((val) =>
-          val.value == store.state.account.account.config.contact_name_type
+          val.value == store.state.account.account?.config?.contact_name_type
             ? (this.selected = val)
             : null
         );
       },
     });
-    contactNameType.setList();
 
     const hooks = reactive({
       download: "",
@@ -140,10 +138,13 @@ export default {
     onMounted(async () => {
       await Promise.all([
         store.dispatch("get_account"),
+        store.dispatch("get_documents_v2"),
         store.dispatch("getLeadFieldsList"),
       ]);
       hooks.download = account.value.config?.hook_download;
       hooks.generateDoc = account.value.config?.hook_generate_doc;
+      leadFields.setList();
+      contactNameType.setList();
     });
 
     const save = () => {
