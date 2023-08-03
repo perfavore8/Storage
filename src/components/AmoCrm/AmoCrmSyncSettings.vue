@@ -3,17 +3,17 @@
     <div class="container">
       <div class="header">
         <!-- <label>Настройки синхронизации GoСклад с товарами amoCRM</label> -->
-        <btns-save-close @close="close" @save="save" :show_close="false">
+        <!-- <btns-save-close @close="close" @save="save" :show_close="false">
           <template v-slot:close>Назад</template>
           <template v-slot:other_btns v-if="false">
             <button class="btn btn_dark_blue" @click="updateFields()">
               Обновить поля
             </button>
           </template>
-        </btns-save-close>
+        </btns-save-close> -->
       </div>
-      <div class="content">
-        <div class="sync">
+      <div class="content space-y-12">
+        <div class="sync border-b border-gray-900/10 pb-12">
           <!-- <label>Синхронизация товаров на складе с товарами amoCRM</label> -->
           <div class="list">
             <div class="label_input">
@@ -67,7 +67,7 @@
                 </div>
               </div>
             </div> -->
-          <div class="autosync">
+          <div class="autosync border-b border-gray-900/10 pb-12">
             <div
               class="list"
               v-for="autosync in autosyncValues"
@@ -410,17 +410,18 @@ export default {
 @import "@/app.scss";
 .bgc {
   position: relative;
-  width: 80%;
+  // width: 80%;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  // border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   margin: 30px auto;
   outline: 0;
-  box-shadow: 0 0 7px 6px rgb(206 212 218 / 5%);
+  // box-shadow: 0 0 7px 6px rgb(206 212 218 / 5%);
   .container {
     text-align: left;
-    width: 80%;
+    // width: 80%;
+    max-width: 42rem;
     margin: 30px auto;
     display: flex;
     flex-direction: column;
@@ -441,15 +442,15 @@ export default {
       @include font(400, 16px);
       display: flex;
       flex-direction: column;
-      gap: 3vh;
+      // gap: 3vh;
 
       .product_comparison {
         display: flex;
         flex-direction: column;
         gap: 0.5vh;
         padding: 15px;
-        border: 1px solid #c9c9c9;
-        border-radius: 5px;
+        // border: 1px solid #c9c9c9;
+        // border-radius: 5px;
         .radio_btns {
           height: 24px;
           overflow: hidden;
@@ -495,9 +496,9 @@ export default {
       }
 
       .autosync {
-        padding: 15px;
-        border: 1px solid #c9c9c9;
-        border-radius: 5px;
+        // padding: 15px;
+        // border: 1px solid #c9c9c9;
+        // border-radius: 5px;
         display: grid;
         grid-template-columns: minmax(50%, 2fr) minmax(50%, 1fr);
         gap: 16px;
@@ -508,9 +509,9 @@ export default {
           @include font(500, 16px);
         }
         .list {
-          padding: 15px;
-          border: 1px solid #c9c9c9;
-          border-radius: 5px;
+          // padding: 15px;
+          // border: 1px solid #c9c9c9;
+          // border-radius: 5px;
           margin-top: 10px;
           display: flex;
           flex-direction: column;
@@ -548,12 +549,12 @@ export default {
       .fields {
         .row {
           display: grid;
-          grid-template-columns: minmax(40%, 2fr) minmax(45%, 1fr) minmax(
+          grid-template-columns: minmax(30%, 2fr) minmax(45%, 1fr) minmax(
               10%,
               1fr
             );
           gap: 16px;
-          padding: 6px 12px;
+          padding: 6px 0;
           border-bottom: 1px solid #dee2e6;
           .selector {
             width: calc(100% - 16px);
@@ -570,6 +571,7 @@ export default {
       }
     }
     .footer {
+      margin-top: 40px;
       display: flex;
       justify-content: end;
       align-items: center;

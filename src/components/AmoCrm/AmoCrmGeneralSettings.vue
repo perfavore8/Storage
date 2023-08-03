@@ -4,102 +4,109 @@
       <div class="header">
         <div class="top">
           <!-- <label>Общие настройки</label> -->
-          <btns-save-close @close="close" @save="save" :show_close="false">
+          <!-- <btns-save-close @close="close" @save="save" :show_close="false">
             <template v-slot:close>Назад</template>
-          </btns-save-close>
+          </btns-save-close> -->
         </div>
       </div>
-      <div class="content">
-        <h6 style="margin-top: 0">Этапы резервирования товаров со склада</h6>
-        <div class="small">
-          Внимание! В рамках одной воронки этап резерирования должен быть раньше
-          этапа списания. Если этап презервирования не выбран, то резерирование
-          будет происходить в момент добавления товара в сделку.
-        </div>
-        <div class="mt-4">
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="lock_reserved_products_edit"
-            v-model="lock_reserved_products_edit"
-          />
-          <label for="lock_reserved_products_edit">
-            Блокировать изменения товаров в этапах резервирования
-          </label>
-        </div>
-        <div class="steps">
-          <div
-            class="label_input"
-            v-for="item in copyPipelinesListV2"
-            :key="item"
-          >
-            <label> Воронка "{{ item?.name }}" </label>
-            <AppMultiSelect
-              :list="[{ name: 'Все', value: 'all' }, ...item?.statuses]"
-              :placeholder="
-                item?.statuses.filter((val) => val.selected).length
-                  ? 'Выбрано: ' +
-                    item?.statuses.filter(
-                      (val) => val.selected && val.value !== 'all'
-                    ).length
-                  : 'Не выбрано'
-              "
-              @select="
-                (event) => optionSelectSteps(event, item?.value, 'reserve_off')
-              "
-            />
+      <div class="content space-y-12">
+        <div class="border-b border-gray-900/10 pb-12">
+          <h6 style="margin-top: 0">Этапы резервирования товаров со склада</h6>
+          <div class="small">
+            Внимание! В рамках одной воронки этап резерирования должен быть
+            раньше этапа списания. Если этап презервирования не выбран, то
+            резерирование будет происходить в момент добавления товара в сделку.
           </div>
-        </div>
-        <h6>Этапы списания товаров со склада</h6>
-        <div class="small">
-          Внимание! В рамках одной воронки этап списания должен быть позже этапа
-          резерирования.
-        </div>
-        <div class="steps">
-          <div
-            class="label_input"
-            v-for="item in copyPipelinesListV2"
-            :key="item"
-          >
-            <label> Воронка "{{ item?.name }}" </label>
-            <SelectorVue
-              :options_props="[
-                { name: 'Не выбрано', value: -1 },
-                ...item?.statuses,
-              ]"
-              @select="
-                (event) => optionSelectSteps(event, item?.value, 'write_off')
-              "
-              :selected_option="item.selectedWriteOff"
-            />
-          </div>
-        </div>
-        <h6>Привязка полей сделок</h6>
-        <div class="steps">
-          <div class="label_input">
-            <label> Не заполнять бюджет сделки </label>
+          <div class="mt-4">
             <input
               type="checkbox"
               class="checkbox"
-              id="not_fill_budget"
-              v-model="not_fill_budget"
+              id="lock_reserved_products_edit"
+              v-model="lock_reserved_products_edit"
             />
-            <label for="not_fill_budget"></label>
-          </div>
-          <div
-            class="label_input"
-            v-for="(item, idx) in leadsDeals"
-            :key="item"
-          >
-            <label>
-              Поле "{{ item?.name }}"
-              <span v-if="idx >= 2">(число)</span>
+            <label for="lock_reserved_products_edit">
+              Блокировать изменения товаров в этапах резервирования
             </label>
-            <SelectorVue
-              :options_props="leadsDealsList"
-              @select="(event) => optionSelectLeadsDeals(event, item?.code)"
-              :selected_option="item?.selected"
-            />
+          </div>
+          <div class="steps">
+            <div
+              class="label_input"
+              v-for="item in copyPipelinesListV2"
+              :key="item"
+            >
+              <label> Воронка "{{ item?.name }}" </label>
+              <AppMultiSelect
+                :list="[{ name: 'Все', value: 'all' }, ...item?.statuses]"
+                :placeholder="
+                  item?.statuses.filter((val) => val.selected).length
+                    ? 'Выбрано: ' +
+                      item?.statuses.filter(
+                        (val) => val.selected && val.value !== 'all'
+                      ).length
+                    : 'Не выбрано'
+                "
+                @select="
+                  (event) =>
+                    optionSelectSteps(event, item?.value, 'reserve_off')
+                "
+              />
+            </div>
+          </div>
+        </div>
+        <div class="border-b border-gray-900/10 pb-12">
+          <h6>Этапы списания товаров со склада</h6>
+          <div class="small">
+            Внимание! В рамках одной воронки этап списания должен быть позже
+            этапа резерирования.
+          </div>
+          <div class="steps">
+            <div
+              class="label_input"
+              v-for="item in copyPipelinesListV2"
+              :key="item"
+            >
+              <label> Воронка "{{ item?.name }}" </label>
+              <SelectorVue
+                :options_props="[
+                  { name: 'Не выбрано', value: -1 },
+                  ...item?.statuses,
+                ]"
+                @select="
+                  (event) => optionSelectSteps(event, item?.value, 'write_off')
+                "
+                :selected_option="item.selectedWriteOff"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="border-b border-gray-900/10 pb-12">
+          <h6>Привязка полей сделок</h6>
+          <div class="steps">
+            <div class="label_input">
+              <label> Не заполнять бюджет сделки </label>
+              <input
+                type="checkbox"
+                class="checkbox"
+                id="not_fill_budget"
+                v-model="not_fill_budget"
+              />
+              <label for="not_fill_budget"></label>
+            </div>
+            <div
+              class="label_input"
+              v-for="(item, idx) in leadsDeals"
+              :key="item"
+            >
+              <label>
+                Поле "{{ item?.name }}"
+                <span v-if="idx >= 2">(число)</span>
+              </label>
+              <SelectorVue
+                :options_props="leadsDealsList"
+                @select="(event) => optionSelectLeadsDeals(event, item?.code)"
+                :selected_option="item?.selected"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -376,17 +383,18 @@ export default {
 @import "@/app.scss";
 .bgc {
   position: relative;
-  width: 80%;
+  // width: 80%;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  // border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   margin: 30px auto;
   outline: 0;
-  box-shadow: 0 0 7px 6px rgb(206 212 218 / 5%);
+  // box-shadow: 0 0 7px 6px rgb(206 212 218 / 5%);
   .container {
     text-align: left;
-    width: 80%;
+    // width: 80%;
+    max-width: 42rem;
     margin: 30px auto;
     display: flex;
     flex-direction: column;

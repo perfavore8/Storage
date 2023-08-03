@@ -3,59 +3,62 @@
     <div class="container">
       <div class="header"></div>
       <div class="content">
-        <div class="binding">
-          <div class="header">
-            Привязка полей документов
-            <div class="save">
-              <btns-save-close @save="save" :show_close="false" />
+        <div class="binding space-y-12">
+          <div>
+            <div class="header">Привязка полей документов</div>
+            <div class="patterns border-b border-gray-900/10 pb-12">
+              <div class="main">
+                <div class="column">
+                  <div class="label_select">
+                    <label>Поле "Документы"</label>
+                    <SelectorVue
+                      :options_props="leadFields.list"
+                      @select="leadFields.select"
+                      :selected_option="leadFields.selected"
+                    />
+                  </div>
+                  <div class="label_select">
+                    <label>Поряд имен контактов</label>
+                    <SelectorVue
+                      :options_props="contactNameType.list"
+                      @select="contactNameType.select"
+                      :selected_option="contactNameType.selected"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="patterns">
-            <div class="main shadow-lg shadow-slate-100/20 rounded-md">
+          <div>
+            <div class="header mb-2">Хуки</div>
+            <div class="main mb-4 border-b border-gray-900/10 pb-12">
               <div class="column">
-                <div class="label_select">
-                  <label>Поле "Документы"</label>
-                  <SelectorVue
-                    :options_props="leadFields.list"
-                    @select="leadFields.select"
-                    :selected_option="leadFields.selected"
+                <div class="grid grid-cols-[3fr_4fr] items-center">
+                  <label>Хук при загрузке документа в сделку</label>
+                  <input
+                    type="text"
+                    class="input inputhuk my-2"
+                    v-model="hook_download"
                   />
                 </div>
-                <div class="label_select">
-                  <label>Поряд имен контактов</label>
-                  <SelectorVue
-                    :options_props="contactNameType.list"
-                    @select="contactNameType.select"
-                    :selected_option="contactNameType.selected"
+                <div class="grid grid-cols-[3fr_4fr] items-center">
+                  <label>Хук при генерации документа в сделке</label>
+                  <input
+                    type="text"
+                    class="input inputhuk my-2"
+                    v-model="hook_generate_doc"
                   />
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="header mb-2">Хуки</div>
-          <div class="main mb-4 shadow-lg shadow-slate-100/20 rounded-md">
-            <div class="column">
-              <div class="grid grid-cols-[3fr_4fr] items-center">
-                <label>Хук при загрузке документа в сделку</label>
-                <input
-                  type="text"
-                  class="input inputhuk my-2"
-                  v-model="hook_download"
-                />
-              </div>
-              <div class="grid grid-cols-[3fr_4fr] items-center">
-                <label>Хук при генерации документа в сделке</label>
-                <input
-                  type="text"
-                  class="input inputhuk my-2"
-                  v-model="hook_generate_doc"
-                />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="footer"></div>
+      <div class="footer">
+        <div class="save">
+          <btns-save-close @save="save" :show_close="false" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -161,17 +164,18 @@ export default {
 @import "@/app.scss";
 .bgc {
   position: relative;
-  width: 80%;
+  // width: 80%;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  // border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   margin: 30px auto;
   outline: 0;
-  box-shadow: 0 0 7px 6px rgb(206 212 218 / 5%);
+  // box-shadow: 0 0 7px 6px rgb(206 212 218 / 5%);
   .container {
     text-align: left;
-    width: 80%;
+    // width: 80%;
+    max-width: 42rem;
     margin: 30px auto;
     display: flex;
     flex-direction: column;
@@ -179,6 +183,9 @@ export default {
     }
     .content {
       .binding {
+        display: flex;
+        flex-direction: column;
+        // gap: 48px;
         margin-bottom: 8px;
         .header {
           @include font(500, 16px);
@@ -186,21 +193,21 @@ export default {
           flex-direction: row;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 8px;
+          // margin-bottom: 12px;
         }
         .main {
           display: grid;
           background-color: #fff;
-          border: 1px solid #c9c9c9;
+          // border: 1px solid #c9c9c9;
           .save {
-            padding: 20px;
+            // padding: 20px;
           }
           .column {
             display: flex;
             flex-direction: column;
             justify-content: start;
             gap: 12px;
-            padding: 20px;
+            // padding: 20px;
             .label_select {
               display: grid;
               grid-template-columns: 3fr 4fr;
@@ -222,60 +229,13 @@ export default {
         }
         .main {
           background-color: #fff;
-          border: 1px solid #c9c9c9;
-          padding: 20px;
-          .table {
-            border: 1px solid #dee2e6;
-            border-collapse: collapse;
-            width: 100%;
-            .title {
-              @include font(500, 16px);
-              // background-color: rgba(0, 0, 0, 0.15) !important;
-              background-color: #fff !important;
-              .item {
-                padding: 10px 5px;
-                border: 1px solid #c9c9c9;
-                text-align: left;
-                padding-bottom: 20px !important;
-              }
-              .item:last-child {
-                max-width: 101px;
-                width: 0.1%;
-              }
-            }
-          }
-          .add_button_container {
-            width: 100%;
-            display: flex;
-            justify-content: end;
-            .add_new_button {
-              cursor: pointer;
-              margin-top: 15px;
-              margin-right: 25px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 34px;
-              height: 34px;
-              color: #fff;
-              background: #4e964d;
-              border: none;
-              border-radius: 5px;
-              .icon {
-                width: inherit;
-                height: inherit;
-                @include bg_image("@/assets/plus.svg", 60% 60%);
-              }
-            }
-            .add_new_button:hover {
-              background-color: #60ba5e;
-              box-shadow: 0 0 5px 2px rgb(96 186 94 / 25%);
-            }
-          }
+          // border: 1px solid #c9c9c9;
+          // padding: 20px;
         }
       }
     }
     .footer {
+      margin-top: 40px;
       display: flex;
       justify-content: end;
       margin-top: 40px;
