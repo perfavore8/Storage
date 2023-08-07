@@ -6,7 +6,7 @@
       class="card grow w-fit p-5 flex flex-col bg-white rounded-xl border border-solid border-slate-200/70 shadow-lg shadow-gray-400/10"
     >
       <div class="header mb-2">
-        <h2 class="text-xs text-gray-400">{{ item.header }}</h2>
+        <h2 class="text-xs text-gray-400 font-semibold">{{ item.header }}</h2>
       </div>
       <div class="flex justify-between items-center gap-1">
         <div class="text" :ref="(el) => (textRefs[idx] = el)">
