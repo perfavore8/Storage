@@ -50,6 +50,7 @@
 <script>
 import { reactive } from "vue";
 export default {
+  components: {},
   setup() {
     const data = reactive({
       fields: [
@@ -67,6 +68,21 @@ export default {
             { name: "Если ответственный", value: 1 },
             { name: "Для группы", value: 2 },
             { name: "Разрешено", value: 3 },
+          ],
+        },
+        {
+          id: 1114252462,
+          name: "Товары",
+          selected: {
+            creation: { value: 0, hidden: false },
+            viewing: { value: 1, hidden: false },
+            editing: { value: 1, hidden: false },
+            removal: { value: 2, hidden: false },
+          },
+          values: [
+            { name: "Запрещено", value: 0 },
+            { name: "Внутри сделки", value: 1 },
+            { name: "Разрешено", value: 2 },
           ],
         },
       ],
