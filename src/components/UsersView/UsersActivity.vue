@@ -20,11 +20,11 @@
         <div class="stat">
           <div
             v-if="item.stat"
-            class="p-1 text-[10px] rounded flex items-center"
+            class="p-1 text-[10px] rounded flex items-center font-bold"
             :class="{
               'bg-green-50 text-green-700': item.stat.direction === 1,
               'bg-red-50 text-red-700': item.stat.direction === 0,
-              'bg-gray-50 text-gray-600': item.stat.direction === 2,
+              'bg-gray-100 text-gray-600': item.stat.direction === 2,
             }"
           >
             <span class="inline-flex flex-row gap-1 items-center">
