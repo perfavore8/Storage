@@ -68,6 +68,11 @@ const routes = [
     component: () => import("../views/AuthorizationView.vue"),
   },
   {
+    path: "/users",
+    name: "users",
+    component: () => import("../views/UsersView.vue"),
+  },
+  {
     path: "/addToDeal",
     name: "addToDeal",
     component: () => import("../views/AddToDealView.vue"),
