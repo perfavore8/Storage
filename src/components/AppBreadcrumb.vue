@@ -9,17 +9,20 @@
             : idx === pages.length - 1
             ? 'text-gray-700'
             : 'text-gray-500',
+          { 'hover:text-gray-500': page.disable },
         ]"
       >
         <span v-if="idx !== 0">/</span>
         <a
           aria-current="page"
+          style="line-height: 0"
           :class="{
             'ml-4': idx !== 0,
             'cursor-pointer': idx !== pages.length - 1,
+            'cursor-default': page.disable,
           }"
           :ref="(el) => (linkRefs[idx] = el)"
-          @click="page.select()"
+          @click="page.disable ? null : page.select()"
         ></a>
       </div>
     </li>
@@ -44,4 +47,4 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped></style>
