@@ -14,6 +14,7 @@ import widjetFields from "./modulesWidget/fieldsW";
 import clientsContacts from "./modules/clientsContacts";
 import clientsCompany from "./modules/clientsCompany";
 import auth from "./modules/auth";
+import data from "./modules/data";
 
 export default createStore({
   modules: {
@@ -32,5 +33,6 @@ export default createStore({
     clientsContacts,
     clientsCompany,
     auth,
+    data,
   },
 });
