@@ -1,8 +1,8 @@
 import { useRouter } from "vue-router";
 import { useCheckDevMode } from "./checkDevMode";
 import { inFrame } from "./checkInFrame";
-import store from "@/store";
 import { ref } from "vue";
+import axios from "axios";
 const { isDev } = useCheckDevMode();
 
 function findGetParameter(parameterName) {
@@ -43,19 +43,22 @@ export function useRedirectToAuth() {
   };
   checkPath();
 
-  const startCheckIsValidToken = () => {
-    const f = async () => {
-      const tokenFail = await store.dispatch("accountCheck");
-      isTokenFail.value = tokenFail;
-      if (tokenFail && inFrame) {
-        router.push("/Error_token_not_valid");
-      }
-    };
-    f();
-    setInterval(() => f(), 10000);
+  const redirectToErrorPage = () => {
+    isTokenFail.value = true;
+    if (inFrame) {
+      router.push("/Error_token_not_valid");
+    } else {
+      savedToken = "";
+      router.push("/authorization");
+    }
   };
 
-  return { checkPath, getCachedToken, startCheckIsValidToken, isTokenFail };
+  return {
+    checkPath,
+    getCachedToken,
+    isTokenFail,
+    redirectToErrorPage,
+  };
 }
 
 export const BaseURL = "https://api.gosklad.ru/v1/";
@@ -64,3 +67,8 @@ export const getTOKEN = () =>
   "Bearer " + (findGetParameter("token") || savedToken);
 export const haveAnyTOKEN = () =>
   Boolean(findGetParameter("token") || savedToken);
+
+export const instance = axios.create({
+  baseURL: BaseURL,
+  headers: { Authorization: getTOKEN() },
+});

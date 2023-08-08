@@ -253,16 +253,5 @@ export default {
 
       return json;
     },
-
-    async accountCheck() {
-      const url = BaseURL + "account/check";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
-      });
-
-      return res.status == 403;
-    },
   },
 };
