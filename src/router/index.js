@@ -101,7 +101,7 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
   if (to.path == "/authorization") {
-    if (haveAnyTOKEN() && !isDev.value) {
+    if (haveAnyTOKEN() && !isTokenFail.value && !isDev.value) {
       next(from.path === "/authorization" ? "/" : from.path);
       return;
     }
