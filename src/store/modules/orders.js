@@ -1,9 +1,7 @@
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 import { useNewDeal } from "@/composables/newDeal";
 import store from "..";
 import { computed } from "vue";
-const { preparation_params } = usePreparationQueryParams();
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 const { newDealParams, order } = useNewDeal();
 const isTest = computed(() => store.state.account.account?.id === 1);
 export default {
@@ -58,336 +56,231 @@ export default {
   actions: {
     async getOrders(context, params) {
       context.commit("updateIsLoading", true);
-      const url = BaseURL + (isTest.value ? "orders/list-v2" : "orders/list");
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: isTest.value ? "orders/list-v2" : "orders/list",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateOrders", json.data);
-      context.commit("updateMeta", json);
+      context.commit("updateOrders", data.data);
+      context.commit("updateMeta", data);
       context.commit("updateIsLoading", false);
     },
 
     async getOrdersTypes(context) {
-      const url = BaseURL + "orders/field/types";
-      const res = await fetch(url, {
-        headers: { Authorization: getTOKEN() },
+      const { data } = await ApiReqFunc({
+        url: "orders/field/types",
       });
-      const json = await res.json();
-      context.commit("updateOrdersTypes", json);
+      context.commit("updateOrdersTypes", data);
     },
 
     async getOrdersFields(context) {
-      const url = BaseURL + "orders/field/list";
-      const res = await fetch(url, {
-        headers: { Authorization: getTOKEN() },
+      const { data } = await ApiReqFunc({
+        url: "orders/field/list",
       });
-      const json = await res.json();
-      context.commit("updateOrdersFields", json);
+      context.commit("updateOrdersFields", data);
     },
     async addOrdersField(context, params) {
-      const url = BaseURL + "orders/field/add";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/feild/add",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      return json;
+
+      return data;
     },
     async updateOrdersField(context, params) {
-      const url = BaseURL + "orders/field/update";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      await ApiReqFunc({
+        url: "orders/field/update",
+        method: "post",
+        data: params,
       });
     },
     async deleteOrdersField(context, params) {
-      const url = BaseURL + "orders/field/delete";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      await ApiReqFunc({
+        url: isTest.value ? "orders/list-v2" : "orders/field/delete",
+        method: "post",
+        data: params,
       });
     },
 
     async getOrder(context, params) {
-      const url = BaseURL + "orders/order";
-      const res = await fetch(
-        url + preparation_params({ ...params, order_id: newDealParams.id }),
-        {
-          headers: {
-            Authorization: getTOKEN(),
-          },
-        }
-      );
-      const json = await res.json();
+      const { data } = await ApiReqFunc({
+        url: "orders/order",
+        params: { ...params, order_id: newDealParams.id },
+      });
 
-      return json;
+      return data;
     },
     async addOrder(context, params) {
-      const url = BaseURL + "orders/add";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/add",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async updateOrder(context, params) {
       const copy = JSON.parse(JSON.stringify(order));
       delete copy.contacts;
       delete copy.company;
-      const url = BaseURL + "orders/update";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      await ApiReqFunc({
+        url: "orders/update",
+        method: "post",
+        data: {
           ...Object.assign(copy, params),
           order_id: newDealParams.id,
-        }),
+        },
       });
     },
     async deleteOrder(context, params) {
-      const url = BaseURL + "orders/delete";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      await ApiReqFunc({
+        url: "orders/delete",
+        method: "post",
+        data: params,
       });
     },
     async refundOrder(context, params) {
-      const url = BaseURL + "orders/refund";
-      await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      await ApiReqFunc({
+        url: "orders/refund",
+        params: params,
       });
     },
 
     async generateOrderDoc(context, params) {
-      const url = BaseURL + "orders/doc/generate";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/doc/generate",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async getOrderDocList(context, params) {
-      const url = BaseURL + "orders/doc/list";
-      const res = await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "orders/doc/list",
+        params: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async deleteOrderDoc(context, params) {
-      const url = BaseURL + "orders/doc/delete";
-      const res = await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "orders/doc/delete",
+        params: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
 
     async customDocUpload(context, params) {
-      const url = BaseURL + "orders/custom-doc/upload";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-        },
-        body: params,
+      const { data } = await ApiReqFunc({
+        url: "orders/custom-doc/upload",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async customDocList(context, params) {
-      const url = BaseURL + "orders/custom-doc/list";
-      const res = await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "orders/custom-doc/list",
+        params: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async customDocDelete(context, params) {
-      const url = BaseURL + "orders/custom-doc/delete";
-      const res = await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "orders/custom-doc/delete",
+        params: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
 
     async ordersPipelinesList(context, params) {
-      const url = BaseURL + "orders/pipelines/list";
-      const res = await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "orders/pipelines/list",
+        params: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async ordersPipelinesAdd(context, params) {
-      const url = BaseURL + "orders/pipelines/add";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/pipelines/add",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async ordersPipelinesUpdate(context, params) {
-      const url = BaseURL + "orders/pipelines/update";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/pipelines/update",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async ordersPipelinesDelete(context, params) {
-      const url = BaseURL + "orders/pipelines/delete";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/pipelines/delete",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
 
     async ordersPipelinesStatusesAdd(context, params) {
-      const url = BaseURL + "orders/pipelines/statuses/add";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/pipelines/statuses/add",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async ordersPipelinesStatusesUpdate(context, params) {
-      const url = BaseURL + "orders/pipelines/statuses/update";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/pipelines/statuses/update",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async ordersPipelinesStatusesDelete(context, params) {
-      const url = BaseURL + "orders/pipelines/statuses/delete";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "orders/pipelines/statuses/delete",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
 
     async getOrdersTableConfig(context) {
-      const url = BaseURL + "orders/table-config";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "orders/table-config",
       });
-      const json = await res.json();
-      context.commit("updateTableConfig", json);
+      context.commit("updateTableConfig", data);
 
-      return json;
+      return data;
     },
     async updateOrdersConfigTable(context, params) {
-      const url = BaseURL + "orders/table-config";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params.value),
+      const { data } = await ApiReqFunc({
+        url: "orders/table-config",
+        method: "post",
+        data: params.value,
       });
-      const json = await res.json();
-      console.log("updateOrdersConfigTable", json);
       await context.dispatch("getOrdersTableConfig");
       context.dispatch("getOrdersFields");
-      return json;
+
+      return data;
     },
   },
 };
