@@ -2,7 +2,7 @@
   <div class="text">
     <input
       type="text"
-      class="input"
+      :class="underlined ? 'input_uderline' : 'input'"
       :placeholder="placeholder"
       :value="inputValue"
       @input="$emit('update:inputValue', $event.target.value)"
@@ -19,6 +19,10 @@ export default {
     },
     placeholder: {
       type: String,
+      required: false,
+    },
+    underlined: {
+      type: Boolean,
       required: false,
     },
   },
