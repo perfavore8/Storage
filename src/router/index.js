@@ -122,11 +122,7 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
-  const { res } = await store.dispatch("get_account");
-  if (res.status == 403 && !haveAnyTOKEN()) {
-    next("/authorization");
-    return;
-  }
+  await store.dispatch("get_account");
 
   const account = store.state.account?.account;
   // if (!account?.install && to.path != "/Error_is_not_installed") {

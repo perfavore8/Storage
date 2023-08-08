@@ -1,6 +1,4 @@
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
-const { preparation_params } = usePreparationQueryParams();
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 export default {
   state: {
     fields_properties: [],
@@ -17,46 +15,42 @@ export default {
   },
   actions: {
     async get_fields_properties(context) {
-      const url = BaseURL + "category/list";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "category/list",
       });
-      const json = await res.json();
-      context.commit("update_fields_properties", json);
-      return json;
+      context.commit("update_fields_properties", data);
+
+      return data;
     },
     async add_fields_properties(context, params) {
-      const url = BaseURL + "category/add";
-      await fetch(url + preparation_params(params), {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "category/add",
+        method: "post",
+        data: params,
       });
       context.dispatch("get_fields_properties");
+
+      return data;
     },
     async update_fields_properties(context, params) {
-      const url = BaseURL + "category/update";
-      await fetch(url + preparation_params(params), {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "category/update",
+        method: "post",
+        data: params,
       });
       context.dispatch("get_fields_properties");
+
+      return data;
     },
     async delete_fields_properties(context, params) {
-      const url = BaseURL + "category/delete";
-      const res = await fetch(url + preparation_params(params), {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "category/delete",
+        method: "post",
+        data: params,
       });
       context.dispatch("get_fields_properties");
-      console.log(res);
+
+      return data;
     },
   },
 };

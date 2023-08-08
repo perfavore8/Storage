@@ -1,6 +1,5 @@
-import { BaseURL, TokenName } from "@/composables/BaseURL";
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-const { preparation_params } = usePreparationQueryParams();
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
+import { TokenName } from "@/composables/BaseURL";
 
 export default {
   state: {},
@@ -8,30 +7,27 @@ export default {
   mutations: {},
   actions: {
     async authLogin(context, params) {
-      const url = BaseURL + "auth/login";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "auth/login",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-
-      if (json.success && json.access_token) {
+      if (data.success && data.access_token) {
         // Сохранение переменной в кэше
-        localStorage.setItem(TokenName, JSON.stringify(json.access_token));
+        localStorage.setItem(TokenName, JSON.stringify(data.access_token));
       }
 
-      return json;
+      return data;
     },
     async authRegistration(context, params) {
-      const url = BaseURL + "auth/sign-up";
-      const res = await fetch(url + preparation_params(params));
-      if (!res.ok) return { success: false };
-      const json = await res.json();
+      const { data, error } = await ApiReqFunc({
+        url: "auth/sign-up",
+        params: params,
+      });
 
-      return json;
+      if (error) return { success: false };
+
+      return data;
     },
   },
 };

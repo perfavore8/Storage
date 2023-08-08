@@ -1,6 +1,4 @@
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
-const { preparation_params } = usePreparationQueryParams();
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 export default {
   state: {
     templates: [],
@@ -41,98 +39,82 @@ export default {
   },
   actions: {
     async getAutocomplete(context, params) {
-      const url = BaseURL;
-      const res = await fetch(
-        url + params.subUrl + preparation_params(params.value),
-        {
-          headers: {
-            Authorization: getTOKEN(),
-          },
-        }
-      );
-      const json = await res.json();
-      return json;
+      const { data } = await ApiReqFunc({
+        url: params.subUrl,
+        params: params,
+      });
+
+      return data;
     },
     async getDocuments(context, params) {
       context.commit("updateIsLoading", true);
-      const url = BaseURL + "document/registry";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "document/registry",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateDocuments", json.data);
-      context.commit("updateMeta", json);
+      context.commit("updateDocuments", data.data);
+      context.commit("updateMeta", data);
       context.commit("updateIsLoading", false);
+
+      return data;
     },
     async get_documents(context) {
-      const url = BaseURL + "document/list";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "document/list",
       });
-      const json = await res.json();
-      context.commit("update_templates", json.templates);
-      context.commit("update_config", json.config);
+      context.commit("update_templates", data.templates);
+      context.commit("update_config", data.config);
+
+      return data;
     },
     async get_documents_v2(context) {
-      const url = BaseURL + "document/listV2";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "document/listV2",
+        method: "post",
       });
-      const json = await res.json();
-      context.commit("update_templates", json.templates);
-      context.commit("update_config", json.config);
+      context.commit("update_templates", data.templates);
+      context.commit("update_config", data.config);
+
+      return data;
     },
     async delete_template(context, params) {
-      const url = BaseURL + "document/delete";
-      await fetch(url + preparation_params(params), {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "document/delete",
+        method: "post",
+        data: params,
       });
       context.dispatch("get_documents_v2");
+
+      return data;
     },
     async update_template(context, params) {
-      const url = BaseURL + "document/update";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "document/update",
+        method: "post",
+        data: params,
       });
       context.dispatch("get_documents_v2");
+
+      return data;
     },
     async add_template(context, params) {
-      const url = BaseURL + "document/add";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "document/add",
+        method: "post",
+        data: params,
       });
       context.dispatch("get_documents_v2");
+
+      return data;
     },
     async refresh_fields(context) {
-      const url = BaseURL + "document/refresh-fields";
-      await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "document/refresh-fields",
       });
       context.dispatch("get_documents_v2");
+
+      return data;
     },
   },
 };

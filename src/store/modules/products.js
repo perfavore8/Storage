@@ -1,4 +1,4 @@
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 import { usePreparationProducts } from "@/composables/preparationProducts";
 const { preparationProducts } = usePreparationProducts();
 export default {
@@ -43,146 +43,105 @@ export default {
   actions: {
     async get_products(context, params) {
       context.commit("updateIsLoading", true);
-      const url = BaseURL + "product/list";
-      const res = await fetch(url, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "product/list",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("update_meta", { links: json.links, meta: json.meta });
-      context.commit("update_products", json.data);
+      context.commit("update_meta", { links: data.links, meta: data.meta });
+      context.commit("update_products", data.data);
       context.commit("updateIsLoading", false);
+
+      return data;
     },
     async get_product(context, id) {
-      const url = BaseURL + "product/get";
-      const res = await fetch(url + "?id=" + id, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "product/get",
+        params: { id: id },
       });
-      const json = await res.json();
-      context.commit("update_products", json);
+      context.commit("update_products", data);
+
+      return data;
     },
     async update_product(context, params) {
-      const url = BaseURL + "product/update";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "product/update",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      console.log("update_product", json);
-      return json;
+
+      return data;
     },
     async setPrice(context, params) {
-      const url = BaseURL + "product/set-price";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "product/set-price",
+        method: "post",
+        data: params,
       });
-      console.log("setPrice", res);
-      return res;
+
+      return data;
     },
     async add_product(context, params) {
-      const url = BaseURL + "product/add";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "product/add",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      console.log("add_product", json);
-      return json;
+
+      return data;
     },
     async transfer_product(context, params) {
-      const url = BaseURL + "product/transfer";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "product/transfer",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      console.log("transfer_product", json);
-      return json;
+
+      return data;
     },
     async exportXlsx(context, params) {
-      const url = BaseURL + "product/export/xlsx";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "product/export/xlsx",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      console.log("exportXlsxw", json);
-      return json;
+
+      return data;
     },
     async importStuff(context, file) {
-      const url = BaseURL + "product/import/preprocessing";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-        },
-        body: file,
+      const { data } = await ApiReqFunc({
+        url: "product/import/preprocessing",
+        method: "post",
+        data: file,
       });
-      const json = await res.json();
-      context.commit("updateImportStuff", json);
-      console.log("importStuff", json);
-      return json;
+      context.commit("updateImportStuff", data);
+
+      return data;
     },
     async autocomplete_article(context, query) {
-      const url = BaseURL + "product/autocomplete/article";
-      const res = await fetch(url + "?query=" + query, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "product/autocomplete/article",
+        params: { query: query },
       });
-      const json = await res.json();
-      return json;
+
+      return data;
     },
     async autocomplete_name(context, query) {
-      const url = BaseURL + "product/autocomplete/name";
-      const res = await fetch(url + "?query=" + query, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "product/autocomplete/name",
+        data: { query: query },
       });
-      const json = await res.json();
-      return json;
+
+      return data;
     },
     async importStart(context, params) {
-      const url = BaseURL + "product/import/start";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "product/import/start",
+        method: "post",
+        data: params,
       });
-      console.log("importStart", res);
-      return res;
+
+      return data;
     },
   },
 };

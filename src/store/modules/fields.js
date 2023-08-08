@@ -1,5 +1,5 @@
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 import store from "..";
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 export default {
   state: {
     types: {},
@@ -30,107 +30,74 @@ export default {
   },
   actions: {
     async get_types(context) {
-      const url = BaseURL + "field/types";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "field/types",
       });
-      const json = await res.json();
-      context.commit("update_types", json.data);
+      context.commit("update_types", data.data);
+
+      return data;
     },
     async get_fields(context, category_id) {
-      const url = BaseURL + "field/list";
-      const res = await fetch(
-        url + "?category_id=" + category_id + "&with_parents=0",
-        {
-          headers: {
-            Authorization: getTOKEN(),
-          },
-        }
-      );
-      const json = await res.json();
-      context.commit("update_fields", json);
+      const { data } = await ApiReqFunc({
+        url: "field/list",
+        params: { category_id: category_id, with_parents: 0 },
+      });
+      context.commit("update_fields", data);
+
+      return data;
     },
     async get_all_fields(context) {
-      const url = BaseURL + "field/list";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "field/list",
       });
-      const json = await res.json();
-      context.commit("update_all_fields", json);
+      context.commit("update_all_fields", data);
+
+      return data;
     },
     async get_fields_not_save(context, category_id) {
-      const url = BaseURL + "field/list";
-      const res = await fetch(
-        url + "?category_id=" + category_id + "&with_parents=0",
-        {
-          headers: {
-            Authorization: getTOKEN(),
-          },
-        }
-      );
-      const json = await res.json();
-      return json.data;
+      const { data } = await ApiReqFunc({
+        url: "field/list",
+        params: { category_id: category_id, with_parents: 0 },
+      });
+      context.commit("update_fields", data);
+
+      return data.data;
     },
     async get_fields_with_parents(context, category_id) {
-      const url = BaseURL + "field/list";
-      const res = await fetch(
-        url +
-          "?category_id=" +
-          category_id +
-          "&with_parents=1" +
-          "&sort=created",
-        {
-          headers: {
-            Authorization: getTOKEN(),
-          },
-        }
-      );
-      const json = await res.json();
-      context.commit("update_fields_with_parents", json);
+      const { data } = await ApiReqFunc({
+        url: "field/list",
+        params: { category_id: category_id, with_parents: 1, sort: "created" },
+      });
+      context.commit("update_fields_with_parents", data);
+
+      return data;
     },
     async delete_field(context, id) {
-      const url = BaseURL + "field/delete";
-      const res = await fetch(url + "?id=" + id, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "field/delete",
+        method: "post",
+        data: { id: id },
       });
-      // context.dispatch("get_fields");
-      console.log(res);
+
+      return data;
     },
     async add_field(context, params) {
-      const url = BaseURL + "field/add";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "field/add",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      // context.dispatch("get_fields");
-      console.log("add_field", json);
-      return json;
+
+      return data;
     },
     async update_fields(context, params) {
-      const url = BaseURL + "field/update";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "field/update",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      console.log("update_fields", json);
-      return json;
+
+      return data;
     },
   },
 };

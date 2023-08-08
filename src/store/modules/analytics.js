@@ -1,7 +1,5 @@
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 import { useNotification } from "@/composables/notification";
-const { preparation_params } = usePreparationQueryParams();
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 const { addNotification } = useNotification();
 export default {
   state: {
@@ -62,153 +60,104 @@ export default {
   },
   actions: {
     async getAutocompleteAnalytics(context, params) {
-      const url = BaseURL + "analytics/autocomplete/"; // <----- слэш не трогай!!!
-      const res = await fetch(
-        url + params.field + preparation_params(params.value),
-        {
-          headers: {
-            Authorization: getTOKEN(),
-          },
-        }
-      );
-      const json = await res.json();
-      context.commit("updateAutocomplete", json);
+      const { data } = await ApiReqFunc({
+        url: "analytics/autocomplete/" + params.field, // <----- слэш не трогай!!!
+        params: params.value,
+      });
+      context.commit("updateAutocomplete", data);
+
+      return data;
     },
     async getCustomers(context, params) {
-      const url = BaseURL + "analytics/customers";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "analytics/customers",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateCustomers", json);
+      context.commit("updateCustomers", data);
+
+      return data;
     },
     async getCustomersResponsible(context, params) {
-      const url = BaseURL + "analytics/customers/responsible";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "analytics/customers/responsible",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateCustomersResponsible", json);
-      return json;
+      context.commit("updateCustomersResponsible", data);
+
+      return data;
     },
     async getCustomersProducts(context, params) {
-      const url = BaseURL + "analytics/customers/products";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "analytics/customers/products",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateCustomersProducts", json);
+      context.commit("updateCustomersProducts", data);
+
+      return data;
     },
     async getSales(context, params) {
-      const url = BaseURL + "analytics/sales";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "analytics/sales",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateSales", json);
+      context.commit("updateSales", data);
+
+      return data;
     },
     async getSalesProducts(context, params) {
-      const url = BaseURL + "analytics/sales/products";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "analytics/sales/products",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateSalesProducts", json);
-      return json;
+      context.commit("updateSalesProducts", data);
+
+      return data;
     },
     async getSalesTotal(context, params) {
-      const url = BaseURL + "analytics/sales/total";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "analytics/sales/total",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateSalesTotal", json);
+      context.commit("updateSalesTotal", data);
+
+      return data;
     },
     async getCustomersTotal(context, params) {
-      const url = BaseURL + "analytics/customers/total";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "analytics/customers/total",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateCustomersTotal", json);
-      return json;
+      context.commit("updateCustomersTotal", data);
+
+      return data;
     },
     async getStuffMove(context, params) {
-      const url = BaseURL + "analytics/movement/products";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "analytics/movement/products",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      context.commit("updateStuffMoveTotal", json.data.total);
-      context.commit("updateStuffMove", json);
+      context.commit("updateStuffMoveTotal", data.data.total);
+      context.commit("updateStuffMove", data);
+
+      return data;
     },
-    // async getStuffMoveTotal(context, params) {
-    //   const url = BaseURL + "analytics/movement/products/total";
-    //   const res = await fetch(url, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: getTOKEN(),
-    //     },
-    //     body: JSON.stringify(params),
-    //   });
-    //   const json = await res.json();
-    //   context.commit("updateStuffMoveTotal", json);
-    // },
     async analyticsExport(context, params) {
-      const url = BaseURL + `analytics/${params.type}/export/xlsx`;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: `analytics/${params.type}/export/xlsx`,
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
       addNotification(0, "Добавлена задача", "Экспорт отчета в xlsx");
 
-      return json;
+      return data;
     },
   },
 };

@@ -1,4 +1,4 @@
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 export default {
   state: {
     tasks: [],
@@ -11,36 +11,26 @@ export default {
   },
   actions: {
     async getTasks(context) {
-      const url = BaseURL + "task/list";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "task/list",
       });
-      const json = await res.json();
-      context.commit("updateTusks", json);
+      context.commit("updateTusks", data);
+
+      return data;
     },
     async syncGsAmo() {
-      const url = BaseURL + "product/sync-gs-amo";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "product/sync-gs-amo",
       });
-      const json = await res.json();
-      console.log("syncGsAmo", json);
-      return json;
+
+      return data;
     },
     async syncAmoGs() {
-      const url = BaseURL + "product/sync-amo-gs";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "product/sync-amo-gs",
       });
-      const json = await res.json();
-      console.log("syncAmoGs", json);
-      return json;
+
+      return data;
     },
   },
 };

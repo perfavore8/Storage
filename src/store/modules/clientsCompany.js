@@ -1,10 +1,8 @@
-import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
 import { computed } from "vue";
 import { useClients } from "@/composables/clients";
 import { useClientsTabs } from "@/composables/clientsTabs";
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 
-const { preparation_params } = usePreparationQueryParams();
 const { tabs } = useClientsTabs();
 const selectedTabComp = computed(() => tabs.selected);
 const { getClientsList } = useClients(selectedTabComp);
@@ -56,150 +54,120 @@ export default {
   },
   actions: {
     async getClientsCompanyList(context, params) {
-      const url = BaseURL + "company/list";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "company/list",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
       context.commit("updateCompanyMeta", {
-        links: json.links,
-        meta: json.meta,
+        links: data.links,
+        meta: data.meta,
       });
-      context.commit("updateCompanyList", json.data);
+      context.commit("updateCompanyList", data.data);
+
+      return data;
     },
     async addClientsCompany(context, params) {
-      const url = BaseURL + "company/add";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "company/add",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-
       getClientsList();
 
-      return json;
+      return data;
     },
     async updateClientsCompany(context, params) {
-      const url = BaseURL + "company/update";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "company/update",
+        method: "post",
+        data: params,
       });
-
       getClientsList();
+
+      return data;
     },
     async deleteClientsCompany(context, params) {
-      const url = BaseURL + "company/delete";
-      await fetch(url + preparation_params(params), {
-        headers: { Authorization: getTOKEN() },
+      const { data } = await ApiReqFunc({
+        url: "company/delete",
+        params: params,
       });
-
       getClientsList();
+
+      return data;
     },
 
     async linkClientsCompany(context, params) {
-      const url = BaseURL + "company/contacts/link";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "company/contacts/link",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
     async unlinkClientsCompany(context, params) {
-      const url = BaseURL + "company/contacts/unlink";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "company/contacts/unlink",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
 
     async getClientsCompanyTypes(context) {
-      const url = BaseURL + "company/field/types";
-      const res = await fetch(url, {
-        headers: { Authorization: getTOKEN() },
+      const { data } = await ApiReqFunc({
+        url: "company/field/types",
       });
-      const json = await res.json();
-      context.commit("updateCompanyTypes", json);
+      context.commit("updateCompanyTypes", data);
+
+      return data;
     },
 
     async getClientsCompanyFields(context) {
-      const url = BaseURL + "company/field/list";
-      const res = await fetch(url, {
-        headers: { Authorization: getTOKEN() },
+      const { data } = await ApiReqFunc({
+        url: "company/field/list",
       });
-      const json = await res.json();
-      context.commit("updateCompanyFields", json);
+      context.commit("updateCompanyFields", data);
+
+      return data;
     },
     async addClientsCompanyField(context, params) {
-      const url = BaseURL + "company/field/add";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "company/field/add",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      return json;
+
+      return data;
     },
     async updateClientsCompanyField(context, params) {
-      const url = BaseURL + "company/field/update";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "company/field/update",
+        method: "post",
+        data: params,
       });
+
+      return data;
     },
     async deleteClientsCompanyField(context, params) {
-      const url = BaseURL + "company/field/delete";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: getTOKEN(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "company/field/delete",
+        method: "post",
+        data: params,
       });
+
+      return data;
     },
 
     async getClientsCompanyAutocomplete(context, params) {
-      const url = BaseURL + "company/autocomplete";
-      const res = await fetch(url + preparation_params(params), {
-        headers: { Authorization: getTOKEN() },
+      const { data } = await ApiReqFunc({
+        url: "company/autocomplete",
+        params: params,
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
   },
 };

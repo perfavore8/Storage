@@ -1,4 +1,4 @@
-import { BaseURL, getTOKEN } from "@/composables/BaseURL";
+import { ApiReqFunc } from "@/composables/ApiReqFunc";
 export default {
   state: {
     account: {},
@@ -43,215 +43,157 @@ export default {
   },
   actions: {
     async get_account(context) {
-      const url = BaseURL + "account/config";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/config",
       });
+      context.commit("update_account", data.account);
+      context.commit("update_user", data.user);
 
-      if (!res.ok) return { res };
-
-      const json = await res.json();
-      context.commit("update_account", json.account);
-      context.commit("update_user", json.user);
-
-      return { json, res };
+      return data;
     },
     async getTableConfig(context, code) {
-      const url = BaseURL + "account/table-config";
-      const res = await fetch(url + "?code=" + code, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/table-config",
+        data: { code: code },
       });
-      const json = await res.json();
-      context.commit("updateTableConfig", json);
+      context.commit("updateTableConfig", data);
+
+      return data;
     },
     async importOldData() {
-      const url = BaseURL + "account/import-old-data ";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/import-old-data",
       });
-      const json = await res.json();
-      return json;
+
+      return data;
     },
     async getGoogleAuthUrl() {
-      const url = BaseURL + "account/google-auth-url";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/google-auth-url",
       });
-      const json = await res.json();
-      return json.url;
+
+      return data.url;
     },
     async googleLogOut() {
-      const url = BaseURL + "account/google-logout";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/google-logout",
       });
-      const json = await res.json();
-      return json.url;
+
+      return data.url;
     },
     async genezisEnableDisable(context, param) {
-      const url = BaseURL + "account/genezis-" + param;
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/genezis-" + param,
       });
-      const json = await res.json();
-      return json.url;
+
+      return data.url;
     },
     async update_config_table(context, params) {
-      const url = BaseURL + "account/table-config";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params.value),
+      const { data } = await ApiReqFunc({
+        url: "account/table-config",
+        method: "post",
+        data: params.value,
       });
-      const json = await res.json();
-      console.log("update_config_table", json);
       await context.dispatch("getTableConfig", params.wh);
       context.dispatch("get_all_fields");
-      return json;
+
+      return data;
     },
     async get_currencies(context) {
-      const url = BaseURL + "account/currencies";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/currencies",
       });
-      const json = await res.json();
-      context.commit("update_currencies", json);
+
+      context.commit("update_currencies", data);
+      return data;
     },
     async getPipelinesListV2(context) {
-      const url = BaseURL + "account/pipelinesV2";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/pipelinesV2",
       });
-      const json = await res.json();
-      context.commit("updatePipelinesListV2", json);
+
+      context.commit("updatePipelinesListV2", data);
+      return data;
     },
     async getLeadFieldsList(context) {
-      const url = BaseURL + "account/lead-fields";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/lead-fields",
       });
-      const json = await res.json();
-      context.commit("updateLeadFieldsList", json);
+
+      context.commit("updateLeadFieldsList", data);
+      return data;
     },
     async getLeadFieldGroupsList(context) {
-      const url = BaseURL + "account/lead-field-groups";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/lead-field-groups",
       });
-      const json = await res.json();
-      context.commit("updateLeadFieldGroupsList", json);
+
+      context.commit("updateLeadFieldGroupsList", data);
+      return data;
     },
     async getProductLists(context) {
-      const url = BaseURL + "account/product-lists";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/product-lists",
       });
-      const json = await res.json();
-      context.commit("updateProductLists", json);
+
+      context.commit("updateProductLists", data);
+      return data;
     },
     async getSyncFields(context) {
-      const url = BaseURL + "account/sync-fields";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/sync-fields",
       });
-      const json = await res.json();
-      context.commit("updateSyncFields", json);
+
+      context.commit("updateSyncFields", data);
+      return data;
     },
     async importStuffFields() {
-      const url = BaseURL + "account/import-fields";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/import-fields",
       });
-      const json = await res.json();
-      return json;
+
+      return data;
     },
     async importStuffTemplates() {
-      const url = BaseURL + "account/import-templates";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/import-templates",
       });
-      const json = await res.json();
-      return json;
+
+      return data;
     },
     async update_account(context, params) {
-      const url = BaseURL + "account/update";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "account/update",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      console.log("update_account", json);
-      return json;
+
+      return data;
     },
     async update_user(context, params) {
-      const url = BaseURL + "user/update";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getTOKEN(),
-        },
-        body: JSON.stringify(params),
+      const { data } = await ApiReqFunc({
+        url: "user/update",
+        method: "post",
+        data: params,
       });
-      const json = await res.json();
-      console.log("update_user", json);
       context.dispatch("get_account");
-      return json;
+
+      return data;
     },
     async sync1C() {
-      const url = BaseURL + "account/genezis/sync";
-      await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/genezis/sync",
       });
+
+      return data;
     },
 
     async getUsersList() {
-      const url = BaseURL + "account/users";
-      const res = await fetch(url, {
-        headers: {
-          Authorization: getTOKEN(),
-        },
+      const { data } = await ApiReqFunc({
+        url: "account/users",
       });
-      const json = await res.json();
 
-      return json;
+      return data;
     },
   },
 };
