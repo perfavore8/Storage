@@ -36,6 +36,7 @@ export function useRedirectToAuth() {
     ) {
       router.push("/authorization");
     } else if (haveAnyTOKEN() && !isDev.value) {
+      createInstance();
       router.push("/");
     }
   };
@@ -65,7 +66,11 @@ export const getTOKEN = () =>
 export const haveAnyTOKEN = () =>
   Boolean(findGetParameter("token") || savedToken);
 
-export const instance = axios.create({
-  baseURL: BaseURL,
-  headers: { Authorization: getTOKEN() },
-});
+export let instance = null;
+
+const createInstance = () =>
+  (instance = axios.create({
+    baseURL: BaseURL,
+    headers: { Authorization: getTOKEN() },
+  }));
+createInstance();
