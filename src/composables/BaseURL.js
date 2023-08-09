@@ -41,7 +41,6 @@ export function useRedirectToAuth() {
       router.push("/");
     }
   };
-  checkPath();
 
   const redirectToErrorPage = () => {
     isTokenFail.value = true;

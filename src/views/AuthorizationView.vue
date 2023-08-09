@@ -284,6 +284,7 @@ export default {
   components: { SelectorVue, AuthBtnsGroup },
   setup() {
     const { checkPath, getCachedToken } = useRedirectToAuth();
+    checkPath();
 
     const [isSignUp, toggleSignUp] = useToggle(false);
     watch(isSignUp, () => {

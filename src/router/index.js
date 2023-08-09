@@ -4,7 +4,8 @@ import store from "../store";
 import { useCheckDevMode } from "@/composables/checkDevMode";
 
 const { isDev } = useCheckDevMode();
-const { isTokenFail } = useRedirectToAuth();
+const { isTokenFail, checkPath } = useRedirectToAuth();
+checkPath();
 
 const routes = [
   {
