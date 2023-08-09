@@ -1,8 +1,8 @@
-import { useRouter } from "vue-router";
 import { useCheckDevMode } from "./checkDevMode";
 import { inFrame } from "./checkInFrame";
 import { ref } from "vue";
 import axios from "axios";
+import router from "@/router";
 const { isDev } = useCheckDevMode();
 
 function findGetParameter(parameterName) {
@@ -29,8 +29,6 @@ getCachedToken();
 const isTokenFail = ref(false);
 
 export function useRedirectToAuth() {
-  const router = useRouter();
-
   const checkPath = async () => {
     if (
       !haveAnyTOKEN() &&
