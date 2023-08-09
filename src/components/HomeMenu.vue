@@ -151,6 +151,37 @@
                 Интеграции
               </div>
             </a>
+            <a v-if="isTest" class="group relative">
+              <div class="modal_container">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  class="mr-2 group-hover:rotate-[270deg] text-slate-700 rotate-180 transition-transform"
+                >
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="m17 14l-5-5m0 0l-5 5"
+                  />
+                </svg>
+
+                Клиенты
+              </div>
+              <transition name="modal">
+                <div class="absolute right-full hidden group-hover:block">
+                  <div class="modal_settings !w-52">
+                    <a @click="openUserLIst()">
+                      <div class="modal_container">Список</div>
+                    </a>
+                  </div>
+                </div>
+              </transition>
+            </a>
             <a v-if="isTest">
               <div class="modal_container" @click="openAccountSattings()">
                 Настройки аккаунта
@@ -278,6 +309,7 @@ export default {
     const openSettingEntities = () =>
       store.commit("toggleSettingEntities", true);
     const openArchive = () => router.push("/archive");
+    const openUserLIst = () => router.push("/users");
 
     const [showUserMenu, toggleShowUserMenu] = useToggle(false);
 
@@ -315,6 +347,7 @@ export default {
       showUserMenu,
       toggleShowUserMenu,
       amoTest,
+      openUserLIst,
     };
   },
 };
@@ -410,7 +443,7 @@ export default {
       border: 1px solid #c9c9c9;
       border-radius: 4px;
       background: white;
-      overflow: hidden;
+      // overflow: hidden;
       position: absolute;
       top: 200%;
       right: 0;
