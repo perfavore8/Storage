@@ -38,8 +38,8 @@
         </button>
       </div>
     </div>
-    <div class="main">
-      <table class="w-full text-slate-500">
+    <div class="main overflow-x-auto">
+      <table class="w-full text-slate-500 whitespace-pre">
         <thead class="bg-slate-50 border-y border-solid border-slate-200/70">
           <tr>
             <th>
@@ -160,6 +160,7 @@ import AppInput from "../AppInput.vue";
 import GridBottom from "../GridBottom.vue";
 import AppPaginator from "../AppPaginator.vue";
 import { useColor } from "@/composables/color";
+import store from "@/store";
 export default {
   components: { AppInput, GridBottom, AppPaginator },
   setup() {
@@ -176,59 +177,25 @@ export default {
 
     const titiles = reactive([
       { name: "Имя", code: "name" },
-      { name: "Группа", code: "group" },
-      { name: "Роль", code: "role" },
+      // { name: "Группа", code: "group" },
+      // { name: "Роль", code: "role" },
+      { name: "Email", code: "email" },
+      { name: "Телефон", code: "phone" },
       { name: "Статус", code: "status" },
     ]);
-    const users = reactive([
-      {
-        id: 0,
-        name: "Ella Lauda",
-        email: "amanda@site.com",
-        group: "Москва",
-        role: "Пользователь",
-        status: 2,
-        color: computed(() => getRandomColor2().toLocaleLowerCase()),
-      },
-      {
-        id: 1,
-        name: "John Doe",
-        email: "john.doe@example.com",
-        group: "Москва",
-        role: "Администратор",
-        status: 2,
-        color: computed(() => getRandomColor2().toLocaleLowerCase()),
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        email: "jane.smith@example.com",
-        group: "СПБ",
-        role: "Пользователь",
-        status: 0,
-        color: computed(() => getRandomColor2().toLocaleLowerCase()),
-      },
-      {
-        id: 3,
-        name: "Michael Johnson",
-        email: "michael.johnson@example.com",
-        group: "СПБ",
-        role: "Пользователь",
-        status: 1,
-        color: computed(() => getRandomColor2().toLocaleLowerCase()),
-      },
-      {
-        id: 4,
-        name: "Emily Wilson",
-        email: "emily.wilson@example.com",
-        group: "СПБ",
-        role: "Пользователь",
-        status: 0,
-        color: computed(() => getRandomColor2().toLocaleLowerCase()),
-      },
-    ]);
+    const users = reactive([]);
 
-    const firstLetter = (str) => str[0].toLocaleUpperCase();
+    const setUsers = async () => {
+      const list = await store.dispatch("getUsersList");
+      Object.assign(users, list);
+      users.map(
+        (user) =>
+          (user.color = computed(() => getRandomColor2().toLocaleLowerCase()))
+      );
+    };
+    setUsers();
+
+    const firstLetter = (str) => str?.[0]?.toLocaleUpperCase();
 
     return { page, titiles, users, getRandomColor2, firstLetter };
   },
@@ -243,7 +210,6 @@ export default {
 }
 th,
 td {
-  max-width: 200px;
   @apply py-4 px-5 text-left;
 }
 
