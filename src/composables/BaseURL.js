@@ -47,6 +47,7 @@ export function useRedirectToAuth() {
       router.push("/Error_token_not_valid");
     } else {
       savedToken = "";
+      createInstance();
       router.push("/authorization");
     }
   };
