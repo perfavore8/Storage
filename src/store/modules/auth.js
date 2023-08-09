@@ -29,5 +29,14 @@ export default {
 
       return data;
     },
+
+    async authSetAccount(context, params) {
+      const { data } = await ApiReqFunc({
+        url: "auth/set-account",
+        params: params,
+      });
+
+      return data;
+    },
   },
 };

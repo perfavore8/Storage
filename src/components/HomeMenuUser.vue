@@ -25,8 +25,12 @@
     <div class="main">
       <ul class="text-slate-600">
         <li>
-          <span class="material-icons-outlined"> settings </span>
-          <span>Права доступа</span>
+          <ImportStuffSelector
+            class="!w-full"
+            :options_props="availableUserAccounts.list"
+            :selected_option="availableUserAccounts.selected"
+            @select="(option) => availableUserAccounts.select(option.id)"
+          />
         </li>
         <li @click="logOut()" v-if="!inFrame">
           <span class="material-icons-outlined"> logout </span>
@@ -42,10 +46,14 @@ import { computed, onMounted, ref } from "vue";
 import store from "@/store";
 import { useLogOut } from "@/composables/logOut";
 import { inFrame } from "@/composables/checkInFrame";
+import { useAvailableUserAccounts } from "@/composables/availableUserAccounts";
+import ImportStuffSelector from "./ImportStuffSelector.vue";
 
 export default {
+  components: { ImportStuffSelector },
   setup() {
     const { logOut } = useLogOut();
+    const { availableUserAccounts } = useAvailableUserAccounts();
 
     const userName = computed(() => store.state.account.user?.name);
 
@@ -55,7 +63,14 @@ export default {
       img.value.onerror = () => (isImgLoaded.value = false);
     });
 
-    return { userName, img, isImgLoaded, logOut, inFrame };
+    return {
+      userName,
+      img,
+      isImgLoaded,
+      logOut,
+      inFrame,
+      availableUserAccounts,
+    };
   },
 };
 </script>
