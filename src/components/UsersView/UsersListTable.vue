@@ -78,38 +78,24 @@
                   </div>
                 </div>
               </template>
-              <template v-else-if="title.code === 'status'">
+              <template v-else-if="title.code === 'is_active'">
                 <div class="w-fit h-full flex flex-row gap-4 items-center">
                   <div
                     class="w-4 h-4 rounded-full flex items-center justify-center"
                     :style="{
                       'background-color':
-                        (user.status === 2
-                          ? '#4ade80'
-                          : user.status === 1
-                          ? '#6b7280'
-                          : '#fb7185') + '50',
+                        (user.is_active === 1 ? '#4ade80' : '#fb7185') + '50',
                     }"
                   >
                     <div
                       class="w-2 h-2 rounded-full"
                       :style="{
                         'background-color':
-                          (user.status === 2
-                            ? '#4ade80'
-                            : user.status === 1
-                            ? '#6b7280'
-                            : '#fb7185') + '99',
+                          (user.is_active === 1 ? '#4ade80' : '#fb7185') + '99',
                       }"
                     ></div>
                   </div>
-                  {{
-                    user.status === 2
-                      ? "В сети"
-                      : user.status === 1
-                      ? "Отошел"
-                      : "Не в сети"
-                  }}
+                  {{ user.is_active === 1 ? "В сети" : "Не в сети" }}
                 </div>
               </template>
               <template v-else>{{ user[title.code] }}</template>
@@ -181,7 +167,7 @@ export default {
       // { name: "Роль", code: "role" },
       { name: "Email", code: "email" },
       { name: "Телефон", code: "phone" },
-      { name: "Статус", code: "status" },
+      { name: "Статус", code: "is_active" },
     ]);
     const users = reactive([]);
 
