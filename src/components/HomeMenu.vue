@@ -151,7 +151,7 @@
                 Интеграции
               </div>
             </a>
-            <a v-if="isTest" class="group relative">
+            <a v-if="isTest" class="group relative" @click.stop="">
               <div class="modal_container">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +170,7 @@
                   />
                 </svg>
 
-                Клиенты
+                Пользователи
               </div>
               <transition name="modal">
                 <div class="absolute right-full hidden group-hover:block">
