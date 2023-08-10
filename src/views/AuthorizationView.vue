@@ -5,7 +5,7 @@
     >
       <img src="@/assets/logo_transparent.png" class="w-3/4" />
       <h1 class="font-bold text-3xl text-slate-700 mb-5">Авторизация</h1>
-      <template v-if="!showRestorePassword">
+      <template v-if="!showPin">
         <div class="flex items-center justify-center min-h-[142px]">
           <div class="h-min flex flex-col gap-5 justify-center relative">
             <template v-if="notificationSystem.selected.value === 'telegram'">
@@ -20,7 +20,7 @@
                       inputErrors.trySubmit && inputErrors.tgLogin && !isSignUp,
                   }"
                   :placeholder="'Логин в Telegram (@login)'"
-                  :disabled="isSignUp"
+                  :disabled="isSignUp || showRestorePassword"
                 />
               </div>
             </template>
@@ -35,7 +35,7 @@
                     inputErrors.trySubmit && inputErrors.email && !isSignUp,
                 }"
                 :placeholder="'Адресс почты'"
-                :disabled="isSignUp"
+                :disabled="isSignUp || showRestorePassword"
               />
               <input
                 class="input"
@@ -44,13 +44,10 @@
                 v-model="form.password"
                 :class="{
                   input_error:
-                    inputErrors.trySubmit &&
-                    inputErrors.password &&
-                    !isSignUp &&
-                    !inputErrors.tryRestorePassword,
+                    inputErrors.trySubmit && inputErrors.password && !isSignUp,
                 }"
                 :placeholder="'Пароль от GoСклад'"
-                :disabled="isSignUp"
+                :disabled="isSignUp || showRestorePassword"
               />
             </template>
             <template v-else>
@@ -58,7 +55,7 @@
                 :options_props="codes.list"
                 :selected_option="codes.selected"
                 @select="selectPhone"
-                :disabled="isSignUp"
+                :disabled="isSignUp || showRestorePassword"
               />
               <input
                 class="input"
@@ -71,7 +68,7 @@
                 masked="false"
                 v-mask="imask.mask"
                 :placeholder="imask.mask"
-                :disabled="isSignUp"
+                :disabled="isSignUp || showRestorePassword"
               />
               <input
                 class="input"
@@ -80,22 +77,19 @@
                 v-model="form.password"
                 :class="{
                   input_error:
-                    inputErrors.trySubmit &&
-                    inputErrors.password &&
-                    !isSignUp &&
-                    !inputErrors.tryRestorePassword,
+                    inputErrors.trySubmit && inputErrors.password && !isSignUp,
                 }"
                 :placeholder="'Пароль от GoСклад'"
-                :disabled="isSignUp"
+                :disabled="isSignUp || showRestorePassword"
               />
             </template>
             <div
               class="absolute flex flex-col gap-1 -bottom-1 left-1 translate-y-full"
             >
               <a
-                class="underline dark:text-slate-500 hover:no-underline focus:outline-offset-4 text-slate-700 text-sm"
-                @click="tryRestorePassword()"
-                :disabled="isSignUp"
+                class="cursor-pointer underline dark:text-slate-500 hover:no-underline focus:outline-offset-4 text-slate-700 text-sm"
+                @click="toggleRestorePassword()"
+                :disabled="isSignUp || showRestorePassword"
               >
                 Восстановить пароль
               </a>
@@ -115,19 +109,25 @@
             class="w-min"
             :notificationSystem="notificationSystem"
             :isSignUp="isSignUp"
-            :disabled="isSignUp"
+            :disabled="isSignUp || showRestorePassword"
           />
-          <button class="btn btn_blue" @click="submit()" :disabled="isSignUp">
+          <button
+            class="btn btn_blue"
+            @click="submit()"
+            :disabled="isSignUp || showRestorePassword"
+          >
             Авторизоваться
           </button>
         </div>
         <div
           class="login flex flex-col gap-8 p-12 pt-[34px] items-center translate-y-5 sm:translate-y-10"
           ref="loginRef"
-          :class="{ login_short: !isSignUp }"
-          @click="toggleSignUp(true)"
+          :class="{ login_short: !(isSignUp || showRestorePassword) }"
+          @click="!showRestorePassword ? toggleSignUp(true) : null"
         >
-          <h1 class="font-bold text-3xl text-slate-700 mb-5">Регистрация</h1>
+          <h1 class="font-bold text-3xl text-slate-700 mb-5">
+            {{ showRestorePassword ? "Сброс пароля" : "Регистрация" }}
+          </h1>
           <div class="flex items-center justify-center min-h-[142px]">
             <div class="h-min flex flex-col gap-5 justify-center relative">
               <input
@@ -135,12 +135,13 @@
                 type="text"
                 name="name"
                 v-model="form.name"
+                v-if="!showRestorePassword"
                 :class="{
                   input_error:
                     inputErrors.trySubmit && inputErrors.name && isSignUp,
                 }"
                 :placeholder="'Имя'"
-                :disabled="!isSignUp"
+                :disabled="!(isSignUp || showRestorePassword)"
               />
               <template v-if="notificationSystem.selected.value === 'telegram'">
                 <div class="min-h-[88px]">
@@ -153,10 +154,10 @@
                       input_error:
                         inputErrors.trySubmit &&
                         inputErrors.tgLogin &&
-                        isSignUp,
+                        (isSignUp || showRestorePassword),
                     }"
                     :placeholder="'Логин в Telegram (@login)'"
-                    :disabled="!isSignUp"
+                    :disabled="!(isSignUp || showRestorePassword)"
                   />
                 </div>
               </template>
@@ -170,10 +171,12 @@
                   v-model="form.email"
                   :class="{
                     input_error:
-                      inputErrors.trySubmit && inputErrors.email && !isSignUp,
+                      inputErrors.trySubmit &&
+                      inputErrors.email &&
+                      (isSignUp || showRestorePassword),
                   }"
                   :placeholder="'Адресс почты'"
-                  :disabled="!isSignUp"
+                  :disabled="!(isSignUp || showRestorePassword)"
                 />
               </template>
               <template v-else>
@@ -181,7 +184,7 @@
                   :options_props="codes.list"
                   :selected_option="codes.selected"
                   @select="selectPhone"
-                  :disabled="!isSignUp"
+                  :disabled="!(isSignUp || showRestorePassword)"
                 />
                 <input
                   class="input"
@@ -189,13 +192,15 @@
                   name="phone-number"
                   :class="{
                     input_error:
-                      inputErrors.trySubmit && inputErrors.phone && isSignUp,
+                      inputErrors.trySubmit &&
+                      inputErrors.phone &&
+                      (isSignUp || showRestorePassword),
                   }"
                   v-model="form.phone"
                   masked="false"
                   v-mask="imask.mask"
                   :placeholder="imask.mask"
-                  :disabled="!isSignUp"
+                  :disabled="!(isSignUp || showRestorePassword)"
                 />
               </template>
               <div
@@ -216,12 +221,12 @@
             <AuthBtnsGroup
               :notificationSystem="notificationSystem"
               :isSignUp="isSignUp"
-              :disabled="!isSignUp"
+              :disabled="!(isSignUp || showRestorePassword)"
             />
             <button
               class="btn btn_blue"
               @click="submit()"
-              :disabled="!isSignUp"
+              :disabled="!(isSignUp || showRestorePassword)"
             >
               Отправить
             </button>
@@ -229,8 +234,10 @@
           <div class="flex justify-center w-full">
             <button
               class="flex justify-center items-center p-2 rounded-full text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
-              @click.stop="closeSignUp()"
-              :disabled="!isSignUp"
+              @click.stop="
+                showRestorePassword ? closeRestorePassword() : closeSignUp()
+              "
+              :disabled="!(isSignUp || showRestorePassword)"
             >
               <span class="material-icons-outlined text-[#757575]">
                 close
@@ -241,14 +248,14 @@
       </template>
       <template v-else>
         <span>
-          Отправили новый пароль на :<br />
+          Отправили код на :<br />
           {{
             notificationSystem.selected.value === "email"
               ? form.email
               : form.phone
           }}
         </span>
-        <div class="pinBox" v-if="false">
+        <div class="pinBox relative">
           <input
             v-model="phoneCode"
             class="pinEntry"
@@ -257,10 +264,19 @@
             min="0"
             autocomplete="off"
           />
+          <div
+            class="absolute flex flex-col gap-1 -bottom-1 left-1 translate-y-full"
+          >
+            <transition name="fade">
+              <small v-if="isFailAuth" class="text-red-700 text-sm origin-top">
+                Что-то пошло не так...
+              </small>
+            </transition>
+          </div>
         </div>
         <button
           class="btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
-          @click="toggleRestorePassword(false)"
+          @click="togglePin(false)"
         >
           Назад
         </button>
@@ -279,11 +295,14 @@ import { onClickOutside, useToggle } from "@vueuse/core";
 import store from "@/store";
 import { useRedirectToAuth } from "@/composables/BaseURL";
 import { useValidate } from "@/composables/validate";
+import { useNotification } from "@/composables/notification";
 
 export default {
   components: { SelectorVue, AuthBtnsGroup },
   setup() {
     const { checkPath, getCachedToken } = useRedirectToAuth();
+    const { addNotification } = useNotification();
+
     checkPath();
 
     const [isSignUp, toggleSignUp] = useToggle(false);
@@ -294,6 +313,7 @@ export default {
     const loginRef = ref(null);
     onClickOutside(loginRef, () => {
       closeSignUp();
+      closeRestorePassword();
     });
 
     const closeSignUp = () => {
@@ -333,7 +353,6 @@ export default {
 
     const inputErrors = reactive({
       trySubmit: false,
-      tryRestorePassword: false,
       phone: computed(
         () =>
           deleteOther(form.phone).length !==
@@ -348,7 +367,7 @@ export default {
         if (isSignUp.value) res = res || this.name;
         notificationSystem.selected.formReqFields.forEach((field) => {
           if (
-            isSignUp.value &&
+            (isSignUp.value || showRestorePassword.value) &&
             notificationSystem.selected?.signUpOptionalFields?.includes(field)
           )
             return;
@@ -370,13 +389,30 @@ export default {
     });
     const dropErrorInput = () => {
       inputErrors.trySubmit = false;
-      inputErrors.tryRestorePassword = false;
     };
 
     const submit = async () => {
       if (!inputErrors.global()) {
-        let res = null;
-        if (isSignUp.value) {
+        let res = { success: false };
+        if (showRestorePassword.value) {
+          tryRestorePassword(res.success || true);
+          if (!res.success && phoneCode.value) {
+            toggleFailAuth(true);
+            return;
+          } else if (res.success && phoneCode.value) {
+            addNotification(
+              1,
+              "Сброс пароля",
+              "Мы выслали вам новый пароль на: " +
+                (notificationSystem.selected.value === "email"
+                  ? form.email
+                  : form.phone)
+            );
+            togglePin(false);
+            closeRestorePassword();
+            return;
+          }
+        } else if (isSignUp.value) {
           res = await store.dispatch("authRegistration", {
             mode: notificationSystem.selected.mode,
             login:
@@ -456,23 +492,36 @@ export default {
     });
     notificationSystem.dropToDefault();
 
-    const [isFailAuth, toggleFailAuth] = useToggle(false);
-    watch(
-      () => isSignUp && notificationSystem.selected,
-      () => toggleFailAuth(false),
-      { deep: true }
-    );
+    const phoneCode = ref(null);
+    watch(phoneCode, () => {
+      if (phoneCode.value > 999999)
+        phoneCode.value = Math.floor(phoneCode.value / 10);
+      if (phoneCode.value.toString().length === 6) submit();
+    });
 
     const [showRestorePassword, toggleRestorePassword] = useToggle(false);
-    const tryRestorePassword = () => {
-      if (!inputErrors.restorePassword()) {
-        toggleRestorePassword(true);
+    const closeRestorePassword = () => toggleRestorePassword(false);
+    watch(showRestorePassword, () => dropErrorInput());
+    const tryRestorePassword = (success) => {
+      if (!inputErrors.restorePassword() && success) {
+        togglePin(true);
       } else {
         inputErrors.trySubmit = true;
-        inputErrors.tryRestorePassword = true;
       }
     };
 
+    const [showPin, togglePin] = useToggle(false);
+
+    const [isFailAuth, toggleFailAuth] = useToggle(false);
+    watch(
+      () =>
+        isSignUp &&
+        notificationSystem.selected &&
+        showRestorePassword &&
+        showPin,
+      () => toggleFailAuth(false),
+      { deep: true }
+    );
     return {
       form,
       codes,
@@ -490,7 +539,11 @@ export default {
       notificationSystem,
       isFailAuth,
       tryRestorePassword,
+      closeRestorePassword,
       dropForm,
+      showPin,
+      togglePin,
+      phoneCode,
     };
   },
 };
