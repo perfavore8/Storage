@@ -71,7 +71,6 @@ export default {
     async get_documents_v2(context) {
       const { data } = await ApiReqFunc({
         url: "document/listV2",
-        method: "post",
       });
       context.commit("update_templates", data.templates);
       context.commit("update_config", data.config);
