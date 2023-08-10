@@ -1,16 +1,22 @@
 import router from "@/router";
 import store from "@/store";
 import { reactive } from "vue";
+import { TokenName, createInstance, getCachedToken } from "./BaseURL";
 
 export function useAvailableUserAccounts() {
   const availableUserAccounts = reactive({
     selected: {},
     list: [],
     select: async function (id) {
-      const { success } = await store.dispatch("authSetAccount", {
+      const { success, token } = await store.dispatch("authSetAccount", {
         account_id: id,
       });
-      if (success) router.push(router.currentRoute.value.path);
+      if (success && token) {
+        localStorage.setItem(TokenName, JSON.stringify(token));
+        getCachedToken();
+        createInstance();
+        router.go(0);
+      }
     },
     setList: async function () {
       const accounts = store.state.account.user?.accounts;

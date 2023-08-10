@@ -21,7 +21,7 @@ function findGetParameter(parameterName) {
 export const TokenName = "TOKEN";
 
 let savedToken = "";
-const getCachedToken = () => {
+export const getCachedToken = () => {
   savedToken = JSON.parse(localStorage.getItem(TokenName));
 };
 getCachedToken();
@@ -69,7 +69,7 @@ export const haveAnyTOKEN = () =>
 
 export let instance = null;
 
-const createInstance = () =>
+export const createInstance = () =>
   (instance = axios.create({
     baseURL: BaseURL,
     headers: { Authorization: getTOKEN() },
