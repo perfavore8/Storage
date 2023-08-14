@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="main flex flex-col gap-8">
-      <UsersActivity :list="usersActivity" />
+      <UsersActivity :list="usersActivity" v-if="false" />
       <UsersListTable />
     </div>
   </div>

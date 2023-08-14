@@ -69,6 +69,7 @@
                       backgroundColor: user.color + '20',
                       color: user.color,
                     }"
+                    v-if="false"
                   >
                     {{ firstLetter(user.name) }}
                   </div>
@@ -95,7 +96,7 @@
                       }"
                     ></div>
                   </div>
-                  {{ user.is_active === 1 ? "В сети" : "Не в сети" }}
+                  {{ user.is_active === 1 ? "Включен" : "Не включен" }}
                 </div>
               </template>
               <template v-else>{{ user[title.code] }}</template>
@@ -103,6 +104,7 @@
             <td>
               <button
                 class="export btn order-1 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+                @click="editUser.select(user)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +124,7 @@
         </tbody>
       </table>
     </div>
-    <div class="pagination p-5 flex justify-between items-center">
+    <div class="pagination p-5 flex justify-between items-center" v-if="false">
       <div class="left flex flex-row gap-1 items-center text-slate-500">
         Показывать:
         <GridBottom
@@ -138,6 +140,11 @@
       </div>
     </div>
   </div>
+  <EditUser
+    v-if="showEditUser"
+    :user="selectedUser"
+    @close="editUser.close()"
+  />
 </template>
 
 <script>
@@ -147,8 +154,10 @@ import GridBottom from "../GridBottom.vue";
 import AppPaginator from "../AppPaginator.vue";
 import { useColor } from "@/composables/color";
 import store from "@/store";
+import EditUser from "./EditUser.vue";
+import { useToggle } from "@vueuse/core";
 export default {
-  components: { AppInput, GridBottom, AppPaginator },
+  components: { AppInput, GridBottom, AppPaginator, EditUser },
   setup() {
     const { getRandomColor2 } = useColor();
 
@@ -183,7 +192,26 @@ export default {
 
     const firstLetter = (str) => str?.[0]?.toLocaleUpperCase();
 
-    return { page, titiles, users, getRandomColor2, firstLetter };
+    const [showEditUser, toggleEditUser] = useToggle(false);
+    const editUser = reactive({
+      selected: {},
+      select: function (user) {
+        this.selected = user;
+        toggleEditUser(true);
+      },
+      close: () => toggleEditUser(false),
+    });
+
+    return {
+      page,
+      titiles,
+      users,
+      getRandomColor2,
+      firstLetter,
+      editUser,
+      showEditUser,
+      toggleEditUser,
+    };
   },
 };
 </script>
