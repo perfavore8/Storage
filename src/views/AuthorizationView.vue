@@ -396,7 +396,7 @@ export default {
         let res = { success: false };
         if (showRestorePassword.value) {
           if (showPin.value) {
-            res = await store.dispatch("authRestorePassword", {
+            res = await store.dispatch("authRestorePasswordEnd", {
               code: phoneCode.value,
             });
           } else {
