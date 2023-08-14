@@ -38,5 +38,22 @@ export default {
 
       return data;
     },
+
+    async authRestorePassword(context, params) {
+      const { data } = await ApiReqFunc({
+        url: "auth/restore",
+        params: params,
+      });
+
+      return data;
+    },
+    async authRestorePasswordEnd(context, params) {
+      const { data } = await ApiReqFunc({
+        url: "auth/restore-end",
+        params: params,
+      });
+
+      return data;
+    },
   },
 };
