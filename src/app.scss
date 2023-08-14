@@ -90,7 +90,7 @@ $vv: calc(1vh + 1vw);
   box-shadow: 0 0 5px 2px rgb(27 53 70 / 25%);
 }
 .btn_dark_blue:focus-visible {
-  outline: 1px solid  #1b3546d9;
+  outline: 1px solid #1b3546d9;
 }
 .btn_dark_blue:disabled {
   background-color: #1b354680 !important;
@@ -104,7 +104,7 @@ $vv: calc(1vh + 1vw);
   box-shadow: 0 0 5px 2px rgb(59 102 145 / 25%);
 }
 .btn_light_dark_blue:focus-visible {
-  outline: 1px solid  #3b6691;
+  outline: 1px solid #3b6691;
 }
 .btn_light_dark_blue:disabled {
   background-color: hsl(210, 42%, 30%, 0.5) !important;
@@ -118,7 +118,7 @@ $vv: calc(1vh + 1vw);
   box-shadow: 0 0 5px 2px rgb(55 94 134 / 25%);
 }
 .btn_light_dark_blue:focus-visible {
-  outline: 1px solid  rgb(55, 94, 134);
+  outline: 1px solid rgb(55, 94, 134);
 }
 .btn_light_dark_blue:disabled {
   background-color: rgba(55, 94, 134, 0.5) !important;
@@ -131,7 +131,7 @@ $vv: calc(1vh + 1vw);
   box-shadow: 0 0 5px 2px rgb(226 101 109 / 25%);
 }
 .btn_pink:focus-visible {
-  outline: 1px solid  rgb(226, 101, 109);
+  outline: 1px solid rgb(226, 101, 109);
 }
 .btn_pink:disabled {
   background-color: #ea919780 !important;
@@ -145,7 +145,7 @@ $vv: calc(1vh + 1vw);
   box-shadow: 0 0 5px 2px rgb(153 71 41 / 25%);
 }
 .btn_rusty_red:focus-visible {
-  outline: 1px solid  rgb(153, 71, 41);
+  outline: 1px solid rgb(153, 71, 41);
 }
 .btn_rusty_red:disabled {
   background-color: rgba(153, 71, 41, 0.5) !important;
@@ -158,7 +158,7 @@ $vv: calc(1vh + 1vw);
   box-shadow: 0 0 5px 2px rgb(105 177 104 / 25%);
 }
 .btn_green:focus-visible {
-  outline: 1px solid  rgb(105, 177, 104);
+  outline: 1px solid rgb(105, 177, 104);
 }
 .btn_green:disabled {
   background-color: #4e964d80 !important;
@@ -275,9 +275,8 @@ $vv: calc(1vh + 1vw);
   box-shadow: 0 5px 5px rgb(13 110 253 / 25%);
 }
 .input_error {
-    border-color: rgba(219, 54, 71);
-    box-shadow: 0 0 0 4px rgba(219, 54, 71, 0.25);
-  
+  border-color: rgba(219, 54, 71);
+  box-shadow: 0 0 0 4px rgba(219, 54, 71, 0.25);
 }
 
 .backdrop {
@@ -318,5 +317,10 @@ $vv: calc(1vh + 1vw);
   :deep(.email-placeholder) {
     padding: 6px 12px;
     padding-top: 5px;
+  }
+}
+.mask-email--error {
+  :deep(.email-input) {
+    @extend .input_error;
   }
 }
