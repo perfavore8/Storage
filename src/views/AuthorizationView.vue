@@ -25,7 +25,7 @@
               </div>
             </template>
             <template v-else-if="notificationSystem.selected.value === 'email'">
-              <input
+              <!-- <input
                 class="input"
                 type="email"
                 name="email"
@@ -36,6 +36,18 @@
                 }"
                 :placeholder="'Адресс почты'"
                 :disabled="isSignUp || showRestorePassword"
+              /> -->
+              <MaskEmail
+                :class="{
+                  'mask-email--error':
+                    inputErrors.trySubmit &&
+                    inputErrors.email &&
+                    (isSignUp || showRestorePassword),
+                }"
+                v-model:value="form.email"
+                placeholder="example@email.com"
+                :disabled="isSignUp || showRestorePassword"
+                class="mask-email input"
               />
               <input
                 class="input"
@@ -165,19 +177,24 @@
               <template
                 v-else-if="notificationSystem.selected.value === 'email'"
               >
-                <input
+                <!-- <input
                   class="input"
                   type="email"
                   name="email"
                   v-model="form.email"
+                  :placeholder="'Адресс почты'"
+                /> -->
+                <MaskEmail
                   :class="{
-                    input_error:
+                    'mask-email--error':
                       inputErrors.trySubmit &&
                       inputErrors.email &&
                       (isSignUp || showRestorePassword),
                   }"
-                  :placeholder="'Адресс почты'"
+                  v-model:value="form.email"
+                  placeholder="example@email.com"
                   :disabled="!(isSignUp || showRestorePassword)"
+                  class="mask-email input"
                 />
               </template>
               <template v-else>
@@ -400,6 +417,7 @@ export default {
           if (showPin.value) {
             res = await store.dispatch("authRestorePasswordEnd", {
               code: phoneCode.value,
+              mode: notificationSystem.selected.mode,
               login:
                 notificationSystem.selected.value === "email"
                   ? form.email
