@@ -302,3 +302,21 @@ $vv: calc(1vh + 1vw);
 .modal-leave-to {
   opacity: 0;
 }
+
+.mask-email {
+  border: none;
+  :deep(.email-input) {
+    @extend .input;
+    &:focus {
+      color: #212529;
+      background-color: white;
+      border-color: #86b7fe;
+      outline: 0;
+      box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
+    }
+  }
+  :deep(.email-placeholder) {
+    padding: 6px 12px;
+    padding-top: 5px;
+  }
+}
