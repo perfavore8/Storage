@@ -395,7 +395,20 @@ export default {
       if (!inputErrors.global()) {
         let res = { success: false };
         if (showRestorePassword.value) {
-          tryRestorePassword(res.success || true);
+          if (showPin.value) {
+            res = await store.dispatch("authRestorePassword", {
+              code: phoneCode.value,
+            });
+          } else {
+            res = await store.dispatch("authRestorePassword", {
+              mode: notificationSystem.selected.mode,
+              login:
+                notificationSystem.selected.value === "email"
+                  ? form.email
+                  : deleteOther(form.phone),
+            });
+          }
+          tryRestorePassword(res.success);
           if (!res.success && phoneCode.value) {
             toggleFailAuth(true);
             return;
@@ -503,8 +516,11 @@ export default {
     const closeRestorePassword = () => toggleRestorePassword(false);
     watch(showRestorePassword, () => dropErrorInput());
     const tryRestorePassword = (success) => {
-      if (!inputErrors.restorePassword() && success) {
+      if (!inputErrors.restorePassword() && success && !showPin.value) {
         togglePin(true);
+      } else if (!inputErrors.restorePassword() && success && showPin.value) {
+        togglePin(false);
+        toggleRestorePassword(false);
       } else {
         inputErrors.trySubmit = true;
       }
