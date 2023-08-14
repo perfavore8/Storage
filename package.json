@@ -33,6 +33,7 @@
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "@yasanchezz/vue-mask-email": "^0.1.7",
     "autoprefixer": "^10.4.13",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
