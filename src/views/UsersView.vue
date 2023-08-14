@@ -4,7 +4,7 @@
       class="header flex flex-row justify-between items-center pb-8 mb-8 border-b border-solid border-slate-200/70"
     >
       <div class="left flex flex-col items-start">
-        <AppBreadcrumb :pages="pages" />
+        <AppBreadcrumb :pages="pages" v-if="false" />
         <h1 class="text-2xl text-gray-900 font-semibold">
           {{ forTitle?.text }}
         </h1>
