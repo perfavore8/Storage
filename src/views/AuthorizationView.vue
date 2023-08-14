@@ -400,6 +400,10 @@ export default {
           if (showPin.value) {
             res = await store.dispatch("authRestorePasswordEnd", {
               code: phoneCode.value,
+              login:
+                notificationSystem.selected.value === "email"
+                  ? form.email
+                  : deleteOther(form.phone),
             });
           } else {
             res = await store.dispatch("authRestorePassword", {
