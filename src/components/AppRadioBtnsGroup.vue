@@ -1,7 +1,7 @@
 <template>
   <div class="btns_group" :class="{ small: small }">
     <button
-      class="btn"
+      class="btn relative"
       :class="{ selected: selected.value === item.value, small_btn: small }"
       v-for="(item, idx) in list"
       :key="item.value"
