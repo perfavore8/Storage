@@ -142,7 +142,7 @@
   </div>
   <EditUser
     v-if="showEditUser"
-    :user="selectedUser"
+    :user="editUser.selected"
     @close="editUser.close()"
   />
 </template>
