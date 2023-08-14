@@ -67,6 +67,7 @@
                 v-model="form.phone"
                 masked="false"
                 v-mask="imask.mask"
+                autocomplete="off"
                 :placeholder="imask.mask"
                 :disabled="isSignUp || showRestorePassword"
               />
@@ -199,6 +200,7 @@
                   v-model="form.phone"
                   masked="false"
                   v-mask="imask.mask"
+                  autocomplete="off"
                   :placeholder="imask.mask"
                   :disabled="!(isSignUp || showRestorePassword)"
                 />
