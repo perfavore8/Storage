@@ -4,6 +4,7 @@
   >
     <div
       class="filters px-5 py-4 flex flex-row gap-2 justify-between items-center"
+      v-if="false"
     >
       <div class="left">
         <div class="search w-full relative">
