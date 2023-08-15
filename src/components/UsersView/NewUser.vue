@@ -4,7 +4,7 @@
     <div class="container p-8 rounded-xl mt-7 min-w-[70%]">
       <div class="header flex flex-row justify-between">
         <h5 class="text-lg text-slate-800 font-semibold">
-          Добавление пользователя
+          Добавление пользователя{{ isNewUser }}
         </h5>
         <button class="close" @click="close()">
           <div class="icon"></div>
@@ -29,10 +29,13 @@
             />
             <transition name="fade">
               <small
-                v-if="existingUser.text"
+                v-if="existingUser.name"
                 class="text-red-700 text-sm origin-top absolute top-full left-0"
               >
-                {{ existingUser.text }}
+                Такой пользователь уже существует.
+                <a class="link cursor-pointer" @click="existingUser.setName()">
+                  Добавить его в аккаунт?
+                </a>
               </small>
             </transition>
           </div>
@@ -45,26 +48,42 @@
         >
           Назад
         </button>
-        <button class="btn btn_blue" @click="submit()">Сохранить</button>
+        <button class="btn btn_blue" @click="submit()">Добавить</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { computed, reactive } from "vue";
+import { computed, nextTick, reactive, watch } from "vue";
 import { useValidate } from "@/composables/validate";
 import store from "@/store";
+import { useToggle } from "@vueuse/core";
+import { useNotification } from "@/composables/notification";
 export default {
   components: {},
   props: {},
   setup(props, context) {
     const { validateEmail } = useValidate();
+    const { addNotification } = useNotification();
+
+    const [isNewUser, toggleIsNewUser] = useToggle(false);
 
     const form = reactive({
       name: "",
       email: "",
     });
+    watch(
+      () => form.email,
+      () => {
+        existingUser.dropName();
+        if (!errors.email) existingUser.checkEmail();
+      }
+    );
+    watch(
+      () => form.name + form.email,
+      () => toggleIsNewUser(false)
+    );
 
     const errors = reactive({
       trySubmit: false,
@@ -76,12 +95,30 @@ export default {
     });
 
     const existingUser = reactive({
-      text: "",
-      set: function (name) {
-        this.text = `Данный пользователь уже добавлен в этот аккаунт под именем: ${name}`;
+      setName: function () {
+        form.name = this.name;
+        this.dropName();
+        nextTick(() => toggleIsNewUser(true));
       },
-      drop: function () {
-        this.text = "";
+      dropName: function () {
+        this.name = "";
+      },
+      name: "",
+      id: null,
+      timer: null,
+      checkEmail: function () {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(async () => {
+          if (errors.email) return;
+          const { success, name, id } = await store.dispatch("checkLinkUser", {
+            email: form.email,
+          });
+
+          if (success) {
+            this.name = name;
+            this.id = id;
+          }
+        }, 300);
       },
     });
 
@@ -90,20 +127,30 @@ export default {
         errors.trySubmit = true;
         return;
       }
-      const { success, name } = await store.dispatch("checkLinkUser", {
-        email: form.email,
-      });
+
+      const { success } = await store.dispatch(
+        isNewUser ? "addUser" : "linkUser",
+        {
+          account_id: store.state.account.account.id,
+          user_id: existingUser.id,
+        }
+      );
+
       if (success) {
-        existingUser.set(name);
-        return;
+        addNotification(1, `${form.name} прилашен в аккаунт`);
+        close();
+      } else {
+        addNotification(
+          2,
+          `${form.name} не был приглашен в аккаунт`,
+          "Что-то пошло не так..."
+        );
       }
-      const { successAdd } = await store.dispatch("addUser");
-      console.log(successAdd);
     };
 
     const close = () => context.emit("close");
 
-    return { close, form, submit, errors, existingUser };
+    return { close, form, submit, errors, existingUser, isNewUser };
   },
 };
 </script>
