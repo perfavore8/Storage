@@ -334,3 +334,6 @@ $vv: calc(1vh + 1vw);
   opacity: 0;
   transform: scale(0.5);
 }
+.link {
+  @apply font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline focus:outline-offset-4;
+}
