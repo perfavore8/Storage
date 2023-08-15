@@ -4,7 +4,7 @@
     <div class="container p-8 rounded-xl mt-7 min-w-[70%]">
       <div class="header flex flex-row justify-between">
         <h5 class="text-lg text-slate-800 font-semibold">
-          Добавление пользователя{{ isNewUser }}
+          Добавление пользователя
         </h5>
         <button class="close" @click="close()">
           <div class="icon"></div>
@@ -18,6 +18,7 @@
             class="input"
             :class="{ input_error: errors.name && errors.trySubmit }"
             v-model="form.name"
+            :disabled="!isNewUser"
           />
           <span>Email</span>
           <div class="relative">
@@ -67,7 +68,7 @@ export default {
     const { validateEmail } = useValidate();
     const { addNotification } = useNotification();
 
-    const [isNewUser, toggleIsNewUser] = useToggle(false);
+    const [isNewUser, toggleIsNewUser] = useToggle(true);
 
     const form = reactive({
       name: "",
@@ -77,12 +78,9 @@ export default {
       () => form.email,
       () => {
         existingUser.dropName();
+        toggleIsNewUser(true);
         if (!errors.email) existingUser.checkEmail();
       }
-    );
-    watch(
-      () => form.name + form.email,
-      () => toggleIsNewUser(false)
     );
 
     const errors = reactive({
@@ -98,7 +96,7 @@ export default {
       setName: function () {
         form.name = this.name;
         this.dropName();
-        nextTick(() => toggleIsNewUser(true));
+        nextTick(() => toggleIsNewUser(false));
       },
       dropName: function () {
         this.name = "";
