@@ -49,6 +49,7 @@
             </th>
             <th v-for="title in titiles" :key="title.code">{{ title.name }}</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -119,6 +120,24 @@
                   />
                 </svg>
                 Редактировать
+              </button>
+            </td>
+            <td>
+              <button
+                class="p-2 rounded-full text-gray-500 hover:text-red-500 transition-colors duration-300"
+                @click="unLinkUser(user.id)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 15 15"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M3.64 2.27L7.5 6.13l3.84-3.84A.92.92 0 0 1 12 2a1 1 0 0 1 1 1a.9.9 0 0 1-.27.66L8.84 7.5l3.89 3.89A.9.9 0 0 1 13 12a1 1 0 0 1-1 1a.92.92 0 0 1-.69-.27L7.5 8.87l-3.85 3.85A.92.92 0 0 1 3 13a1 1 0 0 1-1-1a.9.9 0 0 1 .27-.66L6.16 7.5L2.27 3.61A.9.9 0 0 1 2 3a1 1 0 0 1 1-1c.24.003.47.1.64.27Z"
+                  />
+                </svg>
               </button>
             </td>
           </tr>
@@ -203,6 +222,13 @@ export default {
       close: () => toggleEditUser(false),
     });
 
+    const unLinkUser = async (id) =>
+      await store.dispatch("unLinkUser", {
+        user_id: id,
+        account_id: store.state.account.account.id,
+      });
+    setUsers();
+
     return {
       page,
       titiles,
@@ -212,6 +238,7 @@ export default {
       editUser,
       showEditUser,
       toggleEditUser,
+      unLinkUser,
     };
   },
 };
@@ -233,9 +260,13 @@ td:first-child {
   width: 1%;
 }
 
+th:nth-last-child(2),
+td:nth-last-child(2) {
+  width: 1%;
+  min-width: 211px;
+}
 th:last-child,
 td:last-child {
   width: 1%;
-  min-width: 211px;
 }
 </style>

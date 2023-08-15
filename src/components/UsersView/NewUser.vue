@@ -130,15 +130,16 @@ export default {
         account_id: store.state.account.account.id,
         user_id: existingUser.id,
       };
-      if (isNewUser.value) params.name = form.name;
+      const params2 = { name: form.name, email: form.email };
 
       const { success } = await store.dispatch(
         isNewUser.value ? "addUser" : "linkUser",
-        params
+        isNewUser.value ? params2 : params
       );
 
       if (success) {
         addNotification(1, `${form.name} прилашен в аккаунт`);
+        context.emit("confirm");
         close();
       } else {
         addNotification(

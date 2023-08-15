@@ -18,15 +18,19 @@
     </div>
     <div class="main flex flex-col gap-8">
       <UsersActivity :list="usersActivity" v-if="false" />
-      <UsersListTable />
+      <UsersListTable ref="UserListTableRef" />
     </div>
   </div>
-  <NewUser v-if="showAddNewUser" @close="toggleAddNewUser(false)" />
+  <NewUser
+    v-if="showAddNewUser"
+    @close="toggleAddNewUser(false)"
+    @confirm="() => updateList()"
+  />
 </template>
 
 <script>
 import AppBreadcrumb from "@/components/AppBreadcrumb.vue";
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import UsersActivity from "@/components/UsersView/UsersActivity.vue";
 import store from "@/store";
@@ -101,7 +105,20 @@ export default {
 
     const [showAddNewUser, toggleAddNewUser] = useToggle(false);
 
-    return { pages, forTitle, usersActivity, showAddNewUser, toggleAddNewUser };
+    const UserListTableRef = ref(null);
+    const updateList = () => {
+      UserListTableRef.value?.setUsers();
+    };
+
+    return {
+      pages,
+      forTitle,
+      usersActivity,
+      showAddNewUser,
+      toggleAddNewUser,
+      UserListTableRef,
+      updateList,
+    };
   },
 };
 </script>
