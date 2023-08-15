@@ -15,6 +15,7 @@ import clientsContacts from "./modules/clientsContacts";
 import clientsCompany from "./modules/clientsCompany";
 import auth from "./modules/auth";
 import data from "./modules/data";
+import user from "./modules/user";
 
 export default createStore({
   modules: {
@@ -34,5 +35,6 @@ export default createStore({
     clientsCompany,
     auth,
     data,
+    user,
   },
 });
