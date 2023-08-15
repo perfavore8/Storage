@@ -129,6 +129,7 @@ export default {
       const { success } = await store.dispatch(
         isNewUser.value ? "addUser" : "linkUser",
         {
+          name: form.name,
           account_id: store.state.account.account.id,
           user_id: existingUser.id,
         }
