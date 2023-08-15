@@ -127,7 +127,7 @@ export default {
       }
 
       const { success } = await store.dispatch(
-        isNewUser ? "addUser" : "linkUser",
+        isNewUser.value ? "addUser" : "linkUser",
         {
           account_id: store.state.account.account.id,
           user_id: existingUser.id,
