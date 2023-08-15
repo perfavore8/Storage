@@ -76,11 +76,13 @@
     <span>Имя</span>
     <input type="text" class="input" v-model="copyUser.name" />
     <span>Email</span>
-    <MaskEmail
-      v-model:value="copyUser.email"
-      placeholder="email@example.com"
-      class="mask-email input"
-    />
+    <div class="relative mb-2">
+      <MaskEmail
+        v-model:value="copyUser.email"
+        placeholder="Email@example.com"
+        class="mask-email input"
+      />
+    </div>
 
     <span>Телефон</span>
     <input type="text" class="input" v-model="copyUser.phone" />

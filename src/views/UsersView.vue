@@ -10,7 +10,9 @@
           </h1>
         </div>
         <div class="right">
-          <button class="btn btn_dark_blue">Добавить пользователя</button>
+          <button class="btn btn_dark_blue" @click="toggleAddNewUser(true)">
+            Добавить пользователя
+          </button>
         </div>
       </div>
     </div>
@@ -19,6 +21,7 @@
       <UsersListTable />
     </div>
   </div>
+  <NewUser v-if="showAddNewUser" @close="toggleAddNewUser(false)" />
 </template>
 
 <script>
@@ -29,8 +32,16 @@ import UsersActivity from "@/components/UsersView/UsersActivity.vue";
 import store from "@/store";
 import UsersListTable from "@/components/UsersView/UsersListTable.vue";
 import AppHeader from "@/components/AppHeader.vue";
+import { useToggle } from "@vueuse/core";
+import NewUser from "@/components/UsersView/NewUser.vue";
 export default {
-  components: { AppBreadcrumb, UsersActivity, UsersListTable, AppHeader },
+  components: {
+    AppBreadcrumb,
+    UsersActivity,
+    UsersListTable,
+    AppHeader,
+    NewUser,
+  },
   setup() {
     const router = useRouter();
 
@@ -88,7 +99,9 @@ export default {
       },
     ]);
 
-    return { pages, forTitle, usersActivity };
+    const [showAddNewUser, toggleAddNewUser] = useToggle(false);
+
+    return { pages, forTitle, usersActivity, showAddNewUser, toggleAddNewUser };
   },
 };
 </script>

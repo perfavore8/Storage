@@ -45,7 +45,7 @@
                     (isSignUp || showRestorePassword),
                 }"
                 v-model:value="form.email"
-                placeholder="example@email.com"
+                placeholder="Example@email.com"
                 :disabled="isSignUp || showRestorePassword"
                 class="mask-email input"
               />
@@ -192,7 +192,7 @@
                       (isSignUp || showRestorePassword),
                   }"
                   v-model:value="form.email"
-                  placeholder="example@email.com"
+                  placeholder="Example@email.com"
                   :disabled="!(isSignUp || showRestorePassword)"
                   class="mask-email input"
                 />

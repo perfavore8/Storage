@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="backdrop" @click="close()" />
+    <div class="backdrop_with_filter" @click="close()" />
     <div class="container p-8 rounded-xl mt-7 min-w-[70%]">
       <div class="header flex flex-row justify-between">
         <h5 class="text-lg text-slate-800 font-semibold">
