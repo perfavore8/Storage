@@ -10,7 +10,6 @@ export default {
         url: "account/update",
         data: params,
       });
-      context.commit("updateTusks", data);
 
       return data;
     },
@@ -20,7 +19,6 @@ export default {
         url: "account/user/add",
         data: params,
       });
-      context.commit("updateTusks", data);
 
       return data;
     },
@@ -29,7 +27,6 @@ export default {
         url: "account/user/link",
         params: params,
       });
-      context.commit("updateTusks", data);
 
       return data;
     },
@@ -38,7 +35,6 @@ export default {
         url: "account/user/unlink",
         params: params,
       });
-      context.commit("updateTusks", data);
 
       return data;
     },
@@ -47,7 +43,15 @@ export default {
         url: "account/user/check",
         params: params,
       });
-      context.commit("updateTusks", data);
+
+      return data;
+    },
+
+    async getUser(context, params) {
+      const { data } = await ApiReqFunc({
+        url: "account/user/2",
+        params: params,
+      });
 
       return data;
     },
