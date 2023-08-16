@@ -4,6 +4,7 @@
       ref="btn"
       class="btn text-white bg-red-600"
       :class="[btnClass]"
+      :disabled="disabled"
       tabindex="1"
       @click="toggleAccept()"
     >
@@ -13,6 +14,7 @@
       <div
         v-if="showAccept"
         class="absolute bottom-full mb-2 z-10 px-4 py-2 flex flex-col items-center gap-2 origin-bottom transform scale-100 rounded-md bg-white opacity-100 shadow-lg ring-1 ring-gray-900 ring-opacity-5 transition-all in"
+        :class="[dropDownClass]"
         ref="target"
       >
         <span class="whitespace-nowrap text-gray-900">
@@ -39,7 +41,12 @@
 import { onClickOutside, useToggle } from "@vueuse/core";
 import { ref } from "vue";
 export default {
-  props: { btnClass: { type: String, required: false } },
+  props: {
+    btnClass: { type: String, required: false },
+    disabled: { type: Boolean, required: false },
+    dropDownClass: { type: String, required: false },
+  },
+  emits: ["confirm"],
   setup(props, context) {
     const target = ref(null);
     const btn = ref(null);
