@@ -62,17 +62,6 @@
     </span>
   </label>
   <form class="grid gap-6">
-    <span>Активность</span>
-    <div class="flex items-center">
-      <input
-        type="checkbox"
-        v-model="copyUser.isActive"
-        name="filter"
-        id="filter"
-        class="checkbox"
-      />
-      <label for="filter"></label>
-    </div>
     <span>Имя</span>
     <input type="text" class="input" v-model="copyUser.name" />
     <span>Email</span>
@@ -90,12 +79,20 @@
 </template>
 
 <script>
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 export default {
   props: { user: Object },
   setup(props) {
-    const copyUser = reactive({ ...props.user });
-    copyUser.isActive = Boolean(copyUser.is_active);
+    const copyUser = reactive({});
+    const setCopyUser = () => {
+      Object.assign(copyUser, { ...props.user });
+      copyUser.isActive = Boolean(copyUser.is_active);
+    };
+    watch(
+      () => props.user,
+      () => setCopyUser(),
+      { deep: true }
+    );
 
     const submit = () => true;
 
