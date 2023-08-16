@@ -54,7 +54,7 @@ export default {
 
     const [showAccept, toggleAccept] = useToggle(false);
 
-    const confirm = () => context.emit("confirm");
+    const confirm = () => (context.emit("confirm"), reset());
     const reset = () => toggleAccept(false);
 
     return { showAccept, toggleAccept, target, confirm, reset, btn };
