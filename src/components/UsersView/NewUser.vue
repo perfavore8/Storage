@@ -138,7 +138,7 @@ export default {
       );
 
       if (success) {
-        addNotification(1, `${form.name} прилашен в аккаунт`);
+        addNotification(1, `${form.name} приглашен в аккаунт`);
         context.emit("confirm");
         close();
       } else {

@@ -43,10 +43,6 @@
       <table class="w-full text-slate-500 whitespace-pre">
         <thead class="bg-slate-50 border-y border-solid border-slate-200/70">
           <tr>
-            <th>
-              <input type="checkbox" class="checkbox" id="rowid" />
-              <label for="rowid"></label>
-            </th>
             <th v-for="title in titiles" :key="title.code">{{ title.name }}</th>
             <th></th>
             <th></th>
@@ -54,10 +50,6 @@
         </thead>
         <tbody>
           <tr v-for="user in users" :key="user.id">
-            <td>
-              <input type="checkbox" class="checkbox" :id="user.id" />
-              <label :for="user.id"></label>
-            </td>
             <td v-for="title in titiles" :key="title.code">
               <template v-if="title.code === 'name'">
                 <div class="w-fit h-full flex flex-row gap-4 items-center">
@@ -107,6 +99,7 @@
               <button
                 class="export btn order-1 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
                 @click="editUser.select(user)"
+                :disabled="user.id === currentUserId || user.id === mainUserId"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -124,8 +117,11 @@
             </td>
             <td>
               <button
-                class="p-2 rounded-full text-gray-500 hover:text-red-500 transition-colors duration-300"
+                class="p-2 rounded-full text-gray-500 disabled:text-gray-300 hover:text-red-500 transition-colors duration-300"
                 @click="unLinkUser(user.id)"
+                :disabled="
+                  user.id === currentUserId || user.id === mainUserId || true
+                "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -229,6 +225,9 @@ export default {
       });
     setUsers();
 
+    const mainUserId = computed(() => users.find((user) => user.is_main)?.id);
+    const currentUserId = computed(() => store.state.account.user?.id);
+
     return {
       page,
       titiles,
@@ -239,6 +238,8 @@ export default {
       showEditUser,
       toggleEditUser,
       unLinkUser,
+      mainUserId,
+      currentUserId,
     };
   },
 };
@@ -255,10 +256,10 @@ td {
   @apply py-4 px-5 text-left;
 }
 
-th:first-child,
-td:first-child {
-  width: 1%;
-}
+// th:first-child,
+// td:first-child {
+//   width: 1%;
+// }
 
 th:nth-last-child(2),
 td:nth-last-child(2) {
