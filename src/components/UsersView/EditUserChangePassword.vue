@@ -52,7 +52,7 @@
 
 <script>
 import { useToggle } from "@vueuse/core";
-import { computed, reactive } from "vue";
+import { computed, onDeactivated, reactive } from "vue";
 export default {
   props: { trySubmit: Boolean },
   setup() {
@@ -75,6 +75,14 @@ export default {
           !form.currentPassword && !form.newPassword && !form.confirmNewPassword
       ),
     });
+
+    const dropAfterDeactivate = () => {
+      form.currentPassword = "";
+      form.newPassword = "";
+      form.confirmNewPassword = "";
+    };
+
+    onDeactivated(() => dropAfterDeactivate());
 
     const submit = () => {
       let success = true;
