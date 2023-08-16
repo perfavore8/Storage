@@ -11,42 +11,19 @@
         </button>
       </div>
       <div class="main flex flex-col gap-8">
-        <div class="pagination flex justify-center">
-          <AppRadioBtnsGroup
-            :selected="pagination.selected"
-            :list="pagination.list"
-            @select="(op) => pagination.select(op)"
-          >
-            <template
-              v-for="(item, idx) in pagination.list"
-              :key="item.value"
-              #[`item${idx}`]
-            >
-              <div
-                v-if="item.haveErrors && trySubmit"
-                class="w-4 h-4 rounded-full flex items-center justify-center absolute -top-1 -right-0 z-10"
-                :style="{
-                  'background-color': '#fb718570',
-                }"
-              >
-                <div
-                  class="w-2 h-2 rounded-full"
-                  :style="{
-                    'background-color': '#fb7185ff',
-                  }"
-                ></div>
-              </div>
-            </template>
-          </AppRadioBtnsGroup>
-        </div>
-        <KeepAlive :include="pagination.list">
-          <component
-            :is="pagination.selected.component"
-            :user="user"
-            :trySubmit="trySubmit"
-            :ref="(ref) => pagination.saveRef(ref, pagination.selected.value)"
-          />
-        </KeepAlive>
+        <form class="grid gap-6">
+          <span>Активность</span>
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              v-model="copyUser.isActive"
+              name="filter"
+              id="filter"
+              class="checkbox"
+            />
+            <label for="filter"></label>
+          </div>
+        </form>
       </div>
       <div class="footer flex flex-row justify-end gap-4">
         <button
@@ -63,85 +40,29 @@
 
 <script>
 import { reactive } from "vue";
-import AppRadioBtnsGroup from "../AppRadioBtnsGroup.vue";
-import EditUserProfile from "./EditUserProfile.vue";
-import EditUserChangePassword from "./EditUserChangePassword.vue";
-import EditUserConfiguration from "./EditUserConfiguration.vue";
-import { useToggle } from "@vueuse/core";
 export default {
-  components: {
-    AppRadioBtnsGroup,
-    EditUserProfile,
-    EditUserChangePassword,
-    EditUserConfiguration,
-  },
+  components: {},
   props: { user: Object },
   setup(props, context) {
-    const pagination = reactive({
-      selected: {},
-      list: [
-        {
-          name: "Профиль",
-          value: "profile",
-          component: "EditUserProfile",
-          ref: null,
-          haveErrors: false,
-          default: true,
-        },
-        {
-          name: "Изменение пароля",
-          value: "changePassword",
-          component: "EditUserChangePassword",
-          ref: null,
-          haveErrors: false,
-        },
-        // {
-        //   name: "Права доступа",
-        //   value: "usersConfiguration",
-        //   component: "EditUserConfiguration",
-        // },
-      ],
-      select: function (option) {
-        this.selected = option;
-      },
-      dropToDefault: function () {
-        const def = this.list.find((el) => el.default);
-        this.select(def);
-      },
-      saveRef: function (ref, value) {
-        if (!ref) return;
-        const item = this.list.find((el) => el.value === value);
-        if (item.ref) return;
-        item.ref = ref;
-        this.selected.ref = ref;
-      },
-    });
-    pagination.dropToDefault();
+    const copyUser = reactive({ ...props.user });
+    copyUser.isActive = Boolean(copyUser.is_active);
 
     const close = () => context.emit("close");
 
-    const [trySubmit, toggleTrySubmit] = useToggle(false);
     const submit = () => {
-      let success = true;
-      pagination.list.forEach((item) => {
-        if (!item.ref) return;
-        item.haveErrors = !item.ref?.submit();
-        success = success && !item.haveErrors;
-      });
-      if (success) {
-        close();
-      } else {
-        toggleTrySubmit(true);
-      }
+      close();
     };
 
-    return { pagination, close, trySubmit, toggleTrySubmit, submit };
+    return { close, submit, copyUser };
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+.grid {
+  grid-template-columns: 1fr 2fr;
+}
 .wrapper {
   pointer-events: all;
   width: 100%;
