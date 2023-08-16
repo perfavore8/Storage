@@ -234,6 +234,9 @@ export default {
     isChartsView() {
       return this.view.selected.value !== "table";
     },
+    isMDLAccount() {
+      return this.$store.state.account?.account?.id === 383;
+    },
     page() {
       let obj = {};
       if (this.reportType.selected.value === "stuffMove") {
@@ -433,7 +436,9 @@ export default {
     },
     round(number) {
       number = Number(number);
-      return Math.round(number * 100) / 100 + " р.";
+      return (
+        Math.round(number * 100) / 100 + (this.isMDLAccount ? " MDL" : " р.")
+      );
     },
     capitalize(string) {
       if (typeof string !== "string") return "";
