@@ -47,10 +47,9 @@ export default {
       return data;
     },
 
-    async getUser(context, params) {
+    async getUser(context, { id }) {
       const { data } = await ApiReqFunc({
-        url: "account/user/2",
-        params: params,
+        url: "account/user/" + id,
       });
 
       return data;
