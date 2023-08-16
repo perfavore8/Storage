@@ -65,16 +65,30 @@
     <span>Имя</span>
     <input type="text" class="input" v-model="copyUser.name" />
     <span>Email</span>
-    <div class="relative mb-2">
+    <div class="relative mb-2 flex gap-2 items-center">
       <MaskEmail
         v-model:value="copyUser.email"
         placeholder="Email@example.com"
         class="mask-email input"
       />
+      <button
+        type="button"
+        class="text-sm font-semibold leading-6 text-gray-900"
+      >
+        Изменить
+      </button>
     </div>
 
     <span>Телефон</span>
-    <input type="text" class="input" v-model="copyUser.phone" />
+    <div class="flex gap-2 items-center">
+      <input type="text" class="input" v-model="copyUser.phone" />
+      <button
+        type="button"
+        class="text-sm font-semibold leading-6 text-gray-900"
+      >
+        Изменить
+      </button>
+    </div>
   </form>
 </template>
 
