@@ -554,11 +554,12 @@ export default {
 
     const [isFailAuth, toggleFailAuth] = useToggle(false);
     watch(
-      () =>
-        isSignUp &&
-        notificationSystem.selected &&
-        showRestorePassword &&
-        showPin,
+      () => (
+        isSignUp.value,
+        notificationSystem.selected.value,
+        showRestorePassword.value,
+        showPin.value
+      ),
       () => toggleFailAuth(false),
       { deep: true }
     );
