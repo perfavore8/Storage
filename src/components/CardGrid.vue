@@ -344,7 +344,7 @@ export default {
         this.selectedProducts.push({ value: false, item: {} });
     },
     async get_products(params) {
-      if (this.isServicePage.value) params = { ...params, is_service: 1 };
+      if (this.isServicePage) params = { ...params, is_service: 1 };
       await this.$store.dispatch("get_products", params);
       this.setSelectedProducts();
     },

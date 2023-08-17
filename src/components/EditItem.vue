@@ -95,7 +95,7 @@ export default {
 
   async mounted() {
     this.new_edit_data = JSON.parse(JSON.stringify(this.edit_data));
-    this.isServicePage.value
+    this.isServicePage
       ? (this.selected_option_1 = { ...this.options_1[1] })
       : (this.selected_option_1 = { ...this.options_1[0] });
 

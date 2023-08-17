@@ -253,16 +253,13 @@ export default {
     isDataLoading() {
       return this.$store.state.products.isLoading;
     },
-    isServicePageValue() {
-      return this.isServicePage.value;
-    },
     ...mapGetters(["show_edit_modal"]),
   },
 
   watch: {
-    isServicePageValue() {
+    isServicePage() {
       this.$store.commit("updateProductsParams", {
-        is_service: this.isServicePageValue ? 1 : 0,
+        is_service: this.isServicePage ? 1 : 0,
       });
     },
     products: {
