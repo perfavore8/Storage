@@ -127,7 +127,7 @@
           <button
             class="btn btn_blue"
             @click="submit()"
-            :disabled="isSignUp || showRestorePassword"
+            :disabled="isSignUp || showRestorePassword || blockSubmitBtn"
           >
             Авторизоваться
           </button>
@@ -245,7 +245,7 @@
             <button
               class="btn btn_blue"
               @click="submit()"
-              :disabled="!(isSignUp || showRestorePassword)"
+              :disabled="!(isSignUp || showRestorePassword) || blockSubmitBtn"
             >
               Отправить
             </button>
@@ -410,8 +410,11 @@ export default {
       inputErrors.trySubmit = false;
     };
 
+    const [blockSubmitBtn, toggleBlockSubmitBtn] = useToggle(false);
+
     const submit = async () => {
       if (!inputErrors.global()) {
+        toggleBlockSubmitBtn(true);
         let res = { success: false };
         if (showRestorePassword.value) {
           if (showPin.value) {
@@ -474,6 +477,7 @@ export default {
           }
         }
         if (!res.success) toggleFailAuth(true);
+        toggleBlockSubmitBtn(false);
       } else {
         inputErrors.trySubmit = true;
       }
@@ -544,7 +548,7 @@ export default {
         togglePin(true);
       } else if (!inputErrors.restorePassword() && success && showPin.value) {
         togglePin(false);
-        toggleRestorePassword(false);
+        closeRestorePassword();
       } else {
         inputErrors.trySubmit = true;
       }
@@ -585,6 +589,7 @@ export default {
       showPin,
       togglePin,
       phoneCode,
+      blockSubmitBtn,
     };
   },
 };
