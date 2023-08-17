@@ -115,24 +115,9 @@
                 Общие настройки
               </div>
             </a>
-            <a>
-              <div class="modal_container" @click="open_product_category()">
-                Категории товаров
-              </div>
-            </a>
             <a v-if="isTest">
               <div class="modal_container" @click="openSettingEntities()">
                 Настройка сущностей
-              </div>
-            </a>
-            <a>
-              <div class="modal_container" @click="open_product_properties()">
-                Свойства товаров
-              </div>
-            </a>
-            <a v-if="!oneC && isColored">
-              <div class="modal_container" @click="openSyncSettings()">
-                Настройки синхронизации товаров
               </div>
             </a>
             <a>
@@ -143,12 +128,35 @@
                 Документы
               </div>
             </a>
+            <a v-if="isTest">
+              <div class="modal_container" @click="openAccountSattings()">
+                Настройки аккаунта
+              </div>
+            </a>
             <a v-if="isColored">
               <div
                 class="modal_container"
                 @click="openThirdPpartyIntegrations()"
               >
                 Интеграции
+              </div>
+            </a>
+            <a v-if="isTest">
+              <div class="modal_container" @click="openArchive()">Архив</div>
+            </a>
+            <a>
+              <div class="modal_container" @click="open_product_category()">
+                Категории товаров
+              </div>
+            </a>
+            <a>
+              <div class="modal_container" @click="open_product_properties()">
+                Свойства товаров
+              </div>
+            </a>
+            <a v-if="!oneC && isColored">
+              <div class="modal_container" @click="openSyncSettings()">
+                Настройки синхронизации товаров
               </div>
             </a>
             <a v-if="isTest" class="group relative" @click.stop="">
@@ -183,17 +191,9 @@
               </transition>
             </a>
             <a v-if="isTest">
-              <div class="modal_container" @click="openAccountSattings()">
-                Настройки аккаунта
-              </div>
-            </a>
-            <a v-if="isTest">
               <div class="modal_container" @click="openClientsFieldsSettings()">
                 Настройки полей клиентов
               </div>
-            </a>
-            <a v-if="isTest">
-              <div class="modal_container" @click="openArchive()">Архив</div>
             </a>
           </div>
         </transition>
