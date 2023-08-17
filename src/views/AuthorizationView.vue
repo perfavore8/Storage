@@ -310,7 +310,7 @@ import AuthBtnsGroup from "@/components/AuthBtnsGroup.vue";
 import { usePhoneCodes } from "../composables/phoneCodes";
 import { usePhoneCode } from "../composables/phoneCode";
 import { computed, reactive, ref, watch } from "vue";
-import { onClickOutside, useToggle } from "@vueuse/core";
+import { onClickOutside, useToggle, watchThrottled } from "@vueuse/core";
 import store from "@/store";
 import { useRedirectToAuth } from "@/composables/BaseURL";
 import { useValidate } from "@/composables/validate";
@@ -415,6 +415,7 @@ export default {
     const submit = async () => {
       if (!inputErrors.global()) {
         toggleBlockSubmitBtn(true);
+        setTimeout(() => toggleBlockSubmitBtn(false), 3000);
         let res = { success: false };
         if (showRestorePassword.value) {
           if (showPin.value) {
@@ -477,7 +478,6 @@ export default {
           }
         }
         if (!res.success) toggleFailAuth(true);
-        toggleBlockSubmitBtn(false);
       } else {
         inputErrors.trySubmit = true;
       }
@@ -533,12 +533,31 @@ export default {
     });
     notificationSystem.dropToDefault();
 
+    const countTryPhoneCode = ref(0);
     const phoneCode = ref(null);
     watch(phoneCode, () => {
       if (phoneCode.value > 999999)
         phoneCode.value = Math.floor(phoneCode.value / 10);
-      if (phoneCode.value.toString().length === 6) submit();
     });
+    watchThrottled(
+      phoneCode,
+      () => {
+        if (phoneCode.value?.toString()?.length === 6) {
+          if (countTryPhoneCode.value > 9) {
+            togglePin(false);
+            closeRestorePassword();
+            addNotification(
+              3,
+              "Сброс пароля",
+              "Вы использовали слишком много попыток ввода кода"
+            );
+          }
+          countTryPhoneCode.value += 1;
+          submit();
+        }
+      },
+      { throttle: 3000 }
+    );
 
     const [showRestorePassword, toggleRestorePassword] = useToggle(false);
     const closeRestorePassword = () => toggleRestorePassword(false);
@@ -555,6 +574,7 @@ export default {
     };
 
     const [showPin, togglePin] = useToggle(false);
+    watch(showPin, () => (phoneCode.value = null));
 
     const [isFailAuth, toggleFailAuth] = useToggle(false);
     watch(
