@@ -257,6 +257,13 @@ export default {
             : this.selectedWH.value,
       });
     },
+    isGrid() {
+      this.$store.commit("updateProductsParams", {
+        page: 1,
+        filter: {},
+        sort: {},
+      });
+    },
   },
   methods: {
     confirmFilters() {
