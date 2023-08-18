@@ -45,6 +45,7 @@
               :user="user.data"
               :trySubmit="trySubmit"
               :ref="(ref) => pagination.saveRef(ref, pagination.selected.value)"
+              @showChangeModal="(t, v) => type.setType(t, v)"
             />
           </KeepAlive>
           <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -58,6 +59,7 @@
             <button
               type="submit"
               class="btn max-h-[34px] pointer-events-auto relative inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] !font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+              :disabled="isLocked"
               @click="submit()"
             >
               Сохранить
@@ -67,6 +69,13 @@
       </div>
     </div>
   </div>
+  <ProfileChangeModal
+    v-if="showProfileChangeModal"
+    :type="type.selected"
+    :login="type.value"
+    :skipFirstStep="type.skipFirstStep"
+    @close="toggleProfileChangeModal(false)"
+  />
 </template>
 
 <script>
@@ -74,19 +83,22 @@ import AppHeader from "@/components/AppHeader.vue";
 import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
 import EditUserProfile from "@/components/UsersView/EditUserProfile.vue";
 import EditUserChangePassword from "@/components/UsersView/EditUserChangePassword.vue";
-import EditUserConfiguration from "@/components/UsersView/EditUserConfiguration.vue";
+import ProfileChangeModal from "@/components/Profile/ProfileChangeModal.vue";
 import { useToggle } from "@vueuse/core";
 import store from "@/store";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
+import { useLockBtn } from "@/composables/lockBtn";
 export default {
   components: {
     AppHeader,
     AppRadioBtnsGroup,
     EditUserProfile,
     EditUserChangePassword,
-    EditUserConfiguration,
+    ProfileChangeModal,
   },
   setup() {
+    const { isLocked, lockBtn } = useLockBtn();
+
     const pagination = reactive({
       selected: {},
       list: [
@@ -134,24 +146,67 @@ export default {
     });
     user.setData();
 
-    const close = () => null;
+    const [showProfileChangeModal, toggleProfileChangeModal] = useToggle(false);
+    const type = reactive({
+      selected: "",
+      value: "",
+      skipFirstStep: false,
+      setType: function (type, value) {
+        this.selected = type;
+        this.value = value;
+        if (!value) {
+          this.skipFirstStep = true;
+        }
+        toggleProfileChangeModal(true);
+      },
+    });
+    watch(showProfileChangeModal, (val) => {
+      if (!val) {
+        type.selected = "";
+        type.value = "";
+        type.skipFirstStep = false;
+      }
+    });
 
     const [trySubmit, toggleTrySubmit] = useToggle(false);
-    const submit = () => {
+    const submit = async () => {
+      lockBtn();
       let success = true;
+      const list = [];
       pagination.list.forEach((item) => {
-        if (!item.ref) return;
-        item.haveErrors = !item.ref?.submit();
-        success = success && !item.haveErrors;
+        list.push(
+          new Promise((resolve) => {
+            (async () => {
+              if (!item.ref) return;
+              item.haveErrors = !(await item.ref?.submit());
+              success = success && !item.haveErrors;
+              resolve();
+            })();
+          })
+        );
       });
+
+      await Promise.all(list);
+
       if (success) {
-        close();
+        user.setData();
       } else {
         toggleTrySubmit(true);
       }
     };
 
-    return { pagination, user, trySubmit, toggleTrySubmit, close, submit };
+    return {
+      pagination,
+      user,
+      trySubmit,
+      toggleTrySubmit,
+      showProfileChangeModal,
+      toggleProfileChangeModal,
+      close,
+      submit,
+      type,
+      isLocked,
+    };
   },
 };
 </script>

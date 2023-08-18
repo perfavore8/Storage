@@ -53,6 +53,7 @@
 <script>
 import { useToggle } from "@vueuse/core";
 import { computed, onDeactivated, reactive } from "vue";
+import store from "@/store";
 export default {
   props: { trySubmit: Boolean },
   setup() {
@@ -84,7 +85,7 @@ export default {
 
     onDeactivated(() => dropAfterDeactivate());
 
-    const submit = () => {
+    const submit = async () => {
       let success = true;
 
       if (form.dontNeedSave) return true;
@@ -92,6 +93,17 @@ export default {
       Object.keys(form.errors).forEach(
         (key) => (success = success && !form.errors[key])
       );
+
+      if (success && !form.dontNeedSave) {
+        const { successReq } = await store.dispatch("updateUser", {
+          password: form.currentPassword,
+          password_new: form.newPassword,
+          password_new_comfirm: form.confirmNewPassword,
+        });
+        success = success && successReq;
+      } else {
+        success = false;
+      }
 
       return success;
     };

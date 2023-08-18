@@ -70,33 +70,42 @@
         v-model:value="copyUser.email"
         placeholder="Email@example.com"
         class="mask-email input"
+        :disabled="!user.email"
       />
       <button
         type="button"
-        class="text-sm font-semibold leading-6 text-gray-900"
+        class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
+        @click="showChangeModal('email', user.email)"
       >
-        Изменить
+        {{ user.email ? "Изменить" : "Добавить" }}
       </button>
     </div>
 
     <span>Телефон</span>
     <div class="flex gap-2 items-center">
-      <input type="text" class="input" v-model="copyUser.phone" />
+      <input
+        type="text"
+        class="input"
+        v-model="copyUser.phone"
+        :disabled="!user.phone"
+      />
       <button
         type="button"
-        class="text-sm font-semibold leading-6 text-gray-900"
+        class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
+        @click="showChangeModal('phone', user.phone)"
       >
-        Изменить
+        {{ user.phone ? "Изменить" : "Добавить" }}
       </button>
     </div>
   </form>
 </template>
 
 <script>
-import { reactive, watch } from "vue";
+import { computed, reactive, watch } from "vue";
+import store from "@/store";
 export default {
   props: { user: Object },
-  setup(props) {
+  setup(props, context) {
     const copyUser = reactive({});
     const setCopyUser = () => {
       Object.assign(copyUser, { ...props.user });
@@ -108,7 +117,22 @@ export default {
       { deep: true }
     );
 
-    const submit = () => true;
+    const dontNeedSave = computed(() => props.user.name === copyUser.name);
+
+    const submit = async () => {
+      let success = true;
+
+      if (success && !dontNeedSave.value) {
+        const { successReq } = await store.dispatch("updateUser", {
+          name: copyUser.name,
+        });
+        success = success && successReq;
+      } else {
+        success = false;
+      }
+
+      return success;
+    };
 
     const hexTokens = reactive({
       F: {
@@ -116,10 +140,16 @@ export default {
         transform: (v) => v.toLocaleUpperCase(),
       },
     });
+
+    const showChangeModal = (type, value) => {
+      context.emit("showChangeModal", type, value);
+    };
+
     return {
       copyUser,
       submit,
       hexTokens,
+      showChangeModal,
     };
   },
 };
