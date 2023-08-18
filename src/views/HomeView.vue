@@ -217,12 +217,12 @@ export default {
       let arr = [];
       this.isGrid
         ? (arr = [
-            ...this.ref_card?.selectedProducts.filter(
+            ...this.$refs.card?.selectedProducts.filter(
               (val) => val.value && val.item
             ),
           ])
         : (arr = [
-            ...this.ref_main?.selectedProducts.filter(
+            ...this.$refs.main?.selectedProducts.filter(
               (val) => val.value && val.item
             ),
           ]);
