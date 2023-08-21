@@ -101,7 +101,7 @@ export default {
         const { success: successReq } = await store.dispatch("updateUser", {
           password: form.currentPassword,
           password_new: form.newPassword,
-          password_new_comfirm: form.confirmNewPassword,
+          password_new_confirm: form.confirmNewPassword,
         });
         success = success && successReq;
       } else {
