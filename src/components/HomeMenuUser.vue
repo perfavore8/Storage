@@ -2,26 +2,28 @@
   <div
     class="cont z-[999] flex flex-col items-stretch rounded-xl absolute top-[200%] right-0 min-w-[300px] overflow-hidden shadow-lg shadow-slate-500/10 bg-white origin-top"
   >
-    <div
-      class="head bg-big-stone-100 w-full p-3 flex flex-row gap-3 items-center min-h-[72px]"
-    >
-      <img
-        src="https://cdn1.iconfinder.com/data/icons/people-49/512/_formal_mustache_man-01-1024.png"
-        ref="img"
-        class="rounded-full w-12"
-        v-if="isImgLoaded"
-      />
-      <span
-        v-else
-        class="material-icons-outlined text-slate-600"
-        style="font-size: 50px"
+    <router-link :to="'/profile'">
+      <div
+        class="head bg-big-stone-100 w-full p-3 flex flex-row gap-3 items-center min-h-[72px]"
       >
-        account_circle
-      </span>
-      <h1 class="whitespace-nowrap font-bold text-xl text-slate-700">
-        {{ userName }}
-      </h1>
-    </div>
+        <img
+          src="https://cdn1.iconfinder.com/data/icons/people-49/512/_formal_mustache_man-01-1024.png"
+          ref="img"
+          class="rounded-full w-12"
+          v-if="isImgLoaded"
+        />
+        <span
+          v-else
+          class="material-icons-outlined text-slate-600"
+          style="font-size: 50px"
+        >
+          account_circle
+        </span>
+        <h1 class="whitespace-nowrap font-bold text-xl text-slate-700">
+          {{ userName }}
+        </h1>
+      </div>
+    </router-link>
     <div class="main">
       <ul class="text-slate-600">
         <li>
