@@ -1,9 +1,8 @@
 <template>
-  <div class="btns_group" ref="listRef">
+  <div class="btns_group">
     <button
       class="section"
       :class="{ selected: selected.value === item.value }"
-      :ref="(el) => (selected.value === item.value ? (selectedRef = el) : null)"
       v-for="(item, idx) in list"
       :key="item.value"
       @click="select(item)"
@@ -11,16 +10,11 @@
       {{ item.name }}
       <slot :name="'item' + idx"></slot>
     </button>
-    <template v-if="selectedRef">
-      <Teleport :to="selectedRef">
-        <div class="underlined"></div>
-      </Teleport>
-    </template>
   </div>
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 export default {
   props: {
     list: Array,
@@ -34,23 +28,10 @@ export default {
       props.list.indexOf(props.selected.value)
     );
 
-    const selectedRef = ref(null);
-    const listRef = ref(null);
-    const rect = computed(() => selectedRef.value.getBoundingClientRect());
-    const rectList = computed(() => listRef.value.getBoundingClientRect());
-    const width = computed(() => rect.value.width + "px");
-    const left = computed(
-      () => rect.value.left - rectList.value.left + 8 + "px"
-    );
-
     return {
       select,
       list_length,
       selected_index,
-      selectedRef,
-      listRef,
-      width,
-      left,
     };
   },
 };
@@ -65,7 +46,6 @@ export default {
   padding: 8px;
   background-color: transparent;
   position: relative;
-  // width: 50%;
 
   .section {
     width: 100%;
@@ -91,16 +71,7 @@ export default {
   .selected {
     font-weight: 500;
     color: #434343;
-  }
-  .underlined {
-    background-color: #606060;
-    height: 2px;
-    position: absolute;
-    top: 100%;
-    // width: v-bind(width);
-    // left: v-bind(left);
-    width: 100%;
-    left: 0;
+    border-bottom: 2px solid #606060;
   }
 }
 </style>
