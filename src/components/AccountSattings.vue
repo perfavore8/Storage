@@ -9,6 +9,14 @@
         </button>
       </div>
       <div class="content">
+        <div class="block mt-4">
+          <div class="text">
+            <form class="grid gap-6">
+              <span>Имя аккаунта</span>
+              <input type="text" class="input" v-model="accountName" />
+            </form>
+          </div>
+        </div>
         <div class="block">
           <h6 class="my-9">Этапы резервирования товаров со склада</h6>
           <div class="text">
@@ -41,15 +49,17 @@ export default {
     });
 
     const divideRight = ref(false);
+    const accountName = ref("");
     onMounted(async () => {
       await store.dispatch("get_account");
-      if (account.value?.config?.divide_right !== undefined)
-        divideRight.value = Boolean(account.value?.config?.divide_right);
+      divideRight.value = Boolean(account.value?.config?.divide_right);
+      accountName.value = account.value?.config?.name;
     });
 
     const save = async () => {
       await store.dispatch("update_account", {
         divide_right: divideRight.value,
+        name: accountName.value,
       });
       await store.dispatch("get_account");
       close();
@@ -59,13 +69,16 @@ export default {
       store.commit("openCloseAccountSattings", false);
     };
 
-    return { divideRight, account, close, save };
+    return { divideRight, accountName, account, close, save };
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+.grid {
+  grid-template-columns: 1fr 2fr;
+}
 .wrapper {
   pointer-events: all;
   width: 100%;
@@ -131,7 +144,7 @@ export default {
       padding: 15px 50px;
       border-bottom: 2px solid #dee2e6;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       gap: 20px;
       .block {
         display: flex;
