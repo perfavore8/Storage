@@ -4,6 +4,7 @@
     <div class="relative">
       <input
         :type="showCurrentPassword ? 'text' : 'password'"
+        autocomplete="off"
         class="input"
         :class="{ input_error: form.errors.currentPassword && trySubmit }"
         v-model="form.currentPassword"
@@ -28,6 +29,7 @@
     <span>Новый пароль</span>
     <input
       :type="showNewPasswords ? 'text' : 'password'"
+      autocomplete="off"
       class="input"
       :class="{ input_error: form.errors.newPassword && trySubmit }"
       v-model="form.newPassword"
@@ -35,6 +37,7 @@
     <span>Подтвердите новый пароль</span>
     <input
       :type="showNewPasswords ? 'text' : 'password'"
+      autocomplete="off"
       class="input"
       :class="{ input_error: form.errors.confirmNewPassword }"
       v-model="form.confirmNewPassword"
