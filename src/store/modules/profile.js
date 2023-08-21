@@ -9,7 +9,7 @@ export default {
       params[mode] = login;
       const { data } = await ApiReqFunc({
         url:
-          `account/user/check-${isNew ? "new" : "old"}-${mode}` +
+          `profile/check-${isNew ? "new" : "old"}-${mode}` +
           (isConfirm ? "-confirm" : ""),
         params: params,
       });
