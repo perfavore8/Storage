@@ -177,7 +177,10 @@ export default {
         list.push(
           new Promise((resolve) => {
             (async () => {
-              if (!item.ref) return;
+              if (!item.ref) {
+                resolve();
+                return;
+              }
               item.haveErrors = !(await item.ref?.submit());
               success = success && !item.haveErrors;
               resolve();
