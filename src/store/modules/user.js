@@ -7,7 +7,7 @@ export default {
     async updateUser(context, params) {
       const { data } = await ApiReqFunc({
         method: "post",
-        url: "account/update",
+        url: "account/user/update",
         data: params,
       });
 
