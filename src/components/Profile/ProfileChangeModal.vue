@@ -13,7 +13,6 @@
       <div class="main flex flex-col gap-8">
         <form class="grid gap-6 items-center">
           <template v-for="(item, idx) in params.order" :key="item">
-            <!-- {{ params[params.order[idx]]?.success }}{{ params.order[idx] }} -->
             <template
               v-if="
                 params[item].isCode &&
