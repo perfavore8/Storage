@@ -25,5 +25,7 @@ export function useLockBtn(
     }
   };
 
-  return { isLocked, lockBtn };
+  const handleUnLock = () => toggleLock(false);
+
+  return { isLocked, lockBtn, handleUnLock };
 }

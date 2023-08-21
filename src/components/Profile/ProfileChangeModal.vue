@@ -178,7 +178,10 @@ export default {
     const { addNotification } = useNotification();
     const { validateEmail } = useValidate();
     const globalDelay = 30000;
-    const { isLocked, lockBtn } = useLockBtn("timer", globalDelay);
+    const { isLocked, lockBtn, handleUnLock } = useLockBtn(
+      "timer",
+      globalDelay
+    );
 
     const types = reactive({
       selected: {},
@@ -296,6 +299,7 @@ export default {
           this.errors.text = message || "";
           this.errors.value = !success;
           if (!success) {
+            handleUnLock();
             return;
           }
           this.success = true;
