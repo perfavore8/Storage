@@ -336,7 +336,7 @@ export default {
           this.success = true;
           if (types.selected.countAuthentication !== 2) return;
           addNotification(1, "Изменение " + types.selected.forTitle, "Успешно");
-          close();
+          submit();
         },
         setWatcher: function () {
           watch(
@@ -404,6 +404,7 @@ export default {
     const close = () => context.emit("close");
 
     const submit = () => {
+      context.emit("submit");
       close();
     };
 

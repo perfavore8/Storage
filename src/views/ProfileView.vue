@@ -76,6 +76,7 @@
     :login="type.value"
     :skipFirstStep="type.skipFirstStep"
     @close="toggleProfileChangeModal(false)"
+    @submit="() => user.setData()"
   />
 </template>
 
