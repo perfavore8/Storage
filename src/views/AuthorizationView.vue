@@ -499,6 +499,18 @@ export default {
             togglePin(false);
             closeRestorePassword();
             return;
+          } else if (res.success && !phoneCode.value) {
+            addNotification(
+              0,
+              "Сброс пароля",
+              "Мы выслали вам код подтверждения на: " +
+                (notificationSystem.selected.value === "email"
+                  ? form.email
+                  : form.phone)
+            );
+            togglePin(false);
+            closeRestorePassword();
+            return;
           }
         } else if (isSignUp.value) {
           res = await store.dispatch("authRegistration", {
@@ -509,7 +521,17 @@ export default {
                 : deleteOther(form.phone),
             name: form.name,
           });
-          if (res.success) closeSignUp();
+          if (res.success) {
+            addNotification(
+              1,
+              "Регистрация",
+              "Вы зарегистрированы смотрите пароль на: " +
+                (notificationSystem.selected.value === "email"
+                  ? form.email
+                  : form.phone)
+            );
+            closeSignUp();
+          }
         } else {
           res = await store.dispatch("authLogin", {
             mode: notificationSystem.selected.mode,
