@@ -320,6 +320,10 @@ export default {
             {
               mode: types.selected.value,
               code: this.value,
+              login:
+                types.selected.value === "phone"
+                  ? deleteOther(params.field.value)
+                  : params.field.value,
               isNew: true,
               isConfirm: true,
             }
