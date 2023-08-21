@@ -239,8 +239,13 @@ export default {
     const oneC = computed(() => store.state.account.account?.config?.g_enabled);
     const account = computed(() => store.state.account.account);
     const userName = computed(() => store.state.account.user?.name);
-    const isTest = computed(() => store.state.account?.account?.id == 1);
-    const amoTest = computed(() => store.state.account?.account?.id == 494);
+    const isTest = computed(
+      () =>
+        store.state.account?.account?.id == 1 ||
+        store.state.account?.account?.id == 494 ||
+        store.state.account?.account?.id == 495
+    );
+    const amoTest = computed(() => store.state.account?.account?.id == 454);
     const is_empty_amo_product_list = computed(
       () =>
         !account.value?.config?.amo_product_list ||
