@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="footer">
-        <BtnsSaveClose @save="save" @close="close" />
+        <BtnsSaveClose @save="save" @close="close" :disabledSave="isLocked" />
       </div>
     </div>
   </div>
@@ -41,9 +41,12 @@
 import BtnsSaveClose from "./BtnsSaveClose.vue";
 import { computed, onMounted, ref } from "@vue/runtime-core";
 import store from "@/store";
+import { useLockBtn } from "@/composables/lockBtn";
 export default {
   components: { BtnsSaveClose },
   setup() {
+    const { isLocked, lockBtn } = useLockBtn();
+
     const account = computed(() => {
       return store.state.account.account;
     });
@@ -57,6 +60,7 @@ export default {
     });
 
     const save = async () => {
+      lockBtn();
       await store.dispatch("update_account", {
         divide_right: divideRight.value,
         name: accountName.value,
@@ -69,7 +73,7 @@ export default {
       store.commit("openCloseAccountSattings", false);
     };
 
-    return { divideRight, accountName, account, close, save };
+    return { divideRight, accountName, account, close, save, isLocked };
   },
 };
 </script>
