@@ -95,7 +95,7 @@ export default {
       );
 
       if (success && !form.dontNeedSave) {
-        const { successReq } = await store.dispatch("updateUser", {
+        const { success: successReq } = await store.dispatch("updateUser", {
           password: form.currentPassword,
           password_new: form.newPassword,
           password_new_comfirm: form.confirmNewPassword,

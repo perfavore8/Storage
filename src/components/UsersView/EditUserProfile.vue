@@ -123,7 +123,7 @@ export default {
       let success = true;
 
       if (success && !dontNeedSave.value) {
-        const { successReq } = await store.dispatch("updateUser", {
+        const { success: successReq } = await store.dispatch("updateUser", {
           name: copyUser.name,
         });
         success = success && successReq;
