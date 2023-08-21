@@ -49,13 +49,14 @@
             />
           </KeepAlive>
           <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button
-              type="button"
-              class="text-sm font-semibold leading-6 text-gray-900"
-              @click="user.setData()"
-            >
-              Сбросить
-            </button>
+            <router-link :to="'/'">
+              <button
+                type="button"
+                class="text-sm font-semibold leading-6 text-gray-900"
+              >
+                Отменить
+              </button>
+            </router-link>
             <button
               type="submit"
               class="btn max-h-[34px] pointer-events-auto relative inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] !font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"

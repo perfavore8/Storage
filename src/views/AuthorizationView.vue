@@ -49,18 +49,41 @@
                 :disabled="isSignUp || showRestorePassword"
                 class="mask-email input"
               />
-              <input
-                class="input"
-                type="password"
-                name="password"
-                v-model="form.password"
-                :class="{
-                  input_error:
-                    inputErrors.trySubmit && inputErrors.password && !isSignUp,
-                }"
-                :placeholder="'Пароль от GoСклад'"
-                :disabled="isSignUp || showRestorePassword"
-              />
+              <div class="relative">
+                <input
+                  class="input"
+                  :type="showCurrentPassword ? 'text' : 'password'"
+                  name="password"
+                  v-model="form.password"
+                  :class="{
+                    input_error:
+                      inputErrors.trySubmit &&
+                      inputErrors.password &&
+                      !isSignUp,
+                  }"
+                  :placeholder="'Пароль от GoСклад'"
+                  :disabled="isSignUp || showRestorePassword"
+                />
+                <input
+                  type="checkbox"
+                  class="checkbox visibility"
+                  v-model="showCurrentPassword"
+                  id="visibility"
+                />
+                <label for="visibility" class="text-slate-400">
+                  <transition name="modal" mode="out-in">
+                    <span
+                      class="material-icons-outlined icon"
+                      v-if="showCurrentPassword"
+                    >
+                      visibility
+                    </span>
+                    <span class="material-icons-outlined icon" v-else>
+                      visibility_off
+                    </span>
+                  </transition>
+                </label>
+              </div>
             </template>
             <template v-else>
               <SelectorVue
@@ -83,18 +106,41 @@
                 :placeholder="imask.mask"
                 :disabled="isSignUp || showRestorePassword"
               />
-              <input
-                class="input"
-                type="password"
-                name="password"
-                v-model="form.password"
-                :class="{
-                  input_error:
-                    inputErrors.trySubmit && inputErrors.password && !isSignUp,
-                }"
-                :placeholder="'Пароль от GoСклад'"
-                :disabled="isSignUp || showRestorePassword"
-              />
+              <div class="relative">
+                <input
+                  class="input"
+                  :type="showCurrentPassword ? 'text' : 'password'"
+                  name="password"
+                  v-model="form.password"
+                  :class="{
+                    input_error:
+                      inputErrors.trySubmit &&
+                      inputErrors.password &&
+                      !isSignUp,
+                  }"
+                  :placeholder="'Пароль от GoСклад'"
+                  :disabled="isSignUp || showRestorePassword"
+                />
+                <input
+                  type="checkbox"
+                  class="checkbox visibility"
+                  v-model="showCurrentPassword"
+                  id="visibility"
+                />
+                <label for="visibility" class="text-slate-400">
+                  <transition name="modal" mode="out-in">
+                    <span
+                      class="material-icons-outlined icon"
+                      v-if="showCurrentPassword"
+                    >
+                      visibility
+                    </span>
+                    <span class="material-icons-outlined icon" v-else>
+                      visibility_off
+                    </span>
+                  </transition>
+                </label>
+              </div>
             </template>
             <div
               class="absolute flex flex-col gap-1 -bottom-1 left-1 translate-y-full"
@@ -321,6 +367,7 @@ export default {
   setup() {
     const { checkPath, getCachedToken } = useRedirectToAuth();
     const { addNotification } = useNotification();
+    const [showCurrentPassword, toggleCurrentPassword] = useToggle(false);
 
     checkPath();
 
@@ -610,6 +657,8 @@ export default {
       togglePin,
       phoneCode,
       blockSubmitBtn,
+      showCurrentPassword,
+      toggleCurrentPassword,
     };
   },
 };
@@ -695,5 +744,35 @@ input[type="number"]::-webkit-inner-spin-button {
 .fade-leave-to {
   opacity: 0;
   transform: scale(0.5);
+}
+
+.visibility {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+.visibility + label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+}
+.visibility + label::before {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border-radius: 0.25em;
+  position: absolute;
+  border: none;
+
+  // @include bg_image("@/assets/grid.svg", 100%);
+  cursor: pointer;
+  background: transparent !important;
 }
 </style>

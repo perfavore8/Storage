@@ -151,7 +151,7 @@
         >
           Назад
         </button>
-        <button class="btn btn_blue" @click="submit()">Сохранить</button>
+        <!-- <button class="btn btn_blue" @click="submit()">Сохранить</button> -->
       </div>
     </div>
   </div>

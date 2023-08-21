@@ -70,8 +70,9 @@
         v-model:value="copyUser.email"
         placeholder="Email@example.com"
         class="mask-email input"
-        :disabled="!user.email"
+        v-if="user.email"
       />
+      <input class="input" v-else disabled />
       <button
         type="button"
         class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
