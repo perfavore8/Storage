@@ -131,15 +131,10 @@ export default {
         success = false;
       }
 
+      if (dontNeedSave.value) success = true;
+
       return success;
     };
-
-    const hexTokens = reactive({
-      F: {
-        pattern: /[0-9a-fA-F]/,
-        transform: (v) => v.toLocaleUpperCase(),
-      },
-    });
 
     const showChangeModal = (type, value) => {
       context.emit("showChangeModal", type, value);
@@ -148,7 +143,6 @@ export default {
     return {
       copyUser,
       submit,
-      hexTokens,
       showChangeModal,
     };
   },

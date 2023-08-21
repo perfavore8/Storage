@@ -104,6 +104,7 @@ export default {
       } else {
         success = false;
       }
+      if (form.dontNeedSave) success = true;
 
       return success;
     };
