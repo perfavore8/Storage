@@ -1,4 +1,3 @@
-import router from "@/router";
 import store from "@/store";
 import { reactive } from "vue";
 import { TokenName, createInstance, getCachedToken } from "./BaseURL";
@@ -15,7 +14,7 @@ export function useAvailableUserAccounts() {
         localStorage.setItem(TokenName, JSON.stringify(token));
         getCachedToken();
         createInstance();
-        router.go(0);
+        location.reload(true);
       }
     },
     setList: async function () {
