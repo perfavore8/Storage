@@ -48,7 +48,7 @@
               @showChangeModal="(t, v) => type.setType(t, v)"
             />
           </KeepAlive>
-          <div class="mt-6 flex items-center justify-end gap-x-6">
+          <div class="mt-8 flex items-center justify-end gap-x-6">
             <router-link :to="'/'">
               <button
                 type="button"

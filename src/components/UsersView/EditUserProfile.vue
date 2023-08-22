@@ -61,44 +61,55 @@
       <span class="material-icons-round !text-xl !leading-none"> edit </span>
     </span>
   </label>
-  <form class="grid gap-6">
-    <span>Имя</span>
-    <input type="text" class="input" v-model="copyUser.name" />
-    <span>Email</span>
-    <div class="relative mb-2 flex gap-2 items-center">
-      <MaskEmail
-        v-model:value="copyUser.email"
-        placeholder="Email@example.com"
-        class="mask-email input"
-        v-if="user.email"
-      />
-      <input class="input" v-else disabled />
-      <button
-        type="button"
-        class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
-        @click="showChangeModal('email', user.email)"
-      >
-        {{ user.email ? "Изменить" : "Добавить" }}
-      </button>
-    </div>
+  <div class="relative">
+    <form class="grid gap-6">
+      <span>Имя</span>
+      <input type="text" class="input" v-model="copyUser.name" />
+      <span>Email</span>
+      <div class="relative mb-2 flex gap-2 items-center">
+        <MaskEmail
+          v-model:value="copyUser.email"
+          placeholder="Email@example.com"
+          class="mask-email input"
+          v-if="user.email"
+        />
+        <input class="input" v-else disabled />
+        <button
+          type="button"
+          class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
+          @click="showChangeModal('email', user.email)"
+        >
+          {{ user.email ? "Изменить" : "Добавить" }}
+        </button>
+      </div>
 
-    <span>Телефон</span>
-    <div class="flex gap-2 items-center">
-      <input
-        type="text"
-        class="input"
-        v-model="copyUser.phone"
-        :disabled="!user.phone"
-      />
-      <button
-        type="button"
-        class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
-        @click="showChangeModal('phone', user.phone)"
-      >
-        {{ user.phone ? "Изменить" : "Добавить" }}
-      </button>
+      <span>Телефон</span>
+      <div class="flex gap-2 items-center">
+        <input
+          type="text"
+          class="input"
+          v-model="copyUser.phone"
+          :disabled="!user.phone"
+        />
+        <button
+          type="button"
+          class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
+          @click="showChangeModal('phone', user.phone)"
+        >
+          {{ user.phone ? "Изменить" : "Добавить" }}
+        </button>
+      </div>
+    </form>
+    <div
+      class="absolute flex flex-col gap-1 -bottom-1 left-1/3 translate-x-6 translate-y-full"
+    >
+      <transition name="fade">
+        <small v-if="errors.value" class="text-red-700 text-sm origin-top">
+          {{ errors.text || "Что-то пошло не так..." }}
+        </small>
+      </transition>
     </div>
-  </form>
+  </div>
 </template>
 
 <script>
@@ -120,14 +131,24 @@ export default {
 
     const dontNeedSave = computed(() => props.user.name === copyUser.name);
 
+    const errors = reactive({
+      value: false,
+      text: "",
+    });
+
     const submit = async () => {
       let success = true;
 
       if (success && !dontNeedSave.value) {
-        const { success: successReq } = await store.dispatch("updateUser", {
-          name: copyUser.name,
-        });
+        const { success: successReq, message } = await store.dispatch(
+          "updateUser",
+          {
+            name: copyUser.name,
+          }
+        );
         success = success && successReq;
+        errors.text = message;
+        errors.value = !successReq;
       } else {
         success = false;
       }
@@ -145,6 +166,7 @@ export default {
       copyUser,
       submit,
       showChangeModal,
+      errors,
     };
   },
 };

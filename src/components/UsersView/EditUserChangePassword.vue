@@ -1,56 +1,70 @@
 <template>
-  <form class="grid gap-6">
-    <span>Текущий пароль</span>
-    <div class="relative">
+  <div class="relative">
+    <form class="grid gap-6">
+      <span>Текущий пароль</span>
+      <div class="relative">
+        <input
+          :type="showCurrentPassword ? 'text' : 'password'"
+          autocomplete="off"
+          class="input"
+          :class="{ input_error: form.errors.currentPassword && trySubmit }"
+          v-model="form.currentPassword"
+        />
+        <input
+          type="checkbox"
+          class="checkbox visibility"
+          v-model="showCurrentPassword"
+          id="visibility"
+        />
+        <label for="visibility" class="text-slate-400">
+          <transition name="modal" mode="out-in">
+            <span
+              class="material-icons-outlined icon"
+              v-if="showCurrentPassword"
+            >
+              visibility
+            </span>
+            <span class="material-icons-outlined icon" v-else>
+              visibility_off
+            </span>
+          </transition>
+        </label>
+      </div>
+      <span>Новый пароль</span>
       <input
-        :type="showCurrentPassword ? 'text' : 'password'"
+        :type="showNewPasswords ? 'text' : 'password'"
         autocomplete="off"
         class="input"
-        :class="{ input_error: form.errors.currentPassword && trySubmit }"
-        v-model="form.currentPassword"
+        :class="{ input_error: form.errors.newPassword && trySubmit }"
+        v-model="form.newPassword"
       />
+      <span>Подтвердите новый пароль</span>
+      <input
+        :type="showNewPasswords ? 'text' : 'password'"
+        autocomplete="off"
+        class="input"
+        :class="{ input_error: form.errors.confirmNewPassword }"
+        v-model="form.confirmNewPassword"
+      />
+      <span></span>
       <input
         type="checkbox"
-        class="checkbox visibility"
-        v-model="showCurrentPassword"
-        id="visibility"
+        id="showNewPasswords"
+        class="checkbox"
+        v-model="showNewPasswords"
       />
-      <label for="visibility" class="text-slate-400">
-        <transition name="modal" mode="out-in">
-          <span class="material-icons-outlined icon" v-if="showCurrentPassword">
-            visibility
-          </span>
-          <span class="material-icons-outlined icon" v-else>
-            visibility_off
-          </span>
-        </transition>
-      </label>
+      <label for="showNewPasswords" class="w-fit">Показать пароль</label>
+    </form>
+    <div
+      class="absolute flex flex-col gap-1 -bottom-1 left-1/3 translate-x-6 translate-y-full"
+    >
+      <transition name="fade">
+        <small v-if="errors.value" class="text-red-700 text-sm origin-top">
+          {{ errors.text || "Что-то пошло не так..." }}
+        </small>
+      </transition>
     </div>
-    <span>Новый пароль</span>
-    <input
-      :type="showNewPasswords ? 'text' : 'password'"
-      autocomplete="off"
-      class="input"
-      :class="{ input_error: form.errors.newPassword && trySubmit }"
-      v-model="form.newPassword"
-    />
-    <span>Подтвердите новый пароль</span>
-    <input
-      :type="showNewPasswords ? 'text' : 'password'"
-      autocomplete="off"
-      class="input"
-      :class="{ input_error: form.errors.confirmNewPassword }"
-      v-model="form.confirmNewPassword"
-    />
-    <span></span>
-    <input
-      type="checkbox"
-      id="showNewPasswords"
-      class="checkbox"
-      v-model="showNewPasswords"
-    />
-    <label for="showNewPasswords" class="w-fit">Показать пароль</label>
-  </form>
+  </div>
 </template>
 
 <script>
@@ -88,6 +102,11 @@ export default {
 
     onDeactivated(() => dropAfterDeactivate());
 
+    const errors = reactive({
+      value: false,
+      text: "",
+    });
+
     const submit = async () => {
       let success = true;
 
@@ -98,12 +117,17 @@ export default {
       );
 
       if (success && !form.dontNeedSave) {
-        const { success: successReq } = await store.dispatch("updateUser", {
-          password: form.currentPassword,
-          password_new: form.newPassword,
-          password_new_confirm: form.confirmNewPassword,
-        });
+        const { success: successReq, message } = await store.dispatch(
+          "updateUser",
+          {
+            password: form.currentPassword,
+            password_new: form.newPassword,
+            password_new_confirm: form.confirmNewPassword,
+          }
+        );
         success = success && successReq;
+        errors.text = message;
+        errors.value = !successReq;
       } else {
         success = false;
       }
@@ -119,6 +143,7 @@ export default {
       toggleNewPasswords,
       form,
       submit,
+      errors,
     };
   },
 };
