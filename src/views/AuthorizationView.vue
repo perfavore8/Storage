@@ -3,7 +3,7 @@
     <div
       class="w-80 sm:w-96 relative overflow-hidden flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-4 md:mt-24 border-slate-200"
     >
-      <img src="@/assets/logo_transparent.png" class="w-3/4" />
+      <img src="@/assets/logo_en_transparent.png" class="w-3/4" />
       <h1 class="font-bold text-3xl text-slate-700 mb-5">Авторизация</h1>
       <template v-if="!showPin">
         <div class="flex items-center justify-center min-h-[142px]">
@@ -689,6 +689,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .v-select {
+  width: 100%;
   :deep(.options) {
     @apply max-w-[100%] max-h-[200px] md:max-w-fit md:max-h-[300px];
   }
@@ -748,6 +749,7 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 .login_short {
+  transition: all 0.4s ease;
   cursor: pointer;
   padding: 1.5rem;
   transform: translateY(calc(100% - 80px));
@@ -796,5 +798,11 @@ input[type="number"]::-webkit-inner-spin-button {
   // @include bg_image("@/assets/grid.svg", 100%);
   cursor: pointer;
   background: transparent !important;
+}
+.login_short {
+  h1 {
+    color: black !important;
+  }
+  background: #03b5aa;
 }
 </style>
