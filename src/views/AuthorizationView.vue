@@ -9,19 +9,52 @@
         <div class="flex items-center justify-center min-h-[142px]">
           <div class="h-min flex flex-col gap-5 justify-center relative">
             <template v-if="notificationSystem.selected.value === 'telegram'">
-              <div class="min-h-[88px]">
+              <input
+                class="input"
+                type="text"
+                name="login"
+                v-model="form.tgLogin"
+                :class="{
+                  input_error:
+                    inputErrors.trySubmit && inputErrors.tgLogin && !isSignUp,
+                }"
+                :placeholder="'Логин в Telegram (@login)'"
+                :disabled="isSignUp || showRestorePassword"
+              />
+              <div class="relative">
                 <input
                   class="input"
-                  type="text"
-                  name="login"
-                  v-model="form.tgLogin"
+                  :type="showCurrentPassword ? 'text' : 'password'"
+                  name="password"
+                  v-model="form.password"
                   :class="{
                     input_error:
-                      inputErrors.trySubmit && inputErrors.tgLogin && !isSignUp,
+                      inputErrors.trySubmit &&
+                      inputErrors.password &&
+                      !isSignUp,
                   }"
-                  :placeholder="'Логин в Telegram (@login)'"
+                  :placeholder="'Пароль от GoСклад'"
                   :disabled="isSignUp || showRestorePassword"
                 />
+                <input
+                  type="checkbox"
+                  class="checkbox visibility"
+                  v-model="showCurrentPassword"
+                  id="visibility"
+                />
+                <label for="visibility" class="text-slate-400">
+                  <transition name="modal" mode="out-in">
+                    <span
+                      class="material-icons-outlined icon"
+                      v-if="showCurrentPassword"
+                    >
+                      visibility
+                    </span>
+                    <span class="material-icons-outlined icon" v-else>
+                      visibility_off
+                    </span>
+                  </transition>
+                </label>
               </div>
             </template>
             <template v-else-if="notificationSystem.selected.value === 'email'">
@@ -203,22 +236,11 @@
                 :disabled="!(isSignUp || showRestorePassword)"
               />
               <template v-if="notificationSystem.selected.value === 'telegram'">
-                <div class="min-h-[88px]">
-                  <input
-                    class="input"
-                    type="text"
-                    name="login"
-                    v-model="form.tgLogin"
-                    :class="{
-                      input_error:
-                        inputErrors.trySubmit &&
-                        inputErrors.tgLogin &&
-                        (isSignUp || showRestorePassword),
-                    }"
-                    :placeholder="'Логин в Telegram (@login)'"
-                    :disabled="!(isSignUp || showRestorePassword)"
-                  />
-                </div>
+                <button
+                  class="btn order-0 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-full rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Отправить сообщение боту
+                </button>
               </template>
               <template
                 v-else-if="notificationSystem.selected.value === 'email'"
@@ -291,7 +313,11 @@
             <button
               class="btn btn_blue"
               @click="submit()"
-              :disabled="!(isSignUp || showRestorePassword) || isLocked"
+              :disabled="
+                !(isSignUp || showRestorePassword) ||
+                isLocked ||
+                (isSignUp && notificationSystem.selected.value == 'telegram')
+              "
             >
               Отправить
             </button>
@@ -555,13 +581,13 @@ export default {
         //   value: "amoCrm",
         //   iconUrl: "https://graph.digiseller.ru/img.ashx?idd=3380359",
         // },
-        // {
-        //   name: "",
-        //   value: "telegram",
-        //   iconUrl:
-        //     "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
-        //   formReqFields: ["tgLogin"],
-        // },
+        {
+          name: "",
+          value: "telegram",
+          iconUrl:
+            "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
+          formReqFields: ["tgLogin"],
+        },
         {
           name: "",
           value: "whatsapp",
