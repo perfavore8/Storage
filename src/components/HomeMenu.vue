@@ -159,37 +159,6 @@
                 Настройки синхронизации товаров
               </div>
             </a>
-            <a v-if="isTest" class="group relative" @click.stop="">
-              <div class="modal_container">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  class="mr-2 group-hover:rotate-[270deg] text-slate-700 rotate-180 transition-transform"
-                >
-                  <path
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2.5"
-                    d="m17 14l-5-5m0 0l-5 5"
-                  />
-                </svg>
-
-                Пользователи
-              </div>
-              <transition name="modal">
-                <div class="absolute right-full hidden group-hover:block">
-                  <div class="modal_settings !w-52">
-                    <a @click="openUserLIst()">
-                      <div class="modal_container">Список</div>
-                    </a>
-                  </div>
-                </div>
-              </transition>
-            </a>
             <a v-if="isTest">
               <div class="modal_container" @click="openClientsFieldsSettings()">
                 Настройки полей клиентов
@@ -303,8 +272,7 @@ export default {
       store.commit("open_close_product_category", true);
     const openThirdPpartyIntegrations = () =>
       store.commit("openCloseThirdPpartyIntegrations", true);
-    const openAccountSattings = () =>
-      store.commit("openCloseAccountSattings", true);
+    const openAccountSattings = () => router.push("/accountSettings");
     const openClientsFieldsSettings = () =>
       store.commit("openCloseClientsFieldsSettings", true);
     const openSyncSettings = () => store.commit("openCloseSyncSettings", true);

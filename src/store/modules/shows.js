@@ -15,7 +15,6 @@ export default {
     show_product_category: false,
     showSyncSettings: false,
     showImportStuff: false,
-    showAccountSattings: false,
     showThirdPpartyIntegrations: false,
     showEditPrice: false,
     showTaskCenter: false,
@@ -48,7 +47,6 @@ export default {
         state.showSyncSettings ||
         state.showEditPrice ||
         state.showMoveProductsBetweenWhs ||
-        state.showAccountSattings ||
         state.showImportStuff ||
         state.showSettingEntities ||
         state.showClientsFieldsSettings
@@ -95,9 +93,6 @@ export default {
     },
     showThirdPpartyIntegrations(state) {
       return state.showThirdPpartyIntegrations;
-    },
-    showAccountSattings(state) {
-      return state.showAccountSattings;
     },
     showSyncSettings(state) {
       return state.showSyncSettings;
@@ -191,9 +186,6 @@ export default {
     },
     openCloseMoveProductsBetweenWhs(state, value) {
       state.showMoveProductsBetweenWhs = value;
-    },
-    openCloseAccountSattings(state, value) {
-      state.showAccountSattings = value;
     },
     openCloseClientsFieldsSettings(state, value) {
       state.showClientsFieldsSettings = value;
