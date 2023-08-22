@@ -243,6 +243,7 @@ export default {
       () =>
         store.state.account?.account?.id == 1 ||
         store.state.account?.account?.id == 494 ||
+        store.state.account?.account?.id == 485 ||
         store.state.account?.account?.id == 495
     );
     const amoTest = computed(() => store.state.account?.account?.id == 454);
