@@ -71,11 +71,13 @@
 import { useToggle } from "@vueuse/core";
 import { computed, onDeactivated, reactive } from "vue";
 import store from "@/store";
+import { useNotification } from "@/composables/notification";
 export default {
   props: { trySubmit: Boolean },
   setup() {
     const [showCurrentPassword, toggleCurrentPassword] = useToggle(false);
     const [showNewPasswords, toggleNewPasswords] = useToggle(false);
+    const { addNotification } = useNotification();
 
     const form = reactive({
       currentPassword: "",
@@ -128,6 +130,11 @@ export default {
         success = success && successReq;
         errors.text = message;
         errors.value = !successReq;
+
+        if (successReq) {
+          addNotification(1, "Изменение пароля", message);
+          dropAfterDeactivate();
+        }
       } else {
         success = false;
       }
