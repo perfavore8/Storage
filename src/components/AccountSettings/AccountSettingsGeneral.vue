@@ -44,7 +44,6 @@ export default {
     const divideRight = ref(false);
     const accountName = ref("");
     onMounted(() => {
-      console.log(account.value);
       divideRight.value = Boolean(account.value?.config?.divide_right);
       accountName.value = account.value?.name;
     });
