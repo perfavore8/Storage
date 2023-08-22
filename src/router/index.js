@@ -68,9 +68,9 @@ const routes = [
     component: () => import("../views/AuthorizationView.vue"),
   },
   {
-    path: "/users",
-    name: "users",
-    component: () => import("../views/UsersView.vue"),
+    path: "/accountSettings",
+    name: "accountSettings",
+    component: () => import("../views/AccountSettings.vue"),
   },
   {
     path: "/profile",
