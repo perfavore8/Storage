@@ -173,7 +173,7 @@
           <button
             class="btn btn_blue"
             @click="submit()"
-            :disabled="isSignUp || showRestorePassword || blockSubmitBtn"
+            :disabled="isSignUp || showRestorePassword || isLocked"
           >
             Авторизоваться
           </button>
@@ -291,7 +291,7 @@
             <button
               class="btn btn_blue"
               @click="submit()"
-              :disabled="!(isSignUp || showRestorePassword) || blockSubmitBtn"
+              :disabled="!(isSignUp || showRestorePassword) || isLocked"
             >
               Отправить
             </button>
@@ -361,6 +361,7 @@ import store from "@/store";
 import { useRedirectToAuth } from "@/composables/BaseURL";
 import { useValidate } from "@/composables/validate";
 import { useNotification } from "@/composables/notification";
+import { useLockBtn } from "@/composables/lockBtn";
 
 export default {
   components: { SelectorVue, AuthBtnsGroup },
@@ -368,6 +369,7 @@ export default {
     const { checkPath, getCachedToken } = useRedirectToAuth();
     const { addNotification } = useNotification();
     const [showCurrentPassword, toggleCurrentPassword] = useToggle(false);
+    const { isLocked, lockBtn } = useLockBtn();
 
     checkPath();
 
@@ -457,12 +459,9 @@ export default {
       inputErrors.trySubmit = false;
     };
 
-    const [blockSubmitBtn, toggleBlockSubmitBtn] = useToggle(false);
-
     const submit = async () => {
       if (!inputErrors.global()) {
-        toggleBlockSubmitBtn(true);
-        setTimeout(() => toggleBlockSubmitBtn(false), 3000);
+        lockBtn();
         let res = { success: false };
         if (showRestorePassword.value) {
           if (showPin.value) {
@@ -496,8 +495,6 @@ export default {
                   ? form.email
                   : form.phone)
             );
-            togglePin(false);
-            closeRestorePassword();
             return;
           } else if (res.success && !phoneCode.value) {
             addNotification(
@@ -508,8 +505,6 @@ export default {
                   ? form.email
                   : form.phone)
             );
-            togglePin(false);
-            closeRestorePassword();
             return;
           }
         } else if (isSignUp.value) {
@@ -678,7 +673,7 @@ export default {
       showPin,
       togglePin,
       phoneCode,
-      blockSubmitBtn,
+      isLocked,
       showCurrentPassword,
       toggleCurrentPassword,
     };
@@ -804,5 +799,8 @@ input[type="number"]::-webkit-inner-spin-button {
     color: black !important;
   }
   background: #03b5aa;
+}
+.pinBoxDisabled {
+  background-image: url("@/assets/Frame2.png");
 }
 </style>
