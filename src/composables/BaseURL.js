@@ -20,6 +20,11 @@ function findGetParameter(parameterName) {
 
 export const TokenName = "TOKEN";
 
+if (location.search) {
+  localStorage.setItem(TokenName, JSON.stringify(findGetParameter("token")));
+  location.replace(location.href.replace(location.search, ""));
+}
+
 let savedToken = "";
 export const getCachedToken = () => {
   savedToken = JSON.parse(localStorage.getItem(TokenName));
