@@ -21,7 +21,8 @@
               "
             >
               <span>
-                Код отправленный на
+                Код отправленный
+                {{ types.selected.value === "phone" ? "в WhatsApp " : "" }} на
                 {{ idx > 0 ? params[params.order[idx - 1]]?.value : login }}:
               </span>
               <div
