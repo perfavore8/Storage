@@ -235,6 +235,8 @@
                 :placeholder="'Имя'"
                 :disabled="!(isSignUp || showRestorePassword)"
               />
+              <template v-if="notificationSystem.selected.value === 'telegram'">
+              </template>
               <template
                 v-else-if="notificationSystem.selected.value === 'email'"
               >
@@ -483,18 +485,12 @@ export default {
             res = await store.dispatch("authRestorePasswordEnd", {
               code: phoneCode.value,
               mode: notificationSystem.selected.mode,
-              login:
-                notificationSystem.selected.value === "email"
-                  ? form.email
-                  : deleteOther(form.phone),
+              login: notificationSystem.selected.login,
             });
           } else {
             res = await store.dispatch("authRestorePassword", {
               mode: notificationSystem.selected.mode,
-              login:
-                notificationSystem.selected.value === "email"
-                  ? form.email
-                  : deleteOther(form.phone),
+              login: notificationSystem.selected.login,
             });
           }
           tryRestorePassword(res.success);
@@ -528,10 +524,7 @@ export default {
           }
           res = await store.dispatch("authRegistration", {
             mode: notificationSystem.selected.mode,
-            login:
-              notificationSystem.selected.value === "email"
-                ? form.email
-                : deleteOther(form.phone),
+            login: notificationSystem.selected.login,
             name: form.name,
           });
           if (res.success) {
@@ -548,10 +541,7 @@ export default {
         } else {
           res = await store.dispatch("authLogin", {
             mode: notificationSystem.selected.mode,
-            login:
-              notificationSystem.selected.value === "email"
-                ? form.email
-                : deleteOther(form.phone),
+            login: notificationSystem.selected.login,
             password: form.password,
           });
           if (res.success) {
@@ -576,6 +566,8 @@ export default {
         {
           name: "",
           value: "telegram",
+          mode: "tg_username",
+          login: computed(() => form.tgLogin),
           iconUrl:
             "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
           formReqFields: ["tgLogin", "password"],
@@ -585,6 +577,7 @@ export default {
           name: "",
           value: "whatsapp",
           mode: "phone",
+          login: computed(() => deleteOther(form.phone)),
           default: true,
           iconUrl:
             "https://cdn.icon-icons.com/icons2/2108/PNG/512/whatsapp_icon_130788.png",
@@ -596,6 +589,7 @@ export default {
           name: "",
           value: "email",
           mode: "email",
+          login: computed(() => form.email),
           iconUrl: "https://www.svgrepo.com/show/444193/brand-google-gmail.svg",
           formReqFields: ["email", "password"],
           signUpOptionalFields: ["password"],
