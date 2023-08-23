@@ -235,13 +235,6 @@
                 :placeholder="'Имя'"
                 :disabled="!(isSignUp || showRestorePassword)"
               />
-              <template v-if="notificationSystem.selected.value === 'telegram'">
-                <button
-                  class="btn order-0 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-full rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  Отправить сообщение боту
-                </button>
-              </template>
               <template
                 v-else-if="notificationSystem.selected.value === 'email'"
               >
@@ -313,11 +306,7 @@
             <button
               class="btn btn_blue"
               @click="submit()"
-              :disabled="
-                !(isSignUp || showRestorePassword) ||
-                isLocked ||
-                (isSignUp && notificationSystem.selected.value == 'telegram')
-              "
+              :disabled="!(isSignUp || showRestorePassword) || isLocked"
             >
               Отправить
             </button>
@@ -534,6 +523,9 @@ export default {
             return;
           }
         } else if (isSignUp.value) {
+          if (notificationSystem.selected.value === "telegram") {
+            window.open("http://t.me/gosklad_reg_bot");
+          }
           res = await store.dispatch("authRegistration", {
             mode: notificationSystem.selected.mode,
             login:
@@ -586,7 +578,8 @@ export default {
           value: "telegram",
           iconUrl:
             "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
-          formReqFields: ["tgLogin"],
+          formReqFields: ["tgLogin", "password"],
+          signUpOptionalFields: ["tgLogin", "password"],
         },
         {
           name: "",
