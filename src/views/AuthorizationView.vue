@@ -18,7 +18,7 @@
                   input_error:
                     inputErrors.trySubmit && inputErrors.tgLogin && !isSignUp,
                 }"
-                :placeholder="'Логин в Telegram (@login)'"
+                :placeholder="'Логин в Telegram (login)'"
                 :disabled="isSignUp || showRestorePassword"
               />
               <div class="relative">
