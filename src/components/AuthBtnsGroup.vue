@@ -12,7 +12,11 @@
     >
       <div
         class="icon"
-        :style="{ 'background-image': 'url(' + item.iconUrl + ')' }"
+        :style="{
+          'background-image': 'url(' + item.iconUrl + ')',
+          width: item.iconSize,
+          height: item.iconSize,
+        }"
       />
     </template>
   </AppRadioBtnsGroup>

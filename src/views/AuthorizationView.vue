@@ -4,7 +4,7 @@
       class="w-80 sm:w-96 relative overflow-hidden flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-4 md:mt-24 border-slate-200"
     >
       <img src="@/assets/logo_en_transparent.png" class="w-3/4" />
-      <h1 class="font-bold text-3xl text-slate-700 mb-5">Авторизация</h1>
+      <h1 class="font-bold text-3xl text-slate-700 mb-5 mt-4">Авторизация</h1>
       <template v-if="!showPin">
         <div class="flex items-center justify-center min-h-[142px]">
           <div class="h-min flex flex-col gap-5 justify-center relative">
@@ -33,7 +33,7 @@
                       inputErrors.password &&
                       !isSignUp,
                   }"
-                  :placeholder="'Пароль от GoСклад'"
+                  :placeholder="'Пароль от GoSklad'"
                   :disabled="isSignUp || showRestorePassword"
                 />
                 <input
@@ -94,7 +94,7 @@
                       inputErrors.password &&
                       !isSignUp,
                   }"
-                  :placeholder="'Пароль от GoСклад'"
+                  :placeholder="'Пароль от GoSklad'"
                   :disabled="isSignUp || showRestorePassword"
                 />
                 <input
@@ -151,7 +151,7 @@
                       inputErrors.password &&
                       !isSignUp,
                   }"
-                  :placeholder="'Пароль от GoСклад'"
+                  :placeholder="'Пароль от GoSklad'"
                   :disabled="isSignUp || showRestorePassword"
                 />
                 <input
@@ -196,7 +196,7 @@
             </div>
           </div>
         </div>
-        <div class="w-1/2 flex flex-col gap-4 items-center mt-5 mb-16">
+        <div class="w-1/2 flex flex-col gap-4 items-center mt-8 mb-16">
           <AuthBtnsGroup
             class="w-min"
             :notificationSystem="notificationSystem"
@@ -593,7 +593,9 @@ export default {
           value: "whatsapp",
           mode: "phone",
           default: true,
-          iconUrl: "https://www.svgrepo.com/show/217789/whatsapp.svg",
+          iconUrl:
+            "https://cdn.icon-icons.com/icons2/2108/PNG/512/whatsapp_icon_130788.png",
+          iconSize: "28px",
           formReqFields: ["phone", "password"],
           signUpOptionalFields: ["password"],
         },
@@ -756,7 +758,7 @@ input[type="number"]::-webkit-inner-spin-button {
 .login {
   position: absolute;
   bottom: -2px;
-  height: calc(100% - 80px);
+  height: calc(100% - 70px);
   // transform: translateY(40px);
   width: 100%;
   background: rgba(255, 255, 255, 0.9);
@@ -767,13 +769,14 @@ input[type="number"]::-webkit-inner-spin-button {
   transition: all 0.4s ease;
   > h1 {
     transition: all 0.4s ease;
+    margin-top: -5px;
   }
 }
 .login_short {
   transition: all 0.4s ease;
   cursor: pointer;
   padding: 1.5rem;
-  transform: translateY(calc(100% - 80px));
+  transform: translateY(calc(100% - 70px));
   background: rgba(255, 255, 255, 0);
   backdrop-filter: blur(0px);
   > h1 {
@@ -824,7 +827,7 @@ input[type="number"]::-webkit-inner-spin-button {
   h1 {
     color: black !important;
   }
-  background: #03b5aa;
+  background: #fe701f;
 }
 .pinBoxDisabled {
   background-image: url("@/assets/Frame2.png");
