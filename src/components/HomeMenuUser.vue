@@ -26,7 +26,7 @@
     </router-link>
     <div class="main">
       <ul class="text-slate-600">
-        <li>
+        <li v-if="!inFrame">
           <ImportStuffSelector
             class="!w-full"
             :options_props="availableUserAccounts.list"

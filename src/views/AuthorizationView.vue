@@ -521,6 +521,7 @@ export default {
         } else if (isSignUp.value) {
           if (notificationSystem.selected.value === "telegram") {
             window.open("http://t.me/gosklad_reg_bot");
+            return;
           }
           res = await store.dispatch("authRegistration", {
             mode: notificationSystem.selected.mode,

@@ -8,7 +8,7 @@
         </form>
       </div>
     </div>
-    <div class="block">
+    <div class="block" v-if="false">
       <h6 class="my-9">Этапы резервирования товаров со склада</h6>
       <div class="text">
         <input

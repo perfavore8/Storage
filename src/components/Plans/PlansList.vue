@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8 flex items-center justify-center w-full h-full">
+  <div class="p-8 flex items-center justify-center w-full h-full" v-if="false">
     <div
       class="container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 mt-9 mx-auto isolate gap-8"
     >
