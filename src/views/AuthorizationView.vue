@@ -1,7 +1,7 @@
 <template>
   <div class="w-screen h-screen flex items-start justify-center bg-slate-50">
     <div
-      class="w-80 sm:w-96 relative overflow-hidden flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-4 md:mt-24 border-slate-200"
+      class="continer w-80 sm:w-96 relative overflow-hidden flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-4 md:mt-24 border-slate-200"
     >
       <img src="@/assets/logo_en_transparent.png" class="w-3/4" />
       <h1 class="font-bold text-3xl text-slate-700 mb-5 mt-4">Авторизация</h1>
@@ -486,11 +486,13 @@ export default {
               code: phoneCode.value,
               mode: notificationSystem.selected.mode,
               login: notificationSystem.selected.login,
+              mask: imask.mask,
             });
           } else {
             res = await store.dispatch("authRestorePassword", {
               mode: notificationSystem.selected.mode,
               login: notificationSystem.selected.login,
+              mask: imask.mask,
             });
           }
           tryRestorePassword(res.success);
@@ -526,6 +528,7 @@ export default {
           res = await store.dispatch("authRegistration", {
             mode: notificationSystem.selected.mode,
             login: notificationSystem.selected.login,
+            mask: imask.mask,
             name: form.name,
           });
           if (res.success) {
@@ -543,6 +546,7 @@ export default {
           res = await store.dispatch("authLogin", {
             mode: notificationSystem.selected.mode,
             login: notificationSystem.selected.login,
+            mask: imask.mask,
             password: form.password,
           });
           if (res.success) {
@@ -819,5 +823,10 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .pinBoxDisabled {
   background-image: url("@/assets/Frame2.png");
+}
+.continer {
+  @media (max-height: 800px) {
+    margin-top: 16px;
+  }
 }
 </style>

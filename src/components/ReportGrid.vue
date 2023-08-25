@@ -1,6 +1,13 @@
 <template>
   <div class="top" id="report_count_area">
-    <p class="count">Найдено: {{ reportsData.total }}</p>
+    <p class="count">
+      Найдено:
+      {{
+        reportsData.total !== undefined
+          ? reportsData.total
+          : reportsData?.meta?.total
+      }}
+    </p>
   </div>
   <table class="table" :class="{ blur: openSelectedReportModal || isLoading }">
     <thead>
