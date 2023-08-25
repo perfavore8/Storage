@@ -54,7 +54,7 @@ export default {
     async getTableConfig(context, code) {
       const { data } = await ApiReqFunc({
         url: "account/table-config",
-        data: { code: code },
+        params: { code: code },
       });
       context.commit("updateTableConfig", data);
 
