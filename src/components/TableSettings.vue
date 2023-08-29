@@ -15,10 +15,10 @@
           <div class="item" v-for="item in list" :key="item.name">
             <input
               type="checkbox"
-              v-model="item.visible"
+              v-model="item.visible.value"
               :id="item.code"
               class="checkbox"
-              :disabled="item.visible === 2 || item.visible === -1"
+              :disabled="item.visible.disabled"
             />
             <label :for="item.code"></label>
             {{ item.name }}
@@ -72,7 +72,13 @@ export default {
         preparedTC.push(value);
       });
       list.value = JSON.parse(JSON.stringify(preparedTC));
-      list.value.map((item) => (item.visible = Boolean(item.visible)));
+      list.value.map(
+        (item) =>
+          (item.visible = {
+            value: Boolean(item.visible),
+            disabled: item.visible === 2 || item.visible === -1,
+          })
+      );
     });
 
     const save = () => {
@@ -85,7 +91,7 @@ export default {
       if (config.value.haveWH)
         (params.wh = currentWH.value), (params.value.code = currentWH.value);
       list.value.forEach((val) => {
-        if (val.visible) params.value.config.push(val.code);
+        if (val.visible.value) params.value.config.push(val.code);
       });
       store.dispatch(config.value.updateStateReqName, params);
       close();
