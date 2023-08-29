@@ -1,13 +1,9 @@
-<template>
-  <plans-list :item="{}" />
-</template>
+<template>qwe</template>
 
 <script>
-import PlansList from "@/components/Plans/PlansList.vue";
 export default {
-  components: { PlansList },
   setup() {},
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
