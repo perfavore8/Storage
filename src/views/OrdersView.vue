@@ -8,6 +8,30 @@
         class="w-full flex justify-between items-center relative"
         v-if="isTest"
       >
+        <div class="absolute left-0 flex flex-row items-end gap-2 h-fit">
+          <button class="cursor-pointer h-7" @click="displayType.selectNext()">
+            <transition name="modal" mode="out-in" :duration="100">
+              <span
+                class="material-icons-round !font-semibold !text-[28px] !text-[#757575] select-none"
+                :key="displayType.selected.name"
+              >
+                {{ displayType.nextItem.icon }}
+              </span>
+            </transition>
+          </button>
+          <div
+            v-if="displayType.selected.name === 'kanban'"
+            class="flex items-center"
+          >
+            <input
+              type="checkbox"
+              id="hideFinalSteps"
+              class="checkbox"
+              v-model="hideFinalSteps"
+            />
+            <label for="hideFinalSteps">Скрыть финальные этапы</label>
+          </div>
+        </div>
         <AppSearchWithFilters
           class="absolute left-1/2 -translate-x-1/2"
           :setOfInstructions="'orders'"
@@ -19,7 +43,14 @@
         </button>
       </div>
       <OrdersFilters v-if="false" />
-      <OrdersGrid ref="grid" />
+      <!-- <OrdersGrid ref="grid" /> -->
+      <transition name="modal">
+        <component
+          :is="displayType.selected.component"
+          ref="grid"
+          :key="displayType.selected.name"
+        />
+      </transition>
     </div>
   </div>
 </template>
@@ -28,13 +59,20 @@
 import AppHeader from "@/components/AppHeader.vue";
 import OrdersFilters from "@/components/OrdersFilters.vue";
 import OrdersGrid from "@/components/OrdersGrid.vue";
+import KanbanBoard from "@/components/Kanban/KanbanBoard.vue";
 import AppSearchWithFilters from "@/components/AppSearchWithFilters.vue";
 import router from "@/router";
 import store from "@/store";
 import { useRoute } from "vue-router";
-import { computed, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 export default {
-  components: { AppHeader, OrdersFilters, OrdersGrid, AppSearchWithFilters },
+  components: {
+    AppHeader,
+    OrdersFilters,
+    OrdersGrid,
+    KanbanBoard,
+    AppSearchWithFilters,
+  },
   setup() {
     const Route = useRoute();
     const isTest = computed(
@@ -45,9 +83,47 @@ export default {
     const addToDeal = () => router.push("/addToDeal");
 
     const grid = ref(null);
-    const emitParams = (params) => grid.value.emitParams(params);
+    const emitParams = (params) =>
+      console.log(1) || grid.value.emitParams(params);
 
-    return { addToDeal, isTest, grid, emitParams };
+    const displayType = reactive({
+      selected: {},
+      list: [
+        {
+          name: "grid",
+          component: "OrdersGrid",
+          default: true,
+          icon: " grid_view",
+        },
+        {
+          name: "kanban",
+          component: "KanbanBoard",
+          icon: "view_kanban",
+        },
+      ],
+      select: function (option) {
+        this.selected = option;
+      },
+      nextItem: computed(() => {
+        const item = displayType.list.find((el) => el == displayType.selected);
+        if (!item) return;
+        let idx = displayType.list.indexOf(item) + 1;
+        if (idx == displayType.list.length) idx = 0;
+        const nextItem = displayType.list[idx];
+        return nextItem;
+      }),
+      selectNext: function () {
+        this.select(this.nextItem);
+      },
+      dropToDefault: function () {
+        const item = this.list.find((el) => el.default);
+        if (!item) return;
+        this.select(item);
+      },
+    });
+    displayType.dropToDefault();
+
+    return { addToDeal, isTest, grid, emitParams, displayType };
   },
 };
 </script>
@@ -82,5 +158,9 @@ export default {
 .wrapper {
   margin-top: 80px;
   padding: 0 30px;
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease-out;
 }
 </style>
