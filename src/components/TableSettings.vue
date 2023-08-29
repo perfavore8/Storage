@@ -3,7 +3,9 @@
     <div class="backdrop_with_filter" @click="close()" />
     <div class="wrapper">
       <div class="modal-header">
-        <div class="head-text">Настройка таблицы</div>
+        <div class="head-text">
+          <slot name="header"> Настройка таблицы </slot>
+        </div>
       </div>
       <div class="modal-body">
         <div class="text">
@@ -18,7 +20,10 @@
               v-model="item.visible.value"
               :id="item.code"
               class="checkbox"
-              :disabled="item.visible.disabled"
+              :disabled="
+                item.visible.disabled ||
+                (disabledNotSelected && !item.visible.value)
+              "
             />
             <label :for="item.code"></label>
             {{ item.name }}
@@ -45,6 +50,7 @@ export default {
   },
   props: {
     selectedWH: { type: Object },
+    maxCountSelected: { type: Number, required: false },
   },
   emits: {},
 
@@ -54,6 +60,15 @@ export default {
     );
 
     const list = ref([]);
+
+    const currentCountSelected = computed(() =>
+      list.value.reduce((acc, item) => (item.visible.value ? acc + 1 : acc), 0)
+    );
+    const disabledNotSelected = computed(
+      () =>
+        currentCountSelected.value >= props.maxCountSelected &&
+        props.maxCountSelected
+    );
 
     const tableConfig = computed(
       () => store.state[config.value.stateName]?.[config.value.stateConfigField]
@@ -100,7 +115,14 @@ export default {
       store.commit("close_table_settings");
     };
 
-    return { list, tableConfig, save, close };
+    return {
+      list,
+      disabledNotSelected,
+      tableConfig,
+      save,
+      close,
+      currentCountSelected,
+    };
   },
 };
 </script>
