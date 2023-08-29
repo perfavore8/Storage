@@ -82,7 +82,20 @@
               >
                 <div class="stat">
                   <div class="img_wrapper">
-                    <img :src="row.img" class="img" />
+                    <a
+                      :href="
+                        isTest &&
+                        statList.find((el) => el.name === row.stat)?.value !== 3
+                          ? 'https://' +
+                            accountSubdomain +
+                            '.amocrm.ru/leads/detail/' +
+                            row.lead_id
+                          : null
+                      "
+                      target="_blank"
+                    >
+                      <img :src="row.img" class="img" />
+                    </a>
                     <div
                       class="handle_cross"
                       v-if="
@@ -91,28 +104,23 @@
                     ></div>
                   </div>
                   <a
-                    target="black"
-                    class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
+                    :target="isTest ? '_self' : '_blank'"
+                    class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline cursor-pointer"
                     :href="
-                      'https://' +
-                      accountSubdomain +
-                      '.amocrm.ru/leads/detail/' +
-                      row.lead_id
+                      isTest
+                        ? null
+                        : 'https://' +
+                          accountSubdomain +
+                          '.amocrm.ru/leads/detail/' +
+                          row.lead_id
                     "
+                    @click="isTest ? routeToOrder(row.id) : null"
                     v-if="
                       statList.find((el) => el.name === row.stat)?.value !== 3
                     "
                   >
                     {{ row.name }}
                   </a>
-                  <template v-if="isTest">
-                    <a
-                      class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
-                      @click="routeToOrder(row.id)"
-                    >
-                      ТЕСТ перейти в сделку
-                    </a>
-                  </template>
                 </div>
               </td>
               <td
@@ -142,10 +150,11 @@
                   </div>
                 </td> -->
               <td
-                class="item cursor-pointer"
+                class="item"
+                :class="{ 'cursor-pointer': !isTest }"
                 v-else
                 :colspan="title.isGroup ? 2 : 1"
-                @click="row.isOpen = !row.isOpen"
+                @click="isTest ? null : (row.isOpen = !row.isOpen)"
               >
                 {{ row[title.code] }}
               </td>
