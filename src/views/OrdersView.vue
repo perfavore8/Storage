@@ -19,10 +19,7 @@
               </span>
             </transition>
           </button>
-          <div
-            v-if="displayType.selected.name === 'kanban'"
-            class="flex items-center"
-          >
+          <div class="flex items-center">
             <input
               type="checkbox"
               id="hideFinalSteps"
