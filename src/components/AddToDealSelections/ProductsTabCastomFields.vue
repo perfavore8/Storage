@@ -1,23 +1,21 @@
 <template>
   <div class="flex flex-col gap-4 justify-center items-center w-full">
-    <h2 class="font-semibold text-gray-700 w-full text-start"></h2>
-    <div class="max-w-md min-w-[40%] w-full text-gray-900 flex flex-col">
-      <div
-        class="row"
-        :class="{ 'order-[99999]': field.code === 'description' }"
-        v-for="field in fields"
-        :key="field.id"
-        v-show="field.component"
-      >
-        <component
-          v-if="field.code !== 'name'"
-          :is="field.component"
-          :item="field.type == 5 || field.type == 6 ? field : field.name"
-          :selected_option="order?.fields?.[field.code]"
-          :idx="field.code"
-          @change_value="change_value"
-        />
-      </div>
+    <h2 class="font-semibold text-gray-700 w-full text-start">Данные заказа</h2>
+    <div
+      class="max-w-md min-w-[40%] w-full text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
+    >
+      <template v-for="field in fields" :key="field.id">
+        <div class="row pb-3" v-if="field.component && field.code !== 'name'">
+          <component
+            v-if="field.code !== 'name'"
+            :is="field.component"
+            :item="field.type == 5 || field.type == 6 ? field : field.name"
+            :selected_option="order?.fields?.[field.code]"
+            :idx="field.code"
+            @change_value="change_value"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -61,7 +59,11 @@ export default {
       (order.fields[code] = value), toggleSomeChange(true)
     );
 
-    const fields = computed(() => store.state.orders.fields);
+    const fields = computed(() =>
+      store.state.orders.fields.sort((el) =>
+        el.code === "description" ? 1 : -1
+      )
+    );
 
     return { fields, order, change_value };
   },
@@ -77,8 +79,9 @@ export default {
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  label {
-    padding: 7px 0;
+  :deep(label) {
+    // padding: 7px 0;
+    @apply mb-1 text-gray-500 md:text-base dark:text-gray-400;
   }
   input {
     width: 100%;

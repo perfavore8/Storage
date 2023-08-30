@@ -1,9 +1,10 @@
 <template>
   <div
-    class="flex flex-col gap-4 justify-center items-center sticky top-[142px] w-[90%] mx-auto"
+    class="flex flex-col gap-4 justify-center items-center sticky top-[142px] w-full mx-auto"
   >
+    <h2 class="font-semibold text-gray-700 w-full text-start">Данные заказа</h2>
     <div
-      class="max-w-md min-w-[40%] w-fit text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
+      class="max-w-md min-w-[40%] w-full text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
     >
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">

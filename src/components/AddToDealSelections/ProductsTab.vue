@@ -4,8 +4,10 @@
   >
     <ProductsTabFields :total="total" />
     <ProductsTabCastomFields />
-    <div class="w-full cont px-1">
-      <h2 class="font-semibold text-gray-700 mb-4 w-full text-start">
+    <div
+      class="w-full cont px-1 h-full rounded-xl bg-slate-50 shadow-xl shadow-slate-100"
+    >
+      <h2 class="font-semibold text-gray-700 mb-10 w-full text-start">
         Список позиций
       </h2>
       <main-page ref="widjet" />
@@ -34,5 +36,8 @@ export default {
 .cont {
   // overflow-y: scroll;
   // height: calc(100vh - 122px);
+}
+.shadow-xl {
+  box-shadow: 0px 0px 8px 12px #f8fafc;
 }
 </style>
