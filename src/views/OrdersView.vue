@@ -19,7 +19,7 @@
               </span>
             </transition>
           </button>
-          <div class="flex items-center">
+          <div class="flex items-center" v-if="isMain || isTest">
             <input
               type="checkbox"
               id="hideFinalSteps"

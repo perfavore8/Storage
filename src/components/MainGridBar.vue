@@ -42,6 +42,7 @@
         <button
           class="settings_btn"
           @click="openTableSettings()"
+          v-if="isMain || isTest || true"
           title="Настройка таблицы"
         >
           <span class="material-icons"> settings </span>

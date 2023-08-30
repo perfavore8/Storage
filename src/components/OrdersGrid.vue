@@ -1,7 +1,7 @@
 <template>
   <div class="main mt-20 relative">
     <div
-      v-if="isTest"
+      v-if="isTest || isMain"
       @click="openTableSettings()"
       class="tableSettings absolute top-2 right-2"
     >
@@ -217,6 +217,7 @@ import AppPaginator from "./AppPaginator.vue";
 import { computed, onMounted, reactive, ref } from "vue";
 import store from "@/store";
 import { useRouter } from "vue-router";
+import { useCheckIsMainUser } from "@/composables/checkIsMainUser";
 // import ReportGridModal from "./ReportGridModal.vue";
 // import { nextTick } from "vue";
 export default {
@@ -228,6 +229,8 @@ export default {
   },
   setup() {
     const router = useRouter();
+
+    const { isMain } = useCheckIsMainUser();
 
     const selectedProducts = reactive([]);
     const allSelectedProducts = ref(false);
@@ -525,6 +528,7 @@ export default {
       routeToOrder,
       openTableSettings,
       refundOrder,
+      isMain,
     };
   },
 };
