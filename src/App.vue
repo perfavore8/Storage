@@ -69,4 +69,9 @@ html {
   opacity: 0;
   filter: blur(3px);
 }
+ul > li:not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
 </style>
