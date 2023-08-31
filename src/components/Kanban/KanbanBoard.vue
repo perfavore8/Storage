@@ -1,9 +1,11 @@
 <template>
-  <div class="w-fit mt-20 mx-auto text-left">
+  <div
+    class="w-fit mt-20 pb-10 mx-auto text-left overflow-x-scroll max-w-[95vw]"
+  >
     <div class="w-full flex flex-row gap-2">
       <template v-for="column in list" :key="column.id">
         <div
-          class="flex flex-col w-80 rounded-md h-fit bg-slate-900/10"
+          class="flex flex-col shrink-0 w-80 rounded-md h-fit bg-slate-900/10"
           :style="{ 'background-color': column.bgColor }"
         >
           <div class="h10 flex flex-row items-baseline p-2 px-4 gap-2">
@@ -12,40 +14,38 @@
               (Сделок: {{ column.list.length }} | {{ column.totalSum }} ₽)
             </small>
           </div>
-          <div class="p-2 pt-0">
-            <draggable
-              class="flex flex-col gap-2 h-full"
-              :list="column.list"
-              group="people"
-              :item-key="id"
-            >
-              <template #item="{ element }">
-                <div
-                  class="p-2 rounded-md cursor-move bg-white flex flex-col gap-1"
-                >
-                  <div class="card-header flex flex-row justify-between">
-                    <h4 class="font-medium">{{ element.name }}</h4>
-                    <span>{{ element.date }}</span>
-                  </div>
-                  <div
-                    class="card-wrapper flex flex-col gap-0.5 leading-5 text-sm"
-                  >
-                    <span class="text-base mb-0.5">
-                      {{ element.responsible }}
-                    </span>
-                    <span>{{ element.castom1 }}</span>
-                    <span>{{ element.castom2 }}</span>
-                    <span>{{ element.castom3 }}</span>
-                    <span>{{ element.castom4 }}</span>
-                    <span>{{ element.castom5 }}</span>
-                  </div>
-                  <div class="card-futter flex flex-row justify-between">
-                    <span> {{ element.sum || 0 }} ₽ </span>
-                  </div>
+          <draggable
+            class="flex flex-col gap-2 h-full p-2 pt-0 overflow-y-scroll max-h-[87vh]"
+            :list="column.list"
+            group="people"
+            :item-key="id"
+          >
+            <template #item="{ element }">
+              <div
+                class="p-2 rounded-md cursor-move bg-white flex flex-col gap-1"
+              >
+                <div class="card-header flex flex-row justify-between">
+                  <h4 class="font-medium">{{ element.name }}</h4>
+                  <span>{{ element.date }}</span>
                 </div>
-              </template>
-            </draggable>
-          </div>
+                <div
+                  class="card-wrapper flex flex-col gap-0.5 leading-5 text-sm"
+                >
+                  <span class="text-base mb-0.5">
+                    {{ element.responsible }}
+                  </span>
+                  <span>{{ element.castom1 }}</span>
+                  <span>{{ element.castom2 }}</span>
+                  <span>{{ element.castom3 }}</span>
+                  <span>{{ element.castom4 }}</span>
+                  <span>{{ element.castom5 }}</span>
+                </div>
+                <div class="card-futter flex flex-row justify-between">
+                  <span> {{ element.sum || 0 }} ₽ </span>
+                </div>
+              </div>
+            </template>
+          </draggable>
         </div>
       </template>
     </div>
