@@ -9,7 +9,9 @@
           :style="{ 'background-color': column.bgColor }"
         >
           <div class="h10 flex flex-row items-baseline p-2 px-4 gap-2">
-            <h2 class="font-semibold text-lg">{{ column.title }}</h2>
+            <h2 class="font-semibold text-lg">
+              {{ column.title }} {{ column.lastVisibleElIdx }}
+            </h2>
             <small class="text-slate-700">
               (Сделок: {{ column.list.length }} | {{ column.totalSum }} ₽)
             </small>
@@ -19,13 +21,23 @@
             :list="column.list"
             group="people"
             :item-key="id"
+            :ref="(ref) => (column.ref = ref)"
           >
-            <template #item="{ element }">
+            <template #item="{ element, index }">
               <div
-                class="p-2 rounded-md cursor-move bg-white flex flex-col gap-1"
+                class="p-2 rounded-md cursor-move bg-white flex flex-col gap-1 calla"
+                :class="{
+                  collapse:
+                    index > column.lastVisibleElIdx + 5 ||
+                    index < column.lastVisibleElIdx - 10,
+                }"
+                :ref="(ref) => (element.visible.ref = ref)"
               >
+                {{ column.needDownloadNext }}
                 <div class="card-header flex flex-row justify-between">
-                  <h4 class="font-medium">{{ element.name }}</h4>
+                  <h4 class="font-medium">
+                    {{ element.name }}
+                  </h4>
                   <span>{{ element.date }}</span>
                 </div>
                 <div
@@ -53,9 +65,10 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import draggable from "vuedraggable";
 import { useColor } from "@/composables/color";
+import { useElementVisibility } from "@vueuse/core";
 export default {
   components: {
     draggable,
@@ -67,6 +80,7 @@ export default {
       {
         id: 1,
         title: "Заголовок 1",
+        ref: null,
         totalSum: computed(() => {
           const item = list.value.find((el) => el.id == 1);
 
@@ -75,6 +89,7 @@ export default {
         list: [
           {
             id: 1,
+            visible: { ref: null, value: null },
             name: "Сделка 11",
             sum: "12999",
             date: "21.07.2022",
@@ -84,6 +99,7 @@ export default {
           },
           {
             id: 2,
+            visible: { ref: null, value: null },
             name: "Сделка 12",
             sum: "750",
             date: "23.07.2022",
@@ -96,6 +112,7 @@ export default {
           },
           {
             id: 3,
+            visible: { ref: null, value: null },
             name: "Сделка 13",
             sum: "1200",
             date: "24.05.2021",
@@ -109,6 +126,7 @@ export default {
       {
         id: 2,
         title: "Заголовок 2",
+        ref: null,
         totalSum: computed(() => {
           const item = list.value.find((el) => el.id == 2);
 
@@ -117,6 +135,7 @@ export default {
         list: [
           {
             id: 1,
+            visible: { ref: null, value: null },
             name: "Сделка 21",
             sum: "1800",
             date: "25.07.2023",
@@ -126,6 +145,7 @@ export default {
           },
           {
             id: 2,
+            visible: { ref: null, value: null },
             name: "Сделка 22",
             sum: "2500",
             date: "26.06.2023",
@@ -133,6 +153,7 @@ export default {
           },
           {
             id: 3,
+            visible: { ref: null, value: null },
             name: "Сделка 23",
             sum: "3500",
             date: "27.06.2023",
@@ -146,14 +167,29 @@ export default {
       {
         id: 3,
         title: "Заголовок 3",
+        ref: null,
         totalSum: computed(() => {
           const item = list.value.find((el) => el.id == 3);
 
           return item.list.reduce((acc, el) => (acc += Number(el.sum)), 0);
         }),
+        lastVisibleElIdx: computed(() => {
+          const item = list.value.find((el) => el.id == 3);
+          const reversed = item.list.toReversed();
+          const last = reversed.find((el) => el.visible.value);
+          const idx = item.list.indexOf(last);
+
+          return idx;
+        }),
+        needDownloadNext: computed(() => {
+          const item = list.value.find((el) => el.id == 3);
+          console.log(item.list.length, item.lastVisibleElIdx);
+          return item.list.length < item.lastVisibleElIdx + 5;
+        }),
         list: [
           {
             id: 1,
+            visible: { ref: null, value: null },
             name: "Сделка 31",
             sum: "4500",
             date: "28.07.2022",
@@ -165,6 +201,7 @@ export default {
           },
           {
             id: 2,
+            visible: { ref: null, value: null },
             name: "Сделка 32",
             sum: "6000",
             date: "29.08.2020",
@@ -175,6 +212,84 @@ export default {
           },
           {
             id: 3,
+            visible: { ref: null, value: null },
+            name: "Сделка 33",
+            sum: "8000",
+            date: "30.09.1200",
+            responsible: "Михаил Федоров",
+            castom1: "Кастомное поле 1",
+            castom2: "Кастомное поле 2",
+            castom5: "Кастомное поле 5",
+          },
+          {
+            id: 3,
+            visible: { ref: null, value: null },
+            name: "Сделка 33",
+            sum: "8000",
+            date: "30.09.1200",
+            responsible: "Михаил Федоров",
+            castom1: "Кастомное поле 1",
+            castom2: "Кастомное поле 2",
+            castom5: "Кастомное поле 5",
+          },
+          {
+            id: 3,
+            visible: { ref: null, value: null },
+            name: "Сделка 33",
+            sum: "8000",
+            date: "30.09.1200",
+            responsible: "Михаил Федоров",
+            castom1: "Кастомное поле 1",
+            castom2: "Кастомное поле 2",
+            castom5: "Кастомное поле 5",
+          },
+          {
+            id: 3,
+            visible: { ref: null, value: null },
+            name: "Сделка 33",
+            sum: "8000",
+            date: "30.09.1200",
+            responsible: "Михаил Федоров",
+            castom1: "Кастомное поле 1",
+            castom2: "Кастомное поле 2",
+            castom5: "Кастомное поле 5",
+          },
+          {
+            id: 3,
+            visible: { ref: null, value: null },
+            name: "Сделка 33",
+            sum: "8000",
+            date: "30.09.1200",
+            responsible: "Михаил Федоров",
+            castom1: "Кастомное поле 1",
+            castom2: "Кастомное поле 2",
+            castom5: "Кастомное поле 5",
+          },
+          {
+            id: 3,
+            visible: { ref: null, value: null },
+            name: "Сделка 33",
+            sum: "8000",
+            date: "30.09.1200",
+            responsible: "Михаил Федоров",
+            castom1: "Кастомное поле 1",
+            castom2: "Кастомное поле 2",
+            castom5: "Кастомное поле 5",
+          },
+          {
+            id: 3,
+            visible: { ref: null, value: null },
+            name: "Сделка 33",
+            sum: "8000",
+            date: "30.09.1200",
+            responsible: "Михаил Федоров",
+            castom1: "Кастомное поле 1",
+            castom2: "Кастомное поле 2",
+            castom5: "Кастомное поле 5",
+          },
+          {
+            id: 3,
+            visible: { ref: null, value: null },
             name: "Сделка 33",
             sum: "8000",
             date: "30.09.1200",
@@ -194,7 +309,43 @@ export default {
     };
     setColors();
 
-    return { list };
+    const list2 = reactive([]);
+    const setVisible = () => {
+      list.value.forEach((col) =>
+        col.list.forEach((item) => {
+          if (item.visible.value === null)
+            item.visible.value = useElementVisibility(item.visible.ref, {
+              scrollTarget: col.ref,
+            });
+        })
+      );
+    };
+    onMounted(() => setVisible());
+
+    watch(
+      () => list,
+      () => {
+        console.log(list.value[2].needDownloadNext);
+        if (list.value[2].needDownloadNext) {
+          for (let i = 0; i < 10; i++)
+            list.value[2].list.push({
+              id: 3,
+              visible: { ref: null, value: null },
+              name: "Сделка 33" + i,
+              sum: "8000",
+              date: "30.09.1200",
+              responsible: "Михаил Федоров",
+              castom1: "Кастомное поле 1",
+              castom2: "Кастомное поле 2",
+              castom5: "Кастомное поле 5",
+            });
+          nextTick(() => setVisible());
+        }
+      },
+      { deep: true }
+    );
+
+    return { list, list2 };
   },
 };
 </script>
