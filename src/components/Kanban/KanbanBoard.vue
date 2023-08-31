@@ -183,7 +183,6 @@ export default {
         }),
         needDownloadNext: computed(() => {
           const item = list.value.find((el) => el.id == 3);
-          console.log(item.list.length, item.lastVisibleElIdx);
           return item.list.length < item.lastVisibleElIdx + 5;
         }),
         list: [
@@ -325,7 +324,6 @@ export default {
     watch(
       () => list,
       () => {
-        console.log(list.value[2].needDownloadNext);
         if (list.value[2].needDownloadNext) {
           for (let i = 0; i < 10; i++)
             list.value[2].list.push({
