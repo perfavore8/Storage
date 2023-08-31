@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4 justify-center items-center w-full">
     <h2 class="font-semibold text-gray-700 w-full text-start h-6"></h2>
     <div
-      class="max-w-md min-w-[40%] w-full text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
+      class="min-w-[40%] w-full text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
     >
       <template v-for="field in fields" :key="field.id">
         <div class="row pb-3" v-if="field.component && field.code !== 'name'">

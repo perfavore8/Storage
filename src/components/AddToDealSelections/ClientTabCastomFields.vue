@@ -4,7 +4,7 @@
       Кастомные поля
     </h2>
     <div
-      class="max-w-md min-w-[40%] w-fit text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
+      class="min-w-[40%] w-fit text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
     >
       <div
         class="flex flex-col pb-3 items-start w-full"
