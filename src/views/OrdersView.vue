@@ -5,7 +5,7 @@
     </div>
     <div class="wrapper">
       <div
-        class="w-full flex justify-between items-center relative"
+        class="filters w-full flex justify-between items-center relative"
         v-if="isTest"
       >
         <div class="absolute left-0 flex flex-row items-end gap-2 h-fit">
@@ -28,6 +28,10 @@
             />
             <label for="hideFinalSteps">Скрыть финальные этапы</label>
           </div>
+          <OrdersKanbanPipelineSelect
+            v-if="displayType.selected.name === 'kanban'"
+            class="absolute -left-full translate-x-full top-full translate-y-[130%]"
+          />
         </div>
         <AppSearchWithFilters
           class="absolute left-1/2 -translate-x-1/2"
@@ -58,6 +62,7 @@ import OrdersFilters from "@/components/OrdersFilters.vue";
 import OrdersGrid from "@/components/OrdersGrid.vue";
 import KanbanBoard from "@/components/Kanban/KanbanBoard.vue";
 import AppSearchWithFilters from "@/components/AppSearchWithFilters.vue";
+import OrdersKanbanPipelineSelect from "@/components/OrdersKanbanPipelineSelect.vue";
 import router from "@/router";
 import store from "@/store";
 import { useRoute } from "vue-router";
@@ -69,6 +74,7 @@ export default {
     OrdersGrid,
     KanbanBoard,
     AppSearchWithFilters,
+    OrdersKanbanPipelineSelect,
   },
   setup() {
     const Route = useRoute();
