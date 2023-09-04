@@ -2,8 +2,12 @@ import { useNewDeal } from "@/composables/newDeal";
 import store from "..";
 import { computed } from "vue";
 import { ApiReqFunc } from "@/composables/ApiReqFunc";
+import { usePreparationOrders } from "@/composables/preporationOrders";
 const { newDealParams, order } = useNewDeal();
 const isTest = computed(() => store.state.account.account?.id === 1);
+
+const { preparationOrder } = usePreparationOrders();
+
 export default {
   state: {
     orders: {},
@@ -16,12 +20,32 @@ export default {
     isLoading: false,
     tableConfig: {},
   },
-  getters: {},
+  getters: {
+    preporatedTableConfig(state) {
+      const list = [];
+      Object.entries(state.tableConfig).forEach(([key, value]) => {
+        list.push({ value: key, code: key.split("_")[1], ...value });
+      });
+      list.map((item) => (item.isOrder = item.value.split("_")[0] === "order"));
+
+      return list;
+    },
+    sortedFilteredTableConfig(state, getters) {
+      return getters.preporatedTableConfig
+        .sort((a, b) => {
+          if (a.sort > b.sort) return 1;
+          if (a.sort == b.sort) return 0;
+          if (a.sort < b.sort) return -1;
+        })
+        .filter((val) => val.visible);
+    },
+  },
   mutations: {
     updateTableConfig(state, value) {
       state.tableConfig = { ...value };
     },
     updateOrders(state, value) {
+      value.map((item) => (item.fieldsForRender = preparationOrder(item)));
       state.orders = [...value];
     },
     updateOrdersFilters(state, value) {
