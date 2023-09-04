@@ -1,23 +1,6 @@
 <template>
-  <div class="main mt-20 relative">
+  <div class="main mt-20 relative overflow-y-scroll">
     <table class="table relative" ref="table" :class="{ blur: isDataLoading }">
-      <div
-        v-if="isTest"
-        @click="openTableSettings()"
-        class="tableSettings absolute top-1 right-1"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 512 512"
-        >
-          <path
-            fill="#757575"
-            d="M495.9 166.6c3.2 8.7.5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4l-55.6 17.8c-8.8 2.8-18.6.3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4c-1.1-8.4-1.7-16.9-1.7-25.5s.6-17.1 1.7-25.4l-43.3-39.4c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160a80 80 0 1 0 0 160z"
-          />
-        </svg>
-      </div>
       <thead>
         <tr class="bar_row">
           <!-- <th class="bar_item item" style="min-width: 17px">
@@ -84,7 +67,7 @@
                 style="padding: 5px 10px 5px 15px"
               >
                 <div class="stat">
-                  <div class="img_wrapper" v-if="row.lead_id">
+                  <div class="img_wrapper" v-if="row.lead_id || true">
                     <a
                       :href="
                         isTest &&
@@ -524,7 +507,9 @@ export default {
               : "",
           stat: statList.find((el) => el.value == order.status)?.name,
           poz: poz.length,
-          img: "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png",
+          img: order.lead_id
+            ? "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png"
+            : require("../assets/favicon.png"),
           list: [...poz],
         };
         products.list.push(obj);
@@ -533,8 +518,6 @@ export default {
     const routeToOrder = (id) => {
       router.push("addToDeal?order_id=" + id);
     };
-
-    const openTableSettings = () => store.commit("open_table_settings");
 
     const refundOrder = async (orderId) => {
       await store.dispatch("refundOrder", { order_id: orderId });
@@ -569,7 +552,6 @@ export default {
       emitParams,
       changePageRow,
       routeToOrder,
-      openTableSettings,
       refundOrder,
       isMain,
       updateList,
@@ -719,19 +701,6 @@ export default {
 .rows-enter-from,
 .rows-leave-to {
   opacity: 0;
-}
-.tableSettings {
-  width: fit-content;
-  height: fit-content;
-  background-color: transparent;
-  padding: 6px;
-  cursor: pointer;
-  margin: 0 auto;
-  border-radius: 50%;
-  transition: all 0.2s ease-out;
-}
-.tableSettings:hover {
-  transform: rotate(90deg) scale(1.1);
 }
 .blur {
   transition: filter 0.2s ease-out;
