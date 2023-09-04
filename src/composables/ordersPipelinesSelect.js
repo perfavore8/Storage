@@ -1,10 +1,14 @@
 import store from "@/store";
+import { computed } from "vue";
 import { reactive } from "vue";
 
 export function useOrdersPipelinesSelect() {
   const pipelines = reactive({
     selected: {},
     list: [],
+    allStatuses: computed(() =>
+      pipelines.list.flatMap((item) => [...item.statuses])
+    ),
     select: function (option) {
       if (option) this.selected = option;
     },
