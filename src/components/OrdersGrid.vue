@@ -509,7 +509,7 @@ export default {
           poz: poz.length,
           img: order.lead_id
             ? "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png"
-            : require("../assets/favicon.png"),
+            : require("../assets/favicon2.png"),
           list: [...poz],
         };
         products.list.push(obj);

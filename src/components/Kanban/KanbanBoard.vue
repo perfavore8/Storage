@@ -53,8 +53,15 @@
                   <span>{{ element.castom4 }}</span>
                   <span>{{ element.castom5 }}</span>
                 </div>
-                <div class="card-futter flex flex-row justify-between">
+                <div
+                  class="card-futter flex flex-row justify-between items-center"
+                >
                   <span> {{ element.sum || 0 }} ₽ </span>
+                  <div class="img_wrapper">
+                    <img src="../../assets/favicon2.png" class="img" />
+
+                    <div class="handle_cross" v-if="false"></div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -361,5 +368,17 @@ export default {
 .blur {
   transition: filter 0.2s ease-out;
   filter: blur(5px);
+}
+.img_wrapper {
+  position: relative;
+  // z-index: -1;
+}
+.img {
+  object-fit: cover;
+  width: 46px;
+  padding: 4px;
+  border: 1px solid #aeaeae;
+  border-radius: 50%;
+  object-fit: scale-down;
 }
 </style>
