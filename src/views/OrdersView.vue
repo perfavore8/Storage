@@ -42,6 +42,14 @@
         <button class="btn btn_dark_blue" @click="addToDeal()">
           Создать заказ
         </button>
+        <button
+          class="sync_icon btn"
+          :disabled="isLocked"
+          @click="updateList()"
+          title="Обновить список"
+        >
+          <span class="material-icons-outlined"> sync </span>
+        </button>
       </div>
       <OrdersFilters v-if="false" />
       <!-- <OrdersGrid ref="grid" /> -->
@@ -67,6 +75,7 @@ import router from "@/router";
 import store from "@/store";
 import { useRoute } from "vue-router";
 import { computed, reactive, ref } from "vue";
+import { useLockBtn } from "@/composables/lockBtn";
 export default {
   components: {
     AppHeader,
@@ -126,7 +135,21 @@ export default {
     });
     displayType.dropToDefault();
 
-    return { addToDeal, isTest, grid, emitParams, displayType };
+    const { isLocked, lockBtn } = useLockBtn();
+    const updateList = () => {
+      lockBtn("timer", 2250);
+      grid.value?.updateList();
+    };
+
+    return {
+      addToDeal,
+      isTest,
+      grid,
+      emitParams,
+      displayType,
+      updateList,
+      isLocked,
+    };
   },
 };
 </script>
@@ -165,5 +188,40 @@ export default {
 .modal-enter-active,
 .modal-leave-active {
   transition: opacity 0.2s ease-out;
+}
+.sync_icon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 70px;
+  right: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: #757575;
+  transform: scaleX(-1);
+  > span {
+    transition: all 0.2s ease-out;
+  }
+}
+.sync_icon:hover {
+  > span {
+    transform: rotateZ(-90deg);
+  }
+}
+.sync_icon:disabled,
+.sync_icon:disabled:hover {
+  @keyframes rotating {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+  > span {
+    animation: rotating 0.75s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+  }
 }
 </style>

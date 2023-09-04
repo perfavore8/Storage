@@ -17,7 +17,7 @@
         />
       </svg>
     </div>
-    <table class="table" ref="table">
+    <table class="table" ref="table" :class="{ blur: isDataLoading }">
       <thead>
         <tr class="bar_row">
           <!-- <th class="bar_item item" style="min-width: 17px">
@@ -81,11 +81,13 @@
                 style="padding: 5px 10px 5px 15px"
               >
                 <div class="stat">
-                  <div class="img_wrapper">
+                  <div class="img_wrapper" v-if="row.lead_id">
                     <a
                       :href="
                         isTest &&
-                        statList.find((el) => el.name === row.stat)?.value !== 3
+                        statList.find((el) => el.name === row.stat)?.value !==
+                          3 &&
+                        row.lead_id
                           ? 'https://' +
                             accountSubdomain +
                             '.amocrm.ru/leads/detail/' +
@@ -325,7 +327,11 @@ export default {
       list: [],
     });
 
-    onMounted(async () => {
+    onMounted(() => {
+      updateList();
+    });
+
+    const updateList = async () => {
       await Promise.all([
         store.dispatch("get_all_fields"),
         store.dispatch("get_account"),
@@ -335,7 +341,7 @@ export default {
       fillPriceCat();
       fillOrders();
       setSelectedProducts();
-    });
+    };
 
     const collsCount = computed(() => products.titles.length);
     const count = computed(() => products.list.length);
@@ -501,6 +507,8 @@ export default {
       fillOrders();
     };
 
+    const isDataLoading = computed(() => store.state.products.isLoading);
+
     return {
       selectedProducts,
       allSelectedProducts,
@@ -529,6 +537,8 @@ export default {
       openTableSettings,
       refundOrder,
       isMain,
+      updateList,
+      isDataLoading,
     };
   },
 };
@@ -687,5 +697,9 @@ export default {
 }
 .tableSettings:hover {
   transform: rotate(90deg) scale(1.1);
+}
+.blur {
+  transition: filter 0.2s ease-out;
+  filter: blur(5px);
 }
 </style>

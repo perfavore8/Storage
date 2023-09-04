@@ -1,6 +1,7 @@
 <template>
   <div
     class="w-fit mt-20 pb-10 mx-auto text-left overflow-x-scroll max-w-[95vw]"
+    :class="{ blur: isDataLoading }"
   >
     <div class="w-full flex flex-row gap-2">
       <template v-for="column in list" :key="column.id">
@@ -69,6 +70,7 @@ import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import draggable from "vuedraggable";
 import { useColor } from "@/composables/color";
 import { useElementVisibility } from "@vueuse/core";
+import store from "@/store";
 export default {
   components: {
     draggable,
@@ -343,7 +345,11 @@ export default {
       { deep: true }
     );
 
-    return { list, list2 };
+    const updateList = () => {};
+
+    const isDataLoading = computed(() => store.state.products.isLoading);
+
+    return { list, list2, isDataLoading, updateList };
   },
 };
 </script>
@@ -351,5 +357,9 @@ export default {
 <style lang="scss" scoped>
 .sortable-ghost {
   @apply bg-slate-50 text-slate-400 border-slate-400/50;
+}
+.blur {
+  transition: filter 0.2s ease-out;
+  filter: blur(5px);
 }
 </style>
