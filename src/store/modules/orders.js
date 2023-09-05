@@ -79,15 +79,20 @@ export default {
   },
   actions: {
     async getOrders(context, params) {
+      const dontSaveMeta = params.dontSaveMeta;
+      delete params.dontSaveMeta;
       context.commit("updateIsLoading", true);
       const { data } = await ApiReqFunc({
         url: isTest.value ? "orders/list-v2" : "orders/list",
         method: "post",
         data: params,
       });
+
       context.commit("updateOrders", data.data);
-      context.commit("updateMeta", data);
+      if (!dontSaveMeta) context.commit("updateMeta", data);
       context.commit("updateIsLoading", false);
+
+      return data;
     },
 
     async getOrdersTypes(context) {

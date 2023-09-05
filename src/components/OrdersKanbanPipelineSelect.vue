@@ -2,6 +2,7 @@
   <AppInputSelect
     :list="pipelines.list"
     :selected="pipelines.selected"
+    :SelectedInTitle="true"
     @select="(op) => pipelines.select(op)"
   />
 </template>

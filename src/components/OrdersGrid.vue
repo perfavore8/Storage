@@ -525,7 +525,7 @@ export default {
       fillOrders();
     };
 
-    const isDataLoading = computed(() => store.state.products.isLoading);
+    const isDataLoading = computed(() => store.state.orders.isLoading);
 
     return {
       selectedProducts,
