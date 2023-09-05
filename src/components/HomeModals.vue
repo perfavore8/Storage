@@ -1,7 +1,10 @@
 <template>
   <transition name="modal_window">
     <div v-if="show_table_settings" class="table_setings">
-      <table-settings :selectedWH="selectedWH" />
+      <table-settings
+        :selectedWH="selectedWH"
+        :maxCountSelected="selectedWH.maxCountSelected"
+      />
     </div>
   </transition>
   <transition name="modal_window">

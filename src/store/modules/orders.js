@@ -19,6 +19,7 @@ export default {
     },
     isLoading: false,
     tableConfig: {},
+    kanBanTableConfig: {},
   },
   getters: {
     preporatedTableConfig(state) {
@@ -43,6 +44,9 @@ export default {
   mutations: {
     updateTableConfig(state, value) {
       state.tableConfig = { ...value };
+    },
+    updateKanBanTableConfig(state, value) {
+      state.kanBanTableConfig = { ...value };
     },
     updateOrders(state, value) {
       value.map((item) => (item.fieldsForRender = preparationOrder(item)));
@@ -310,6 +314,32 @@ export default {
       context.dispatch("getOrdersFields");
 
       return data;
+    },
+
+    async getOrdersKanBanTableConfig(context) {
+      const { data } = await ApiReqFunc({
+        url: "orders/table-config",
+      });
+      context.commit("updateKanBanTableConfig", data);
+
+      return data;
+    },
+    async updateOrdersKanBanConfigTable(context, params) {
+      const { data } = await ApiReqFunc({
+        url: "account/update",
+        method: "post",
+        data: params,
+      });
+      await context.dispatch("get_account");
+
+      return data;
+    },
+    async updateOrderStatus(context, params) {
+      await ApiReqFunc({
+        url: "orders/update",
+        method: "post",
+        data: params,
+      });
     },
   },
 };

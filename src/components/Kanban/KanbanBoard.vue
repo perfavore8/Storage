@@ -34,12 +34,19 @@
                     index < column.lastVisibleElIdx - 10,
                 }"
                 :ref="(ref) => (element.visible.ref = ref)"
-                @dragend="() => move(element)"
+                @dragend="() => move()"
+                @dragstart="() => saveDragEl(element)"
               >
                 <div class="card-header flex flex-row justify-between">
-                  <h4 class="font-medium">
-                    {{ element.fieldsForRender.order_name }}
-                  </h4>
+                  <a
+                    target="_self"
+                    class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline cursor-pointer"
+                    @click="routeToOrder(element.id)"
+                  >
+                    <h4 class="font-medium">
+                      {{ element.fieldsForRender.order_name }}
+                    </h4>
+                  </a>
                   <span>{{ element.fieldsForRender.order_created_at }}</span>
                 </div>
                 <div
@@ -48,11 +55,9 @@
                   <span class="text-base mb-0.5">
                     {{ element.fieldsForRender.order_responsible }}
                   </span>
-                  <span>{{ element.castom1 }}</span>
-                  <span>{{ element.castom2 }}</span>
-                  <span>{{ element.castom3 }}</span>
-                  <span>{{ element.castom4 }}</span>
-                  <span>{{ element.castom5 }}</span>
+                  <span v-for="castomField in castomFields" :key="castomField">
+                    {{ element.fieldsForRender?.[castomField] }}
+                  </span>
                 </div>
                 <div
                   class="card-futter flex flex-row justify-between items-center"
@@ -81,12 +86,13 @@
 </template>
 
 <script>
-import { computed, nextTick, onMounted, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import draggable from "vuedraggable";
 import { useColor } from "@/composables/color";
 import { useElementVisibility, watchThrottled } from "@vueuse/core";
 import store from "@/store";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
+import router from "@/router";
 export default {
   components: {
     draggable,
@@ -205,12 +211,37 @@ export default {
 
     const isDataLoading = computed(() => store.state.orders.isLoading);
 
+    const savedDragEl = ref(null);
+    const saveDragEl = (el) => {
+      savedDragEl.value = el;
+    };
+
     const move = () => {
+      const col = pipelines.selected.statuses.find((el) =>
+        el.res.data.includes(savedDragEl.value)
+      );
+
+      if (col && savedDragEl.value) {
+        store.dispatch("updateOrderStatus", {
+          order_id: savedDragEl.value.id,
+          status: col.id,
+        });
+      }
+
       pipelines.selected.statuses.forEach((stat) => {
         stat.res.data.map((el) => (el.visible.value = null));
       });
 
       nextTick(() => setVisible());
+      savedDragEl.value = null;
+    };
+
+    const castomFields = computed(
+      () => store.state.account.account?.config?.kanBanConfig
+    );
+
+    const routeToOrder = (id) => {
+      router.push("addToDeal?order_id=" + id);
     };
 
     return {
@@ -220,6 +251,9 @@ export default {
       orders,
       pipelines,
       move,
+      saveDragEl,
+      castomFields,
+      routeToOrder,
     };
   },
 };

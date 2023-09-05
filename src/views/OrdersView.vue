@@ -1,7 +1,14 @@
 <template>
   <div class="app">
     <div class="header">
-      <AppHeader :selectedWH="{ name: 'Заказы', value: 'orders' }" />
+      <AppHeader
+        :selectedWH="{
+          name: 'Заказы',
+          value:
+            displayType.selected.name === 'kanban' ? 'ordersKanBan' : 'orders',
+          maxCountSelected: displayType.selected.name === 'kanban' ? 5 : 999999,
+        }"
+      />
     </div>
     <div class="wrapper">
       <div

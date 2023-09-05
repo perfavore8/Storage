@@ -56,7 +56,15 @@ export default {
 
   setup(props) {
     const { currentConfig: config } = useTableSettingsConfig(
-      props.selectedWH.value === "orders" ? "orders" : "stock"
+      props.selectedWH.value === "orders"
+        ? "orders"
+        : props.selectedWH.value === "ordersKanBan"
+        ? "ordersKanBan"
+        : "stock"
+    );
+
+    const kanBanConfig = computed(
+      () => store.state.account.account?.config?.kanBanConfig
     );
 
     const list = ref([]);
@@ -87,10 +95,13 @@ export default {
         preparedTC.push(value);
       });
       list.value = JSON.parse(JSON.stringify(preparedTC));
+      if (config.value.special) await store.dispatch("get_account");
       list.value.map(
         (item) =>
           (item.visible = {
-            value: Boolean(item.visible),
+            value: config.value.special
+              ? kanBanConfig.value.includes(item.code)
+              : Boolean(item.visible),
             disabled: item.visible === 2 || item.visible === -1,
           })
       );
@@ -98,6 +109,7 @@ export default {
 
     const save = () => {
       list.value.map((val, idx) => (val.sort = idx + 1));
+
       const params = {
         value: {
           config: [],
@@ -108,7 +120,10 @@ export default {
       list.value.forEach((val) => {
         if (val.visible.value) params.value.config.push(val.code);
       });
-      store.dispatch(config.value.updateStateReqName, params);
+      store.dispatch(
+        config.value.updateStateReqName,
+        config.value.special ? { kanBanConfig: params.value.config } : params
+      );
       close();
     };
     const close = () => {

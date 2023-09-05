@@ -10,6 +10,14 @@ export function useTableSettingsConfig(code) {
       updateStateReqName: "updateOrdersConfigTable",
       haveWH: false,
     },
+    ordersKanBan: {
+      stateName: "orders",
+      stateConfigField: "kanBanTableConfig",
+      getStateReqName: "getOrdersKanBanTableConfig",
+      updateStateReqName: "updateOrdersKanBanConfigTable",
+      haveWH: false,
+      special: true,
+    },
     stock: {
       stateName: "account",
       stateConfigField: "tableConfig",
