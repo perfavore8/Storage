@@ -91,8 +91,9 @@ import OrdersKanbanPipelineSelect from "@/components/OrdersKanbanPipelineSelect.
 import router from "@/router";
 import store from "@/store";
 import { useRoute } from "vue-router";
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useLockBtn } from "@/composables/lockBtn";
+import { useToggle } from "@vueuse/core";
 export default {
   components: {
     AppHeader,
@@ -112,8 +113,7 @@ export default {
     const addToDeal = () => router.push("/addToDeal");
 
     const grid = ref(null);
-    const emitParams = (params) =>
-      console.log(1) || grid.value.emitParams(params);
+    const emitParams = (params) => grid.value.emitParams(params);
 
     const displayType = reactive({
       selected: {},
@@ -160,6 +160,14 @@ export default {
 
     const openTableSettings = () => store.commit("open_table_settings");
 
+    const [hideFinalSteps] = useToggle(false);
+    watch(hideFinalSteps, () => {
+      store.commit("updateOrdersFilters", {
+        hide_final_statuses: hideFinalSteps.value,
+      });
+      grid.value?.updateList();
+    });
+
     return {
       addToDeal,
       isTest,
@@ -169,6 +177,7 @@ export default {
       updateList,
       isLocked,
       openTableSettings,
+      hideFinalSteps,
     };
   },
 };
