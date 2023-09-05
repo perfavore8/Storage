@@ -122,7 +122,7 @@ export default {
           name: "grid",
           component: "OrdersGrid",
           default: true,
-          icon: " grid_view",
+          icon: "format_list_bulleted",
         },
         {
           name: "kanban",
