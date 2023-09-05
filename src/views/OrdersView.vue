@@ -15,7 +15,7 @@
         class="filters w-full flex justify-between items-center relative"
         v-if="isTest"
       >
-        <div class="absolute left-0 flex flex-row items-end gap-2 h-fit">
+        <div class="flex flex-row items-center gap-2 h-fit basis-1/3">
           <button class="cursor-pointer h-7" @click="displayType.selectNext()">
             <transition name="modal" mode="out-in" :duration="100">
               <span
@@ -26,6 +26,9 @@
               </span>
             </transition>
           </button>
+          <OrdersKanbanPipelineSelect
+            v-if="displayType.selected.name === 'kanban'"
+          />
           <div class="flex items-center" v-if="isMain || isTest">
             <input
               type="checkbox"
@@ -35,20 +38,18 @@
             />
             <label for="hideFinalSteps">Скрыть финальные этапы</label>
           </div>
-          <OrdersKanbanPipelineSelect
-            v-if="displayType.selected.name === 'kanban'"
-            class="absolute -left-full translate-x-full top-full translate-y-[130%]"
-          />
         </div>
         <AppSearchWithFilters
-          class="absolute left-1/2 -translate-x-1/2"
+          class="grow basis-1/3"
           :setOfInstructions="'orders'"
           :key="selectedTabComp"
           @emitParams="emitParams"
         />
-        <button class="btn btn_dark_blue" @click="addToDeal()">
-          Создать заказ
-        </button>
+        <div class="basis-1/3 flex justify-end">
+          <button class="btn btn_dark_blue" @click="addToDeal()">
+            Создать заказ
+          </button>
+        </div>
         <div
           class="absolute top-[70px] right-0 flex flex-row gap-3 items-center"
         >
@@ -216,6 +217,9 @@ export default {
       justify-content: space-between;
     }
   }
+}
+.grid {
+  grid-template-columns: 1fr auto 1fr;
 }
 .wrapper {
   margin-top: 80px;
