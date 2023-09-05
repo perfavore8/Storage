@@ -101,6 +101,7 @@ import store from "@/store";
 import { useRoute } from "vue-router";
 import { computed, reactive, ref, watch } from "vue";
 import { useLockBtn } from "@/composables/lockBtn";
+import { useSaveLS } from "@/composables/saveLS";
 import { useToggle } from "@vueuse/core";
 export default {
   components: {
@@ -117,6 +118,8 @@ export default {
       () =>
         store.state.account?.account?.id == 1 || Route?.query?.test === "test"
     );
+    const { saveAllQueryParams, saveLSParam, getSavedLSParam } = useSaveLS();
+    saveAllQueryParams();
 
     const addToDeal = () => router.push("/addToDeal");
 
@@ -140,6 +143,7 @@ export default {
       ],
       select: function (option) {
         this.selected = option;
+        saveLSParam("ordersDT", this.selected.name);
       },
       nextItem: computed(() => {
         const item = displayType.list.find((el) => el == displayType.selected);
@@ -157,8 +161,15 @@ export default {
         if (!item) return;
         this.select(item);
       },
+      dropToSaved: function () {
+        const savedName = getSavedLSParam("ordersDT");
+        const item = this.list.find((el) => el.name === savedName);
+        if (!item) this.dropToDefault();
+        this.select(item);
+        return true;
+      },
     });
-    displayType.dropToDefault();
+    displayType.dropToSaved();
 
     const { isLocked, lockBtn } = useLockBtn();
     const updateList = () => {
