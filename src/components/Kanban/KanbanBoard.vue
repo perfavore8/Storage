@@ -11,10 +11,11 @@
         >
           <div class="h10 flex flex-row items-baseline p-2 px-4 gap-2">
             <h2 class="font-semibold text-lg">
-              {{ column.name }} {{ column.lastVisibleElIdx }}
+              {{ column.name }}
             </h2>
             <small class="text-slate-700">
-              (Сделок: {{ column?.res?.total }} | {{ column.totalSum }} ₽)
+              (Сделок: {{ column?.res?.total }}{{ column?.res?.data?.length }} |
+              {{ column.totalSum }} ₽)
             </small>
           </div>
           <draggable
@@ -27,20 +28,18 @@
           >
             <template #item="{ element, index }">
               <div
-                class="p-2 rounded-md cursor-move bg-white flex flex-col gap-1 calla"
+                class="p-2 rounded-md cursor-move bg-white flex flex-col gap-1"
                 :class="{
                   collapse:
-                    (index > column.lastVisibleElIdx + 5 ||
-                      index < column.lastVisibleElIdx - 10) &&
-                    false,
+                    index > column.lastVisibleElIdx + 5 ||
+                    index < column.lastVisibleElIdx - 10,
                 }"
                 :ref="(ref) => (element.visible.ref = ref)"
+                @dragend="() => move(element)"
               >
-                {{ column.needDownloadNext }}
                 <div class="card-header flex flex-row justify-between">
                   <h4 class="font-medium">
                     {{ element.fieldsForRender.order_name }}
-                    {{ element.visible.value }}
                   </h4>
                   <span>{{ element.fieldsForRender.order_created_at }}</span>
                 </div>
@@ -86,7 +85,7 @@
 import { computed, nextTick, onMounted, watch } from "vue";
 import draggable from "vuedraggable";
 import { useColor } from "@/composables/color";
-import { useElementVisibility } from "@vueuse/core";
+import { useElementVisibility, watchThrottled } from "@vueuse/core";
 import store from "@/store";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 export default {
@@ -187,9 +186,10 @@ export default {
       );
     };
 
-    watch(
+    watchThrottled(
       () => pipelines.selected.statuses,
       () => {
+        console.log(0);
         pipelines.selected.statuses.forEach(async (stat) => {
           if (stat.needDownloadNext && !stat.isLoading) {
             await addStatusesList(stat);
@@ -197,7 +197,7 @@ export default {
           }
         });
       },
-      { deep: true }
+      { deep: true, throttle: 500 }
     );
 
     watch(
@@ -207,12 +207,21 @@ export default {
 
     const isDataLoading = computed(() => store.state.orders.isLoading);
 
+    const move = () => {
+      pipelines.selected.statuses.forEach((stat) => {
+        stat.res.data.map((el) => (el.visible.value = null));
+      });
+
+      nextTick(() => setVisible());
+    };
+
     return {
       isDataLoading,
       updateList,
       params,
       orders,
       pipelines,
+      move,
     };
   },
 };
