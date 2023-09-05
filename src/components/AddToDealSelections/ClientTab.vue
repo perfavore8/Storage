@@ -59,7 +59,6 @@ export default {
         item.fields.length ? null : store.dispatch(item.getFieldsUrl)
       );
     });
-    setTimeout(() => console.log(order), 1000);
 
     const list = reactive([
       {
