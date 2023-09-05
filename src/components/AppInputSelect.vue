@@ -14,7 +14,9 @@
       "
     />
     <template v-if="showList">
-      <div class="backdrop" @click="closeList()" />
+      <Teleport to="body">
+        <div class="backdrop" @click="closeList()" />
+      </Teleport>
       <transition-group name="list">
         <template v-if="list.length">
           <ul class="list">
