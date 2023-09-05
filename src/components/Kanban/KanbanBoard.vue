@@ -14,8 +14,7 @@
               {{ column.name }}
             </h2>
             <small class="text-slate-700">
-              (Сделок: {{ column?.res?.total }}{{ column?.res?.data?.length }} |
-              {{ column.totalSum }} ₽)
+              (Сделок: {{ column?.res?.total }} | {{ column.totalSum }} ₽)
             </small>
           </div>
           <draggable
@@ -189,7 +188,6 @@ export default {
     watchThrottled(
       () => pipelines.selected.statuses,
       () => {
-        console.log(0);
         pipelines.selected.statuses.forEach(async (stat) => {
           if (stat.needDownloadNext && !stat.isLoading) {
             await addStatusesList(stat);
