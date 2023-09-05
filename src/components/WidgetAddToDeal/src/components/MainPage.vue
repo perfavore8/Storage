@@ -72,7 +72,7 @@
             </div>
             <div class="spinner" v-if="showSpinner">
               <img
-                src="https://warehouse2.salesup.pro/images/spinner.gif"
+                src="https://usagif.com/wp-content/uploads/loading-58.gif.webp"
                 alt="spinner"
               />
             </div>
