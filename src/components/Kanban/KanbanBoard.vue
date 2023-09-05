@@ -163,6 +163,7 @@ export default {
     };
 
     onMounted(async () => {
+      await store.dispatch("getOrdersTableConfig");
       updateList();
     });
 
