@@ -375,6 +375,10 @@ import AppInputSelect from "./AppInputSelect.vue";
 import FiltersModal from "./FiltersModal.vue";
 import AppPaginator from "./AppPaginator.vue";
 import ProductCard from "./ProductCard.vue";
+import { useNewDeal } from "@/composables/newDeal";
+
+const { order } = useNewDeal();
+
 export default {
   components: {
     AppInputSelect,
@@ -601,7 +605,7 @@ export default {
       }
     },
     async updateAddedProducts() {
-      const order = await this.$store.dispatch("getOrder");
+      // const order = await this.$store.dispatch("getOrder");
       order.positions?.forEach((item) =>
         !this.addedProductsId.includes(item.id)
           ? this.addedProducts.push(item)
@@ -707,7 +711,11 @@ export default {
         });
     },
     change_value(idx, value, code) {
-      this.addedProducts[idx][code] = value;
+      if (this.addedProducts[idx][code] !== undefined) {
+        this.addedProducts[idx][code] = value;
+      } else {
+        this.addedProducts[idx].fields[code] = value;
+      }
     },
     checkSave() {
       this.$store.dispatch("updateOrder", {
