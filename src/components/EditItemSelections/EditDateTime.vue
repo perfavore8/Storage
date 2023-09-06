@@ -90,12 +90,12 @@ export default {
     option_select(value) {
       const date = this.refactorDate2(value);
 
-      if (
-        Date.parse(
-          this.refactorDate2(this.selected_option?.replace(".000000Z", ""))
-        ) == Date.parse(date)
-      )
-        return;
+      const parse1 = Date.parse(
+        this.refactorDate2(this.selected_option?.replace(".000000Z", ""))
+      );
+      const parse2 = Date.parse(date);
+
+      if (parse1 == parse2 || (isNaN(parse1) && isNaN(parse2))) return;
       this.$emit("change_value", date, this.idx);
     },
   },
