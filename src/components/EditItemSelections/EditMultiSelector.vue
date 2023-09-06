@@ -1,21 +1,20 @@
 <template>
   <div class="row">
     <label>{{ item.name }}:</label>
-    <multi-selector
-      :options_props="preparing_field_data(item.data)"
-      @select="option_select"
-      :selected_options="copy_selected_options"
+    <AppMultiSelect
+      :list="copy_selected_options"
       :disabled="disabled"
+      @select="option_select"
     />
   </div>
 </template>
 
 <script>
 import { nextTick } from "vue";
-import MultiSelector from "@/components/MultiSelector.vue";
+import AppMultiSelect from "../AppMultiSelect.vue";
 export default {
   components: {
-    MultiSelector,
+    AppMultiSelect,
   },
   props: {
     item: {
@@ -59,28 +58,24 @@ export default {
   },
   methods: {
     change_value() {
-      let a = [];
       nextTick(() => {
-        let split_selected_options = [];
-        if (this.selected_options != undefined)
-          split_selected_options = this.selected_options.split(", ");
-        this.item.data?.forEach((val) => {
-          split_selected_options.includes(val) ? a.push(true) : a.push(false);
-        });
         this.copy_selected_options = [];
-        this.copy_selected_options = [...a];
+        const split_selected_options = this.selected_options?.split(", ");
+
+        this.item.data?.forEach((val, idx) => {
+          this.copy_selected_options.push({
+            name: val,
+            value: idx,
+            selected: split_selected_options.includes(val),
+          });
+        });
       });
     },
-    preparing_field_data(arr) {
-      const result = [];
-      if (arr)
-        arr.forEach((val, idx) => result.push({ name: val, value: idx }));
-      return result;
-    },
     option_select(value) {
+      value.selected = !value.selected;
       let a = [];
-      value.forEach((val, index) => {
-        val ? a.push(this.item.data[index]) : null;
+      this.copy_selected_options.forEach((val) => {
+        if (val.selected) a.push(val.name);
       });
       a = a.join(", ");
       this.$emit("change_value", a, this.idx);
