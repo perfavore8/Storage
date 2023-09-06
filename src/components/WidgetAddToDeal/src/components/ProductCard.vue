@@ -164,7 +164,9 @@ export default {
     const WHS = computed(() => {
       const arr = [];
       props.fields.forEach((field) =>
-        field.type === 13
+        field.type === 13 &&
+        Boolean(field.lead_config?.editable) &&
+        field.code !== "whs"
           ? arr.push({ name: field.name, value: field.code })
           : null
       );
