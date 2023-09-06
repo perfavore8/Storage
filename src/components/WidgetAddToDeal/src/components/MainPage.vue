@@ -72,6 +72,7 @@
             </div>
             <div class="spinner" v-if="showSpinner">
               <img
+                class="w-12 h-12"
                 src="https://usagif.com/wp-content/uploads/loading-58.gif.webp"
                 alt="spinner"
               />
