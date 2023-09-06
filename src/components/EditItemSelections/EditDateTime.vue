@@ -54,7 +54,8 @@ export default {
       this.change_value();
     },
     copy_selected_option() {
-      this.option_select(this.copy_selected_option);
+      if (this.selected_option != this.copy_selected_option)
+        this.option_select(this.copy_selected_option);
     },
   },
   methods: {
