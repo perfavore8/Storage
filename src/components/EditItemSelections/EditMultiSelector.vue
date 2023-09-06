@@ -2,7 +2,7 @@
   <div class="row">
     <label>{{ item.name }}:</label>
     <AppMultiSelect
-      :list="copy_selected_options"
+      :list="copy_selected_option"
       :disabled="disabled"
       @select="option_select"
     />
@@ -24,7 +24,7 @@ export default {
         return {};
       },
     },
-    selected_options: {
+    selected_option: {
       type: String,
       required: true,
       default() {
@@ -45,28 +45,29 @@ export default {
   },
   data() {
     return {
-      copy_selected_options: [],
+      copy_selected_option: [],
     };
   },
   mounted() {
+    console.log(this.selected_option);
     this.change_value();
   },
   watch: {
-    selected_options() {
+    selected_option() {
       this.change_value();
     },
   },
   methods: {
     change_value() {
       nextTick(() => {
-        this.copy_selected_options = [];
-        const split_selected_options = this.selected_options?.split(", ");
+        this.copy_selected_option = [];
+        const split_selected_option = this.selected_option?.split(", ");
 
         this.item.data?.forEach((val, idx) => {
-          this.copy_selected_options.push({
+          this.copy_selected_option.push({
             name: val,
             value: idx,
-            selected: split_selected_options.includes(val),
+            selected: split_selected_option.includes(val),
           });
         });
       });
@@ -74,7 +75,7 @@ export default {
     option_select(value) {
       value.selected = !value.selected;
       let a = [];
-      this.copy_selected_options.forEach((val) => {
+      this.copy_selected_option.forEach((val) => {
         if (val.selected) a.push(val.name);
       });
       a = a.join(", ");

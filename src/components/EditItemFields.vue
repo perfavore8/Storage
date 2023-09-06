@@ -42,7 +42,7 @@
     />
     <edit-multi-selector
       :item="field"
-      :selected_options="new_edit_data.fields[field.code]"
+      :selected_option="new_edit_data.fields[field.code]"
       :idx="field.code"
       :disabled="!field.is_editable"
       @change_value="change_value"
