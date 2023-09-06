@@ -472,6 +472,18 @@ export default {
       return this.meta.meta.from === this.meta.meta.to;
     },
     total() {
+      function formatNumber(number) {
+        let parts = number.toString().split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        if (parts.length > 1) {
+          parts[1] = parts[1].substring(0, 2);
+          parts.push(",");
+        } else {
+          parts.push(", 00");
+        }
+        return parts.join("");
+      }
+
       const res = {
         cost_price: 0,
         price: 0,
@@ -480,15 +492,24 @@ export default {
         price_currency: "",
       };
       this.addedProducts.forEach((prod) => {
-        res.cost_price += prod.cost_price * prod.count;
-        res.price += prod.price * prod.count;
-        res.prib += prod.price * prod.count - prod.cost_price * prod.count;
-        res.user_name = prod.user_name;
-        res.price_currency = prod.price_currency;
+        res.cost_price +=
+          Number(
+            prod.fields?.cost_price || prod?.product?.fields?.cost_price || 0
+          ) * Number(prod.count || 0);
+        res.price += Number(prod.price || 0) * Number(prod.count || 0);
+        res.prib +=
+          Number(prod.price || 0) * Number(prod.count || 0) -
+          Number(
+            prod.fields?.cost_price || prod?.product?.fields?.cost_price || 0
+          ) *
+            Number(prod.count || 0);
+        if (prod.user_name) res.user_name = prod.user_name;
+        res.price_currency = prod.price_currency || "";
       });
-      res.cost_price += " " + res.price_currency;
-      res.price += " " + res.price_currency;
-      res.prib += " " + res.price_currency;
+      res.cost_price =
+        String(formatNumber(res.cost_price)) + " " + res.price_currency;
+      res.price = String(formatNumber(res.price)) + " " + res.price_currency;
+      res.prib = String(formatNumber(res.prib)) + " " + res.price_currency;
       return res;
     },
   },
