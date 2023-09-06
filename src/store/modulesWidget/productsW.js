@@ -154,6 +154,22 @@ export default {
 
       return json;
     },
+    async deleteProductW(context, params) {
+      const url = BaseURL + "orders/product/delete";
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: getTOKEN(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...params, order_id: newDealParams.id }),
+      });
+      const json = await res.json();
+      toggleSomeChange(true);
+
+      return json;
+    },
     async addProductW(context, params) {
       context.commit("updateDisableAddToDeal", true);
       const url = BaseURL + "orders/product/add";

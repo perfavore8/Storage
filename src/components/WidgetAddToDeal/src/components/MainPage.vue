@@ -715,6 +715,9 @@ export default {
       });
     },
     deleteAddedProduct(idx) {
+      this.$store.dispatch("deleteProductW", {
+        product_id: this.addedProducts[idx].id,
+      });
       this.addedProducts.splice(idx, 1);
     },
   },
