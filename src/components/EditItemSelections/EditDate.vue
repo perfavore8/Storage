@@ -77,6 +77,7 @@ export default {
         split[0] = split[0].split("-").reverse().join(".");
         date = split.join(" ");
       }
+      if (this.selected_option == date) return;
       this.$emit("change_value", date, this.idx);
     },
   },

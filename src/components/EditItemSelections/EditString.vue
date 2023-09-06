@@ -64,6 +64,7 @@ export default {
       });
     },
     option_select(value) {
+      if (this.selected_option == this.copy_selected_option) return;
       this.$emit("change_value", value, this.idx);
     },
   },

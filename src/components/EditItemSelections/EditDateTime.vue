@@ -54,29 +54,48 @@ export default {
       this.change_value();
     },
     copy_selected_option() {
-      if (this.selected_option != this.copy_selected_option)
-        this.option_select(this.copy_selected_option);
+      this.option_select(this.copy_selected_option);
     },
   },
   methods: {
     change_value() {
-      const split = this.selected_option?.split(" ");
-      let date = this.selected_option;
+      nextTick(() => {
+        this.copy_selected_option = this.refactorDate(this.selected_option);
+      });
+    },
+    refactorDate(value) {
+      const split = value?.split(" ");
+      let date = value;
       if (split) {
         split[0] = split[0].split(".").reverse().join("-");
         date = split.join("T");
       }
-      nextTick(() => {
-        this.copy_selected_option = date;
-      });
+
+      return date;
     },
-    option_select(value) {
+    refactorDate2(value) {
       const split = value?.split("T");
       let date = value;
       if (split) {
-        split[0] = split[0].split("-").reverse().join(".");
+        split[0] = split[0]
+          .split("-")
+          .reverse()
+          .join(".")
+          .replace(".000000Z", "");
         date = split.join(" ");
       }
+
+      return date;
+    },
+    option_select(value) {
+      const date = this.refactorDate2(value);
+
+      if (
+        Date.parse(
+          this.refactorDate2(this.selected_option?.replace(".000000Z", ""))
+        ) == Date.parse(date)
+      )
+        return;
       this.$emit("change_value", date, this.idx);
     },
   },

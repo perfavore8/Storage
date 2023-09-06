@@ -114,6 +114,7 @@ import {
 } from "@vueuse/core";
 import { computed, ref } from "vue";
 import { useAddToDealTabs } from "@/composables/addToDealTabs";
+import { useNewDeal } from "@/composables/newDeal";
 export default {
   components: {
     EditInteger,
@@ -132,9 +133,11 @@ export default {
   },
   setup(props, context) {
     const { isProductTab } = useAddToDealTabs();
+    const { toggleSomeChange } = useNewDeal();
 
-    const change_value = (value, code) =>
-      context.emit("change_value", value, code);
+    const change_value = (value, code) => (
+      context.emit("change_value", value, code), toggleSomeChange(true)
+    );
 
     const target = ref(null);
     const { y: targetY } = useElementBounding(target);

@@ -79,6 +79,7 @@ export default {
       return result;
     },
     option_select(value) {
+      if (this.selected_option == value.name) return;
       this.$emit("change_value", value.name, this.idx, value.value);
     },
   },
