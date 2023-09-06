@@ -33,6 +33,7 @@ export function useNewDeal() {
           "Сохранение заказа ...",
           `${order.fields?.name} успешно сохранен`
         );
+      toggleSomeChange(false);
     });
   });
 
