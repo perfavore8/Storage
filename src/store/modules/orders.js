@@ -20,6 +20,7 @@ export default {
     isLoading: false,
     tableConfig: {},
     kanBanTableConfig: {},
+    pipelines: [],
   },
   getters: {
     preporatedTableConfig(state) {
@@ -64,6 +65,9 @@ export default {
     },
     updateOrdersTypes(state, value) {
       Object.assign(state.types, value);
+    },
+    updatePipelines(state, value) {
+      state.pipelines = [...value];
     },
     updateOrdersFields(state, value) {
       const componentsList = {
@@ -237,6 +241,7 @@ export default {
         url: "orders/pipelines/list",
         params: params,
       });
+      context.commit("updatePipelines", data);
 
       return data;
     },
