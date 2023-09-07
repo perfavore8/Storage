@@ -99,7 +99,7 @@
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 import draggable from "vuedraggable";
 import { useColor } from "@/composables/color";
-import { useElementVisibility, watchThrottled } from "@vueuse/core";
+import { useElementVisibility, useToggle, watchThrottled } from "@vueuse/core";
 import store from "@/store";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import router from "@/router";
@@ -115,12 +115,14 @@ export default {
     const orders = computed(() => store.state.orders.orders);
 
     const getStatusesLists = async () => {
+      toggleIsDataLoading2(true);
       await startPromise;
       const promiseList = [];
       pipelines.selected.statuses.forEach((stat) => {
         promiseList.push(getStatusesList(stat));
       });
       await Promise.all(promiseList);
+      toggleIsDataLoading2(false);
     };
 
     const getStatusesList = async (stat) => {
@@ -220,7 +222,10 @@ export default {
       () => updateList()
     );
 
-    const isDataLoading = computed(() => store.state.orders.isLoading);
+    const [isDataLoading2, toggleIsDataLoading2] = useToggle(false);
+    const isDataLoading = computed(
+      () => store.state.orders.isLoading || isDataLoading2.value
+    );
 
     const savedDragEl = ref(null);
     const saveDragEl = (el) => {
@@ -255,6 +260,11 @@ export default {
       router.push("addToDeal?order_id=" + id);
     };
 
+    const emitParams = (params) => {
+      store.commit("updateOrdersFilters", params);
+      updateList();
+    };
+
     return {
       isDataLoading,
       updateList,
@@ -265,6 +275,7 @@ export default {
       saveDragEl,
       castomFields,
       routeToOrder,
+      emitParams,
     };
   },
 };
