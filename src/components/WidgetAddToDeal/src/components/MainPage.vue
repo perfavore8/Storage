@@ -125,8 +125,8 @@
                   <template v-if="!useSkeletonCard">
                     <div
                       class="card"
-                      :class="{ card__flip: flip[idx] }"
-                      @click="flip[idx] = !flip[idx]"
+                      :class="{ card__flip: !flip[idx] }"
+                      @click="false && (flip[idx] = !flip[idx])"
                       v-for="(product, idx) in products"
                       :key="product"
                     >
@@ -526,18 +526,19 @@ export default {
     // this.get_data_categories();
     // this.feel_available_data();
     await Promise.all([
-      this.getCategoriesW(0),
+      // this.getCategoriesW(0),
       this.$store.dispatch("getAllFieldsW"),
-      this.$store.dispatch("get_fields_properties2W"),
     ]);
-    await this.selectCategories(this.categories[0]);
+    // await this.selectCategories(this.categories[0]);
     setTimeout(() => {
       this.updateAddedProducts();
     }, 500);
   },
   watch: {
     async show_cards() {
-      if (!this.show_cards) {
+      if (this.show_cards) {
+        if (!this.$store.state.widjetCategories.fields_properties2.length)
+          this.$store.dispatch("get_fields_properties2W");
         this.selectedCategories = [];
         await this.getCategoriesW(0);
         this.selectCategories(this.categories[0]);
@@ -558,10 +559,10 @@ export default {
         return null;
       }
     },
-    changePage(newPage) {
+    async changePage(newPage) {
       this.$store.commit("updateProductsParams2", { page: newPage });
-      this.getProducts(this.selectedCategories.at(-1)?.id);
       window.scrollTo(0, 0);
+      await this.getProducts(this.selectedCategories.at(-1)?.id);
     },
     dropPage() {
       this.changePage(1);
@@ -652,20 +653,19 @@ export default {
         this.selectedCategories.splice(idx, 9999);
       }
       this.selectedCategories.push(cat);
-      this.dropPage();
-      await Promise.all([
-        this.getCategoriesW(cat.id),
-        this.getProducts(cat.id),
-      ]);
-      if (this.selectedCategories.length === 1) await this.getFields(cat.id);
+      await Promise.all([this.getCategoriesW(cat.id), this.dropPage()]);
+      if (this.selectedCategories.length === 1 && !this.fields.length)
+        await this.getFields(cat.id);
       this.showSpinner = false;
     },
     async getCategoriesW(id) {
+      this.showSpinner = true;
       await this.$store.dispatch("getCategoriesW", {
         parent_id: id,
       });
     },
     async getProducts(id) {
+      if (id === 0) return;
       this.useSkeletonCard = true;
       await this.$store.dispatch("getProducts2W", {
         category_id: id,

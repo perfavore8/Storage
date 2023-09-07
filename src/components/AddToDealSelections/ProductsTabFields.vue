@@ -75,7 +75,9 @@ export default {
       ),
       list: [],
       getStatuses: async function () {
-        const stats = await store.dispatch("ordersPipelinesList", {});
+        const stats = store.state.orders.pipelines.length
+          ? store.state.orders.pipelines
+          : await store.dispatch("ordersPipelinesList", {});
         const list = [];
         stats.map((stat) => {
           stat.value = "optgroup";
