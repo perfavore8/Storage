@@ -140,16 +140,6 @@
                   </button>
                 </div>
               </td>
-              <!-- <td class="item" v-else-if="title.type === 2">
-                  <div class="flex flex-row gap-4 items-center justify-center">
-                    <button
-                      class="btn btn_grey"
-                      @click="openModal(row.poz.list)"
-                    >
-                      Подробнее
-                    </button>
-                  </div>
-                </td> -->
               <td
                 class="item"
                 :class="{ 'cursor-pointer': !isTest }"
@@ -373,6 +363,7 @@ export default {
       }
     };
     const dateFormater = (date) => {
+      if (!date) return "";
       const [dateTime] = date.split(".");
       const [day, time] = dateTime.split("T");
       return day + " " + time;
