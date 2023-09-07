@@ -17,6 +17,17 @@ const getOrderPromise = new Promise((resolve) => {
   watch(isOrderGeted, () => isOrderGeted.value && resolve());
 });
 
+const getOrder = async () => {
+  isOrderGeted.value = false;
+  const newOrder = await store.dispatch("getOrder");
+  if (Array.isArray(newOrder.fields)) newOrder.fields = {};
+  Object.assign(order, newOrder);
+  if (!order.fields) order.fields = {};
+  if (!order.fields.name) order.fields.name = `Заказ №${newDealParams.id}`;
+
+  isOrderGeted.value = true;
+};
+
 export function useNewDeal() {
   const { addNotification } = useNotification();
   const router = useRouter();
@@ -50,16 +61,6 @@ export function useNewDeal() {
       Object.assign(newDealParams, { id: route.query.order_id });
     }
     getOrder();
-  };
-
-  const getOrder = async () => {
-    const newOrder = await store.dispatch("getOrder");
-    if (Array.isArray(newOrder.fields)) newOrder.fields = {};
-    Object.assign(order, newOrder);
-    if (!order.fields) order.fields = {};
-    if (!order.fields.name) order.fields.name = `Заказ №${newDealParams.id}`;
-
-    isOrderGeted.value = true;
   };
 
   const isOrederLoaded = computed(() => Boolean(order.id));

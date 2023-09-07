@@ -377,7 +377,7 @@ import AppPaginator from "./AppPaginator.vue";
 import ProductCard from "./ProductCard.vue";
 import { useNewDeal } from "@/composables/newDeal";
 
-const { order, getOrderPromise } = useNewDeal();
+const { order, getOrderPromise, getOrder } = useNewDeal();
 
 export default {
   components: {
@@ -407,11 +407,6 @@ export default {
   computed: {
     categories() {
       return this.$store.state.widjetCategories.categories;
-    },
-    addedProductsId() {
-      const arr = [];
-      this.addedProducts.forEach((val) => arr.push(val.id));
-      return arr;
     },
     page() {
       const obj = {
@@ -530,7 +525,7 @@ export default {
       this.$store.dispatch("getAllFieldsW"),
     ]);
     // await this.selectCategories(this.categories[0]);
-    this.updateAddedProducts();
+    this.updateAddedProducts(true);
   },
   watch: {
     async show_cards() {
@@ -624,13 +619,11 @@ export default {
         }
       }
     },
-    async updateAddedProducts() {
+    async updateAddedProducts(isStart) {
+      if (!isStart) await getOrder();
       await getOrderPromise;
-      order.positions?.forEach((item) =>
-        !this.addedProductsId.includes(item.id)
-          ? this.addedProducts.push(item)
-          : null
-      );
+      this.addedProducts = [];
+      order.positions?.forEach((item) => this.addedProducts.push(item));
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;
