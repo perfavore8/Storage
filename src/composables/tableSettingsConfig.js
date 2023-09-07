@@ -17,6 +17,7 @@ export function useTableSettingsConfig(code) {
       updateStateReqName: "updateOrdersKanBanConfigTable",
       haveWH: false,
       special: true,
+      disabledCodes: ["order_name", "order_created_at"],
     },
     stock: {
       stateName: "account",

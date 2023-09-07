@@ -74,8 +74,13 @@ export default {
     );
     const disabledNotSelected = computed(
       () =>
-        currentCountSelected.value >= props.maxCountSelected &&
-        props.maxCountSelected
+        currentCountSelected.value >=
+          props.maxCountSelected + disabledCodesLength.value &&
+        props.maxCountSelected + disabledCodesLength.value
+    );
+
+    const disabledCodesLength = computed(() =>
+      config.value.special ? config.value.disabledCodes.length : 0
     );
 
     const tableConfig = computed(
@@ -96,15 +101,19 @@ export default {
       });
       list.value = JSON.parse(JSON.stringify(preparedTC));
       if (config.value.special) await store.dispatch("get_account");
-      list.value.map(
-        (item) =>
-          (item.visible = {
-            value: config.value.special
-              ? kanBanConfig.value.includes(item.code)
-              : Boolean(item.visible),
-            disabled: item.visible === 2 || item.visible === -1,
-          })
-      );
+      list.value.map((item) => {
+        item.visible = {
+          value: config.value.special
+            ? kanBanConfig.value.includes(item.code)
+            : Boolean(item.visible),
+          disabled: item.visible === 2 || item.visible === -1,
+        };
+        if (!config.value.special) return;
+        config.value.disabledCodes.forEach((code) => {
+          if (item.code === code)
+            item.visible = { value: true, disabled: true };
+        });
+      });
     });
 
     const save = () => {
@@ -118,7 +127,14 @@ export default {
       if (config.value.haveWH)
         (params.wh = currentWH.value), (params.value.code = currentWH.value);
       list.value.forEach((val) => {
-        if (val.visible.value) params.value.config.push(val.code);
+        if (
+          val.visible.value &&
+          !(
+            config.value.special &&
+            config.value.disabledCodes?.includes(val.code)
+          )
+        )
+          params.value.config.push(val.code);
       });
       store.dispatch(
         config.value.updateStateReqName,
