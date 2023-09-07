@@ -112,7 +112,10 @@ export default {
     const getUnlinkedCompanies = () => {
       const res = [];
       list[1].items.map((el) =>
-        el.companies.map((comp) => res.push({ ...comp, isUnLink: true }))
+        el.companies.map((comp) => {
+          if (!res.some((el) => el.id === comp.id))
+            res.push({ ...comp, isUnLink: true });
+        })
       );
       return res;
     };
