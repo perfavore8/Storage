@@ -26,9 +26,7 @@
               </span>
             </transition>
           </button>
-          <OrdersKanbanPipelineSelect
-            v-if="displayType.selected.name === 'kanban'"
-          />
+          <OrdersKanbanPipelineSelect />
           <div class="flex items-center" v-if="isMain || isTest">
             <input
               type="checkbox"
