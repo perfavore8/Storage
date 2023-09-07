@@ -7,7 +7,16 @@
       <template v-for="column in pipelines.selected.statuses" :key="column.id">
         <div
           class="flex flex-col shrink-0 w-80 rounded-md h-fit bg-slate-900/10"
-          :style="{ 'background-color': column.bgColor }"
+          :style="{
+            'background-color':
+              column.sort === 100
+                ? 'rgba(68, 255, 0, 0.19)'
+                : column.sort === 101
+                ? 'rgba(255, 13, 0, 0.19)'
+                : column.sort === 102
+                ? 'rgba(68, 68, 68, 0.19)'
+                : 'rgba(255, 170, 0, 0.19)',
+          }"
         >
           <div class="h10 flex flex-row items-baseline p-2 px-4 gap-2">
             <h2 class="font-semibold text-lg">
