@@ -9,11 +9,11 @@
           class="flex flex-col shrink-0 w-80 rounded-md h-fit bg-slate-900/10"
           :style="{
             'background-color':
-              column.sort === 100
+              column.type === 1
                 ? 'rgba(68, 255, 0, 0.19)'
-                : column.sort === 101
+                : column.type === 2
                 ? 'rgba(255, 13, 0, 0.19)'
-                : column.sort === 102
+                : column.type === 3
                 ? 'rgba(68, 68, 68, 0.19)'
                 : 'rgba(255, 170, 0, 0.19)',
           }"
@@ -23,7 +23,8 @@
               {{ column.name }}
             </h2>
             <small class="text-slate-700">
-              (Сделок: {{ column?.res?.total }} | {{ column.totalSum }} ₽)
+              (Сделок: {{ column?.res?.meta?.total }} |
+              {{ column?.res?.meta?.sum }} ₽)
             </small>
           </div>
           <draggable
@@ -71,7 +72,7 @@
                 <div
                   class="card-futter flex flex-row justify-between items-center"
                 >
-                  <span> {{ element.fieldsForRender.order_sum || 0 }} ₽ </span>
+                  <span> {{ element.sum || 0 }} ₽ </span>
                   <div class="img_wrapper">
                     <img
                       :src="
