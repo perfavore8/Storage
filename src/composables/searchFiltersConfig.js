@@ -24,6 +24,13 @@ export function useSearchFiltersConfig() {
           stateFieldsName: "fields",
         },
         {
+          code: "product",
+          title: "Товары / Услуги",
+          getFieldsUrl: `get_all_fields`,
+          stateName: "fields",
+          stateFieldsName: "all_fields",
+        },
+        {
           code: "contacts",
           title: "Контакты",
           getFieldsUrl: "getClientsContactsFields",
