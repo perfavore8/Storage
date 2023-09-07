@@ -114,7 +114,7 @@ export default {
     },
     async addOrdersField(context, params) {
       const { data } = await ApiReqFunc({
-        url: "orders/feild/add",
+        url: "orders/field/add",
         method: "post",
         data: params,
       });
