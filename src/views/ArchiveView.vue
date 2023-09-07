@@ -59,7 +59,7 @@ export default {
     const count_archive = computed(() => store.state.products.meta.meta.total);
     const isDarkTest = computed(() => route.query.test === "dark");
 
-    const back = () => router.push("/remnants");
+    const back = () => router.go(-1);
 
     return { isTest, count_archive, isDarkTest, back };
   },
