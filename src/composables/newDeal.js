@@ -1,5 +1,5 @@
 import store from "@/store";
-import { onMounted, ref, reactive } from "vue";
+import { onMounted, ref, reactive, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "./notification";
 import { useToggle } from "@vueuse/core";
@@ -11,6 +11,11 @@ const order = reactive({ fields: {} });
 const routeWatcher = ref(null);
 
 const [someChange, toggleSomeChange] = useToggle(false);
+
+const isOrderGeted = ref(false);
+const getOrderPromise = new Promise((resolve) => {
+  watch(isOrderGeted, () => isOrderGeted.value && resolve());
+});
 
 export function useNewDeal() {
   const { addNotification } = useNotification();
@@ -53,6 +58,8 @@ export function useNewDeal() {
     Object.assign(order, newOrder);
     if (!order.fields) order.fields = {};
     if (!order.fields.name) order.fields.name = `Заказ №${newDealParams.id}`;
+
+    isOrderGeted.value = true;
   };
 
   const isOrederLoaded = computed(() => Boolean(order.id));
@@ -84,5 +91,6 @@ export function useNewDeal() {
     toggleSomeChange,
     isOrederLoaded,
     saveParams,
+    getOrderPromise,
   };
 }

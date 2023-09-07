@@ -377,7 +377,7 @@ import AppPaginator from "./AppPaginator.vue";
 import ProductCard from "./ProductCard.vue";
 import { useNewDeal } from "@/composables/newDeal";
 
-const { order } = useNewDeal();
+const { order, getOrderPromise } = useNewDeal();
 
 export default {
   components: {
@@ -530,9 +530,7 @@ export default {
       this.$store.dispatch("getAllFieldsW"),
     ]);
     // await this.selectCategories(this.categories[0]);
-    setTimeout(() => {
-      this.updateAddedProducts();
-    }, 500);
+    this.updateAddedProducts();
   },
   watch: {
     async show_cards() {
@@ -627,7 +625,7 @@ export default {
       }
     },
     async updateAddedProducts() {
-      // const order = await this.$store.dispatch("getOrder");
+      await getOrderPromise;
       order.positions?.forEach((item) =>
         !this.addedProductsId.includes(item.id)
           ? this.addedProducts.push(item)
