@@ -12,9 +12,11 @@ export function usePreparationOrders() {
   const getValue = (value, code) => value?.[code] || value?.fields?.[code];
 
   const dateFormater = (date) => {
-    const [dateTime] = date.split(".");
-    const [day, time] = dateTime.split("T");
-    return day + " " + time;
+    const res = new Date(date);
+    // const [dateTime] = date.split(".");
+    // const [day, time] = dateTime.split("T");
+    // return day + " " + time;
+    return res.toLocaleString();
   };
 
   const preparationValueByType = (value, field) => {
