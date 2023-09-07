@@ -49,7 +49,7 @@ export function useClientBinding(selectedTab) {
         `getClients${selectedTab.value.oppositeValue}Autocomplete`,
         params
       );
-      this.list.map((item) => (item.fields.name = item.fields?.label));
+      this.list.map((item) => (item.name = item?.label));
     },
     oppositeList: [],
     filteredOppositeList: [],
