@@ -28,7 +28,7 @@
           :placeholders="col.placeholders"
           :alwaysShow="col.items.length === 1"
           @unLink="() => unLink(item, col)"
-          @link="() => link(item)"
+          @link="() => link(item, col.code)"
           v-show="item"
         />
       </template>
@@ -67,7 +67,9 @@ export default {
         getFieldsUrl: "getClientsCompanyFields",
         getAutocompeteUrl: "getClientsCompanyAutocomplete",
         fields: computed(() => store.state.clientsCompany.fields),
-        items: computed(() => [order?.company]),
+        items: computed(() =>
+          order?.company ? [order?.company] : [...getUnlinkedCompanies()]
+        ),
         placeholderForSearch: "Поиск компаний",
         orderFieldForSave: "company_id",
         placeholders: {
@@ -107,6 +109,14 @@ export default {
       },
     ]);
 
+    const getUnlinkedCompanies = () => {
+      const res = [];
+      list[1].items.map((el) =>
+        el.companies.map((comp) => res.push({ ...comp, isUnLink: true }))
+      );
+      return res;
+    };
+
     const autocompleteList = reactive([]);
     list.forEach((item) =>
       autocompleteList.push(
@@ -135,8 +145,8 @@ export default {
       getOrder();
     };
 
-    const link = (item) =>
-      autocompleteList.find((el) => el.code === "Contacts").select(item);
+    const link = (item, colCode) =>
+      autocompleteList.find((el) => el.code === colCode).select(item);
 
     return { list, autocompleteList, unLink, link };
   },
