@@ -130,7 +130,7 @@ export default {
     },
     async deleteOrdersField(context, params) {
       await ApiReqFunc({
-        url: isTest.value ? "orders/list-v2" : "orders/field/delete",
+        url: "orders/field/delete",
         method: "post",
         data: params,
       });
