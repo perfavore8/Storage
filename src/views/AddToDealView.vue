@@ -23,7 +23,7 @@
       </button>
       <transition name="side">
         <button
-          class="absolute top-20 left-0 btn pointer-events-auto inline-flex transition-all rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          class="fixed bottom-10 left-[10%] btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
           @click="saveParams.save()"
           v-if="saveParams.needSave"
         >
@@ -115,6 +115,6 @@ export default {
 .side-enter-from,
 .side-leave-to {
   opacity: 0.5;
-  transform: translateX(calc(-100% - 46px));
+  transform: translateY(calc(100% + 46px));
 }
 </style>
