@@ -75,6 +75,7 @@ export default {
 
     onMounted(async () => {
       add();
+      tabs.dropToSaved();
     });
 
     return { tabs, back, saveParams };

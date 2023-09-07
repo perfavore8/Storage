@@ -162,9 +162,11 @@ export default {
       dropToSaved: function () {
         const savedName = getSavedLSParam("ordersDT");
         const item = this.list.find((el) => el.name === savedName);
-        if (!item) this.dropToDefault();
+        if (!item) {
+          this.dropToDefault();
+          return;
+        }
         this.select(item);
-        return true;
       },
     });
     displayType.dropToSaved();
