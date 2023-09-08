@@ -23,6 +23,7 @@ import FilterText from "./FiltersSelections/FilterText.vue";
 import FilterList from "./FiltersSelections/FilterList.vue";
 import FilterDate from "./FiltersSelections/FilterDate.vue";
 import FilterFlag from "./FiltersSelections/FilterFlag.vue";
+import FilterDoubleNumber from "./FiltersSelections/FilterDoubleNumber.vue";
 export default {
   components: {
     FilterNumber,
@@ -30,6 +31,7 @@ export default {
     FilterList,
     FilterDate,
     FilterFlag,
+    FilterDoubleNumber,
   },
   props: {
     special: { type: Boolean, required: false, default: () => false },
@@ -37,6 +39,7 @@ export default {
   },
   setup(props, context) {
     const change_filter_value = (new_obj, code) =>
+      console.log(new_obj, code) ||
       context.emit("change_filter_value", new_obj, code);
 
     return { change_filter_value };

@@ -58,7 +58,7 @@ export default {
     onMounted(() => change_value());
 
     const option_value = computed(() => {
-      return { option: "~", value: `${valueOne.value} - ${valueTwo.value}` };
+      return { option: "=", value: `${valueOne.value} - ${valueTwo.value}` };
     });
 
     const change_value = () => {
@@ -71,7 +71,7 @@ export default {
     };
 
     const emit_value = () => {
-      context.emit("change_filter_value", option_value, props.idx);
+      context.emit("change_filter_value", option_value.value, props.idx);
     };
 
     return { valueOne, valueTwo, checkCorrectOrder };

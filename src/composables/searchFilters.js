@@ -99,7 +99,7 @@ export function useSearchFilters(setOfInstructions) {
             compare: val.option,
             query: val.value,
           });
-        if (val.type == 3 || val.type == 4)
+        if (val.type == 3 || val.type == 4 || val.type == 11)
           addToFilter(val, {
             compare: val.option,
             query: val.value,
@@ -145,6 +145,7 @@ export function useSearchFilters(setOfInstructions) {
     7: "FilterDate",
     8: "FilterDate",
     9: "FilterFlag",
+    11: "FilterDoubleNumber",
     12: "FilterList",
   };
 
