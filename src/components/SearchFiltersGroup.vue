@@ -39,7 +39,6 @@ export default {
   },
   setup(props, context) {
     const change_filter_value = (new_obj, code) =>
-      console.log(new_obj, code) ||
       context.emit("change_filter_value", new_obj, code);
 
     return { change_filter_value };
