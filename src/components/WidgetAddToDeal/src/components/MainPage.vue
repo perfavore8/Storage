@@ -621,7 +621,7 @@ export default {
     },
     async updateAddedProducts(isStart) {
       if (!isStart) await getOrder();
-      await getOrderPromise;
+      await getOrderPromise.value;
       this.addedProducts = [];
       order.positions?.forEach((item) => this.addedProducts.push(item));
     },

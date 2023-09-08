@@ -7,15 +7,28 @@ import { computed } from "vue";
 
 const newDealParams = reactive({});
 const order = reactive({ fields: {} });
+const dropOrder = async () => {
+  Object.keys(order).forEach((key) => delete order[key]);
+  order.fields = {};
+  isOrderGeted.value = false;
+  setNewOrderPromise();
+};
 
 const routeWatcher = ref(null);
 
 const [someChange, toggleSomeChange] = useToggle(false);
 
 const isOrderGeted = ref(false);
-const getOrderPromise = new Promise((resolve) => {
-  watch(isOrderGeted, () => isOrderGeted.value && resolve());
-});
+let getOrderPromise = ref(null);
+const setNewOrderPromise = () => {
+  getOrderPromise.value = new Promise((resolve) => {
+    let watcher = watch(
+      isOrderGeted,
+      () => isOrderGeted.value && resolve(watcher())
+    );
+  });
+};
+setNewOrderPromise();
 
 const getOrder = async () => {
   isOrderGeted.value = false;
@@ -36,20 +49,17 @@ export function useNewDeal() {
   onMounted(() => {
     if (routeWatcher.value) return;
     routeWatcher.value = router.afterEach((to, from) => {
-      if (!to.query?.order_id) {
-        delete newDealParams.id;
+      if (!to.query?.order_id) delete newDealParams.id;
+      if (to.path !== "/addToDeal" && from.path == "/addToDeal") {
+        if (someChange.value)
+          addNotification(
+            1,
+            "Сохранение заказа ...",
+            `${order.fields?.name} успешно сохранен`
+          );
+        toggleSomeChange(false);
+        dropOrder();
       }
-      if (
-        to.path !== "/addToDeal" &&
-        from.path == "/addToDeal" &&
-        someChange.value
-      )
-        addNotification(
-          1,
-          "Сохранение заказа ...",
-          `${order.fields?.name} успешно сохранен`
-        );
-      toggleSomeChange(false);
     });
   });
 
@@ -93,5 +103,6 @@ export function useNewDeal() {
     isOrederLoaded,
     saveParams,
     getOrderPromise,
+    dropOrder,
   };
 }
