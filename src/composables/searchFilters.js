@@ -176,6 +176,8 @@ export function useSearchFilters(setOfInstructions) {
       if (val.type == 12) {
         value = [];
       }
+      if (val.type == 13) return;
+
       const obj = {
         is_system: !!val.is_system,
         selected: !!val.is_system,
