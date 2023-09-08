@@ -47,10 +47,10 @@ export function useSearchFilters(setOfInstructions) {
   const baseFilteredfiltersValue = computed(() =>
     filteredFiltersValue.value.filter((filter) => filter.is_system)
   );
-  const spacialFilteredfiltersValue = computed(() =>
+  const specialFilteredfiltersValue = computed(() =>
     filteredFiltersValue.value.filter((filter) => !filter.is_system)
   );
-  const spacialFilteredfiltersValueNotSelected = computed(() =>
+  const specialFilteredfiltersValueNotSelected = computed(() =>
     filtersValue.filter(
       (filter) =>
         !filter.selected &&
@@ -61,7 +61,7 @@ export function useSearchFilters(setOfInstructions) {
     )
   );
   const specialFilteredfiltersValueSelected = computed(() =>
-    spacialFilteredfiltersValue.value.filter((filter) => filter.selected)
+    specialFilteredfiltersValue.value.filter((filter) => filter.selected)
   );
 
   const specialFiltersSearchValue = ref("");
@@ -215,8 +215,8 @@ export function useSearchFilters(setOfInstructions) {
     change_filter_value,
     fillFilters,
     baseFilteredfiltersValue,
-    spacialFilteredfiltersValue,
-    spacialFilteredfiltersValueNotSelected,
+    specialFilteredfiltersValue,
+    specialFilteredfiltersValueNotSelected,
     specialFilteredfiltersValueSelected,
     specialFiltersSearchValue,
     categories_options,

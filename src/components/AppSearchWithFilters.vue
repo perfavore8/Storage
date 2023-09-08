@@ -44,7 +44,7 @@
           <div>
             <AppInputSelect
               v-if="false"
-              :list="spacialFilteredfiltersValueNotSelected"
+              :list="specialFilteredfiltersValueNotSelected"
               :placeholder="'Добавить фильтр'"
               :requestDelay="100"
               :countLettersReq="0"
@@ -56,10 +56,10 @@
               :special="false"
               :filters="
                 Config.hasDifferentSources
-                  ? splitArrays(spacialFilteredfiltersValueNotSelected)?.[
+                  ? splitArrays(specialFilteredfiltersValueNotSelected)?.[
                       source.title
                     ]
-                  : spacialFilteredfiltersValueNotSelected
+                  : specialFilteredfiltersValueNotSelected
               "
               @change_filter_value="change_filter_value"
             />
@@ -115,7 +115,7 @@ export default {
       change_filter_value,
       fillFilters,
       baseFilteredfiltersValue,
-      spacialFilteredfiltersValueNotSelected,
+      specialFilteredfiltersValueNotSelected,
       specialFilteredfiltersValueSelected,
       specialFiltersSearchValue,
       confirmFilters,
@@ -153,7 +153,7 @@ export default {
       change_filter_value,
       fillFilters,
       baseFilteredfiltersValue,
-      spacialFilteredfiltersValueNotSelected,
+      specialFilteredfiltersValueNotSelected,
       specialFilteredfiltersValueSelected,
       specialFiltersSearchValue,
       confirmFilters,
