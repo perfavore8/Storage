@@ -54,70 +54,76 @@
             <td class="item selectors">
               <div class="type_selector_options">
                 <transition-group name="list" mode="out-in">
-                  <div
-                    class="type_selector_option gap-2"
+                  <template
                     v-for="(stat, idx) in statuses.list"
                     :key="stat.value"
                   >
-                    <div class="grid grid-cols-2 min-w-[40px]">
-                      <template v-if="!stat.is_system">
-                        <button
-                          class="up leading-[1] h-min flex justify-center items-center w-fit"
-                          @click="statuses.sort(idx, 'up')"
-                          v-if="idx !== 1"
-                        >
-                          <span class="material-icons-outlined text-[#757575]">
-                            expand_less
-                          </span>
-                        </button>
-                        <div v-else></div>
-                        <button
-                          class="down leading-[1] h-min flex justify-center items-center w-fit"
-                          @click="statuses.sort(idx, 'down')"
-                          v-if="statuses.list[idx + 1].sort < 100"
-                        >
-                          <span
-                            class="material-icons-outlined rotate-180 text-[#757575]"
+                    <div
+                      class="type_selector_option gap-2"
+                      v-if="stat.type !== 3"
+                    >
+                      <div class="grid grid-cols-2 min-w-[40px]">
+                        <template v-if="!stat.is_system">
+                          <button
+                            class="up leading-[1] h-min flex justify-center items-center w-fit"
+                            @click="statuses.sort(idx, 'up')"
+                            v-if="idx !== 1"
                           >
-                            expand_less
-                          </span>
-                        </button>
-                        <div v-else></div>
-                      </template>
+                            <span
+                              class="material-icons-outlined text-[#757575]"
+                            >
+                              expand_less
+                            </span>
+                          </button>
+                          <div v-else></div>
+                          <button
+                            class="down leading-[1] h-min flex justify-center items-center w-fit"
+                            @click="statuses.sort(idx, 'down')"
+                            v-if="statuses.list[idx + 1].sort < 100"
+                          >
+                            <span
+                              class="material-icons-outlined rotate-180 text-[#757575]"
+                            >
+                              expand_less
+                            </span>
+                          </button>
+                          <div v-else></div>
+                        </template>
+                      </div>
+                      <input type="text" class="input" v-model="stat.name" />
+                      <input
+                        type="checkbox"
+                        class="checkbox"
+                        :id="idx + 'nb1' + statuses.id"
+                        :disabled="stat.sort > 99"
+                        :checked="statuses.reservation.includes(stat.value)"
+                        @change="statuses.changeVal('reservation', stat.value)"
+                      />
+                      <label
+                        :for="idx + 'nb1' + statuses.id"
+                        title="Резервация"
+                      ></label>
+                      <input
+                        type="checkbox"
+                        class="checkbox"
+                        :id="idx + 'nb2' + statuses.id"
+                        :disabled="statuses.resIdx > idx - 1"
+                        :checked="statuses.write_off === stat.value"
+                        @change="statuses.changeVal('write_off', stat.value)"
+                      />
+                      <label
+                        :for="idx + 'nb2' + statuses.id"
+                        title="Списание"
+                      ></label>
+                      <button
+                        class="del_button"
+                        :style="{
+                          visibility: stat.is_system ? 'hidden' : 'visible',
+                        }"
+                        @click="statuses.del(stat.id)"
+                      ></button>
                     </div>
-                    <input type="text" class="input" v-model="stat.name" />
-                    <input
-                      type="checkbox"
-                      class="checkbox"
-                      :id="idx + 'nb1' + statuses.id"
-                      :disabled="stat.sort > 99"
-                      :checked="statuses.reservation.includes(stat.value)"
-                      @change="statuses.changeVal('reservation', stat.value)"
-                    />
-                    <label
-                      :for="idx + 'nb1' + statuses.id"
-                      title="Резервация"
-                    ></label>
-                    <input
-                      type="checkbox"
-                      class="checkbox"
-                      :id="idx + 'nb2' + statuses.id"
-                      :disabled="statuses.resIdx > idx - 1"
-                      :checked="statuses.write_off === stat.value"
-                      @change="statuses.changeVal('write_off', stat.value)"
-                    />
-                    <label
-                      :for="idx + 'nb2' + statuses.id"
-                      title="Списание"
-                    ></label>
-                    <button
-                      class="del_button"
-                      :style="{
-                        visibility: stat.is_system ? 'hidden' : 'visible',
-                      }"
-                      @click="statuses.del(stat.id)"
-                    ></button>
-                  </div>
+                  </template>
                 </transition-group>
                 <button @click="statuses.add()" class="add_button"></button>
               </div>
