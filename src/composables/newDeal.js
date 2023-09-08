@@ -99,6 +99,7 @@ export function useNewDeal() {
     getOrder,
     order,
     saveOrder,
+    someChange,
     toggleSomeChange,
     isOrederLoaded,
     saveParams,

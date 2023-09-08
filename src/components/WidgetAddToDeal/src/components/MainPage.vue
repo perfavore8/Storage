@@ -377,7 +377,7 @@ import AppPaginator from "./AppPaginator.vue";
 import ProductCard from "./ProductCard.vue";
 import { useNewDeal } from "@/composables/newDeal";
 
-const { order, getOrderPromise, getOrder } = useNewDeal();
+const { order, getOrderPromise, getOrder, someChange } = useNewDeal();
 
 export default {
   components: {
@@ -730,6 +730,7 @@ export default {
       }
     },
     checkSave() {
+      if (!someChange.value) return;
       this.$store.dispatch("updateOrder", {
         positions: this.addedProducts,
       });
