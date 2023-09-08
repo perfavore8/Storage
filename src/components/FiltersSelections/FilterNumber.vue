@@ -7,7 +7,7 @@
       <span :class="{ big: option == 0 }">{{ options[option] }}</span>
     </button>
     <input
-      v-model="filterValue"
+      v-model.number="filterValue"
       type="number"
       :placeholder="item.placeholder"
     />
