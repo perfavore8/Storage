@@ -3,7 +3,7 @@ import { reactive } from "vue";
 import { useNewDeal } from "./newDeal";
 
 export function useClientTabAutocomplete(params) {
-  const { order, getOrder, saveOrder, toggleSomeChange } = useNewDeal();
+  const { order, getOrder, saveOrder } = useNewDeal();
 
   const autocomplete = reactive({
     code: params.code,
@@ -23,9 +23,11 @@ export function useClientTabAutocomplete(params) {
       this.getList();
     },
     select: async function (option) {
-      toggleSomeChange(true);
       if (params.multi) {
-        if (order[params.field] === undefined) order[params.field] = [];
+        order[params.field] = [];
+        order[params.fieldSource].forEach((el) =>
+          order[params.field].push(el.id)
+        );
         order[params.field].push(option.id);
       } else {
         order[params.field] = option.id;

@@ -52,7 +52,7 @@ export default {
     ClientTabItem,
   },
   setup() {
-    const { order, getOrder, saveOrder, toggleSomeChange } = useNewDeal();
+    const { order, getOrder, saveOrder } = useNewDeal();
 
     onMounted(() => {
       list.forEach((item) =>
@@ -85,12 +85,14 @@ export default {
         getFieldsUrl: "getClientsContactsFields",
         getAutocompeteUrl: "getClientsContactsAutocomplete",
         fields: computed(() => store.state.clientsContacts.fields),
-        items: computed(() => [
-          ...(order?.company?.contacts
-            .filter((el) => !list[1].linkedIds.includes(el.id))
-            .map((el) => Object.assign(el, { isUnLink: true })) || []),
-          ...(order?.contacts || []),
-        ]),
+        items: computed(() =>
+          [
+            ...(order?.company?.contacts
+              .filter((el) => !list[1].linkedIds.includes(el.id))
+              .map((el) => Object.assign(el, { isUnLink: true })) || []),
+            ...(order?.contacts || []),
+          ].sort((el) => (el.isUnLink ? 1 : -1))
+        ),
         linkedIds: computed(() =>
           order?.contacts.reduce((acc, item) => {
             acc.push(item.id);
@@ -99,6 +101,7 @@ export default {
         ),
         placeholderForSearch: "Поиск контактов",
         orderFieldForSave: "contacts_id",
+        orderFieldSource: "contacts",
         isMultiSave: true,
         placeholders: {
           title: "name",
@@ -129,18 +132,18 @@ export default {
           placeholder: item.placeholderForSearch,
           multi: Boolean(item.isMultiSave),
           field: item.orderFieldForSave,
+          fieldSource: item.orderFieldSource,
         })
       )
     );
 
     const unLink = async (item, params) => {
-      toggleSomeChange(true);
       if (params.isMultiSave) {
         if (order[params.field] === undefined)
           order[params.orderFieldForSave] = [];
-        order[params.orderFieldForSave] = order[
-          params.orderFieldForSave
-        ].filter((el) => el !== item.id);
+        order[params.orderFieldSource].forEach((el) => {
+          if (el.id !== item.id) order[params.orderFieldForSave].push(el.id);
+        });
       } else {
         order[params.orderFieldForSave] = 0;
       }
