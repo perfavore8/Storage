@@ -81,6 +81,7 @@
           :is="displayType.selected.component"
           ref="grid"
           :key="displayType.selected.name"
+          :hideFinalSteps="hideFinalSteps"
         />
       </transition>
     </div>
@@ -101,6 +102,7 @@ import { computed, reactive, ref, watch } from "vue";
 import { useLockBtn } from "@/composables/lockBtn";
 import { useSaveLS } from "@/composables/saveLS";
 import { useToggle } from "@vueuse/core";
+import { list } from "postcss";
 export default {
   components: {
     AppHeader,
@@ -184,6 +186,7 @@ export default {
       store.commit("updateOrdersFilters", {
         hide_final_statuses: hideFinalSteps.value,
       });
+      if (list.selected.name === "kanban") return;
       grid.value?.updateList();
     });
 

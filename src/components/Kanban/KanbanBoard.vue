@@ -17,6 +17,12 @@
                 ? 'rgba(68, 68, 68, 0.19)'
                 : 'rgba(255, 170, 0, 0.19)',
           }"
+          v-if="
+            !(
+              column.type === 3 ||
+              (hideFinalSteps && (column.type === 2 || column.type == 1))
+            )
+          "
         >
           <div class="h10 flex flex-row items-baseline p-2 px-4 gap-2">
             <h2 class="font-semibold text-lg">
@@ -107,6 +113,7 @@ export default {
   components: {
     draggable,
   },
+  props: { hideFinalSteps: Boolean },
   setup() {
     const { getRandomColor3 } = useColor();
     const { pipelines, startPromise } = useOrdersPipelinesSelect();
