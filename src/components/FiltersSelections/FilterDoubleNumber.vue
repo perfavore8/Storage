@@ -35,7 +35,7 @@ export default {
     const valueTwo = ref(null);
 
     watch(
-      () => valueOne.value + valueTwo.value,
+      () => [valueOne.value, valueTwo.value],
       () => emit_value()
     );
     watch(
@@ -44,7 +44,11 @@ export default {
     );
 
     const checkCorrectOrder = () => {
-      if (valueOne.value > valueTwo.value) {
+      if (
+        valueOne.value > valueTwo.value &&
+        valueOne.value !== null &&
+        valueTwo.value !== null
+      ) {
         const step = valueOne.value;
         valueOne.value = valueTwo.value;
         valueTwo.value = step;
@@ -59,7 +63,10 @@ export default {
 
     const change_value = () => {
       nextTick(() => {
-        [valueOne.value, valueTwo.value] = props.item.value.split(" - ");
+        [valueOne.value, valueTwo.value] = props.item.value?.split(" - ") || [
+          null,
+          null,
+        ];
       });
     };
 
