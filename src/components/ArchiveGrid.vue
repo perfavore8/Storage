@@ -1,5 +1,5 @@
 <template>
-  <div class="grid" :class="{ blur: isDataLoading }">
+  <div class="grid" :class="{ blur: isLoading }">
     <label v-if="archive_list.length == 0" class="text">
       Ничего не найдено
     </label>
@@ -8,41 +8,38 @@
         <thead>
           <tr class="row title">
             <td
-              v-for="item in tableConfig"
-              :key="item[0]"
-              v-show="item[1].visible"
+              v-for="field in fields"
+              :key="field.code"
               class="item dark:bg-slate-800"
             >
-              {{ item[1].name }}
+              {{ field.name }}
             </td>
             <td class="item dark:bg-slate-800"></td>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in archive_list" :key="item.id" class="row">
-            <template v-for="field in tableConfig" :key="field">
-              <template v-if="field[1].visible">
-                <td class="item dark:bg-slate-700">
-                  <span v-if="field[0].split('.').length < 2">
-                    {{ item.fields[field[0]] }}
-                  </span>
-                  <span v-else>
-                    <template v-if="item.fields[field[0].split('.')[0]]">
-                      {{
-                        field[0].split(".")[1] == "cost"
-                          ? item.fields[field[0].split(".")[0]][
-                              field[0].split(".")[1]
-                            ] +
-                            " " +
-                            item.fields[field[0].split(".")[0]].currency
-                          : item.fields[field[0].split(".")[0]][
-                              field[0].split(".")[1]
-                            ]
-                      }}
-                    </template>
-                  </span>
-                </td>
-              </template>
+            <template v-for="field in fields" :key="field">
+              <td class="item dark:bg-slate-700">
+                <span v-if="field.code.split('.').length < 2">
+                  {{ item.fields[field.code] }}
+                </span>
+                <span v-else>
+                  <template v-if="item.fields[field.code.split('.')[0]]">
+                    {{
+                      field.code.split(".")[1] == "cost"
+                        ? item.fields[field.code.split(".")[0]][
+                            field.code.split(".")[1]
+                          ] +
+                          " " +
+                          item.fields[field.code.split(".")[0]].currency
+                        : item.fields[field.code.split(".")[0]][
+                            field.code.split(".")[1]
+                          ]
+                    }}
+                  </template>
+                </span>
+              </td>
             </template>
             <td class="item dark:bg-slate-700">
               <div
@@ -100,77 +97,98 @@
 
 <script>
 import GridBottom from "@/components/GridBottom.vue";
+import { computed, onMounted, ref, watch } from "vue";
+import store from "@/store";
 export default {
   components: {
     GridBottom,
   },
-  data() {
-    return {
-      isLoading: false,
+
+  props: { config: Object },
+
+  setup(props) {
+    const isLoading = ref(false);
+
+    onMounted(async () => {
+      store.commit("toggleIsNavBarDisabled", true);
+      isLoading.value = true;
+      await store.dispatch("get_account");
+      await getConfigData();
+      isLoading.value = false;
+      store.commit("toggleIsNavBarDisabled", false);
+    });
+
+    watch(
+      () => props.config.value,
+      () => getConfigData()
+    );
+
+    const getConfigData = async () => {
+      await Promise.all([
+        store.dispatch(props.config.stateListReqName, { is_archive: 1 }),
+        store.dispatch(props.config.stateFieldsReqName),
+      ]);
     };
-  },
-  async mounted() {
-    this.$store.commit("toggleIsNavBarDisabled", true);
-    await Promise.all([
-      this.$store.dispatch("get_account"),
-      this.$store.dispatch("get_products", { is_archive: 1 }),
-      this.$store.dispatch("getTableConfig", ""),
-      this.$store.dispatch("get_all_fields"),
-    ]);
-    this.$store.commit("toggleIsNavBarDisabled", false);
-  },
-  computed: {
-    tableConfig() {
-      return Object.entries(this.$store.state.account.tableConfig);
-    },
-    meta() {
-      return this.$store.state.products.meta;
-    },
-    all_fields() {
-      return this.$store.state.fields.all_fields;
-    },
-    archive_list() {
-      return this.$store.state.products.products;
-    },
-    showGridBottom() {
-      return this.meta.meta.total >= this.meta.meta.per_page;
-    },
-    isDataLoading() {
-      return this.$store.state.products.isLoading;
-    },
-    page() {
+
+    const fields = computed(() =>
+      store.state[props.config.stateFieldName || props.config.stateName][
+        props.config.stateFieldsName
+      ]
+        .filter((el) => props.config.fields.includes(el.code))
+        .sort((a, b) =>
+          props.config.fields.indexOf(a.code) >
+          props.config.fields.indexOf(b.code)
+            ? 1
+            : -1
+        )
+    );
+
+    const meta = computed(
+      () => store.state[props.config.stateName][props.config.stateMetaName]
+    );
+
+    const archive_list = computed(
+      () => store.state[props.config.stateName][props.config.stateListName]
+    );
+
+    const showGridBottom = computed(
+      () => meta.value.meta?.total >= meta.value.meta?.per_page
+    );
+
+    const page = computed(() => {
       const obj = {
-        first: this.getPageFromLink(this.meta?.links?.first),
-        prev: this.getPageFromLink(this.meta?.links?.prev),
-        current: this.meta?.meta?.current_page,
-        next: this.getPageFromLink(this.meta?.links?.next),
-        last: this.getPageFromLink(this.meta?.links?.last),
+        first: getPageFromLink(meta.value?.links?.first),
+        prev: getPageFromLink(meta.value?.links?.prev),
+        current: meta.value?.meta?.current_page,
+        next: getPageFromLink(meta.value?.links?.next),
+        last: getPageFromLink(meta.value?.links?.last),
       };
       return obj;
-    },
-  },
-  watch: {},
-  methods: {
-    getPageFromLink(link) {
+    });
+
+    const getPageFromLink = (link) => {
       if (link) {
         return link.split("?page=")[1];
       } else {
         return null;
       }
-    },
-    async changeCount(count) {
-      await this.$store.dispatch("update_user", { per_page: count });
-      this.drop_page();
-    },
-    drop_page() {
-      this.changePage(1);
-    },
-    changePage(val) {
-      this.$store.dispatch("get_products", { is_archive: 1, page: val });
-    },
-    async unarchive_data(item) {
-      if (!this.isLoading) {
-        this.isLoading = true;
+    };
+    const changeCount = async (count) => {
+      await store.dispatch("update_user", { per_page: count });
+      drop_page();
+    };
+    const drop_page = () => {
+      changePage(1);
+    };
+    const changePage = (val) => {
+      store.dispatch(props.config.stateListReqName, {
+        is_archive: 1,
+        page: val,
+      });
+    };
+    const unarchive_data = async (item) => {
+      if (!isLoading.value) {
+        isLoading.value = true;
         const res = {
           products: [
             {
@@ -180,11 +198,22 @@ export default {
             },
           ],
         };
-        await this.$store.dispatch("update_product", res);
-        await this.$store.dispatch("get_products", { is_archive: 1 });
-        this.isLoading = false;
+        await store.dispatch("update_product", res);
+        await store.dispatch(props.config.stateListReqName, { is_archive: 1 });
+        isLoading.value = false;
       }
-    },
+    };
+
+    return {
+      isLoading,
+      fields,
+      archive_list,
+      showGridBottom,
+      page,
+      changeCount,
+      changePage,
+      unarchive_data,
+    };
   },
 };
 </script>
