@@ -73,6 +73,12 @@
             </svg>
           </div>
         </div>
+        <div
+          class="absolute top-[90px] left-0 flex flex-row gap-3 items-center"
+        >
+          Сделок: {{ grid?.meta?.meta?.total || 0 }} |
+          {{ grid?.meta?.meta?.sum || 0 }} ₽
+        </div>
       </div>
       <OrdersFilters v-if="false" />
       <!-- <OrdersGrid ref="grid" /> -->
