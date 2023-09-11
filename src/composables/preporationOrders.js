@@ -42,13 +42,13 @@ export function usePreparationOrders() {
         stepRes = getValue(value.company, code);
       } else if (source === "contact") {
         const contacts = [];
-        value.contacts.forEach((contact) =>
+        value.contacts?.forEach((contact) =>
           contacts.push(getValue(contact, code))
         );
         stepRes = contacts.join(", ");
       } else if (source === "product") {
         const contacts = [];
-        value.positions.forEach((position) => {
+        value.positions?.forEach((position) => {
           const val1 = getValue(position, code);
           const val2 = getValue(position.product, code);
           contacts.push(prePreparationValueByType(val1 || val2, field));
