@@ -75,7 +75,18 @@ export function useStatusesForEntities(stat, setStatuses) {
   statuses.reservation.push(systemsStatuses[0]?.id);
   statuses.write_off = systemsStatuses[1]?.id;
 
+  const setSteps = () => {
+    const reservation = [];
+    statuses.list.forEach((stat) => {
+      if (stat.is_write_off) statuses.write_off = stat.id;
+      if (stat.is_reserve) reservation.push(stat.id);
+    });
+    if (reservation.length) statuses.reservation = reservation;
+  };
+  setSteps();
+
   const copyName = ref("");
+  const copyReservAndWriteOff = ref([]);
   const setCopy = () => {
     statuses.list.map((stat) => {
       const copyStatName = stat.name;
@@ -84,6 +95,9 @@ export function useStatusesForEntities(stat, setStatuses) {
       stat.statSortIsChange = computed(() => stat.sort != copyStatSort);
     });
     copyName.value = JSON.parse(JSON.stringify(statuses.name));
+    copyReservAndWriteOff.value = JSON.parse(
+      JSON.stringify([statuses.reservation, statuses.write_off])
+    );
   };
   setCopy();
 
@@ -93,8 +107,16 @@ export function useStatusesForEntities(stat, setStatuses) {
 
   const nameIsChange = computed(() => copyName.value != statuses.name);
 
-  const statsIsChange = computed(() =>
-    statuses.list.some((stat) => stat.statNameIsChange || stat.statSortIsChange)
+  const statsIsChange = computed(
+    () =>
+      statuses.list.some(
+        (stat) => stat.statNameIsChange || stat.statSortIsChange
+      ) || stepsIsChange.value
+  );
+  const stepsIsChange = computed(
+    () =>
+      JSON.stringify(copyReservAndWriteOff.value) !=
+      JSON.stringify([statuses.reservation, statuses.write_off])
   );
 
   const saveStatuses = () => {
@@ -107,10 +129,19 @@ export function useStatusesForEntities(stat, setStatuses) {
     if (statsIsChange.value) {
       const params = [];
       statuses.list.forEach((stat) => {
-        if (!stat.statNameIsChange && !stat.statSortIsChange) return;
+        if (
+          !stat.statNameIsChange &&
+          !stat.statSortIsChange &&
+          !stepsIsChange.value
+        )
+          return;
         const obj = { id: stat.id };
         if (stat.statNameIsChange) obj.name = stat.name;
         if (stat.statSortIsChange) obj.sort = stat.sort;
+        if (stepsIsChange.value) {
+          obj.is_write_off = Number(stat.id == statuses.write_off);
+          obj.is_reserve = Number(statuses.reservation.includes(stat.id));
+        }
         params.push(obj);
       });
       store.dispatch("ordersPipelinesStatusesUpdate", { statuses: params });
