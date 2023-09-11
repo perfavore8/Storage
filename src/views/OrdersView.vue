@@ -75,6 +75,7 @@
         </div>
         <div
           class="absolute top-[90px] left-0 flex flex-row gap-3 items-center"
+          v-if="displayType.selected.name === 'orders'"
         >
           Сделок: {{ grid?.meta?.meta?.total || 0 }} |
           {{ grid?.meta?.meta?.sum || 0 }} ₽
