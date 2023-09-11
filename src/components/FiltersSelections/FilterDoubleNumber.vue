@@ -31,8 +31,8 @@ export default {
     },
   },
   setup(props, context) {
-    const valueOne = ref(null);
-    const valueTwo = ref(null);
+    const valueOne = ref("");
+    const valueTwo = ref("");
 
     watch(
       () => [valueOne.value, valueTwo.value],
@@ -46,8 +46,8 @@ export default {
     const checkCorrectOrder = () => {
       if (
         valueOne.value > valueTwo.value &&
-        valueOne.value !== null &&
-        valueTwo.value !== null
+        valueOne.value !== "" &&
+        valueTwo.value !== ""
       ) {
         const step = valueOne.value;
         valueOne.value = valueTwo.value;
@@ -58,14 +58,17 @@ export default {
     onMounted(() => change_value());
 
     const option_value = computed(() => {
-      return { option: "=", value: `${valueOne.value} - ${valueTwo.value}` };
+      return {
+        option: "range",
+        value: `${valueOne.value} - ${valueTwo.value}`,
+      };
     });
 
     const change_value = () => {
       nextTick(() => {
         [valueOne.value, valueTwo.value] = props.item.value?.split(" - ") || [
-          null,
-          null,
+          "",
+          "",
         ];
       });
     };
