@@ -23,6 +23,23 @@
             />
             <label for="filter"></label>
           </div>
+          <span>Админ</span>
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              :checked="copyUser.role === 'admin'"
+              name="filter"
+              id="role_admin"
+              class="checkbox"
+              @change="
+                () =>
+                  copyUser.role === 'admin'
+                    ? (copyUser.role = 'user')
+                    : (copyUser.role = 'admin')
+              "
+            />
+            <label for="role_admin"></label>
+          </div>
         </form>
       </div>
       <div class="footer flex flex-row justify-end gap-4">
@@ -50,6 +67,10 @@ export default {
     const close = () => context.emit("close");
 
     const submit = () => {
+      context.emit("submit", {
+        is_active: Number(copyUser.isActive),
+        role: copyUser.role,
+      });
       close();
     };
 

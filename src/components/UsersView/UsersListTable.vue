@@ -173,6 +173,7 @@
     v-if="showEditUser"
     :user="editUser.selected"
     @close="editUser.close()"
+    @submit="editUser.submit()"
   />
 </template>
 
@@ -233,6 +234,9 @@ export default {
         toggleEditUser(true);
       },
       close: () => toggleEditUser(false),
+      submit: function (newFields) {
+        Object.assign(this.selected, newFields);
+      },
     });
 
     const unLinkUser = async (id) => {
