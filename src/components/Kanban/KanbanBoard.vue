@@ -202,7 +202,7 @@ export default {
 
     const setVisible = () => {
       pipelines.selected.statuses.forEach((col) =>
-        col.res.data.forEach((item) => {
+        col.res?.data?.forEach((item) => {
           if (item.visible.value === null)
             item.visible.value = useElementVisibility(item.visible.ref, {
               scrollTarget: col.ref,
