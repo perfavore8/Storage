@@ -78,7 +78,7 @@
                 <div
                   class="card-futter flex flex-row justify-between items-center"
                 >
-                  <span> {{ element.sum || 0 }} ₽ </span>
+                  <span> {{ formatNumber(element.sum || 0) }} ₽ </span>
                   <div class="img_wrapper">
                     <img
                       :src="
@@ -109,6 +109,7 @@ import { useElementVisibility, useToggle, watchThrottled } from "@vueuse/core";
 import store from "@/store";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import router from "@/router";
+import { useValidate } from "@/composables/validate";
 export default {
   components: {
     draggable,
@@ -117,6 +118,7 @@ export default {
   setup() {
     const { getRandomColor3 } = useColor();
     const { pipelines, startPromise } = useOrdersPipelinesSelect();
+    const { formatNumber } = useValidate();
 
     const params = computed(() => store.state.orders.filters);
     const orders = computed(() => store.state.orders.orders);
@@ -283,6 +285,7 @@ export default {
       castomFields,
       routeToOrder,
       emitParams,
+      formatNumber,
     };
   },
 };
