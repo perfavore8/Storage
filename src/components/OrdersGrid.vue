@@ -405,7 +405,7 @@ export default {
     const sort = (code) => {
       if (sorting.order_by != code) {
         sorting.order = "";
-        sorting.order_by = code;
+        sorting.order_by = code.split(/_(.*)/s)[1];
       }
       if (sorting.order === "desc" || !sorting.order) {
         sorting.order = "asc";
