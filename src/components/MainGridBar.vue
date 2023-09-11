@@ -38,7 +38,7 @@
       </div>
     </th>
     <th class="bar_item item" style="min-width: 80px">
-      <div>
+      <div v-if="!(isTest && !currentSetSettingsInFolder.tableSettingsBtn)">
         <button
           class="settings_btn"
           @click="openTableSettings()"
@@ -65,6 +65,8 @@ import { useNotification } from "@/composables/notification";
 import store from "@/store";
 import { computed } from "@vue/reactivity";
 import { reactive, ref } from "vue";
+import { isTest } from "@/composables/isTest";
+import { useRoleSettings } from "@/composables/roleSettings";
 export default {
   props: {
     fields: {
@@ -86,6 +88,8 @@ export default {
     },
   },
   setup(props, context) {
+    const { currentSetSettingsInFolder } = useRoleSettings("products");
+
     const order = reactive({
       code: "",
       prev_order: "",
@@ -109,7 +113,6 @@ export default {
 
     const collsCount = computed(() => props.tableConfig.length);
     const oneC = computed(() => store.state.account.account?.config?.g_enabled);
-    const isTest = computed(() => store.state.account?.account?.id == 1);
     const width = computed(() => {
       let arr = [];
       props.fields.forEach((field) => {
@@ -184,6 +187,7 @@ export default {
       dropAllSelectedProducts,
       openTableSettings,
       dropOrder,
+      currentSetSettingsInFolder,
     };
   },
 };

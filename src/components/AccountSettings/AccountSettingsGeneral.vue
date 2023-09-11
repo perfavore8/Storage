@@ -4,7 +4,13 @@
       <div class="text">
         <form class="grid gap-6">
           <span>Имя аккаунта</span>
-          <input type="text" class="input" v-model="accountName" />
+          <input
+            type="text"
+            class="input"
+            v-model="accountName"
+            v-if="!(isTest && !currentSetSettingsInFolder.general.changeName)"
+          />
+          <span v-else>{{ accountName }}</span>
         </form>
       </div>
     </div>
@@ -32,10 +38,13 @@ import { computed, onMounted, ref } from "@vue/runtime-core";
 import store from "@/store";
 import { useLockBtn } from "@/composables/lockBtn";
 import router from "@/router";
+import { useRoleSettings } from "@/composables/roleSettings";
+import { isTest } from "@/composables/isTest";
 export default {
   components: { BtnsSaveClose },
   setup() {
     const { isLocked, lockBtn } = useLockBtn();
+    const { currentSetSettingsInFolder } = useRoleSettings("accountSettings");
 
     const account = computed(() => {
       return store.state.account.account;
@@ -59,7 +68,16 @@ export default {
 
     const close = () => router.push("/");
 
-    return { divideRight, accountName, account, close, save, isLocked };
+    return {
+      divideRight,
+      accountName,
+      account,
+      close,
+      save,
+      isLocked,
+      currentSetSettingsInFolder,
+      isTest,
+    };
   },
 };
 </script>

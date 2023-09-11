@@ -20,7 +20,10 @@
           <button
             class="btn btn_dark_blue"
             @click="toggleAddNewUser(true)"
-            v-if="pagination.selected.value === 'users'"
+            v-if="
+              pagination.selected.value === 'users' &&
+              !(isTest && !currentSetSettingsInFolder.general.changeName)
+            "
           >
             Добавить пользователя
           </button>
@@ -47,6 +50,8 @@ import AppHeader from "@/components/AppHeader.vue";
 import { useToggle } from "@vueuse/core";
 import NewUser from "@/components/UsersView/NewUser.vue";
 import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
+import { useRoleSettings } from "@/composables/roleSettings";
+import { isTest } from "@/composables/isTest";
 export default {
   components: {
     UsersListTable,
@@ -58,6 +63,7 @@ export default {
   },
   setup() {
     const [showAddNewUser, toggleAddNewUser] = useToggle(false);
+    const { currentSetSettingsInFolder } = useRoleSettings("accountSettings");
 
     const UserListTableRef = ref(null);
     const updateList = () => {
@@ -100,6 +106,8 @@ export default {
       toggleAddNewUser,
       UserListTableRef,
       updateList,
+      currentSetSettingsInFolder,
+      isTest,
     };
   },
 };

@@ -44,8 +44,14 @@
         <thead class="bg-slate-50 border-y border-solid border-slate-200/70">
           <tr>
             <th v-for="title in titiles" :key="title.code">{{ title.name }}</th>
-            <th></th>
-            <th></th>
+            <th
+              class="editCell"
+              v-if="!(isTest && !currentSetSettingsInFolder.usersList.editBtn)"
+            ></th>
+            <th
+              class="delCell"
+              v-if="!(isTest && !currentSetSettingsInFolder.usersList.delBtn)"
+            ></th>
           </tr>
         </thead>
         <tbody>
@@ -95,7 +101,10 @@
               </template>
               <template v-else>{{ user[title.code] }}</template>
             </td>
-            <td>
+            <td
+              class="editCell"
+              v-if="!(isTest && !currentSetSettingsInFolder.usersList.editBtn)"
+            >
               <button
                 class="export btn order-1 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
                 @click="editUser.select(user)"
@@ -115,7 +124,10 @@
                 Редактировать
               </button>
             </td>
-            <td>
+            <td
+              class="delCell"
+              v-if="!(isTest && !currentSetSettingsInFolder.usersList.delBtn)"
+            >
               <AppDelBtnAccept
                 :btnClass="'!p-2 rounded-full !text-gray-500 disabled:!text-gray-300 hover:!text-red-500 transition-colors duration-300 bg-transparent'"
                 :dropDownClass="'right-full mr-2 !mb-0 !-bottom-1/2'"
@@ -174,10 +186,13 @@ import store from "@/store";
 import EditUser from "./EditUser.vue";
 import { useToggle } from "@vueuse/core";
 import AppDelBtnAccept from "../AppDelBtnAccept.vue";
+import { useRoleSettings } from "@/composables/roleSettings";
+import { isTest } from "@/composables/isTest";
 export default {
   components: { AppInput, GridBottom, AppPaginator, EditUser, AppDelBtnAccept },
   setup() {
     const { getRandomColor2 } = useColor();
+    const { currentSetSettingsInFolder } = useRoleSettings("accountSettings");
 
     const page = reactive({
       total: 50,
@@ -243,6 +258,8 @@ export default {
       unLinkUser,
       mainUserId,
       currentUserId,
+      currentSetSettingsInFolder,
+      isTest,
     };
   },
 };
@@ -264,13 +281,11 @@ td {
 //   width: 1%;
 // }
 
-th:nth-last-child(2),
-td:nth-last-child(2) {
+.editCell {
   width: 1%;
   min-width: 211px;
 }
-th:last-child,
-td:last-child {
+.delCell {
   width: 1%;
 }
 </style>

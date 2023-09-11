@@ -59,7 +59,11 @@
           >
             <span class="material-icons-outlined"> sync </span>
           </button>
-          <div v-if="isTest" @click="openTableSettings()" class="tableSettings">
+          <div
+            v-if="isTest && currentSetSettingsInFolder.tableSettingsBtn"
+            @click="openTableSettings()"
+            class="tableSettings"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -104,11 +108,12 @@ import AppSearchWithFilters from "@/components/AppSearchWithFilters.vue";
 import OrdersKanbanPipelineSelect from "@/components/OrdersKanbanPipelineSelect.vue";
 import router from "@/router";
 import store from "@/store";
-import { useRoute } from "vue-router";
 import { computed, reactive, ref, watch } from "vue";
 import { useLockBtn } from "@/composables/lockBtn";
 import { useSaveLS } from "@/composables/saveLS";
 import { useToggle } from "@vueuse/core";
+import { isTest } from "@/composables/isTest";
+import { useRoleSettings } from "@/composables/roleSettings";
 export default {
   components: {
     AppHeader,
@@ -119,11 +124,7 @@ export default {
     OrdersKanbanPipelineSelect,
   },
   setup() {
-    const Route = useRoute();
-    const isTest = computed(
-      () =>
-        store.state.account?.account?.id == 1 || Route?.query?.test === "test"
-    );
+    const { currentSetSettingsInFolder } = useRoleSettings("orders");
     const { saveAllQueryParams, saveLSParam, getSavedLSParam } = useSaveLS();
     saveAllQueryParams();
 
@@ -209,6 +210,7 @@ export default {
       isLocked,
       openTableSettings,
       hideFinalSteps,
+      currentSetSettingsInFolder,
     };
   },
 };

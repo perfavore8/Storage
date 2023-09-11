@@ -97,7 +97,7 @@
         </transition>
       </template>
     </div>
-    <div class="ref">
+    <div class="ref" v-if="!(isTest && !currentSetSettings?.app?.settingsBtn)">
       <button
         class="settings_btn"
         :class="{ settings_btn_rotate: show_settings }"
@@ -194,6 +194,7 @@ import { useNotification } from "@/composables/notification";
 import { useToggle } from "@vueuse/core";
 import store from "@/store";
 import router from "@/router";
+import { useRoleSettings } from "@/composables/roleSettings";
 export default {
   components: {
     TaskCenter,
@@ -201,6 +202,7 @@ export default {
   },
   setup() {
     const { addNotification } = useNotification();
+    const { currentSetSettings } = useRoleSettings();
 
     const showTaskCenter = computed(() => store.state.shows.showTaskCenter);
     const show_sync = computed(() => store.state.shows.show_sync);
@@ -316,6 +318,7 @@ export default {
       toggleShowUserMenu,
       amoTest,
       openUserLIst,
+      currentSetSettings,
     };
   },
 };
