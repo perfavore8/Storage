@@ -108,7 +108,6 @@ import { computed, reactive, ref, watch } from "vue";
 import { useLockBtn } from "@/composables/lockBtn";
 import { useSaveLS } from "@/composables/saveLS";
 import { useToggle } from "@vueuse/core";
-import { list } from "postcss";
 export default {
   components: {
     AppHeader,
@@ -187,12 +186,15 @@ export default {
 
     const openTableSettings = () => store.commit("open_table_settings");
 
-    const [hideFinalSteps] = useToggle(false);
+    const [hideFinalSteps] = useToggle(
+      getSavedLSParam("hide_final_statuses") || false
+    );
     watch(hideFinalSteps, () => {
       store.commit("updateOrdersFilters", {
         hide_final_statuses: hideFinalSteps.value,
       });
-      if (list.selected.name === "kanban") return;
+      saveLSParam("hide_final_statuses", hideFinalSteps.value);
+      if (displayType.selected.name === "kanban") return;
       grid.value?.updateList();
     });
 
