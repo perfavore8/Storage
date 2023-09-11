@@ -249,7 +249,7 @@ export default {
       if (col && savedDragEl.value) {
         store.dispatch("updateOrderStatus", {
           order_id: savedDragEl.value.id,
-          status: col.id,
+          status_id: col.id,
         });
       }
 

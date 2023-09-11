@@ -71,7 +71,7 @@ export default {
 
     const selector = reactive({
       selected: computed(() =>
-        selector.list.find((el) => el.value == order.status)
+        selector.list.find((el) => el.value == order.status_id)
       ),
       list: [],
       getStatuses: async function () {
@@ -96,7 +96,7 @@ export default {
           (el) => el.is_system && el.value === "optgroup"
         );
         const idx = this.list.indexOf(catItem);
-        order.status = this.list[idx + 1].id;
+        order.status_id = this.list[idx + 1].id;
       },
       checkSelStat: function (id) {
         const ids = [];
@@ -104,7 +104,7 @@ export default {
         return ids.includes(id);
       },
       select: function (option) {
-        order.status = option.value;
+        order.status_id = option.value;
         toggleSomeChange(true);
       },
     });
@@ -115,18 +115,14 @@ export default {
       );
       await prom;
       await selector.getStatuses();
-      if (!selector.checkSelStat(order.status)) selector.setSelected();
+      if (!selector.checkSelStat(order.status_id)) selector.setSelected();
     });
 
     const user_name = reactive({
-      selected: computed(() =>
-        user_name.list.find(
-          (el) =>
-            el.value ==
-            (order.fields.user_name
-              ? order.fields.user_name
-              : props.total?.user_name)
-        )
+      selected: computed(
+        () =>
+          user_name.list.find((el) => el.id == order.user_id) ||
+          user_name.list.find((el) => el.value == props.total?.user_name)
       ),
       list: [],
       getList: async function () {
@@ -135,7 +131,7 @@ export default {
         res.forEach((user) => this.list.push({ ...user, value: user.name }));
       },
       select: function (option) {
-        order.fields.user_name = option.value;
+        order.user_id = String(option.id);
         toggleSomeChange(true);
       },
     });
