@@ -19,6 +19,18 @@
       v-show="showFilters"
       class="absolute top-full mt-2 border border-slate-200 bg-white bg-opacity-80 backdrop-blur-md shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-full max-w-[150%] min-w-[550px] flex flex-col gap-8"
     >
+      <BtnsSaveClose
+        :show_close="false"
+        class="self-start"
+        @save="() => accept()"
+      >
+        <template v-slot:other_btns>
+          <button class="btn bg-transparent order-2" @click="reset()">
+            Сбросить
+          </button>
+        </template>
+        <template v-slot:save> Применить </template>
+      </BtnsSaveClose>
       <div
         v-for="source in Config.hasDifferentSources ? Config.sources : 1"
         :key="source"
