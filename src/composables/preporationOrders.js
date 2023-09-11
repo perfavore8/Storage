@@ -73,6 +73,8 @@ export function usePreparationOrders() {
     if (field.type === 1 || field.type === 2) {
       if (!value) intermediate = 0;
       intermediate = Number(value);
+      if (field.value === "product_free_4_reserve" ?? value == -1)
+        intermediate = "∞";
     } else if (field.type === 3 || field.type === 4) {
       if (!value) intermediate = "";
       intermediate = String(value);
