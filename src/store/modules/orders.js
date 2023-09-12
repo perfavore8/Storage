@@ -301,9 +301,10 @@ export default {
       return data;
     },
 
-    async getOrdersTableConfig(context) {
+    async getOrdersTableConfig(context, params) {
       const { data } = await ApiReqFunc({
         url: "orders/table-config",
+        params: params,
       });
       context.commit("updateTableConfig", data);
 
