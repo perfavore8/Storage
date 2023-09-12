@@ -436,7 +436,7 @@ export default {
 
     const setTitles = async () => {
       if (isTest.value) {
-        await store.dispatch("getOrdersTableConfig");
+        await store.dispatch("getOrdersTableConfig",, {for:"table"});
         products.titles = computed(
           () => store.getters.sortedFilteredTableConfig
         );

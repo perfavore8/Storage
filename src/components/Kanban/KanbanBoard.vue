@@ -184,7 +184,7 @@ export default {
     };
 
     onMounted(async () => {
-      await store.dispatch("getOrdersTableConfig");
+      await store.dispatch("getOrdersTableConfig", { for: "pipeline" });
       updateList();
     });
 
