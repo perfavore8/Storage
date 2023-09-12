@@ -316,7 +316,7 @@ export default {
         method: "post",
         data: params.value,
       });
-      await context.dispatch("getOrdersTableConfig");
+      await context.dispatch("getOrdersTableConfig", { for: params.value.for });
       context.dispatch("getOrdersFields");
 
       return data;

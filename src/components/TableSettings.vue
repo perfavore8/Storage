@@ -127,6 +127,7 @@ export default {
           config: [],
         },
       };
+      if (config.value.params) Object.assign(params.value, config.value.params);
       if (config.value.haveWH)
         (params.wh = currentWH.value), (params.value.code = currentWH.value);
       list.value.forEach((val) => {
