@@ -1209,11 +1209,12 @@ export default {
               // transform: rotateY(0.5turn);
             }
             .rows::-webkit-scrollbar {
-              display: none;
+              // display: none;
             }
             .rows {
               max-height: 220px;
               overflow: auto;
+              padding-right: 8px;
             }
             .sls_row {
               display: flex;
