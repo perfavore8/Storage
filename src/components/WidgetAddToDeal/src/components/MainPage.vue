@@ -513,6 +513,7 @@ export default {
     await Promise.all([
       // this.getCategoriesW(0),
       this.$store.dispatch("getAllFieldsW"),
+      this.getFields(1),
     ]);
     // await this.selectCategories(this.categories[0]);
     this.updateAddedProducts(true);

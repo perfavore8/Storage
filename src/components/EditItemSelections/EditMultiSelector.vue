@@ -49,7 +49,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.selected_option);
     this.change_value();
   },
   watch: {
