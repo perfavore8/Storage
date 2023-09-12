@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8 flex items-center justify-center w-full h-full" v-if="false">
+  <div class="p-8 flex items-center justify-center w-full h-full" v-if="true">
     <div
       class="container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 mt-9 mx-auto isolate gap-8"
     >
@@ -9,18 +9,20 @@
 </template>
 
 <script>
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 import PlansCard from "./PlansCard.vue";
+import store from "@/store";
 export default {
   components: { PlansCard },
   setup() {
     const list = reactive([
       {
-        accent: false,
-        header: "Hobby",
+        id: 0,
+        accent: computed(() => store.state.account.account.tarif == 0),
+        header: "",
         description: "The essentials to provide your best work for clients.",
-        price: "$15",
-        period: "/month",
+        price: "0₽",
+        period: "14 дней",
         advantages: [
           { text: "5 products" },
           { text: "Up to 1,000 subscribers" },
@@ -28,45 +30,30 @@ export default {
         ],
       },
       {
-        accent: false,
+        id: 3,
+        accent: computed(() => store.state.account.account.tarif == 0),
+        header: "Hobby",
+        description: "The essentials to provide your best work for clients.",
+        price: "0₽",
+        period: "-1",
+        advantages: [
+          { text: "5 products" },
+          { text: "Up to 1,000 subscribers" },
+          { text: "Basic analytics" },
+        ],
+      },
+      {
+        id: 2,
+        accent: computed(() => store.state.account.account.tarif == 2),
         header: "Freelancer",
         description: "The essentials to provide your best work for clients.",
-        price: "$30",
-        period: "/month",
+        price: "1700₽",
+        period: "month",
         advantages: [
           { text: "5 products" },
           { text: "Up to 1,000 subscribers" },
           { text: "Basic analytics" },
           { text: "48-hour support response time" },
-        ],
-      },
-      {
-        accent: true,
-        header: "Startup",
-        description: "A plan that scales with your rapidly growing business.",
-        price: "$60",
-        period: "/month",
-        advantages: [
-          { text: "25 productsw" },
-          { text: "Up to 10,000 subscribersw" },
-          { text: "Advanced analyticsw" },
-          { text: "24-hour support response timew" },
-          { text: "Marketing automationsw" },
-        ],
-      },
-      {
-        accent: false,
-        header: "Enterprise",
-        description: "Dedicated support and infrastructure for your company.",
-        price: "$90",
-        period: "/month",
-        advantages: [
-          { text: "Unlimited products" },
-          { text: "Unlimited subscribers" },
-          { text: "Advanced analytics" },
-          { text: "1-hour, dedicated support response time" },
-          { text: "Marketing automations" },
-          { text: "Custom reporting tools" },
         ],
       },
     ]);

@@ -63,7 +63,9 @@
                       {{ element.fieldsForRender.order_name }}
                     </h4>
                   </a>
-                  <span>{{ element.fieldsForRender.order_created_at }}</span>
+                  <span class="text-end text-xs">
+                    {{ element.fieldsForRender.order_created_at }}
+                  </span>
                 </div>
                 <div
                   class="card-wrapper flex flex-col gap-0.5 leading-5 text-sm"
