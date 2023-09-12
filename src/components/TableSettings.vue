@@ -92,7 +92,10 @@ export default {
     );
 
     onMounted(async () => {
-      await store.dispatch(config.value.getStateReqName, currentWH.value);
+      await store.dispatch(
+        config.value.getStateReqName,
+        config.value.haveWH ? currentWH.value : config.value.params
+      );
 
       const preparedTC = [];
       Object.entries(tableConfig.value).map(([key, value]) => {

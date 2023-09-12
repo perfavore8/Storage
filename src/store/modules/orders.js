@@ -322,9 +322,10 @@ export default {
       return data;
     },
 
-    async getOrdersKanBanTableConfig(context) {
+    async getOrdersKanBanTableConfig(context, params) {
       const { data } = await ApiReqFunc({
         url: "orders/table-config",
+        params: params,
       });
       context.commit("updateKanBanTableConfig", data);
 
