@@ -2,8 +2,11 @@ import store from "@/store";
 import { useOrdersPipelinesSelect } from "./ordersPipelinesSelect";
 import { nextTick } from "vue";
 import { computed } from "vue";
+import { useValidate } from "./validate";
 
 export function usePreparationOrders() {
+  const { formatNumber } = useValidate();
+
   let pipelines = null;
   nextTick(() => {
     const { pipelines: pip } = useOrdersPipelinesSelect();
@@ -31,13 +34,14 @@ export function usePreparationOrders() {
 
   const preparationOrder = (value) => {
     const res = {};
-
     store.getters.preporatedTableConfig.forEach((field) => {
       const [source, code] = field.value.split(/_(.*)/s);
       let stepRes = null;
 
       if (source === "order") {
         stepRes = getValue(value, code);
+        if (code === "sum")
+          stepRes = String(formatNumber(stepRes)) + " " + value.currency;
       } else if (source === "company") {
         stepRes = getValue(value.company, code);
       } else if (source === "contact") {
