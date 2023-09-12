@@ -60,13 +60,13 @@ export default {
     const option_value = computed(() => {
       return {
         option: "range",
-        value: `${valueOne.value} - ${valueTwo.value}`,
+        value: `${valueOne.value}-${valueTwo.value}`,
       };
     });
 
     const change_value = () => {
       nextTick(() => {
-        [valueOne.value, valueTwo.value] = props.item.value?.split(" - ") || [
+        [valueOne.value, valueTwo.value] = props.item.value?.split("-") || [
           "",
           "",
         ];
