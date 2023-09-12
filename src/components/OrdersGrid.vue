@@ -346,11 +346,11 @@ export default {
     const params = computed(() => store.state.orders.filters);
     const page = computed(() => {
       const obj = {
-        first: getPageFromLink(meta.value?.links?.first || null),
-        prev: getPageFromLink(meta.value?.links?.prev || null),
+        first: getPageFromLink(meta.value?.links?.first),
+        prev: getPageFromLink(meta.value?.links?.prev),
         current: meta.value?.meta?.current_page,
-        next: getPageFromLink(meta.value?.links?.next || null),
-        last: getPageFromLink(meta.value?.links?.last || null),
+        next: getPageFromLink(meta.value?.links?.next),
+        last: getPageFromLink(meta.value?.links?.last),
       };
       return obj;
     });
