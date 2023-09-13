@@ -610,20 +610,19 @@ export default {
         if (val != null) {
           params[val] = {};
           if (val == "lead_config") {
-            params[val].visible = copy_fields[idx][val].visible.value ? 1 : 0;
-            params[val].editable = copy_fields[idx][val].editable.value ? 1 : 0;
-            params[val].title_visible = copy_fields[idx][val].title_visible
-              .value
-              ? 1
-              : 0;
+            params[val].visible = Number(copy_fields[idx][val].visible.value);
+            params[val].editable = Number(copy_fields[idx][val].editable.value);
+            params[val].title_visible = Number(
+              copy_fields[idx][val].title_visible.value
+            );
             params[val].title_sort = copy_fields[idx][val].title_sort;
           } else if (val == "config") {
             params[val] = copy_fields[idx][val];
             if (copy_fields[idx][val].double_in_new_bath)
-              params[val].double_in_new_bath = copy_fields[idx][val]
-                .double_in_new_bath.value
-                ? 1
-                : 0;
+              Number(
+                (params[val].double_in_new_bath =
+                  copy_fields[idx][val].double_in_new_bath.value)
+              );
             if (copy_fields[idx][val]) {
               params[val].sort = copy_fields[idx][val].sort;
               params[val].table = copy_fields[idx][val].table;
