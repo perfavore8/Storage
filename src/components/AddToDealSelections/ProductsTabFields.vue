@@ -49,7 +49,7 @@
       </div>
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
-          Дата создания:
+          Создан:
         </div>
         <div class="text-base font-medium">
           {{ dateFormater(order.created_at) }}
@@ -57,7 +57,7 @@
       </div>
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
-          Дата изменения:
+          Изменен:
         </div>
         <div class="text-base font-medium">
           {{ dateFormater(order.updated_at) }}
