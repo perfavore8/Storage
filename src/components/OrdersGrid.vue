@@ -211,6 +211,7 @@ import { computed, onMounted, reactive, ref } from "vue";
 import store from "@/store";
 import { useRouter } from "vue-router";
 import { useCheckIsMainUser } from "@/composables/checkIsMainUser";
+import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 // import ReportGridModal from "./ReportGridModal.vue";
 // import { nextTick } from "vue";
 export default {
@@ -386,8 +387,12 @@ export default {
           : (product.item = {});
       });
     };
+    const { pipelines } = useOrdersPipelinesSelect();
     const getOrders = async () => {
-      await store.dispatch("getOrders", params.value);
+      await store.dispatch("getOrders", {
+        pipeline_id: pipelines.selected.id,
+        ...params.value,
+      });
       fillOrders();
     };
     const fillWhs = () => {

@@ -114,6 +114,7 @@ import { useSaveLS } from "@/composables/saveLS";
 import { useToggle } from "@vueuse/core";
 import { isTest } from "@/composables/isTest";
 import { useRoleSettings } from "@/composables/roleSettings";
+import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 export default {
   components: {
     AppHeader,
@@ -185,6 +186,12 @@ export default {
       lockBtn("timer", 2250);
       grid.value?.updateList();
     };
+
+    const { pipelines } = useOrdersPipelinesSelect();
+    watch(
+      () => pipelines.selected.id,
+      () => updateList()
+    );
 
     const openTableSettings = () => store.commit("open_table_settings");
 

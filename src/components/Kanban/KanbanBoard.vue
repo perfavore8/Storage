@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 import { useColor } from "@/composables/color";
 import { useElementVisibility, useToggle, watchThrottled } from "@vueuse/core";
@@ -226,11 +226,6 @@ export default {
         });
       },
       { deep: true, throttle: 500 }
-    );
-
-    watch(
-      () => pipelines.selected.id,
-      () => updateList()
     );
 
     const [isDataLoading2, toggleIsDataLoading2] = useToggle(false);
