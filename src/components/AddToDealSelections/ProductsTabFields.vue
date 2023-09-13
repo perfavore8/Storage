@@ -47,6 +47,22 @@
           {{ total?.[item.value] }}
         </div>
       </div>
+      <div class="flex flex-col pb-3 items-start w-full">
+        <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
+          Дата создания:
+        </div>
+        <div class="text-base font-medium">
+          {{ dateFormater(order.created_at) }}
+        </div>
+      </div>
+      <div class="flex flex-col pb-3 items-start w-full">
+        <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
+          Дата изменения:
+        </div>
+        <div class="text-base font-medium">
+          {{ dateFormater(order.updated_at) }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -137,7 +153,13 @@ export default {
     });
     user_name.getList();
 
-    return { list, selector, order, user_name, toggleSomeChange };
+    const dateFormater = (date) => {
+      const res = new Date(date);
+      const response = res.toLocaleString();
+      return response === "Invalid Date" ? "" : response;
+    };
+
+    return { list, selector, order, user_name, toggleSomeChange, dateFormater };
   },
 };
 </script>

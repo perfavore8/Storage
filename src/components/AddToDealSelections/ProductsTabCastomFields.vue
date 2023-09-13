@@ -5,9 +5,11 @@
       class="min-w-[40%] w-full text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
     >
       <template v-for="field in fields" :key="field.id">
-        <div class="row pb-3" v-if="field.component && field.code !== 'name'">
+        <div
+          class="row pb-3"
+          v-if="field.component && !dontShowCodes.includes(field.code)"
+        >
           <component
-            v-if="field.code !== 'name'"
             :is="field.component"
             :item="field.type == 5 || field.type == 6 ? field : field.name"
             :selected_option="order?.fields?.[field.code]"
@@ -30,7 +32,7 @@ import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector
 import EditDate from "@/components/EditItemSelections/EditDate.vue";
 import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import store from "@/store";
 import { useNewDeal } from "@/composables/newDeal";
 export default {
@@ -65,7 +67,9 @@ export default {
       )
     );
 
-    return { fields, order, change_value };
+    const dontShowCodes = reactive(["name", "created_at", "updated_at"]);
+
+    return { fields, order, change_value, dontShowCodes };
   },
 };
 </script>
