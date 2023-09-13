@@ -296,7 +296,7 @@ export default {
           .btn_save_all {
             white-space: nowrap;
             position: absolute;
-            left: -120%;
+            right: 0;
             top: -75%;
             height: min-content;
             width: min-content;
