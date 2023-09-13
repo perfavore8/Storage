@@ -19,7 +19,13 @@ export function useTableSettingsConfig(code) {
       updateStateReqName: "updateOrdersKanBanConfigTable",
       haveWH: false,
       special: true,
-      disabledCodes: ["order_name", "order_created_at"],
+      disabledCodes: [
+        "order_name",
+        "order_created_at",
+        "order_responsible",
+        "contact_name",
+        "company_name",
+      ],
     },
     stock: {
       stateName: "account",

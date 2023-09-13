@@ -73,6 +73,12 @@
                   <span class="text-base mb-0.5">
                     {{ element.fieldsForRender.order_responsible }}
                   </span>
+                  <span class="text-base mb-0.5">
+                    {{ element.fieldsForRender.contact_name }}
+                  </span>
+                  <span class="text-base mb-0.5">
+                    {{ element.fieldsForRender.company_name }}
+                  </span>
                   <span v-for="castomField in castomFields" :key="castomField">
                     {{ element.fieldsForRender?.[castomField] }}
                   </span>
