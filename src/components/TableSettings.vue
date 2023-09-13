@@ -13,7 +13,7 @@
             >Перетаскивайте колонки для изменения очередности</small
           >
         </div>
-        <draggable class="dragArea" :list="list">
+        <draggable class="dragArea" :list="list" @end="() => sort()">
           <div class="item" v-for="item in list" :key="item.name">
             <input
               type="checkbox"
@@ -24,6 +24,7 @@
                 item.visible.disabled ||
                 (disabledNotSelected && !item.visible.value)
               "
+              @change="() => sort()"
             />
             <label :for="item.code"></label>
             {{ item.name }}
@@ -117,6 +118,8 @@ export default {
             item.visible = { value: true, disabled: true };
         });
       });
+      sort(true);
+      asignSort();
     });
 
     const save = () => {
@@ -149,6 +152,20 @@ export default {
     const close = () => {
       store.commit("close_table_settings");
     };
+    const sort = (initial) => {
+      const incorrectOrder = list.value.some(
+        (el, idx) => !el.visible.value && list.value[idx + 1]?.visible?.value
+      );
+      if (incorrectOrder) {
+        const selected = list.value.filter((el) => el.visible.value);
+        const unselected = list.value.filter((el) => !el.visible.value);
+        list.value = [...selected, ...unselected];
+      }
+      initial || asignSort();
+      list.value.sort((a, b) => a.visible.value && a.sort - b.sort);
+    };
+
+    const asignSort = () => list.value.map((item, idx) => (item.sort = idx));
 
     return {
       list,
@@ -157,6 +174,7 @@ export default {
       save,
       close,
       currentCountSelected,
+      sort,
     };
   },
 };
