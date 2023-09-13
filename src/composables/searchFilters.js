@@ -21,7 +21,7 @@ export function useSearchFilters(setOfInstructions) {
               ...field,
               title: source.title,
               titleCode: source.code,
-              code: field.code + "_" + source.code,
+              code: source.code + "_" + field.code,
             })
         )
       );
@@ -82,7 +82,7 @@ export function useSearchFilters(setOfInstructions) {
   const confirmFilters = () => {
     const filter = {};
     const addToFilter = (val, value) => {
-      const code = val.code.split("_")[0];
+      const code = val.code.split(/_(.*)/s)[1];
       if (Config.hasDifferentSources) {
         if (!filter[val.titleCode]) filter[val.titleCode] = {};
         filter[val.titleCode][code] = value;
@@ -136,8 +136,8 @@ export function useSearchFilters(setOfInstructions) {
   };
 
   const filterComponents = {
-    1: "FilterNumber",
-    2: "FilterNumber",
+    1: "FilterDoubleNumber",
+    2: "FilterDoubleNumber",
     3: "FilterText",
     4: "FilterText",
     5: "FilterList",

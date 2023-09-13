@@ -191,14 +191,16 @@ export default {
     const [hideFinalSteps] = useToggle(
       getSavedLSParam("hide_final_statuses") || false
     );
-    watch(hideFinalSteps, () => {
+    watch(hideFinalSteps, () => saveHideFinalSteps());
+    const saveHideFinalSteps = () => {
       store.commit("updateOrdersFilters", {
         hide_final_statuses: hideFinalSteps.value,
       });
       saveLSParam("hide_final_statuses", hideFinalSteps.value);
       if (displayType.selected.name === "kanban") return;
       grid.value?.updateList();
-    });
+    };
+    saveHideFinalSteps();
 
     return {
       addToDeal,
