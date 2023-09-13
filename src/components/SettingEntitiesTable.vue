@@ -638,12 +638,17 @@ export default {
       const nameError = error?.error == "This field name exist.";
 
       copy_fields[idx]["nameError"] = nameError;
-      // if (!error?.error) {
-      //   copy_fields[idx].changeName = false;
-      //   copy_fields[idx].changeData = false;
-      //   copy_fields[idx].changeLeadConfig = false;
-      //   copy_fields[idx].changeConfig = false;
-      // }
+      if (!error?.error) {
+        Object.keys(changeFieldsSource).forEach(
+          (field) =>
+            copy_fields[idx][field] &&
+            setComputeds(
+              copy_fields[idx],
+              JSON.parse(JSON.stringify(copy_fields[idx])),
+              field
+            )
+        );
+      }
     };
     const get_fields = async () => {
       is_loading.value = true;
@@ -689,20 +694,8 @@ export default {
       });
       copy_fields.map((val, idx) => {
         val["nameError"] = false;
-        val["changeName"] = computed(() => val.name !== copy_fields2[idx].name);
-        val["changeData"] = computed(
-          () =>
-            JSON.stringify(val.data) !== JSON.stringify(copy_fields2[idx].data)
-        );
-        val["changeLeadConfig"] = computed(
-          () =>
-            JSON.stringify(val.lead_config) !==
-            JSON.stringify(copy_fields2[idx].lead_config)
-        );
-        val["changeConfig"] = computed(
-          () =>
-            JSON.stringify(val.config) !==
-            JSON.stringify(copy_fields2[idx].config)
+        Object.keys(changeFieldsSource).forEach((field) =>
+          setComputeds(val, copy_fields2[idx], field)
         );
         if (selectedTab.value.haveLeadConfig) {
           const visible = val.lead_config.visible;
@@ -732,6 +725,36 @@ export default {
       });
       is_loading.value = false;
     };
+
+    const changeFieldsSource = reactive({
+      changeName: "name",
+      changeData: "data",
+      changeLeadConfig: "lead_config",
+      changeConfig: "config",
+    });
+
+    const setComputeds = (item, copy, field) => {
+      const source = changeFieldsSource[field];
+      item[field] = computed(
+        () => JSON.stringify(item[source]) !== JSON.stringify(copy[source])
+      );
+      // val["changeName"] = computed(() => val.name !== copy_fields2[idx].name);
+      // val["changeData"] = computed(
+      //   () =>
+      //     JSON.stringify(val.data) !== JSON.stringify(copy_fields2[idx].data)
+      // );
+      // val["changeLeadConfig"] = computed(
+      //   () =>
+      //     JSON.stringify(val.lead_config) !==
+      //     JSON.stringify(copy_fields2[idx].lead_config)
+      // );
+      // val["changeConfig"] = computed(
+      //   () =>
+      //     JSON.stringify(val.config) !==
+      //     JSON.stringify(copy_fields2[idx].config)
+      // );
+    };
+
     const search_type = (id) => {
       return types.value.find((val) => val.value == id);
     };
