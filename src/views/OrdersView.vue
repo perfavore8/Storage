@@ -115,6 +115,7 @@ import { useToggle } from "@vueuse/core";
 import { isTest } from "@/composables/isTest";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
+import { usePreparationOrders } from "@/composables/preporationOrders";
 export default {
   components: {
     AppHeader,
@@ -125,6 +126,7 @@ export default {
     OrdersKanbanPipelineSelect,
   },
   setup() {
+    usePreparationOrders();
     const { currentSetSettingsInFolder } = useRoleSettings("orders");
     const { saveAllQueryParams, saveLSParam, getSavedLSParam } = useSaveLS();
     saveAllQueryParams();

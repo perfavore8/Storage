@@ -1,11 +1,21 @@
 import store from "@/store";
 import { useOrdersPipelinesSelect } from "./ordersPipelinesSelect";
-import { nextTick } from "vue";
+import { nextTick, onMounted } from "vue";
 import { computed } from "vue";
 import { useValidate } from "./validate";
+import { ref } from "vue";
+
+const userList = ref([]);
 
 export function usePreparationOrders() {
   const { formatNumber } = useValidate();
+  onMounted(async () => {
+    if (!userList.value.length) {
+      const users = await store.dispatch("getUsersList");
+      console.log(users);
+      userList.value = users;
+    }
+  });
 
   let pipelines = null;
   nextTick(() => {
@@ -18,9 +28,6 @@ export function usePreparationOrders() {
 
   const dateFormater = (date) => {
     const res = new Date(date);
-    // const [dateTime] = date.split(".");
-    // const [day, time] = dateTime.split("T");
-    // return day + " " + time;
     return res.toLocaleString();
   };
 
@@ -42,6 +49,11 @@ export function usePreparationOrders() {
         stepRes = getValue(value, code);
         if (code === "sum")
           stepRes = String(formatNumber(stepRes)) + " " + value.currency;
+        if (code === "user") {
+          stepRes = userList.value.find(
+            (user) => user.id == getValue(value, "user_id")
+          )?.name;
+        }
       } else if (source === "company") {
         stepRes = getValue(value.company, code);
       } else if (source === "contact") {
