@@ -19,7 +19,10 @@ const langConfiguration = reactive({
   getSavedlang: function () {
     const savedLang = getSavedLSParam("lang");
     const item = this.list.find((el) => el.value === savedLang);
-    if (!item) return;
+    if (!item) {
+      this.dropToDefault();
+      return;
+    }
     this.select(item, true);
   },
   dropToDefault: function () {
@@ -28,7 +31,6 @@ const langConfiguration = reactive({
     this.select(item, true);
   },
 });
-langConfiguration.dropToDefault();
 langConfiguration.getSavedlang();
 
 const i18n = createI18n({
