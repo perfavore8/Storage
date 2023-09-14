@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import { reactive } from "vue";
-123;
+
 const tabs = reactive({
   selected: { name: "Заказ", value: "products", code: "ProductsTab" },
   list: [
