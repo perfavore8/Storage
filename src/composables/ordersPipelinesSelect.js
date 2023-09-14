@@ -11,12 +11,17 @@ const pipelines = reactive({
   select: function (option) {
     if (option) this.selected = option;
   },
-  getList: async function () {
+  getList: function () {
+    if (this.list.length) return;
+    this.getNewList();
+  },
+  getNewList: async function () {
     const list = await store.dispatch("ordersPipelinesList");
     list.map((el) => (el.value = el.id));
     this.list = list;
   },
   dropToDefault: function () {
+    if (Object.keys(pipelines.selected).length) return;
     const item = this.list.find((el) => Boolean(el.is_system));
     if (!item) return;
     this.select(item);
