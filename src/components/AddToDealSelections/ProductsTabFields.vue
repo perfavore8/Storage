@@ -147,7 +147,7 @@ export default {
         res.forEach((user) => this.list.push({ ...user, value: user.name }));
       },
       select: function (option) {
-        order.user_id = String(option.id);
+        order.user_id = option.id;
         toggleSomeChange(true);
       },
     });
