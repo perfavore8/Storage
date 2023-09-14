@@ -117,11 +117,13 @@ export default {
       context.commit("updateOrdersFields", data);
     },
     async addOrdersField(context, params) {
-      const { data } = await ApiReqFunc({
+      const { data, error } = await ApiReqFunc({
         url: "orders/field/add",
         method: "post",
         data: params,
       });
+
+      if (error) return error;
 
       return data;
     },

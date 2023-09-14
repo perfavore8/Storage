@@ -82,11 +82,13 @@ export default {
       return data;
     },
     async add_field(context, params) {
-      const { data } = await ApiReqFunc({
+      const { data, error } = await ApiReqFunc({
         url: "field/add",
         method: "post",
         data: params,
       });
+
+      if (error) return error;
 
       return data;
     },

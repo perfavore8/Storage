@@ -574,10 +574,13 @@ export default {
         params.lead_config = lead_config;
       }
 
-      const error = await store.dispatch(selectedTab.value.addName, params);
-      const nameError = error.error == "This field name exist.";
+      const { data: errorData } = await store.dispatch(
+        selectedTab.value.addName,
+        params
+      );
+      const nameError = errorData.error == "This field name exist.";
       if (nameError) new_fields[idx]["nameError"] = true;
-      if (!error.error) {
+      if (!errorData.error) {
         new_fields.splice(new_fields.indexOf(item), 1);
         get_fields();
       }

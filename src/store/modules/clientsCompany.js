@@ -134,11 +134,13 @@ export default {
       return data;
     },
     async addClientsCompanyField(context, params) {
-      const { data } = await ApiReqFunc({
+      const { data, error } = await ApiReqFunc({
         url: "company/field/add",
         method: "post",
         data: params,
       });
+
+      if (error) return error;
 
       return data;
     },

@@ -134,11 +134,13 @@ export default {
       return data;
     },
     async addClientsContactsField(context, params) {
-      const { data } = await ApiReqFunc({
+      const { data, error } = await ApiReqFunc({
         url: "contact/field/add",
         method: "post",
         data: params,
       });
+
+      if (error) return error;
 
       return data;
     },
