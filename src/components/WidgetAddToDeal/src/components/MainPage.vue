@@ -12,6 +12,9 @@
             @change_value="(...args) => change_value(idx, ...args)"
             @del="() => deleteAddedProduct(idx)"
           />
+          <template v-if="isAddedProductsLoading && !addedProducts.length">
+            <ProductCardSkeleton v-for="i in 3" :key="i" />
+          </template>
         </div>
         <div class="top">
           <AppInputSelect
@@ -377,6 +380,7 @@ import AppPaginator from "./AppPaginator.vue";
 import ProductCard from "./ProductCard.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import { useValidate } from "@/composables/validate";
+import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 
 const { order, getOrderPromise, getOrder, someChange } = useNewDeal();
 const { formatNumber } = useValidate();
@@ -387,6 +391,7 @@ export default {
     FiltersModal,
     AppPaginator,
     ProductCard,
+    ProductCardSkeleton,
   },
   data() {
     return {
@@ -404,6 +409,7 @@ export default {
       addedProducts: [],
       routeWatcher: null,
       flip: [],
+      isAddedProductsLoading: false,
     };
   },
   computed: {
@@ -499,6 +505,7 @@ export default {
     },
   },
   async mounted() {
+    this.isAddedProductsLoading = true;
     this.routeWatcher = this.$router.beforeResolve((to, from, next) => {
       if (
         (to.query?.order_id != from.query?.order_id || to.path != from.path) &&
@@ -611,10 +618,12 @@ export default {
       }
     },
     async updateAddedProducts(isStart) {
+      this.isAddedProductsLoading = true;
       if (!isStart) await getOrder();
       await getOrderPromise.value;
       this.addedProducts = [];
       order.positions?.forEach((item) => this.addedProducts.push(item));
+      this.isAddedProductsLoading = false;
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;
