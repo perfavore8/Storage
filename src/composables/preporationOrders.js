@@ -12,7 +12,6 @@ export function usePreparationOrders() {
   onMounted(async () => {
     if (!userList.value.length) {
       const users = await store.dispatch("getUsersList");
-      console.log(users);
       userList.value = users;
     }
   });
