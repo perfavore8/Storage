@@ -1,38 +1,41 @@
+import { useLangConfiguration } from "@/composables/langConfiguration";
+const { i18n } = useLangConfiguration();
+
 export default {
   state: {
     isNavBarDisabled: false,
     catalog: [
       {
-        name: "Заказы",
+        name: i18n.global.t("NavBar.orders"),
         value: "orders",
         isTest: false,
         hideId: [148],
         testOrder: 1,
       },
       {
-        name: "Документы",
+        name: i18n.global.t("NavBar.documents"),
         value: "documents",
         isTest: false,
         testOrder: 4,
       },
       {
-        name: "Остатки",
+        name: i18n.global.t("NavBar.remnants"),
         value: "remnants",
         testOrder: 2,
       },
       {
-        name: "Аналитика",
+        name: i18n.global.t("NavBar.analytics"),
         value: "analytics",
         isAdmin: true,
         testOrder: 5,
       },
       {
-        name: "Архив",
+        name: i18n.global.t("NavBar.archive"),
         value: "archive",
         isProduction: true,
       },
       {
-        name: "Клиенты",
+        name: i18n.global.t("NavBar.clients"),
         value: "clients",
         isTest: true,
         testOrder: 3,

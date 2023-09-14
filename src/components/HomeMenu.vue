@@ -1,10 +1,19 @@
 <template>
   <div class="menu">
+    <div class="ref ref_center" v-if="isTest">
+      <AppInputSelect
+        :placeholder="i18n.global.t('HomeMenu.selectLengPlaceholder')"
+        :selected="langConfiguration.selected"
+        :list="langConfiguration.list"
+        class="w-44"
+        @select="(op) => langConfiguration.select(op)"
+      />
+    </div>
     <div class="ref ref_center">
       <button
         class="ref_2_logo btn"
         @click="openTaskCenter()"
-        title="Список задач"
+        :title="i18n.global.t('HomeMenu.tasks.title')"
       >
         <span class="material-icons"> splitscreen </span>
       </button>
@@ -19,7 +28,7 @@
       <button
         class="ref_2_logo btn"
         @click="openImportXlsl()"
-        title="Настройки импорта"
+        :title="i18n.global.t('HomeMenu.import.title')"
       >
         <transition name="modal">
           <span class="material-icons-round" v-if="showImportXlsx">
@@ -33,7 +42,7 @@
       <template v-if="showImportXlsx">
         <div class="backdrop" @click="closeImportXlsl()" />
         <div class="import_file">
-          <label for="xlsx">Загрузить файл</label>
+          <label for="xlsx"> {{ $t("HomeMenu.import.btnPlaceholder") }}</label>
           <input
             type="file"
             accept=".xlsx"
@@ -48,7 +57,7 @@
       <button
         class="ref_2_logo btn"
         @click="open_close_sync()"
-        title="Синхронизация товаров"
+        :title="i18n.global.t('HomeMenu.sync.title')"
       >
         <transition name="modal">
           <span class="material-icons" v-if="show_sync"> cloud_sync </span>
@@ -68,7 +77,7 @@
                     : (syncAmoGs(), open_close_sync())
                 "
               >
-                Синхронизировать товары amoCRM -> GoСклад
+                {{ $t("HomeMenu.sync.amo_go") }}
               </div>
             </a>
             <a :class="{ disable: is_empty_amo_product_list }">
@@ -80,7 +89,7 @@
                     : (syncGsAmo(), open_close_sync())
                 "
               >
-                Синхронизировать товары GoСклад -> amoCRM
+                {{ $t("HomeMenu.sync.go_amo") }}
               </div>
             </a>
             <template v-if="oneC">
@@ -89,7 +98,7 @@
                   class="modal_container"
                   @click="sync1C(), open_close_sync()"
                 >
-                  Синхронизировать остатки с 1C
+                  {{ $t("HomeMenu.sync.oneC") }}
                 </div>
               </a>
             </template>
@@ -102,7 +111,7 @@
         class="settings_btn"
         :class="{ settings_btn_rotate: show_settings }"
         @click="open_close_settings()"
-        title="Настройки"
+        :title="i18n.global.t('HomeMenu.settings.title')"
       >
         <span class="material-icons"> settings </span>
       </button>
@@ -112,12 +121,12 @@
           <div class="modal_settings" @click="close_settings()">
             <a>
               <div class="modal_container" @click="open_edit_stuff()">
-                Общие настройки
+                {{ $t("HomeMenu.settings.general") }}
               </div>
             </a>
             <a v-if="isTest">
               <div class="modal_container" @click="openSettingEntities()">
-                Настройка сущностей
+                {{ $t("HomeMenu.settings.entities") }}
               </div>
             </a>
             <a>
@@ -125,12 +134,12 @@
                 class="modal_container"
                 @click="open_close_document_setting(true)"
               >
-                Документы
+                {{ $t("HomeMenu.settings.docs") }}
               </div>
             </a>
             <a>
               <div class="modal_container" @click="openAccountSattings()">
-                Настройки аккаунта
+                {{ $t("HomeMenu.settings.account") }}
               </div>
             </a>
             <a v-if="isColored">
@@ -138,30 +147,32 @@
                 class="modal_container"
                 @click="openThirdPpartyIntegrations()"
               >
-                Интеграции
+                {{ $t("HomeMenu.settings.integration") }}
               </div>
             </a>
             <a v-if="isTest">
-              <div class="modal_container" @click="openArchive()">Архив</div>
+              <div class="modal_container" @click="openArchive()">
+                {{ $t("HomeMenu.settings.archive") }}
+              </div>
             </a>
             <a>
               <div class="modal_container" @click="open_product_category()">
-                Категории товаров
+                {{ $t("HomeMenu.settings.categories") }}
               </div>
             </a>
             <a>
               <div class="modal_container" @click="open_product_properties()">
-                Свойства товаров
+                {{ $t("HomeMenu.settings.properties") }}
               </div>
             </a>
             <a v-if="!oneC && isColored">
               <div class="modal_container" @click="openSyncSettings()">
-                Настройки синхронизации товаров
+                {{ $t("HomeMenu.settings.sync") }}
               </div>
             </a>
             <a v-if="isTest">
               <div class="modal_container" @click="openClientsFieldsSettings()">
-                Настройки полей клиентов
+                {{ $t("HomeMenu.settings.clients") }}
               </div>
             </a>
           </div>
@@ -195,10 +206,13 @@ import { useToggle } from "@vueuse/core";
 import store from "@/store";
 import router from "@/router";
 import { useRoleSettings } from "@/composables/roleSettings";
+import AppInputSelect from "./AppInputSelect.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     TaskCenter,
     HomeMenuUser,
+    AppInputSelect,
   },
   setup() {
     const { addNotification } = useNotification();
@@ -319,6 +333,7 @@ export default {
       amoTest,
       openUserLIst,
       currentSetSettings,
+      ...useLangConfiguration(),
     };
   },
 };
