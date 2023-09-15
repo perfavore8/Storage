@@ -80,7 +80,8 @@ export function usePreparationOrders() {
   };
   const categories = computed(() => store.state.categories.fields_properties);
   nextTick(() => {
-    if (!categories.value.length) store.dispatch("get_fields_properties");
+    if (!categories.value.length && !store.state.categories.isLoading)
+      store.dispatch("get_fields_properties");
   });
 
   const prePreparationValueByType = (value, field) => {

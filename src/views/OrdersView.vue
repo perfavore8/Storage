@@ -192,7 +192,7 @@ export default {
     const { pipelines } = useOrdersPipelinesSelect();
     watch(
       () => pipelines.selected.id,
-      () => updateList()
+      (newVal, oldVal) => oldVal === undefined || updateList()
     );
 
     const openTableSettings = () => store.commit("open_table_settings");

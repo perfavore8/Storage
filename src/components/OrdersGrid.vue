@@ -210,7 +210,6 @@ import AppPaginator from "./AppPaginator.vue";
 import { computed, onMounted, reactive, ref } from "vue";
 import store from "@/store";
 import { useRouter } from "vue-router";
-import { useCheckIsMainUser } from "@/composables/checkIsMainUser";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 // import ReportGridModal from "./ReportGridModal.vue";
 // import { nextTick } from "vue";
@@ -223,8 +222,6 @@ export default {
   },
   setup() {
     const router = useRouter();
-
-    const { isMain } = useCheckIsMainUser();
 
     const selectedProducts = reactive([]);
     const allSelectedProducts = ref(false);
@@ -549,7 +546,6 @@ export default {
       changePageRow,
       routeToOrder,
       refundOrder,
-      isMain,
       updateList,
       isDataLoading,
     };
