@@ -3,7 +3,7 @@ import { onMounted, ref, reactive, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "./notification";
 import { useToggle } from "@vueuse/core";
-import { computed } from "vue";
+import { computed, nextTick } from "vue";
 
 const newDealParams = reactive({});
 const order = reactive({ fields: {} });
@@ -39,6 +39,13 @@ const getOrder = async () => {
   if (!order.fields.name) order.fields.name = `Заказ №${newDealParams.id}`;
 
   isOrderGeted.value = true;
+};
+
+const [needUpdateAddedProducts, toggleUpdateAddedProducts] = useToggle(false);
+const setWatcherUpdateAddedProducts = (func) => {
+  watch(needUpdateAddedProducts, (newVal) => {
+    if (newVal) func(true);
+  });
 };
 
 export function useNewDeal() {
@@ -78,6 +85,8 @@ export function useNewDeal() {
   const saveOrder = async () => {
     await store.dispatch("updateOrder", {});
     toggleSomeChange(false);
+    isOrderGeted.value = false;
+    setNewOrderPromise();
   };
 
   const saveParams = reactive({
@@ -87,6 +96,8 @@ export function useNewDeal() {
       this.isSaving = true;
       await saveOrder();
       await getOrder();
+      toggleUpdateAddedProducts(true);
+      nextTick(() => toggleUpdateAddedProducts(false));
       setTimeout(() => {
         this.isSaving = false;
       }, 3000);
@@ -105,5 +116,9 @@ export function useNewDeal() {
     saveParams,
     getOrderPromise,
     dropOrder,
+    isOrderGeted,
+    setNewOrderPromise,
+    needUpdateAddedProducts,
+    setWatcherUpdateAddedProducts,
   };
 }

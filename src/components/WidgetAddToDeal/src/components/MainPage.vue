@@ -382,7 +382,13 @@ import { useNewDeal } from "@/composables/newDeal";
 import { useValidate } from "@/composables/validate";
 import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 
-const { order, getOrderPromise, getOrder, someChange } = useNewDeal();
+const {
+  order,
+  getOrderPromise,
+  getOrder,
+  someChange,
+  setWatcherUpdateAddedProducts,
+} = useNewDeal();
 const { formatNumber } = useValidate();
 
 export default {
@@ -505,6 +511,7 @@ export default {
     },
   },
   async mounted() {
+    setWatcherUpdateAddedProducts(this.updateAddedProducts);
     this.isAddedProductsLoading = true;
     this.routeWatcher = this.$router.beforeResolve((to, from, next) => {
       if (
