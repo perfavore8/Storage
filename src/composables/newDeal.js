@@ -4,6 +4,9 @@ import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "./notification";
 import { useToggle } from "@vueuse/core";
 import { computed, nextTick } from "vue";
+import { useAddToDealTabs } from "./addToDealTabs";
+
+const { tabs } = useAddToDealTabs();
 
 const newDealParams = reactive({});
 const order = reactive({ fields: {} });
@@ -12,6 +15,7 @@ const dropOrder = async () => {
   order.fields = {};
   isOrderGeted.value = false;
   setNewOrderPromise();
+  tabs.dropToDefault();
 };
 
 const routeWatcher = ref(null);
