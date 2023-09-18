@@ -5,7 +5,7 @@
       <div class="grid grid-cols-3 items-center justify-center mt-20">
         <div class="left flex flex-col items-start justify-self-start">
           <h1 class="text-2xl text-gray-900 font-semibold">
-            Настройки аккаунта
+            {{ $t("AccountSettings.header") }}
           </h1>
         </div>
         <div class="pagination flex justify-center">
@@ -25,7 +25,7 @@
               !(isTest && !currentSetSettingsInFolder.general.changeName)
             "
           >
-            Добавить пользователя
+            {{ $t("AccountSettings.users.addBtn") }}
           </button>
         </div>
       </div>
@@ -52,6 +52,7 @@ import NewUser from "@/components/UsersView/NewUser.vue";
 import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { isTest } from "@/composables/isTest";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     UsersListTable,
@@ -64,6 +65,7 @@ export default {
   setup() {
     const [showAddNewUser, toggleAddNewUser] = useToggle(false);
     const { currentSetSettingsInFolder } = useRoleSettings("accountSettings");
+    const { t } = useLangConfiguration();
 
     const UserListTableRef = ref(null);
     const updateList = () => {
@@ -74,18 +76,18 @@ export default {
       selected: {},
       list: [
         {
-          name: "Общие",
+          name: t("AccountSettings.general.header"),
           value: "general",
           component: "AccountSettingsGeneral",
           default: true,
         },
         {
-          name: "Пользователи",
+          name: t("AccountSettings.users.header"),
           value: "users",
           component: "UsersListTable",
         },
         {
-          name: "Лицензия",
+          name: t("AccountSettings.license.header"),
           value: "license",
           component: "PlansList",
         },

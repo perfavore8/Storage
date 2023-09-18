@@ -1,7 +1,7 @@
 <template>
   <div class="btns">
     <button class="btn btn_grey" @click="close()" v-if="show_close">
-      <slot name="close">Отмена</slot>
+      <slot name="close">{{ $t("global.сancel") }}</slot>
     </button>
     <slot name="other_btns"></slot>
     <button
@@ -10,7 +10,7 @@
       v-if="show_save"
       :disabled="disabledSave"
     >
-      <slot name="save">Сохранить</slot>
+      <slot name="save">{{ $t("global.save") }}</slot>
     </button>
   </div>
 </template>

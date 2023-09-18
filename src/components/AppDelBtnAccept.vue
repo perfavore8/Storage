@@ -8,7 +8,7 @@
       tabindex="1"
       @click="toggleAccept()"
     >
-      <slot name="label">Удалить</slot>
+      <slot name="label">{{ $t("DelBtnAccept.del") }}</slot>
     </button>
     <transition name="fade">
       <div
@@ -18,7 +18,7 @@
         ref="target"
       >
         <span class="whitespace-nowrap text-gray-900">
-          <slot name="text"> Точно удалить? </slot>
+          <slot name="text"> {{ $t("DelBtnAccept.confirmDel") }} </slot>
         </span>
         <div class="flex flex-row gap-2">
           <button
@@ -26,10 +26,10 @@
             @click="confirm()"
             tabindex="2"
           >
-            Да
+            {{ $t("global.yes") }}
           </button>
           <button class="btn small_btn btn_grey" @click="reset()" tabindex="2">
-            Нет
+            {{ $t("global.no") }}
           </button>
         </div>
       </div>

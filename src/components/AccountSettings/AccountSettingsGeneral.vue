@@ -3,7 +3,7 @@
     <div class="block">
       <div class="text">
         <form class="grid gap-6">
-          <span>Имя аккаунта</span>
+          <span>{{ $t("AccountSettings.general.accountName") }}</span>
           <input
             type="text"
             class="input"
@@ -11,7 +11,7 @@
             v-if="!(isTest && !currentSetSettingsInFolder.general.changeName)"
           />
           <span v-else>{{ accountName }}</span>
-          <span>Страна аккаунта</span>
+          <span>{{ $t("AccountSettings.general.accountCountry") }}</span>
           <AppInputSelect
             :list="country.list"
             :selected="country.selected"
@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="block" v-if="false">
-      <h6 class="my-9">Этапы резервирования товаров со склада</h6>
+      <h6 class="my-9">{{ $t("AccountSettings.general.steps") }}</h6>
       <div class="text">
         <input
           type="checkbox"
@@ -33,7 +33,7 @@
           v-model="divideRight"
           id="asd1"
         />
-        <label for="asd1">Разделять права</label>
+        <label for="asd1">{{ $t("AccountSettings.general.divide") }}</label>
       </div>
     </div>
   </div>

@@ -36,7 +36,7 @@
         </li>
         <li @click="logOut()" v-if="!inFrame">
           <span class="material-icons-outlined"> logout </span>
-          <span>Выйти</span>
+          <span>{{ $t("HomeMenuUser.logout") }}</span>
         </li>
       </ul>
     </div>

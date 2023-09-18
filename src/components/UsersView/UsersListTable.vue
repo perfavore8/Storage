@@ -96,7 +96,11 @@
                       }"
                     ></div>
                   </div>
-                  {{ user.is_active === 1 ? "Включен" : "Не включен" }}
+                  {{
+                    user.is_active === 1
+                      ? t("AccountSettings.users.table.statusActive")
+                      : t("AccountSettings.users.table.statusUnActive")
+                  }}
                 </div>
               </template>
               <template v-else>{{ user[title.code] }}</template>
@@ -121,7 +125,7 @@
                     d="m19.3 8.925l-4.25-4.2l1.4-1.4q.575-.575 1.413-.575t1.412.575l1.4 1.4q.575.575.6 1.388t-.55 1.387L19.3 8.925ZM17.85 10.4L7.25 21H3v-4.25l10.6-10.6l4.25 4.25Z"
                   />
                 </svg>
-                Редактировать
+                {{ $t("AccountSettings.users.table.editBtn") }}
               </button>
             </td>
             <td
@@ -155,14 +159,14 @@
     </div>
     <div class="pagination p-5 flex justify-between items-center" v-if="false">
       <div class="left flex flex-row gap-1 items-center text-slate-500">
-        Показывать:
+        {{ $t("AccountSettings.users.table.display") }}:
         <GridBottom
           :count="20"
           :showBtns="false"
           @changeCount="null"
           class="!my-0 mr-2"
         />
-        из {{ page.total }}
+        {{ t("global.from") }} {{ page.total }}
       </div>
       <div class="right">
         <AppPaginator :page="page" />
@@ -189,11 +193,13 @@ import { useToggle } from "@vueuse/core";
 import AppDelBtnAccept from "../AppDelBtnAccept.vue";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { isTest } from "@/composables/isTest";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { AppInput, GridBottom, AppPaginator, EditUser, AppDelBtnAccept },
   setup() {
     const { getRandomColor2 } = useColor();
     const { currentSetSettingsInFolder } = useRoleSettings("accountSettings");
+    const { t } = useLangConfiguration();
 
     const page = reactive({
       total: 50,
@@ -205,12 +211,12 @@ export default {
     });
 
     const titiles = reactive([
-      { name: "Имя", code: "name" },
+      { name: t("AccountSettings.users.table.name"), code: "name" },
       // { name: "Группа", code: "group" },
       // { name: "Роль", code: "role" },
-      { name: "Email", code: "email" },
-      { name: "Телефон", code: "phone" },
-      { name: "Статус", code: "is_active" },
+      { name: t("AccountSettings.users.table.email"), code: "email" },
+      { name: t("AccountSettings.users.table.phone"), code: "phone" },
+      { name: t("AccountSettings.users.table.status"), code: "is_active" },
     ]);
     const users = reactive([]);
 
@@ -264,6 +270,7 @@ export default {
       currentUserId,
       currentSetSettingsInFolder,
       isTest,
+      t,
     };
   },
 };

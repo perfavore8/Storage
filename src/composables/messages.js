@@ -1,5 +1,16 @@
 export const messages = {
   en: {
+    global: {
+      yes: "Yes",
+      no: "No",
+      back: "Back",
+      сancel: "Cancel",
+      confirm: "Confirm",
+      apply: "Apply",
+      add: "Add",
+      from: "out of",
+      save: "Save",
+    },
     message: {
       OrdersInPipeline: "There are orders in this pipeline.",
     },
@@ -215,8 +226,63 @@ export const messages = {
         clients: "Customer field settings",
       },
     },
+    DelBtnAccept: {
+      del: "Delete",
+      confirmDel: "Are you sure you want to delete it?",
+    },
+    HomeMenuUser: {
+      logout: "Log out",
+    },
+    AccountSettings: {
+      header: "Account settings",
+      general: {
+        header: "General",
+        accountName: "Account name",
+        accountCountry: "Account country",
+        steps: "Stages of products reservation from the warehouse",
+        divide: "Separate rights",
+      },
+      users: {
+        header: "Users",
+        addBtn: "Add a user",
+        table: {
+          name: "Name",
+          email: "Email",
+          phone: "Phone",
+          status: "Status",
+          statusActive: "Enabled",
+          statusUnActive: "Disabled",
+          editBtn: "Edit",
+          display: "Show",
+        },
+      },
+      license: {
+        header: "License",
+      },
+      newUser: {
+        header: "Adding a user",
+        name: "Nmae",
+        email: "Email",
+        alreadyExists: "Such a user already exists.",
+        addExistUser: "Add his to your account?",
+        notificationHeadSuccess: "{name} invited to the account",
+        notificationHeadFail: "{name} was not invited to the account",
+        notificationTextFail: "Something went wrong...",
+      },
+    },
   },
   ru: {
+    global: {
+      yes: "Да",
+      no: "Нет",
+      back: "Назад",
+      сancel: "Отмена",
+      confirm: "Подтвердить",
+      apply: "Принять",
+      add: "Добавить",
+      from: "из",
+      save: "Сохранить",
+    },
     message: {
       OrdersInPipeline: "В этой воронке остались заказы",
     },
@@ -430,6 +496,50 @@ export const messages = {
         properties: "Свойства товаров",
         sync: "Настройки синхронизации товаров",
         clients: "Настройки полей клиентов",
+      },
+    },
+    DelBtnAccept: {
+      del: "Удалить",
+      confirmDel: "Точно удалить?",
+    },
+    HomeMenuUser: {
+      logout: "Выйти",
+    },
+    AccountSettings: {
+      header: "Настройки аккаунта",
+      general: {
+        header: "Общие",
+        accountName: "Имя аккаунта",
+        accountCountry: "Страна аккаунта",
+        steps: "Этапы резервирования товаров со склада",
+        divide: "Разделять права",
+      },
+      users: {
+        header: "Пользователи",
+        addBtn: "Добавить пользователя",
+        table: {
+          name: "Имя",
+          email: "Email",
+          phone: "Телефон",
+          status: "Статус",
+          statusActive: "Включен",
+          statusUnActive: "Выключен",
+          editBtn: "Редактировать",
+          display: "Показывать",
+        },
+      },
+      license: {
+        header: "Лицензия",
+      },
+      newUser: {
+        header: "Добавление пользователя",
+        name: "Имя",
+        email: "Email",
+        alreadyExists: "Такой пользователь уже существует.",
+        addExistUser: "Добавить его в аккаунт?",
+        notificationHeadSuccess: "{name} приглашен в аккаунт",
+        notificationHeadFail: "{name} не был приглашен в аккаунт",
+        notificationTextFail: "Что-то пошло не так...",
       },
     },
   },

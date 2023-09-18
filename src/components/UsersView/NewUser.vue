@@ -4,7 +4,7 @@
     <div class="container p-8 rounded-xl mt-7 min-w-[70%]">
       <div class="header flex flex-row justify-between">
         <h5 class="text-lg text-slate-800 font-semibold">
-          Добавление пользователя
+          {{ $t("AccountSettings.newUser.header") }}
         </h5>
         <button class="close" @click="close()">
           <div class="icon"></div>
@@ -12,7 +12,7 @@
       </div>
       <div class="main flex flex-col gap-8">
         <form class="grid gap-6">
-          <span>Имя</span>
+          <span>{{ $t("AccountSettings.newUser.name") }}</span>
           <input
             type="text"
             class="input"
@@ -20,7 +20,7 @@
             v-model="form.name"
             :disabled="!isNewUser"
           />
-          <span>Email</span>
+          <span>{{ $t("AccountSettings.newUser.email") }}</span>
           <div class="relative">
             <MaskEmail
               v-model:value="form.email"
@@ -33,9 +33,9 @@
                 v-if="existingUser.name"
                 class="text-red-700 text-sm origin-top absolute top-full left-0"
               >
-                Такой пользователь уже существует.
+                {{ $t("AccountSettings.newUser.alreadyExists") }}
                 <a class="link cursor-pointer" @click="existingUser.setName()">
-                  Добавить его в аккаунт?
+                  {{ $t("AccountSettings.newUser.addExistUser") }}
                 </a>
               </small>
             </transition>
@@ -47,9 +47,11 @@
           class="btn order-0 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
           @click="close()"
         >
-          Назад
+          {{ $t("global.back") }}
         </button>
-        <button class="btn btn_blue" @click="submit()">Добавить</button>
+        <button class="btn btn_blue" @click="submit()">
+          {{ $t("global.add") }}
+        </button>
       </div>
     </div>
   </div>
@@ -61,12 +63,14 @@ import { useValidate } from "@/composables/validate";
 import store from "@/store";
 import { useToggle } from "@vueuse/core";
 import { useNotification } from "@/composables/notification";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {},
   props: {},
   setup(props, context) {
     const { validateEmail } = useValidate();
     const { addNotification } = useNotification();
+    const { t } = useLangConfiguration();
 
     const [isNewUser, toggleIsNewUser] = useToggle(true);
 
@@ -138,14 +142,21 @@ export default {
       );
 
       if (success) {
-        addNotification(1, `${form.name} приглашен в аккаунт`);
+        addNotification(
+          1,
+          t("AccountSettings.newUser.notificationHeadSuccess", {
+            name: form.name,
+          })
+        );
         context.emit("confirm");
         close();
       } else {
         addNotification(
           2,
-          `${form.name} не был приглашен в аккаунт`,
-          "Что-то пошло не так..."
+          t("AccountSettings.newUser.notificationHeadFail", {
+            name: form.name,
+          }),
+          t("AccountSettings.newUser.notificationTextFail")
         );
       }
     };
