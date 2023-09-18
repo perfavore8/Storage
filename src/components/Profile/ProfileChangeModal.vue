@@ -4,7 +4,9 @@
     <div class="container p-8 rounded-xl mt-7 min-w-[50%]">
       <div class="header flex flex-row justify-between">
         <h5 class="text-lg text-slate-800 font-semibold">
-          Изменение {{ types.selected.forTitle }}
+          {{
+            $t("ProfileChangeModal.header", { type: types.selected.forTitle })
+          }}
         </h5>
         <button class="close" @click="close()">
           <div class="icon"></div>
@@ -21,9 +23,16 @@
               "
             >
               <span>
-                Код отправленный
-                {{ types.selected.value === "phone" ? "в WhatsApp " : "" }} на
-                {{ idx > 0 ? params[params.order[idx - 1]]?.value : login }}:
+                {{
+                  $t("ProfileChangeModal.codeText", {
+                    source:
+                      types.selected.value === "phone"
+                        ? t("ProfileChangeModal.WhatsApp")
+                        : "",
+                    login:
+                      idx > 0 ? params[params.order[idx - 1]]?.value : login,
+                  })
+                }}
               </span>
               <div
                 class="pinBox relative justify-self-center"
@@ -46,7 +55,9 @@
                       v-if="params[item].errors.value"
                       class="text-red-700 text-sm origin-top"
                     >
-                      {{ params[item].errors.text || "Что-то пошло не так..." }}
+                      {{
+                        params[item].errors.text || t("global.somethingWrong")
+                      }}
                     </small>
                   </transition>
                 </div>
@@ -58,7 +69,13 @@
                 (idx === 0 || params[params.order[idx - 1]]?.success)
               "
             >
-              <span>Введите {{ types.selected.textForField }}</span>
+              <span>
+                {{
+                  $t("ProfileChangeModal.inputText", {
+                    source: types.selected.textForField,
+                  })
+                }}
+              </span>
               <div v-if="types.selected.value === 'phone'" class="relative">
                 <SelectorVue
                   :options_props="codes.list"
@@ -88,7 +105,7 @@
                     :disabled="isLocked || params[item].success"
                     @click="params[item].req()"
                   >
-                    Отправить
+                    {{ $t("global.send") }}
                     <AppCountDown v-if="isLocked" :initialTime="globalDelay" />
                   </button>
                 </div>
@@ -100,7 +117,9 @@
                       v-if="params[item].errors.value"
                       class="text-red-700 text-sm origin-top"
                     >
-                      {{ params[item].errors.text || "Что-то пошло не так..." }}
+                      {{
+                        params[item].errors.text || t("global.somethingWrong")
+                      }}
                     </small>
                   </transition>
                 </div>
@@ -125,7 +144,7 @@
                   :disabled="isLocked || params[item].success"
                   @click="params[item].req()"
                 >
-                  Отправить
+                  {{ $t("global.send") }}
                   <AppCountDown v-if="isLocked" :initialTime="globalDelay" />
                 </button>
                 <div
@@ -136,7 +155,9 @@
                       v-if="params[item].errors.value"
                       class="text-red-700 text-sm origin-top"
                     >
-                      {{ params[item].errors.text || "Что-то пошло не так..." }}
+                      {{
+                        params[item].errors.text || t("global.somethingWrong")
+                      }}
                     </small>
                   </transition>
                 </div>
@@ -150,7 +171,7 @@
           class="btn order-0 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
           @click="close()"
         >
-          Назад
+          {{ $t("global.back") }}
         </button>
         <!-- <button class="btn btn_blue" @click="submit()">Сохранить</button> -->
       </div>
@@ -168,6 +189,7 @@ import store from "@/store";
 import { usePhoneCodes } from "@/composables/phoneCodes";
 import { useValidate } from "@/composables/validate";
 import { useLockBtn } from "@/composables/lockBtn";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { SelectorVue, AppCountDown },
   props: {
@@ -183,21 +205,22 @@ export default {
       "timer",
       globalDelay
     );
+    const { t } = useLangConfiguration();
 
     const types = reactive({
       selected: {},
       list: [
         {
           id: 1,
-          forTitle: "почты",
-          textForField: "новую почту",
+          forTitle: t("ProfileChangeModal.email.forTitle"),
+          textForField: t("ProfileChangeModal.email.textForField"),
           value: "email",
           countAuthentication: 2,
         },
         {
           id: 2,
-          forTitle: "номера телефона",
-          textForField: "новый номер телефона",
+          forTitle: t("ProfileChangeModal.phone.forTitle"),
+          textForField: t("ProfileChangeModal.phone.textForField"),
           value: "phone",
           countAuthentication: 2,
         },
@@ -253,8 +276,10 @@ export default {
                 if (this.countTry > 9) {
                   addNotification(
                     3,
-                    "Изменение " + types.selected.forTitle,
-                    "Вы использовали слишком много попыток ввода кода"
+                    t("ProfileChangeModal.header", {
+                      type: types.selected.forTitle,
+                    }),
+                    t("ProfileChangeModal.notificationTextFail")
                   );
                   close();
                 }
@@ -336,7 +361,11 @@ export default {
           }
           this.success = true;
           if (types.selected.countAuthentication !== 2) return;
-          addNotification(1, "Изменение " + types.selected.forTitle, "Успешно");
+          addNotification(
+            1,
+            t("ProfileChangeModal.header", { type: types.selected.forTitle }),
+            t("ProfileChangeModal.notificationTextSuccess")
+          );
           submit();
         },
         setWatcher: function () {
@@ -353,8 +382,10 @@ export default {
                 if (this.countTry > 9) {
                   addNotification(
                     3,
-                    "Изменение " + types.selected.forTitle,
-                    "Вы использовали слишком много попыток ввода кода"
+                    t("ProfileChangeModal.header", {
+                      type: types.selected.forTitle,
+                    }),
+                    t("ProfileChangeModal.notificationTextFail")
                   );
                   close();
                 }
@@ -419,6 +450,7 @@ export default {
       selectPhone,
       isLocked,
       globalDelay,
+      t,
     };
   },
 };

@@ -5,7 +5,9 @@
     </div>
     <div class="mt-20 max-w-7xl mx-auto">
       <div class="flex flex-row justify-between items-center mb-8">
-        <h1 class="text-2xl text-gray-900 font-semibold">Профиль</h1>
+        <h1 class="text-2xl text-gray-900 font-semibold">
+          {{ $t("Profile.header") }}
+        </h1>
       </div>
       <div
         class="main flex flex-col gap-8 items-center rounded-lg ring-1 ring-slate-900/10 px-8 py-32 sm:px-6 sm:py-32 lg:px-8"
@@ -54,7 +56,7 @@
                 type="button"
                 class="text-sm font-semibold leading-6 text-gray-900"
               >
-                Отменить
+                {{ $t("global.сancel2") }}
               </button>
             </router-link>
             <button
@@ -63,7 +65,7 @@
               :disabled="isLocked"
               @click="submit()"
             >
-              Сохранить
+              {{ $t("global.save") }}
             </button>
           </div>
         </div>
@@ -90,6 +92,7 @@ import { useToggle } from "@vueuse/core";
 import store from "@/store";
 import { reactive, watch } from "vue";
 import { useLockBtn } from "@/composables/lockBtn";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     AppHeader,
@@ -100,12 +103,13 @@ export default {
   },
   setup() {
     const { isLocked, lockBtn } = useLockBtn();
+    const { t } = useLangConfiguration();
 
     const pagination = reactive({
       selected: {},
       list: [
         {
-          name: "Профиль",
+          name: t("Profile.profile"),
           value: "profile",
           component: "EditUserProfile",
           ref: null,
@@ -113,7 +117,7 @@ export default {
           default: true,
         },
         {
-          name: "Изменение пароля",
+          name: t("Profile.changePassword"),
           value: "changePassword",
           component: "EditUserChangePassword",
           ref: null,

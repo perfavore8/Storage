@@ -1,7 +1,7 @@
 <template>
   <div class="relative">
     <form class="grid gap-6">
-      <span>Текущий пароль</span>
+      <span>{{ $t("EditUserChangePassword.currentPassword") }}</span>
       <div class="relative">
         <input
           :type="showCurrentPassword ? 'text' : 'password'"
@@ -30,7 +30,7 @@
           </transition>
         </label>
       </div>
-      <span>Новый пароль</span>
+      <span>{{ $t("EditUserChangePassword.newPassword") }}</span>
       <input
         :type="showNewPasswords ? 'text' : 'password'"
         autocomplete="off"
@@ -38,7 +38,7 @@
         :class="{ input_error: form.errors.newPassword && trySubmit }"
         v-model="form.newPassword"
       />
-      <span>Подтвердите новый пароль</span>
+      <span>{{ $t("EditUserChangePassword.confirmNewPassword") }}</span>
       <input
         :type="showNewPasswords ? 'text' : 'password'"
         autocomplete="off"
@@ -53,14 +53,16 @@
         class="checkbox"
         v-model="showNewPasswords"
       />
-      <label for="showNewPasswords" class="w-fit">Показать пароль</label>
+      <label for="showNewPasswords" class="w-fit">{{
+        $t("EditUserChangePassword.showPassword")
+      }}</label>
     </form>
     <div
       class="absolute flex flex-col gap-1 -bottom-1 left-1/3 translate-x-6 translate-y-full"
     >
       <transition name="fade">
         <small v-if="errors.value" class="text-red-700 text-sm origin-top">
-          {{ errors.text || "Что-то пошло не так..." }}
+          {{ errors.text || $t("global.somethingWrong") }}
         </small>
       </transition>
     </div>

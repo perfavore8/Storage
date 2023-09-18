@@ -4,7 +4,7 @@
     <div class="container p-8 rounded-xl mt-7 min-w-[70%]">
       <div class="header flex flex-row justify-between">
         <h5 class="text-lg text-slate-800 font-semibold">
-          Редактирование пользователя
+          {{ $t("AccountSettings.editUser.header") }}
         </h5>
         <button class="close" @click="close()">
           <div class="icon"></div>
@@ -12,7 +12,7 @@
       </div>
       <div class="main flex flex-col gap-8">
         <form class="grid gap-6">
-          <span>Активность</span>
+          <span>{{ $t("AccountSettings.editUser.activity") }}</span>
           <div class="flex items-center">
             <input
               type="checkbox"
@@ -23,7 +23,7 @@
             />
             <label for="filter"></label>
           </div>
-          <span>Админ</span>
+          <span>{{ $t("AccountSettings.editUser.admin") }}</span>
           <div class="flex items-center">
             <input
               type="checkbox"
@@ -47,9 +47,11 @@
           class="btn order-0 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
           @click="close()"
         >
-          Назад
+          {{ $t("global.back") }}
         </button>
-        <button class="btn btn_blue" @click="submit()">Сохранить</button>
+        <button class="btn btn_blue" @click="submit()">
+          {{ $t("global.save") }}
+        </button>
       </div>
     </div>
   </div>

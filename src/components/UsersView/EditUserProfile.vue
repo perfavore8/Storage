@@ -63,9 +63,9 @@
   </label>
   <div class="relative">
     <form class="grid gap-6">
-      <span>Имя</span>
+      <span>{{ $t("EditUserProfile.name") }}</span>
       <input type="text" class="input" v-model="copyUser.name" />
-      <span>Email</span>
+      <span>{{ $t("EditUserProfile.email") }}</span>
       <div class="relative mb-2 flex gap-2 items-center">
         <MaskEmail
           v-model:value="copyUser.email"
@@ -79,11 +79,15 @@
           class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
           @click="showChangeModal('email', user.email)"
         >
-          {{ user.email ? "Изменить" : "Добавить" }}
+          {{
+            user.email
+              ? $t("EditUserProfile.change")
+              : $t("EditUserProfile.add")
+          }}
         </button>
       </div>
 
-      <span>Телефон</span>
+      <span>{{ $t("EditUserProfile.phone") }}</span>
       <div class="flex gap-2 items-center">
         <input
           type="text"
@@ -96,7 +100,11 @@
           class="text-sm font-semibold leading-6 text-gray-900 disabled:text-gray-500 disabled:cursor-default disabled:font-medium"
           @click="showChangeModal('phone', user.phone)"
         >
-          {{ user.phone ? "Изменить" : "Добавить" }}
+          {{
+            user.phone
+              ? $t("EditUserProfile.change")
+              : $t("EditUserProfile.add")
+          }}
         </button>
       </div>
     </form>
@@ -105,7 +113,7 @@
     >
       <transition name="fade">
         <small v-if="errors.value" class="text-red-700 text-sm origin-top">
-          {{ errors.text || "Что-то пошло не так..." }}
+          {{ errors.text || $t("global.somethingWrong") }}
         </small>
       </transition>
     </div>

@@ -5,11 +5,14 @@ export const messages = {
       no: "No",
       back: "Back",
       сancel: "Cancel",
+      сancel2: "Cancel",
       confirm: "Confirm",
       apply: "Apply",
       add: "Add",
       from: "out of",
       save: "Save",
+      send: "Send",
+      somethingWrong: "Something went wrong...",
     },
     message: {
       OrdersInPipeline: "There are orders in this pipeline.",
@@ -259,6 +262,11 @@ export const messages = {
       license: {
         header: "License",
       },
+      editUser: {
+        header: "Editing a user",
+        activity: "Activity",
+        admin: "Admin",
+      },
       newUser: {
         header: "Adding a user",
         name: "Nmae",
@@ -270,6 +278,41 @@ export const messages = {
         notificationTextFail: "Something went wrong...",
       },
     },
+    EditUserProfile: {
+      name: "Name",
+      email: "Email",
+      phone: "Phone",
+      change: "Edit",
+      add: "Add",
+    },
+    EditUserChangePassword: {
+      currentPassword: "Current password",
+      newPassword: "New password",
+      confirmNewPassword: "Confirm the new password",
+      showPassword: "Show Password",
+      changePassword: "Changing the password",
+    },
+    Profile: {
+      header: "Profile",
+      profile: "Profile",
+      changePassword: "Change password",
+    },
+    ProfileChangeModal: {
+      header: " Changing  {type}",
+      codeText: "Code sent {source} to {login}:",
+      inputText: "Enter {source}",
+      notificationTextFail: "You have used too many code entry attempts",
+      notificationTextSuccess: "Successfully",
+      WhatsApp: "in WhatsApp",
+      email: {
+        forTitle: "mail",
+        textForField: "new mail",
+      },
+      phone: {
+        forTitle: "phone number",
+        textForField: "new phone number",
+      },
+    },
   },
   ru: {
     global: {
@@ -277,11 +320,14 @@ export const messages = {
       no: "Нет",
       back: "Назад",
       сancel: "Отмена",
+      сancel2: "Отменить",
       confirm: "Подтвердить",
       apply: "Принять",
       add: "Добавить",
       from: "из",
       save: "Сохранить",
+      send: "Отправить",
+      somethingWrong: "Что-то пошло не так...",
     },
     message: {
       OrdersInPipeline: "В этой воронке остались заказы",
@@ -531,6 +577,11 @@ export const messages = {
       license: {
         header: "Лицензия",
       },
+      editUser: {
+        header: "Редактирование пользователя",
+        activity: "Активность",
+        admin: "Админ",
+      },
       newUser: {
         header: "Добавление пользователя",
         name: "Имя",
@@ -540,6 +591,41 @@ export const messages = {
         notificationHeadSuccess: "{name} приглашен в аккаунт",
         notificationHeadFail: "{name} не был приглашен в аккаунт",
         notificationTextFail: "Что-то пошло не так...",
+      },
+    },
+    EditUserProfile: {
+      name: "Имя",
+      email: "Email",
+      phone: "Телефон",
+      change: "Изменить",
+      add: "Добавить",
+    },
+    EditUserChangePassword: {
+      currentPassword: "Текущий пароль",
+      newPassword: "Новый пароль",
+      confirmNewPassword: "Подтвердите новый пароль",
+      showPassword: "Показать пароль",
+      changePassword: "Изменение пароля",
+    },
+    Profile: {
+      header: "Профиль",
+      profile: "Профиль",
+      changePassword: "Изменение пароля",
+    },
+    ProfileChangeModal: {
+      header: " Изменение {type}",
+      codeText: "Код отправленный {source} на {login}:",
+      inputText: "Введите {source}",
+      notificationTextFail: "Вы использовали слишком много попыток ввода кода",
+      notificationTextSuccess: "Успешно",
+      WhatsApp: "в WhatsApp",
+      email: {
+        forTitle: "почты",
+        textForField: "новую почту",
+      },
+      phone: {
+        forTitle: "номера телефона",
+        textForField: "новый номер телефона",
       },
     },
   },
