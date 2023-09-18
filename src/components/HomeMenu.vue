@@ -2,7 +2,7 @@
   <div class="menu">
     <div class="ref ref_center" v-if="isTest">
       <AppInputSelect
-        :placeholder="i18n.global.t('HomeMenu.selectLengPlaceholder')"
+        :placeholder="t('HomeMenu.selectLengPlaceholder')"
         :selected="langConfiguration.selected"
         :list="langConfiguration.list"
         class="w-44"
@@ -13,7 +13,7 @@
       <button
         class="ref_2_logo btn"
         @click="openTaskCenter()"
-        :title="i18n.global.t('HomeMenu.tasks.title')"
+        :title="t('HomeMenu.tasks.title')"
       >
         <span class="material-icons"> splitscreen </span>
       </button>
@@ -28,7 +28,7 @@
       <button
         class="ref_2_logo btn"
         @click="openImportXlsl()"
-        :title="i18n.global.t('HomeMenu.import.title')"
+        :title="t('HomeMenu.import.title')"
       >
         <transition name="modal">
           <span class="material-icons-round" v-if="showImportXlsx">
@@ -57,7 +57,7 @@
       <button
         class="ref_2_logo btn"
         @click="open_close_sync()"
-        :title="i18n.global.t('HomeMenu.sync.title')"
+        :title="t('HomeMenu.sync.title')"
       >
         <transition name="modal">
           <span class="material-icons" v-if="show_sync"> cloud_sync </span>
@@ -111,7 +111,7 @@
         class="settings_btn"
         :class="{ settings_btn_rotate: show_settings }"
         @click="open_close_settings()"
-        :title="i18n.global.t('HomeMenu.settings.title')"
+        :title="t('HomeMenu.settings.title')"
       >
         <span class="material-icons"> settings </span>
       </button>
