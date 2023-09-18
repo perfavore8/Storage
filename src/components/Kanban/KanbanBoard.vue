@@ -146,6 +146,7 @@ export default {
       const res = await store.dispatch("getOrders", {
         ...params.value,
         dontSaveMeta: true,
+        hide_final_statuses: false,
         status_id: stat.id,
       });
 
