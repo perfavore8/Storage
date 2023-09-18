@@ -11,6 +11,16 @@
             v-if="!(isTest && !currentSetSettingsInFolder.general.changeName)"
           />
           <span v-else>{{ accountName }}</span>
+          <span>Страна аккаунта</span>
+          <AppInputSelect
+            :list="country.list"
+            :selected="country.selected"
+            :SelectedInTitle="true"
+            :requestDelay="0"
+            :countLettersReq="0"
+            @select="(op) => country.select(op)"
+            @changeInputValue="(val) => (country.value = val)"
+          />
         </form>
       </div>
     </div>
@@ -34,15 +44,18 @@
 
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
-import { computed, onMounted, ref } from "@vue/runtime-core";
+import { computed, onMounted, reactive, ref } from "@vue/runtime-core";
 import store from "@/store";
 import { useLockBtn } from "@/composables/lockBtn";
 import router from "@/router";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { isTest } from "@/composables/isTest";
+import AppInputSelect from "../AppInputSelect.vue";
+import { useCountries } from "@/composables/countries";
 export default {
-  components: { BtnsSaveClose },
+  components: { BtnsSaveClose, AppInputSelect },
   setup() {
+    const { list: countriesList } = useCountries();
     const { isLocked, lockBtn } = useLockBtn();
     const { currentSetSettingsInFolder } = useRoleSettings("accountSettings");
 
@@ -52,9 +65,27 @@ export default {
 
     const divideRight = ref(false);
     const accountName = ref("");
+    const country = reactive({
+      selected: {},
+      value: "",
+      list: computed(() =>
+        countriesList?.filter((item) =>
+          item.name?.toUpperCase()?.includes(country.value?.toUpperCase())
+        )
+      ),
+      select: function (option) {
+        this.selected = option;
+      },
+      setSelected: function (value) {
+        const item = this.list.find((el) => el.value == value);
+        if (!item) return;
+        this.select(item);
+      },
+    });
     onMounted(() => {
       divideRight.value = Boolean(account.value?.config?.divide_right);
       accountName.value = account.value?.name;
+      country.setSelected(account.value?.config?.country);
     });
 
     const save = async () => {
@@ -62,6 +93,7 @@ export default {
       await store.dispatch("update_account", {
         divide_right: divideRight.value,
         name: accountName.value,
+        country: country.selected.value,
       });
       await store.dispatch("get_account");
     };
@@ -77,6 +109,7 @@ export default {
       isLocked,
       currentSetSettingsInFolder,
       isTest,
+      country,
     };
   },
 };
