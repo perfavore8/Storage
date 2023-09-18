@@ -214,7 +214,7 @@ import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { AppErrorText },
   setup(props, context) {
-    const { i18n } = useLangConfiguration();
+    const { t } = useLangConfiguration();
 
     onMounted(() => {
       setStatuses();
@@ -245,7 +245,7 @@ export default {
       if (res.error) {
         const item = statusesList.find((el) => el.statuses?.id == id);
         if (item && res.error == "There are orders in this pipeline.") {
-          item.delErrorText = i18n.global.t("message.OrdersInPipeline");
+          item.delErrorText = t("message.OrdersInPipeline");
         }
       }
     };
