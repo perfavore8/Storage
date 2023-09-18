@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 import { useLangConfiguration } from "./langConfiguration";
 
-const { t } = useLangConfiguration;
+const { t } = useLangConfiguration();
 
 const list = reactive([
   { name: "Abkhazia", value: "Abkhazia" },
