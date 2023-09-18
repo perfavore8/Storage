@@ -42,7 +42,12 @@
           <tr
             class="row"
             :class="{ load: is_loading }"
-            v-for="{ statuses, statusesIsChange, saveStatuses } in statusesList"
+            v-for="{
+              statuses,
+              statusesIsChange,
+              saveStatuses,
+              delErrorText,
+            } in statusesList"
             :key="statuses.id"
           >
             <td class="item">
@@ -51,6 +56,7 @@
                 class="input new_item_input"
                 v-model="statuses.name"
               />
+              <AppErrorText :text="delErrorText" :show="delErrorText" />
             </td>
             <td class="item selectors">
               <div class="type_selector_options pt-6">
@@ -203,9 +209,13 @@
 import store from "@/store";
 import { useStatusesForEntities } from "@/composables/statusesForEntities";
 import { onMounted, reactive } from "vue";
+import AppErrorText from "./AppErrorText.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
-  components: {},
+  components: { AppErrorText },
   setup(props, context) {
+    const { i18n } = useLangConfiguration();
+
     onMounted(() => {
       setStatuses();
     });
@@ -226,8 +236,18 @@ export default {
       setStatuses();
     };
     const removeStatuses = async (id) => {
-      await store.dispatch("ordersPipelinesDelete", { id: id });
-      setStatuses();
+      const res = await store.dispatch("ordersPipelinesDelete", {
+        id: id,
+      });
+
+      await setStatuses();
+
+      if (res.error) {
+        const item = statusesList.find((el) => el.statuses?.id == id);
+        if (item && res.error == "There are orders in this pipeline.") {
+          item.delErrorText = i18n.global.t("message.OrdersInPipeline");
+        }
+      }
     };
 
     const close = () => context.emit("toggleStatuses");

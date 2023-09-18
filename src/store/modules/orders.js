@@ -266,11 +266,13 @@ export default {
       return data;
     },
     async ordersPipelinesDelete(context, params) {
-      const { data } = await ApiReqFunc({
+      const { data, error } = await ApiReqFunc({
         url: "orders/pipelines/delete",
         method: "post",
         data: params,
       });
+
+      if (error) return error.data;
 
       return data;
     },

@@ -149,11 +149,14 @@ export function useStatusesForEntities(stat, setStatuses) {
     setCopy();
   };
 
+  const delErrorText = ref("");
+
   return {
     statuses,
     statusesIsChange,
     nameIsChange,
     statsIsChange,
     saveStatuses,
+    delErrorText,
   };
 }
