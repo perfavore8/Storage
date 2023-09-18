@@ -322,13 +322,9 @@ export default {
 
     const updateList = async () => {
       await setTitles();
-      await Promise.all([
-        store.dispatch("get_account"),
-        store.dispatch("getOrders", store.state.orders.filters),
-      ]);
+      await Promise.all([store.dispatch("get_account"), getOrders()]);
       fillWhs();
       fillPriceCat();
-      fillOrders();
       setSelectedProducts();
     };
 
