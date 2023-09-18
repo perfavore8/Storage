@@ -1,5 +1,6 @@
 <template>
   <div class="bgc">
+    <button @click="addStatuses()" class="add_new_button"></button>
     <button
       class="bg-slate-400 bg-opacity-90 p-2 h-fit w-fit rounded-xl absolute left-0 hover:shadow-sm hover:drop-shadow-md outline-none focus-visible:drop-shadow-md"
       @click="close()"
@@ -180,13 +181,7 @@
             </td>
             <td class="item del_sell">
               <button
-                @click="addStatuses()"
-                v-if="!statuses.isNew"
-                class="add_new_button"
-                style="position: static; width: 18px; height: 18px"
-              ></button>
-              <button
-                v-else
+                v-if="statuses.isNew"
                 class="del_btn"
                 @click="removeStatuses(statuses.id)"
               />
@@ -225,7 +220,9 @@ export default {
     };
     const statusesList = reactive([]);
     const addStatuses = async () => {
-      await store.dispatch("ordersPipelinesAdd", { name: "Статус" });
+      await store.dispatch("ordersPipelinesAdd", {
+        name: "Статус" + statusesList.length,
+      });
       setStatuses();
     };
     const removeStatuses = async (id) => {
@@ -248,10 +245,23 @@ export default {
   width: 100%;
   background-color: #fff;
   background-clip: padding-box;
+  .add_new_button {
+    cursor: pointer;
+    position: absolute;
+    left: 10%;
+    bottom: 20px;
+    width: 34px;
+    height: 34px;
+    background: #4e964d;
+    border: none;
+    border-radius: 4px;
+    @include bg_image("@/assets/plus.svg", 50%);
+  }
   .container {
     text-align: left;
     width: 80%;
     margin: 30px auto;
+    margin-bottom: 60px;
     display: flex;
     flex-direction: column;
     .header {
@@ -402,18 +412,6 @@ export default {
             }
           }
         }
-      }
-      .add_new_button {
-        cursor: pointer;
-        margin-top: 8px;
-        position: absolute;
-        right: 4px;
-        width: 34px;
-        height: 34px;
-        background: #4e964d;
-        border: none;
-        border-radius: 4px;
-        @include bg_image("@/assets/plus.svg", 50%);
       }
       .input {
         // height: 34px;
