@@ -228,6 +228,7 @@ export const messages = {
         sync: "Product synchronization settings",
         clients: "Customer field settings",
       },
+      user: { title: "User settings" },
     },
     DelBtnAccept: {
       del: "Delete",
@@ -543,6 +544,7 @@ export const messages = {
         sync: "Настройки синхронизации товаров",
         clients: "Настройки полей клиентов",
       },
+      user: { title: "Настройки юзера" },
     },
     DelBtnAccept: {
       del: "Удалить",

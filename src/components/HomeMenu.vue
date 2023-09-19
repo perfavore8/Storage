@@ -183,7 +183,7 @@
       <button
         class="ref_2_logo btn hover:scale-110"
         @click="toggleShowUserMenu()"
-        title="Настройки юзера"
+        :title="t('HomeMenu.user.title')"
       >
         <span class="material-icons-outlined text-2xl"> account_circle </span>
       </button>
