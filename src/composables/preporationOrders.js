@@ -45,6 +45,10 @@ export function usePreparationOrders() {
         stepRes = getValue(value, code);
         if (code === "sum")
           stepRes = String(formatNumber(stepRes)) + " " + value.currency;
+        if (code === "profit")
+          stepRes = String(formatNumber(stepRes)) + " " + value.currency;
+        if (code === "cost_price")
+          stepRes = String(formatNumber(stepRes)) + " " + value.currency;
         if (code === "user") {
           stepRes = userList.value.find(
             (user) => user.id == getValue(value, "user_id")
