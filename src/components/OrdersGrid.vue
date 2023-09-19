@@ -34,9 +34,11 @@
                 class="bar_item_icon"
                 :class="{
                   bar_item_icon_up:
-                    sorting.order == 'desc' && title.value === sorting.order_by,
+                    sorting.order == 'desc' &&
+                    title.value.split(/_(.*)/s)[1] === sorting.order_by,
                   bar_item_icon_down:
-                    sorting.order == 'asc' && title.value === sorting.order_by,
+                    sorting.order == 'asc' &&
+                    title.value.split(/_(.*)/s)[1] === sorting.order_by,
                 }"
                 v-if="title.sortable && title.isOrder"
               ></button>
@@ -346,7 +348,7 @@ export default {
         prev: getPageFromLink(
           meta.value?.links?.prev || meta.value?.prev_page_url
         ),
-        current: meta.value?.meta?.current_page,
+        current: meta.value?.meta?.current_page || meta.value?.current_page,
         next: getPageFromLink(
           meta.value?.links?.next || meta.value?.next_page_url
         ),
@@ -354,7 +356,6 @@ export default {
           meta.value?.links?.last || meta.value?.last_page_url
         ),
       };
-      console.log(obj);
       return obj;
     });
 
@@ -410,7 +411,7 @@ export default {
         );
     };
     const sort = (code) => {
-      if (sorting.order_by != code) {
+      if (sorting.order_by != code.split(/_(.*)/s)[1]) {
         sorting.order = "";
         sorting.order_by = code.split(/_(.*)/s)[1];
       }
