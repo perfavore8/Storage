@@ -239,11 +239,9 @@ export default {
     },
 
     async ordersPipelinesList(context, params) {
-      console.log(1);
       if (!params?.isUpdate && context.state.pipelines.length)
         return context.state.pipelines;
       delete params?.isUpdate;
-      console.log(2);
       const { data } = await ApiReqFunc({
         url: "orders/pipelines/list",
         params: params,
