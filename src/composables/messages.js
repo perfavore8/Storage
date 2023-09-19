@@ -13,6 +13,7 @@ export const messages = {
       save: "Save",
       send: "Send",
       somethingWrong: "Something went wrong...",
+      notSelected: "Not selected",
     },
     message: {
       OrdersInPipeline: "There are orders in this pipeline.",
@@ -314,6 +315,30 @@ export const messages = {
         textForField: "new phone number",
       },
     },
+    EditStuff: {
+      header: "General settings",
+      otherDeals: "Allow adding items from the reserve to other deals",
+      zeroCount: "Allow adding goods with zero balance to deal",
+      oneWh: "Products in a deal from only one warehouse",
+      stepsRes: {
+        header: "Stages of products reservation from the warehouse",
+        text: "Attention! Within one pipeline, the reserving stage should be before the write-off stage. If the reservation stage is not selected, then the reservation will take place at the moment the item is added to the deal.",
+        blockRes: "Block product changes in reservation stages",
+        hopper: 'Pipeline "{name}"',
+        placeholder: "Not selected | Selected: {count} | Selected: {count}",
+      },
+      stepsWO: {
+        header: "Stages of write-off of goods from the warehouse",
+        text: "Attention! Within one pipeline, the write-off stage must be later than the reservation stage.",
+        hopper: 'Pipeline "{name}"',
+      },
+      dealBinding: {
+        header: "Deal field binding",
+        budget: "Do not complete the deal budget",
+        field: 'Field  "{name}"',
+        number: "(number)",
+      },
+    },
   },
   ru: {
     global: {
@@ -329,6 +354,7 @@ export const messages = {
       save: "Сохранить",
       send: "Отправить",
       somethingWrong: "Что-то пошло не так...",
+      notSelected: "Не выбрано",
     },
     message: {
       OrdersInPipeline: "В этой воронке остались заказы",
@@ -628,6 +654,30 @@ export const messages = {
       phone: {
         forTitle: "номера телефона",
         textForField: "новый номер телефона",
+      },
+    },
+    EditStuff: {
+      header: "Общие настройки",
+      otherDeals: "Разрешать добавлять товары из резерва в другие сделки",
+      zeroCount: "Разрешать добавлять в сделки товар с нулевым остатком",
+      oneWh: "Товары в сделке только из одного склада",
+      stepsRes: {
+        header: "Этапы резервирования товаров со склада",
+        text: "Внимание! В рамках одной воронки этап резерирования должен быть раньше этапа списания. Если этап презервирования не выбран, то резерирование будет происходить в момент добавления товара в сделку.",
+        blockRes: "Блокировать изменения товаров в этапах резервирования",
+        hopper: 'Воронка "{name}"',
+        placeholder: "Не выбрано | Выбрано: {count} | Выбрано: {count}",
+      },
+      stepsWO: {
+        header: "Этапы списания товаров со склада",
+        text: " Внимание! В рамках одной воронки этап списания должен быть позже этапа резерирования.",
+        hopper: 'Воронка "{name}"',
+      },
+      dealBinding: {
+        header: "Привязка полей сделок",
+        budget: "Не заполнять бюджет сделки",
+        field: 'Поле "{name}"',
+        number: "(число)",
       },
     },
   },

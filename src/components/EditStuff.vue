@@ -5,9 +5,9 @@
       <div class="container">
         <div class="header">
           <div class="top">
-            <label>Общие настройки</label>
+            <label>{{ $t("EditStuff.header") }}</label>
             <btns-save-close @close="close" @save="save">
-              <template v-slot:close>Назад</template>
+              <template v-slot:close>{{ $t("global.back") }}</template>
             </btns-save-close>
           </div>
           <br />
@@ -27,7 +27,7 @@
                   "
                 />
                 <label for="q1">
-                  Разрешать добавлять товары из резерва в другие сделки
+                  {{ $t("EditStuff.otherDeals") }}
                 </label>
               </div>
               <div class="permit">
@@ -39,7 +39,7 @@
                   v-model="copyConfing.allow_add_with_zero_count"
                 />
                 <label for="q3">
-                  Разрешать добавлять в сделки товар с нулевым остатком
+                  {{ $t("EditStuff.zeroCount") }}
                 </label>
               </div>
               <div class="permit">
@@ -50,18 +50,16 @@
                   v-model="copyConfing.one_wh_per_lead"
                 />
                 <label for="q4">
-                  Товары в сделке только из одного склада
+                  {{ $t("EditStuff.oneWh") }}
                 </label>
               </div>
             </div>
           </div>
         </div>
         <div class="content">
-          <h6>Этапы резервирования товаров со склада</h6>
+          <h6>{{ $t("EditStuff.stepsRes.header") }}</h6>
           <div class="small">
-            Внимание! В рамках одной воронки этап резерирования должен быть
-            раньше этапа списания. Если этап презервирования не выбран, то
-            резерирование будет происходить в момент добавления товара в сделку.
+            {{ $t("EditStuff.stepsRes.text") }}
           </div>
           <div class="mt-4">
             <input
@@ -71,7 +69,7 @@
               v-model="lock_reserved_products_edit"
             />
             <label for="lock_reserved_products_edit">
-              Блокировать изменения товаров в этапах резервирования
+              {{ $t("EditStuff.stepsRes.blockRes") }}
             </label>
           </div>
           <div class="steps">
@@ -80,16 +78,17 @@
               v-for="item in copyPipelinesListV2"
               :key="item"
             >
-              <label> Воронка "{{ item?.name }}" </label>
+              <label>
+                {{ $t("EditStuff.stepsRes.hopper", { name: item?.name }) }}
+              </label>
               <AppMultiSelect
                 :list="[{ name: 'Все', value: 'all' }, ...item?.statuses]"
                 :placeholder="
-                  item?.statuses.filter((val) => val.selected).length
-                    ? 'Выбрано: ' +
-                      item?.statuses.filter(
-                        (val) => val.selected && val.value !== 'all'
-                      ).length
-                    : 'Не выбрано'
+                  t('EditStuff.stepsRes.placeholder', {
+                    count: item?.statuses.filter(
+                      (val) => val.selected && val.value !== 'all'
+                    ).length,
+                  })
                 "
                 @select="
                   (event) =>
@@ -98,10 +97,9 @@
               />
             </div>
           </div>
-          <h6>Этапы списания товаров со склада</h6>
+          <h6>{{ $t("EditStuff.stepsWO.header") }}</h6>
           <div class="small">
-            Внимание! В рамках одной воронки этап списания должен быть позже
-            этапа резерирования.
+            {{ $t("EditStuff.stepsWO.text") }}
           </div>
           <div class="steps">
             <div
@@ -109,10 +107,12 @@
               v-for="item in copyPipelinesListV2"
               :key="item"
             >
-              <label> Воронка "{{ item?.name }}" </label>
+              <label>{{
+                $t("EditStuff.stepsWO.hopper", { name: item?.name })
+              }}</label>
               <SelectorVue
                 :options_props="[
-                  { name: 'Не выбрано', value: -1 },
+                  { name: t('global.notSelected'), value: -1 },
                   ...item?.statuses,
                 ]"
                 @select="
@@ -122,10 +122,10 @@
               />
             </div>
           </div>
-          <h6>Привязка полей сделок</h6>
+          <h6>{{ $t("EditStuff.dealBinding.header") }}</h6>
           <div class="steps">
             <div class="label_input">
-              <label> Не заполнять бюджет сделки </label>
+              <label>{{ $t("EditStuff.dealBinding.budget") }}</label>
               <input
                 type="checkbox"
                 class="checkbox"
@@ -140,8 +140,10 @@
               :key="item"
             >
               <label>
-                Поле "{{ item?.name }}"
-                <span v-if="idx >= 2">(число)</span>
+                {{ $t("EditStuff.dealBinding.field", { name: item?.name }) }}
+                <span v-if="idx >= 2">{{
+                  $t("EditStuff.dealBinding.number")
+                }}</span>
               </label>
               <SelectorVue
                 :options_props="leadsDealsList"
@@ -153,7 +155,7 @@
         </div>
         <div class="footer">
           <btns-save-close @close="close" @save="save">
-            <template v-slot:close>Назад</template>
+            <template v-slot:close>{{ $t("global.back") }}</template>
           </btns-save-close>
         </div>
       </div>
@@ -164,7 +166,13 @@
 import SelectorVue from "@/components/SelectorVue";
 import AppMultiSelect from "./AppMultiSelect.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+const { t } = useLangConfiguration();
+
 export default {
+  setup() {
+    return { t };
+  },
   components: {
     SelectorVue,
     BtnsSaveClose,
@@ -182,34 +190,34 @@ export default {
         {
           name: "Товары",
           code: "field_products",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
         {
           name: "Поле для поиска товаров",
           code: "field_search_products",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
         {
           name: "Себестоимость",
           code: "field_cost_price",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
         {
           name: "Прибыль",
           code: "field_profit",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
 
         {
           name: "Общий бюджет",
           code: "field_budget",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
 
         {
           name: "НДС сумма",
           code: "field_nds_sum",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
       ],
       leadsDealsList: [],
@@ -251,7 +259,7 @@ export default {
           })
         );
         val[1].statuses = [...arr];
-        val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
+        val[1].selectedWriteOff = { name: t("global.notSelected"), value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
@@ -264,8 +272,8 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].fields = arr;
-        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
-        val[1].selected = { name: "Не выбрано", value: -1 };
+        val[1].fields.unshift({ name: t("global.notSelected"), value: -1 });
+        val[1].selected = { name: t("global.notSelected"), value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
@@ -365,7 +373,7 @@ export default {
       }
     },
     searchSelectedInArr(item, arr, code) {
-      let res = { name: "Не выбрано", value: -1 };
+      let res = { name: t("global.notSelected"), value: -1 };
       arr.forEach((val) => {
         if (val[code] == item) res = val;
       });
@@ -398,7 +406,7 @@ export default {
     },
 
     fillLeadsDealsList() {
-      this.leadsDealsList.push({ name: "Не выбрано", value: -1 });
+      this.leadsDealsList.push({ name: t("global.notSelected"), value: -1 });
       this.copyLeadFieldsList.forEach((val) => {
         const optgroup = val.name;
         this.leadsDealsList.push({ name: optgroup, value: "optgroup" });
