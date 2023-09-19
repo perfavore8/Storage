@@ -72,7 +72,7 @@ export default {
     gap: 5px;
     .title {
       text-align: left;
-      @include font(500, 16px, 19px);
+      @include font(400, 14px, 1.5);
     }
   }
 }
