@@ -31,9 +31,6 @@ export function usePreparationOrders() {
   };
 
   const preparationValueByType = (value, field) => {
-    if (field.code === "status")
-      return pipelines.allStatuses.find((el) => el.id == value)?.name;
-
     if (field.type === 8) return value && dateFormater(value);
     return value;
   };
@@ -51,6 +48,11 @@ export function usePreparationOrders() {
         if (code === "user") {
           stepRes = userList.value.find(
             (user) => user.id == getValue(value, "user_id")
+          )?.name;
+        }
+        if (code === "status") {
+          stepRes = pipelines.allStatuses.find(
+            (el) => el.id == getValue(value, "status_id")
           )?.name;
         }
       } else if (source === "company") {
