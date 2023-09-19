@@ -9,7 +9,11 @@
     </button>
     <button
       @click="first()"
-      v-if="page.current != page.first && page.prev != page.first"
+      v-if="
+        page.current != page.first &&
+        page.prev != page.first &&
+        page.first != null
+      "
       class="b"
     >
       {{ page.first }}
@@ -31,7 +35,9 @@
     </button>
     <button
       @click="last()"
-      v-if="page.current != page.last && page.next != page.last"
+      v-if="
+        page.current != page.last && page.next != page.last && page.last != null
+      "
       class="f"
     >
       {{ page.last }}
