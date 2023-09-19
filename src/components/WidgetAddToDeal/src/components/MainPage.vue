@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" :class="{ short: show_filters }">
     <div class="container1">
       <div class="header"></div>
       <div class="content">
@@ -713,6 +713,7 @@ export default {
     },
     openModal() {
       this.show_filters = true;
+      window.scrollTo(0, 0);
       return false;
     },
     saveSelectedWirePerLead() {
@@ -1393,5 +1394,9 @@ export default {
 }
 .blur2 {
   filter: blur(20px);
+}
+.short {
+  max-height: 75vh;
+  overflow: hidden;
 }
 </style>
