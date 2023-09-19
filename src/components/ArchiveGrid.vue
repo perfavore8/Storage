@@ -1,7 +1,7 @@
 <template>
   <div class="grid" :class="{ blur: isLoading }">
     <label v-if="archive_list.length == 0" class="text">
-      Ничего не найдено
+      {{ $t("global.nothingFound") }}
     </label>
     <template v-else>
       <table class="table2 hidden md:table">

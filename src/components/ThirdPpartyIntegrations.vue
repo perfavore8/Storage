@@ -3,7 +3,7 @@
     <div class="backdrop_with_filter" @click="close()" />
     <div class="container">
       <div class="header">
-        <label>Интеграции</label>
+        <label>{{ $t("Integrations.header") }}</label>
         <button class="btn_del" @click="close()">
           <div class="icon"></div>
         </button>
@@ -20,16 +20,19 @@
             target="blank"
           >
             <button class="btn btn_dark_blue" :disabled="account?.g_install">
-              {{ account?.g_install ? "Установлено" : "Установить" }}
+              {{
+                account?.g_install
+                  ? $t("Integrations.btnInstalled")
+                  : $t("Integrations.btnInstall")
+              }}
             </button>
           </a>
           <small v-if="!account?.g_install">
-            Для интеграции с 1С-Генезис необходимо установить виджет «Генезис:
-            1С интеграция»
+            {{ $t("Integrations.oneCText") }}
           </small>
           <a @click="route('genezis')">
             <button class="btn btn_dark_blue" :disabled="!account?.g_install">
-              Настройки
+              {{ $t("Integrations.btnSettings") }}
             </button>
           </a>
         </div>
@@ -38,18 +41,22 @@
           <a
             href="https://www.amocrm.ru/oauth/?client_id=a4864c29-6b9b-470b-bb0e-9a1c22496087"
             target="blank"
-            ><button class="btn btn_dark_blue">Установить</button></a
+            ><button class="btn btn_dark_blue">
+              {{ $t("Integrations.btnInstall") }}
+            </button></a
           >
-          <small>Бесплатное дополнение</small>
+          <small>{{ $t("Integrations.free") }}</small>
         </div>
         <div class="item">
           <img class="icon" src="@/assets/re.jpg" />
           <a
             href="https://www.amocrm.ru/oauth/?client_id=47855e7f-c170-44b3-8d95-a3fe357d2cc7"
             target="blank"
-            ><button class="btn btn_dark_blue">Установить</button></a
+            ><button class="btn btn_dark_blue">
+              {{ $t("Integrations.btnInstall") }}
+            </button></a
           >
-          <small>Бесплатное дополнение</small>
+          <small>{{ $t("Integrations.free") }}</small>
         </div>
         <div class="item" v-if="isTest || amoTest">
           <img
@@ -61,14 +68,20 @@
               class="btn btn_dark_blue"
               :disabled="account?.install && !isTest"
             >
-              {{ account?.install ? "Установлено" : "Установить" }}
+              {{
+                account?.install
+                  ? $t("Integrations.btnInstalled")
+                  : $t("Integrations.btnInstall")
+              }}
             </button>
           </a>
           <small v-if="!account?.install">
-            Для установки необходимо быть пользователем платформы amoCRM
+            {{ $t("Integrations.amoError") }}
           </small>
           <a @click="route('amoCRM')" v-if="account?.install">
-            <button class="btn btn_dark_blue">Настройки</button>
+            <button class="btn btn_dark_blue">
+              {{ $t("Integrations.btnSettings") }}
+            </button>
           </a>
         </div>
       </div>

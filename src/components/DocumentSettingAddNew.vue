@@ -5,7 +5,7 @@
       <div class="header"><slot name="title"></slot></div>
       <div class="content">
         <div class="label_input">
-          <label class="label">Название:</label>
+          <label class="label">{{ $t("DocumentSetting.addNew.name") }}</label>
           <input
             type="text"
             v-model="name"
@@ -14,7 +14,7 @@
           />
         </div>
         <div class="label_input">
-          <label class="label">Google ID файла:</label>
+          <label class="label">{{ $t("DocumentSetting.addNew.GID") }}</label>
           <input
             type="text"
             v-model="file"
@@ -23,7 +23,9 @@
           />
         </div>
         <div class="label_input" v-if="account.install">
-          <label class="label">Этап авто-генерации:</label>
+          <label class="label">
+            {{ $t("DocumentSetting.addNew.stepGen") }}
+          </label>
           <selector-vue
             :options_props="copyPipelinesList"
             @select="select_pipelines_option"
@@ -39,7 +41,7 @@
           />
         </div>
         <div class="label_input" v-if="account.install">
-          <label class="label">Url последнего документа:</label>
+          <label class="label">{{ $t("DocumentSetting.addNew.url") }}</label>
           <selector-vue
             :options_props="lead_fields_options"
             @select="select_url_field"
@@ -47,7 +49,9 @@
           />
         </div>
         <div class="label_input">
-          <label class="label">Тип шаблона:</label>
+          <label class="label">
+            {{ $t("DocumentSetting.addNew.templType") }}
+          </label>
           <selector-vue
             :options_props="type_options"
             @select="option_select1"
@@ -55,7 +59,9 @@
           />
         </div>
         <div class="label_input">
-          <label class="label">Тип для скачивания:</label>
+          <label class="label">
+            {{ $t("DocumentSetting.addNew.downType") }}
+          </label>
           <selector-vue
             :options_props="export_type_options"
             @select="option_select2"
@@ -74,6 +80,10 @@
 import SelectorVue from "@/components/SelectorVue.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     SelectorVue,
@@ -96,25 +106,28 @@ export default {
     },
   },
   emits: { close: null },
+  setup() {
+    return { t };
+  },
   data() {
     return {
       type_options: [],
       type: { name: "docx", value: "1" },
       export_type_options: [],
-      export_type: { name: "Исходный", value: "1" },
+      export_type: { name: t("DocumentSetting.addNew.is"), value: "1" },
       lead_fields_options: [],
       try_accept: false,
       name: "",
       file: "",
       copyPipelinesList: [],
-      status_id: { name: "Не выбрано", value: "1" },
-      url_field: { name: "Не выбрано", value: "1" },
+      status_id: { name: t("global.notSelected"), value: "1" },
+      url_field: { name: t("global.notSelected"), value: "1" },
       orientation: {
-        label: "Ориентация",
-        selected: { name: "Книжная", value: 0 },
+        label: t("DocumentSetting.addNew.orient.header"),
+        selected: { name: t("DocumentSetting.addNew.orient.kn"), value: 0 },
         list: [
-          { name: "Книжная", value: "0" },
-          { name: "Альбомная", value: "1" },
+          { name: t("DocumentSetting.addNew.orient.kn"), value: "0" },
+          { name: t("DocumentSetting.addNew.orient.alb"), value: "1" },
         ],
         select: (option) => {
           this.orientation.selected = option;
@@ -147,15 +160,15 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].fields = arr;
-        val[1].fields.unshift({ name: "Не выбрано", value: "-1" });
-        val[1].selected = { name: "Не выбрано", value: "-1" };
+        val[1].fields.unshift({ name: t("global.notSelected"), value: "-1" });
+        val[1].selected = { name: t("global.notSelected"), value: "-1" };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
     },
     pipelinesList() {
       const list = [];
-      list.push({ name: "Не выбрано", value: "-1" });
+      list.push({ name: t("global.notSelected"), value: "-1" });
       Object.entries(this.$store.state.account.pipelinesListV2).map((val) => {
         list.push({ name: val[1].name, value: "optgroup" });
         val[1].statuses.forEach((stat) =>
@@ -219,7 +232,7 @@ export default {
         this.name = this.cur_doc.name;
         this.file = this.cur_doc.file;
         const serch_selected_item = (options, name, value, isSpecial) => {
-          let obj = { name: "Не выбрано", value: "-1" };
+          let obj = { name: t("global.notSelected"), value: "-1" };
           options.forEach((val) => {
             if (val[value] == name) {
               Object.assign(obj, val);
@@ -260,7 +273,10 @@ export default {
       }
     },
     set_lead_fields_options() {
-      this.lead_fields_options.push({ name: "Не выбрано", value: "-1" });
+      this.lead_fields_options.push({
+        name: t("global.notSelected"),
+        value: "-1",
+      });
       this.copyLeadFieldsList.forEach((val) => {
         const optgroup = val.name;
         this.lead_fields_options.push({ name: optgroup, value: "optgroup" });

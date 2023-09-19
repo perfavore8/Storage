@@ -3,7 +3,9 @@
     <td class="item">{{ doc.name }}</td>
     <td class="item file">{{ doc.file }}</td>
     <td class="item">
-      <a :href="getHref(doc.file, doc.type)" target="blank"> Шаблон </a>
+      <a :href="getHref(doc.file, doc.type)" target="blank">
+        {{ $t("DocumentSetting.docRow.templ") }}
+      </a>
     </td>
     <td class="item">{{ doc.type }}</td>
     <td class="item">{{ doc.export_type }}</td>

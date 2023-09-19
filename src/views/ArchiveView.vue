@@ -37,7 +37,7 @@
           <p
             class="my-2 md:my-4 text-sm md:text-base text-slate-500 dark:text-slate-300"
           >
-            Найдено: {{ count_archive }}
+            {{ $t("Archive.count", { count: count_archive }) }}
           </p>
         </div>
         <archive-grid class="grid" :config="config.selected"></archive-grid>

@@ -4,7 +4,7 @@
     <div class="container">
       <div class="header">
         <div class="left">
-          <label>Поля для шаблонов документов</label>
+          <label>{{ $t("DocumentSetting.fields.header") }}</label>
         </div>
         <div class="right">
           <button class="btn_del" @click="close()">
@@ -32,7 +32,9 @@
         </div>
       </div>
       <div class="footer">
-        <button class="btn btn1" @click="close()">Назад</button>
+        <button class="btn btn1" @click="close()">
+          {{ $t("global.back") }}
+        </button>
       </div>
     </div>
   </div>

@@ -9,10 +9,10 @@
   >
     <template v-slot:title>
       <span v-if="selected_doc_id === null">
-        Добавление шаблона документов
+        {{ $t("DocumentSetting.templAdd") }}
       </span>
       <span v-if="selected_doc_id !== null">
-        Редактирование шаблона документов
+        {{ $t("DocumentSetting.templChange") }}
       </span>
     </template>
   </document-setting-add-new>
@@ -25,16 +25,22 @@
     <div class="container">
       <div class="header">
         <div class="left">
-          <div class="title">Настройки документов</div>
+          <div class="title">{{ $t("DocumentSetting.header") }}</div>
           <div class="autorization" v-if="account.is_google_auth">
-            Вы авторизированы в сервисе Google Drive как "{{
-              account.google_user_name
-            }}".
-            <button @click="unAutorization()">Выйти</button>
+            {{
+              $t("DocumentSetting.googleAuth", {
+                name: account.google_user_name,
+              })
+            }}
+            <button @click="unAutorization()">
+              {{ $t("DocumentSetting.exit") }}
+            </button>
           </div>
           <div class="autorization" v-else>
-            Вы не авторизированы в сервисе Google Drive
-            <button @click="autorization()">Войти</button>
+            {{ $t("DocumentSetting.googleNotAuth") }}
+            <button @click="autorization()">
+              {{ $t("DocumentSetting.enter") }}
+            </button>
           </div>
           <a
             :href="
@@ -44,7 +50,7 @@
             target="blank"
             class="a"
             v-if="account.config?.google_folder_id"
-            >Папка с документами</a
+            >{{ $t("DocumentSetting.folder") }}</a
           >
         </div>
         <div class="right">
@@ -60,12 +66,12 @@
                   @click="open_fields()"
                   :class="{ disable: disable_fields_templates }"
                 >
-                  Поля шаблонов
+                  {{ $t("DocumentSetting.templFields") }}
                 </div>
               </a>
               <a>
                 <div class="modal_container" @click="refresh_fields()">
-                  Обновить поля шаблонов
+                  {{ $t("DocumentSetting.templUpdate") }}
                 </div>
               </a>
             </div>
@@ -75,7 +81,7 @@
       <div class="content">
         <div class="binding" v-if="account.install">
           <div class="header">
-            Привязка полей документов
+            {{ $t("DocumentSetting.templLink") }}
             <div class="save">
               <btns-save-close @save="save" :show_close="false" />
             </div>
@@ -83,7 +89,7 @@
           <div class="main">
             <div class="column">
               <div class="label_select">
-                <label>Поле "Документы"</label>
+                <label>{{ $t("DocumentSetting.docField") }}</label>
                 <SelectorVue
                   :options_props="lead_fields_options"
                   @select="lead_fields_select"
@@ -91,7 +97,7 @@
                 />
               </div>
               <div class="label_select">
-                <label>Поряд имен контактов</label>
+                <label>{{ $t("DocumentSetting.contOrder") }}</label>
                 <SelectorVue
                   :options_props="contact_name_type_options"
                   @select="contact_name_type_select"
@@ -103,11 +109,11 @@
         </div>
         <div class="patterns">
           <template v-if="account.install">
-            <div class="header mb-2">Хуки</div>
+            <div class="header mb-2">{{ $t("DocumentSetting.hooks") }}</div>
             <div class="main mb-4">
               <div class="column">
                 <div class="grid grid-cols-[3fr_4fr] items-center">
-                  <label>Хук при загрузке документа в сделку</label>
+                  <label>{{ $t("DocumentSetting.hookDown") }}</label>
                   <input
                     type="text"
                     class="input inputhuk my-2"
@@ -115,7 +121,7 @@
                   />
                 </div>
                 <div class="grid grid-cols-[3fr_4fr] items-center">
-                  <label>Хук при генерации документа в сделке</label>
+                  <label>{{ $t("DocumentSetting.hookGen") }}</label>
                   <input
                     type="text"
                     class="input inputhuk my-2"
@@ -126,13 +132,9 @@
             </div>
           </template>
           <div class="header">
-            <div>Шаблоны документов</div>
+            <div>{{ $t("DocumentSetting.templDocs") }}</div>
             <p class="small">
-              Файлы шаблонов должны быть доступны для чтения по ссылке. Google
-              ID файла это часть ссылки на файл Пример ссылки:
-              https://docs.google.com/spreadsheets/d/1XdXdEMtUFa8V__UK234432Dpx5-CeI/edit#gid=0,
-              где Google ID файла: 1XdXdEMtUFa8V__UK234432Dpx5-CeI Вместо Google
-              ID файла допускается ввод полного адреса
+              {{ $t("DocumentSetting.templDocsText") }}
             </p>
           </div>
           <div class="main">
@@ -165,7 +167,7 @@
       </div>
       <div class="footer">
         <btns-save-close @close="close" :show_save="false">
-          <template v-slot:close>Назад</template>
+          <template v-slot:close>{{ $t("global.back") }}</template>
         </btns-save-close>
       </div>
     </div>
@@ -178,6 +180,10 @@ import DocumentSettingAddNew from "@/components/DocumentSettingAddNew.vue";
 import DocumentSettingFieldsV2 from "@/components/DocumentSettingFieldsV2.vue";
 import DocumentSettingDocRow from "@/components/DocumentSettingDocRow.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     SelectorVue,
@@ -186,20 +192,23 @@ export default {
     DocumentSettingDocRow,
     BtnsSaveClose,
   },
+  setup() {
+    return { t };
+  },
   data() {
     return {
-      name: "Дмитрий Ивлев",
+      name: "",
       title: [
-        "Название",
-        "Google ID файла",
-        "Шаблон",
-        "Тип шаблона",
-        "Тип для скачивания",
+        t("DocumentSetting.titles.name"),
+        t("DocumentSetting.titles.GID"),
+        t("DocumentSetting.titles.temp"),
+        t("DocumentSetting.titles.typeTemp"),
+        t("DocumentSetting.titles.typeDown"),
       ],
       lead_fields_options: [],
-      lead_fields: { name: "Не выбрано", value: 1 },
+      lead_fields: { name: t("global.notSelected"), value: 1 },
       contact_name_type_options: [],
-      contact_name_type: { name: "Не выбрано", value: -1 },
+      contact_name_type: { name: t("global.notSelected"), value: -1 },
       showAddNew: false,
       showFields: false,
       show_settings: false,
@@ -229,8 +238,8 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].fields = arr;
-        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
-        val[1].selected = { name: "Не выбрано", value: -1 };
+        val[1].fields.unshift({ name: t("global.notSelected"), value: -1 });
+        val[1].selected = { name: t("global.notSelected"), value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
@@ -252,7 +261,11 @@ export default {
     async autorization() {
       let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=450,height=600,left=500,top=200`;
       const url = await this.$store.dispatch("getGoogleAuthUrl");
-      const windowAutorization = window.open(url, "Авторизация Google", params);
+      const windowAutorization = window.open(
+        url,
+        t("DocumentSetting.autoGen"),
+        params
+      );
       const interval = setInterval(() => {
         if (windowAutorization.closed) {
           clearInterval(interval);
@@ -273,7 +286,10 @@ export default {
       });
     },
     set_lead_fields_options() {
-      this.lead_fields_options.push({ name: "Не выбрано", value: -1 });
+      this.lead_fields_options.push({
+        name: t("global.notSelected"),
+        value: -1,
+      });
       this.copyLeadFieldsList.forEach((val) => {
         const optgroup = val.name;
         this.lead_fields_options.push({ name: optgroup, value: "optgroup" });

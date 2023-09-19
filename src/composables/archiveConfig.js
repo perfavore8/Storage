@@ -1,11 +1,14 @@
 import { reactive } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
 
 export function useArchiveConfig() {
+  const { t } = useLangConfiguration();
+
   const config = reactive({
     selected: {},
     list: [
       {
-        name: "Товары / Услуги",
+        name: t("Archive.tabs.products"),
         value: "products",
         stateName: "products",
         stateFieldName: "fields",
@@ -26,7 +29,7 @@ export function useArchiveConfig() {
         ],
       },
       {
-        name: "Компании",
+        name: t("Archive.tabs.companies"),
         value: "companies",
         stateName: "clientsCompany",
         stateListName: "list",
@@ -37,7 +40,7 @@ export function useArchiveConfig() {
         fields: ["name"],
       },
       {
-        name: "Контакты",
+        name: t("Archive.tabs.contacts"),
         value: "contacts",
         stateName: "clientsContacts",
         stateListName: "list",
@@ -48,7 +51,7 @@ export function useArchiveConfig() {
         fields: ["name"],
       },
       {
-        name: "Заказы",
+        name: t("Archive.tabs.orders"),
         value: "orders",
         stateName: "orders",
         stateListName: "orders",
