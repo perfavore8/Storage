@@ -24,7 +24,7 @@
     <div class="container">
       <div class="header">
         <div class="top">
-          <label>Настройка статусов</label>
+          <label>{{ $t("SettingEntities.entStats.header") }}</label>
         </div>
       </div>
       <div class="content">
@@ -32,10 +32,12 @@
           <tr class="row">
             <th class="item item_field title">
               <div class="copy_fields">
-                <span>Название</span>
+                <span>{{ $t("SettingEntities.entStats.name") }}</span>
               </div>
             </th>
-            <th class="item item_type">Статус</th>
+            <th class="item item_type">
+              {{ $t("SettingEntities.entStats.stat") }}
+            </th>
             <th class="item" />
           </tr>
 
@@ -102,7 +104,7 @@
                         <div
                           v-if="idx === 0"
                           class="absolute -top-full -translate-y-2 left-1/2 -translate-x-1/2 text-slate-600"
-                          title="Резервация"
+                          :title="t('SettingEntities.entStats.titRes')"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +146,7 @@
                         <div
                           v-if="idx === 0"
                           class="absolute -top-full -translate-y-2 left-1/2 -translate-x-1/2 text-slate-600"
-                          title="Списание"
+                          :title="t('SettingEntities.entStats.titWO')"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +198,7 @@
                 v-if="statusesIsChange"
                 @click="saveStatuses()"
               >
-                Сохранить
+                {{ $t("global.save") }}
               </button>
             </td>
           </tr>
@@ -231,7 +233,9 @@ export default {
     const statusesList = reactive([]);
     const addStatuses = async () => {
       await store.dispatch("ordersPipelinesAdd", {
-        name: "Статус" + statusesList.length,
+        name: t("SettingEntities.entStats.newStatName", {
+          count: statusesList.length,
+        }),
       });
       setStatuses();
     };
@@ -252,7 +256,7 @@ export default {
 
     const close = () => context.emit("toggleStatuses");
 
-    return { statusesList, addStatuses, removeStatuses, close };
+    return { statusesList, addStatuses, removeStatuses, close, t };
   },
 };
 </script>

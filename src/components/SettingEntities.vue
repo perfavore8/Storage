@@ -3,7 +3,7 @@
     <div class="backdrop_with_filter" @click="close()" />
     <div class="container">
       <div class="header">
-        <label>Настройки сущностей</label>
+        <label>{{ $t("SettingEntities.header") }}</label>
         <button class="close" @click="close()">
           <div class="icon"></div>
         </button>
@@ -44,7 +44,7 @@
               class="btn pointer-events-auto w-full relative inline-flex justify-center rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
               @click="toggleStatuses(true)"
             >
-              Статусы
+              {{ $t("SettingEntities.statBtn") }}
             </button>
           </div>
           <SettingEntitiesTable
@@ -55,7 +55,7 @@
       </div>
       <div class="footer">
         <BtnsSaveClose @save="save" @close="close" :show_save="false">
-          <template v-slot:close>Назад</template>
+          <template v-slot:close>{{ $t("global.back") }}</template>
         </BtnsSaveClose>
       </div>
     </div>

@@ -1,13 +1,16 @@
 import store from "@/store";
 import { computed, reactive, onMounted } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
 
 const selected_fields_properties = reactive([]);
 
 export function useEntitiesFieldsProperties() {
+  const { t } = useLangConfiguration();
+
   const copy_fields_properties = reactive([]);
   const data_fields_properties = reactive({
     items: null,
-    selected: { name: "Выбор подкатегории", value: -1 },
+    selected: { name: t("SettingEntities.fieldsProp.selectCat"), value: -1 },
   });
 
   onMounted(async () => {

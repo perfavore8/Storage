@@ -23,7 +23,7 @@
       class="btn pointer-events-auto w-full justify-center relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
       @click="openCategories()"
     >
-      Категории
+      {{ $t("SettingEntities.fieldsProp.btnCats") }}
     </button>
   </div>
 </template>

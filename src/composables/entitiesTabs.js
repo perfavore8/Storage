@@ -1,11 +1,14 @@
 import { reactive } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
 
 export function useEntitiesTabs() {
+  const { t } = useLangConfiguration();
+
   const tabs = reactive({
     selected: {},
     list: [
       {
-        name: "Заказы",
+        name: t("SettingEntities.tabs.orders"),
         value: "Orders",
         storeName: "orders",
         fieldsName: "fields",
@@ -21,7 +24,7 @@ export function useEntitiesTabs() {
         haveVirtual: true,
       },
       {
-        name: "Компании",
+        name: t("SettingEntities.tabs.company"),
         value: "Company",
         storeName: "clientsCompany",
         fieldsName: "fields",
@@ -34,7 +37,7 @@ export function useEntitiesTabs() {
         haveSort: true,
       },
       {
-        name: "Контакты",
+        name: t("SettingEntities.tabs.contacts"),
         value: "Contacts",
         storeName: "clientsContacts",
         fieldsName: "fields",
@@ -47,7 +50,7 @@ export function useEntitiesTabs() {
         haveSort: true,
       },
       {
-        name: "Товары",
+        name: t("SettingEntities.tabs.products"),
         value: "Products",
         storeName: "fields",
         fieldsName: "fields",

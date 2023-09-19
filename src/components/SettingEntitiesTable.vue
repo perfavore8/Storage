@@ -11,10 +11,10 @@
           ></th>
           <th class="item item_field title">
             <div class="copy_fields">
-              <span>Поле</span>
+              <span>{{ $t("SettingEntities.table.field") }}</span>
             </div>
           </th>
-          <th class="item item_type">Тип</th>
+          <th class="item item_type">{{ $t("SettingEntities.table.type") }}</th>
           <th class="item item_icon title" v-if="selectedTab.haveLeadConfig">
             <div class="w-min mx-auto">
               <div
@@ -29,7 +29,7 @@
                   class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
                   v-if="toolTips.visibility"
                 >
-                  Видимость в сделке
+                  {{ $t("SettingEntities.table.visible") }}
                 </div>
               </div>
             </div>
@@ -46,7 +46,7 @@
                   class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
                   v-if="toolTips.edit"
                 >
-                  Редактирование в сделке
+                  {{ $t("SettingEntities.table.edit") }}
                 </div>
               </div>
             </div>
@@ -63,7 +63,7 @@
                   class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
                   v-if="toolTips.title"
                 >
-                  Заголовок товара в сделке
+                  {{ $t("SettingEntities.table.headerDeal") }}
                 </div>
               </div>
             </div>
@@ -83,7 +83,7 @@
                     class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
                     v-if="toolTips.content_copy"
                   >
-                    Дублировать в новые партии
+                    {{ $t("SettingEntities.table.double") }}
                   </div>
                 </div>
               </div>
@@ -105,7 +105,7 @@
                     class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
                     v-if="toolTips.categories"
                   >
-                    Привязка к категориям
+                    {{ $t("SettingEntities.table.bind") }}
                   </div>
                 </div>
               </div>
@@ -117,7 +117,7 @@
               v-if="showUpdateAllFieldsBtn"
               @click="updateAllFields()"
             >
-              Сохранить все поля
+              {{ $t("SettingEntities.table.btnSaveAll") }}
             </button>
           </th>
         </tr>
@@ -291,7 +291,7 @@
                 ])
               "
             >
-              Сохранить
+              {{ $t("global.save") }}
             </button>
           </td>
         </tr>
@@ -441,7 +441,7 @@
               ...categories.list,
             ])
           "
-          :placeholder="'Выберите категории'"
+          :placeholder="t('SettingEntities.table.titCat')"
           :rightSideSticky="true"
           :withTick="true"
           @select="(item) => categories.select(item)"
@@ -458,6 +458,7 @@ import SelectorVue from "./SelectorVue.vue";
 import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsProperties";
 import { onClickOutside } from "@vueuse/core";
 import AppMultiSelect from "./AppMultiSelect.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { SelectorVue, AppMultiSelect },
   props: { selectedTab: Object },
@@ -470,6 +471,8 @@ export default {
     watch(selectedFieldProperty, () => {
       if (selectedFieldProperty.value) get_fields();
     });
+
+    const { t } = useLangConfiguration();
 
     const toolTips = reactive({
       visibility: false,
@@ -873,6 +876,7 @@ export default {
       categories,
       modalRef,
       animationStarted,
+      t,
     };
   },
 };

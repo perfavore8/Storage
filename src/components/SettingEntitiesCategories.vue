@@ -23,7 +23,7 @@
     <div class="container">
       <div class="header">
         <div class="top">
-          <label>Категории товаров</label>
+          <label>{{ $t("SettingEntities.entCats.header") }}</label>
         </div>
         <br />
         <div class="bottom">
@@ -42,7 +42,7 @@
             <div
               class="add_teleport"
               style="z-index: 100"
-              title="Добавлние новой подкатегории"
+              :title="t('SettingEntities.entCats.titleAdd')"
             >
               <input
                 type="text"
@@ -52,7 +52,9 @@
                 @keyup.enter="add_new()"
                 @keyup.esc="reset_fields_cat_name()"
               />
-              <button class="button_teleport" @click="add_new()">ок</button>
+              <button class="button_teleport" @click="add_new()">
+                {{ $t("global.ok") }}
+              </button>
             </div>
           </teleport>
         </div>
@@ -73,7 +75,10 @@
             :class="{ darag: isDragged == idx }"
           >
             <div class="input_name">
-              <div title="Изменение названия категории" class="text_block">
+              <div
+                :title="t('SettingEntities.entCats.titleChangeName')"
+                class="text_block"
+              >
                 <input
                   type="text"
                   class="input_uderline"
@@ -89,7 +94,7 @@
                   all_old?.id?.includes(item.id)
                 "
                 class="btns"
-                title="Сохраняет название категории"
+                :title="t('SettingEntities.entCats.titleSave')"
               >
                 <div
                   class="btn"
@@ -103,7 +108,7 @@
                   all_old?.id?.includes(item.id)
                 "
                 class="btns"
-                title="Возвращает изначальное название"
+                :title="t('SettingEntities.entCats.titleChange')"
               >
                 <div class="rename btn"></div>
               </button>
@@ -111,7 +116,7 @@
                 type="text"
                 class="input input_uderline ml-2"
                 v-model="item.img_url"
-                placeholder="Url картинки"
+                :placeholder="t('SettingEntities.entCats.url')"
                 @input="() => changeImgUrl(item)"
                 v-if="isTest"
               />
@@ -141,7 +146,7 @@
                     : true)
                 "
                 class="w-10 h-10 p-1 pointer transition-all overflow-hidden duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-valencia-50 hover:text-valencia-500 rounded-lg inline-flex justify-center items-center"
-                title="Удаление категории"
+                :title="t('SettingEntities.entCats.del')"
               >
                 <span
                   class="material-icons-round absolute"
@@ -158,7 +163,9 @@
                   (el) =>
                     item.id === selected_category_id ? (target = el) : null
                 "
-                :title="target === null ? 'Добавлние новой подкатегории' : null"
+                :title="
+                  target === null ? t('SettingEntities.entCats.add') : null
+                "
               >
                 <span
                   class="material-icons-round absolute"
@@ -192,12 +199,15 @@ import ProductsCategoryRemoveModal from "@/components/ProductsCategoryRemoveModa
 import { ref, watch, computed, nextTick, reactive, onMounted } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import store from "@/store";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     ProductsCategoryRemoveModal,
     draggable: VueDraggableNext,
   },
   setup(props, context) {
+    const { t } = useLangConfiguration();
+
     const fields_cat_name = ref("");
     const selected_category_id = ref(null);
     const target = ref(null);
@@ -377,6 +387,7 @@ export default {
       closeRemoveModal,
       close,
       input,
+      t,
     };
   },
 };
