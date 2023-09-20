@@ -3,7 +3,9 @@
     <h6>{{ label }}</h6>
     <div class="steps">
       <div class="label_input" v-for="item in copyLeadsDeals" :key="item">
-        <label> Поле "{{ item?.name }}" </label>
+        <label>
+          {{ $t("Genesis.field", { name: item?.name }) }}
+        </label>
         <SelectorVue
           :options_props="copyLeadsDealsList"
           @select="(event) => optionSelectLeadsDeals(event, item?.code)"
@@ -15,9 +17,10 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive, watch } from "@vue/runtime-core";
+import { computed, onMounted, reactive, watch } from "vue";
 import SelectorVue from "./SelectorVue.vue";
 import store from "@/store";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { SelectorVue },
   props: {
@@ -26,6 +29,8 @@ export default {
     needSave: Boolean,
   },
   setup(props) {
+    const { t } = useLangConfiguration();
+
     const copyLeadsDeals = reactive([]);
 
     const copyLeadsDealsList = reactive([]);
@@ -44,15 +49,15 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].fields = arr;
-        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
-        val[1].selected = { name: "Не выбрано", value: -1 };
+        val[1].fields.unshift({ name: t("global.notSelected"), value: -1 });
+        val[1].selected = { name: t("global.notSelected"), value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
     });
 
     const fillLeadsDealsList = () => {
-      copyLeadsDealsList.push({ name: "Не выбрано", value: -1 });
+      copyLeadsDealsList.push({ name: t("global.notSelected"), value: -1 });
       copyLeadFieldsList.value.forEach((val) => {
         const optgroup = val.name;
         copyLeadsDealsList.push({ name: optgroup, value: "optgroup" });
@@ -72,7 +77,7 @@ export default {
       });
     };
     const searchSelectedInArr = (item, arr, code) => {
-      let res = { name: "Не выбрано", value: -1 };
+      let res = { name: t("global.notSelected"), value: -1 };
       arr.forEach((val) => {
         if (val[code] == item) res = val;
       });
