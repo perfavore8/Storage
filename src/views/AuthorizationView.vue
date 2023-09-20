@@ -4,7 +4,9 @@
       class="continer w-80 sm:w-96 relative overflow-hidden flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-4 md:mt-24 border-slate-200"
     >
       <img src="@/assets/logo_en_transparent.png" class="w-3/4" />
-      <h1 class="font-bold text-3xl text-slate-700 mb-5 mt-4">Авторизация</h1>
+      <h1 class="font-bold text-3xl text-slate-700 mb-5 mt-4">
+        {{ $t("Auth.header") }}
+      </h1>
       <template v-if="!showPin">
         <div class="flex items-center justify-center min-h-[142px]">
           <div class="h-min flex flex-col gap-5 justify-center relative">
@@ -18,7 +20,7 @@
                   input_error:
                     inputErrors.trySubmit && inputErrors.tgLogin && !isSignUp,
                 }"
-                :placeholder="'Логин в Telegram (login)'"
+                :placeholder="t('Auth.tgPh')"
                 :disabled="isSignUp || showRestorePassword"
               />
               <div class="relative">
@@ -33,7 +35,7 @@
                       inputErrors.password &&
                       !isSignUp,
                   }"
-                  :placeholder="'Пароль от GoSklad'"
+                  :placeholder="t('Auth.passwordPh')"
                   :disabled="isSignUp || showRestorePassword"
                 />
                 <input
@@ -94,7 +96,7 @@
                       inputErrors.password &&
                       !isSignUp,
                   }"
-                  :placeholder="'Пароль от GoSklad'"
+                  :placeholder="t('Auth.passwordPh')"
                   :disabled="isSignUp || showRestorePassword"
                 />
                 <input
@@ -151,7 +153,7 @@
                       inputErrors.password &&
                       !isSignUp,
                   }"
-                  :placeholder="'Пароль от GoSklad'"
+                  :placeholder="t('Auth.passwordPh')"
                   :disabled="isSignUp || showRestorePassword"
                 />
                 <input
@@ -183,14 +185,14 @@
                 @click="toggleRestorePassword()"
                 :disabled="isSignUp || showRestorePassword"
               >
-                Восстановить пароль
+                {{ $t("Auth.restore") }}
               </a>
               <transition name="fade">
                 <small
                   v-if="isFailAuth"
                   class="text-red-700 text-sm origin-top"
                 >
-                  Неверный логин или пароль
+                  {{ $t("Auth.error") }}
                 </small>
               </transition>
             </div>
@@ -208,7 +210,7 @@
             @click="submit()"
             :disabled="isSignUp || showRestorePassword || isLocked"
           >
-            Авторизоваться
+            {{ $t("Auth.btnAuth") }}
           </button>
         </div>
         <div
@@ -218,7 +220,7 @@
           @click="!showRestorePassword ? toggleSignUp(true) : null"
         >
           <h1 class="font-bold text-3xl text-slate-700 mb-5">
-            {{ showRestorePassword ? "Сброс пароля" : "Регистрация" }}
+            {{ showRestorePassword ? $t("Auth.drop") : $t("Auth.reg") }}
           </h1>
           <div class="flex items-center justify-center min-h-[142px]">
             <div class="h-min flex flex-col gap-5 justify-center relative">
@@ -232,7 +234,7 @@
                   input_error:
                     inputErrors.trySubmit && inputErrors.name && isSignUp,
                 }"
-                :placeholder="'Имя'"
+                :placeholder="t('Auth.name')"
                 :disabled="!(isSignUp || showRestorePassword)"
               />
               <template v-if="notificationSystem.selected.value === 'telegram'">
@@ -293,7 +295,7 @@
                     v-if="isFailAuth"
                     class="text-red-700 text-sm origin-top"
                   >
-                    Что-то пошло не так...
+                    {{ $t("global.somethingWrong") }}
                   </small>
                 </transition>
               </div>
@@ -310,7 +312,7 @@
               @click="submit()"
               :disabled="!(isSignUp || showRestorePassword) || isLocked"
             >
-              Отправить
+              {{ $t("global.send") }}
             </button>
           </div>
           <div class="flex justify-center w-full">
@@ -330,7 +332,7 @@
       </template>
       <template v-else>
         <span>
-          Отправили код на :<br />
+          {{ $t("Auth.sendCode") }}<br />
           {{
             notificationSystem.selected.value === "email"
               ? form.email
@@ -351,7 +353,7 @@
           >
             <transition name="fade">
               <small v-if="isFailAuth" class="text-red-700 text-sm origin-top">
-                Что-то пошло не так...
+                {{ $t("global.somethingWrong") }}
               </small>
             </transition>
           </div>
@@ -360,7 +362,7 @@
           class="btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
           @click="togglePin(false)"
         >
-          Назад
+          {{ $t("global.back") }}
         </button>
       </template>
     </div>
@@ -379,6 +381,7 @@ import { useRedirectToAuth } from "@/composables/BaseURL";
 import { useValidate } from "@/composables/validate";
 import { useNotification } from "@/composables/notification";
 import { useLockBtn } from "@/composables/lockBtn";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 
 export default {
   components: { SelectorVue, AuthBtnsGroup },
@@ -387,6 +390,7 @@ export default {
     const { addNotification } = useNotification();
     const [showCurrentPassword, toggleCurrentPassword] = useToggle(false);
     const { isLocked, lockBtn } = useLockBtn();
+    const { t } = useLangConfiguration();
 
     checkPath();
 
@@ -503,20 +507,24 @@ export default {
             addNotification(
               1,
               "Сброс пароля",
-              "Мы выслали вам новый пароль на: " +
-                (notificationSystem.selected.value === "email"
-                  ? form.email
-                  : form.phone)
+              t("Auth.notificationTextPassword", {
+                source:
+                  notificationSystem.selected.value === "email"
+                    ? form.email
+                    : form.phone,
+              })
             );
             return;
           } else if (res.success && !phoneCode.value) {
             addNotification(
               0,
               "Сброс пароля",
-              "Мы выслали вам код подтверждения на: " +
-                (notificationSystem.selected.value === "email"
-                  ? form.email
-                  : form.phone)
+              t("Auth.notificationTextCode", {
+                source:
+                  notificationSystem.selected.value === "email"
+                    ? form.email
+                    : form.phone,
+              })
             );
             return;
           }
@@ -535,10 +543,12 @@ export default {
             addNotification(
               1,
               "Регистрация",
-              "Вы зарегистрированы смотрите пароль на: " +
-                (notificationSystem.selected.value === "email"
-                  ? form.email
-                  : form.phone)
+              t("Auth.notificationTextSuccess", {
+                source:
+                  notificationSystem.selected.value === "email"
+                    ? form.email
+                    : form.phone,
+              })
             );
             closeSignUp();
           }
@@ -633,7 +643,7 @@ export default {
             addNotification(
               3,
               "Сброс пароля",
-              "Вы использовали слишком много попыток ввода кода"
+              t("Auth.notificationTextTryCodeFail")
             );
           }
           countTryPhoneCode.value += 1;
@@ -696,6 +706,7 @@ export default {
       isLocked,
       showCurrentPassword,
       toggleCurrentPassword,
+      t,
     };
   },
 };
