@@ -10,7 +10,7 @@
           :class="{ btn_grey: selectedTab == 1 }"
           @click="selectedTab = 1"
         >
-          Настройки Интеграции с 1С-Генезис
+          {{ $t("Genezis.btnSet") }}
         </button>
         <button
           class="btn"
@@ -18,7 +18,7 @@
           v-if="account?.config?.g_enabled && account?.g_url"
           @click="selectedTab = 2"
         >
-          Настройки «Генезис: 1С интеграция»
+          {{ $t("Genezis.btnSet2") }}
         </button>
       </div>
     </div>
@@ -26,9 +26,9 @@
       <div v-if="selectedTab == 1">
         <div class="autorization" v-if="account?.config?.g_enabled">
           <div class="row">
-            Genezis активирован.
+            {{ $t("Genezis.gActive") }}
             <button class="btn btn_yellow" @click="unAutorization()">
-              Выключить
+              {{ $t("Genezis.disable") }}
             </button>
           </div>
           <template v-if="false">
@@ -43,9 +43,9 @@
           </template>
         </div>
         <div class="autorization" v-else>
-          Genezis не активирован.
+          {{ $t("Genezis.dDisable") }}
           <button class="btn btn_yellow" @click="autorization()">
-            Включить
+            {{ $t("Genezis.active") }}
           </button>
         </div>
       </div>
@@ -67,6 +67,10 @@ import AppHeader from "@/components/AppHeader.vue";
 import GenezisSettings from "@/components/GenezisSettings.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   name: "InstructionsView",
   components: { AppHeader, GenezisSettings, BtnsSaveClose },
@@ -76,45 +80,45 @@ export default {
       needSave: false,
       genezisSettingsData: [
         {
-          label: "Привязка полей компании",
+          label: t("Genezis.fields.comp"),
           leadsDeals: [
             {
-              name: "Название",
+              name: t("Genezis.fields.comp.compName"),
               code: "g_company_field_name",
             },
             {
-              name: "Инн",
+              name: t("Genezis.fields.comp.compInn"),
               code: "g_company_field_inn",
             },
             {
-              name: "КПП",
+              name: t("Genezis.fields.comp.compKpp"),
               code: "g_company_field_kpp",
             },
 
             {
-              name: "ОГРН",
+              name: t("Genezis.fields.comp.compOgrn"),
               code: "g_company_field_ogrn",
             },
           ],
         },
         {
-          label: "Привязка полей аккаунта",
+          label: t("Genezis.fields.acc"),
           leadsDeals: [
             {
-              name: "Название",
+              name: t("Genezis.fields.comp.accName"),
               code: "g_company_field_account_name",
             },
             {
-              name: "Корреспондентский счет",
+              name: t("Genezis.fields.comp.accSch"),
               code: "g_company_field_account_correspondent",
             },
             {
-              name: "Бик банка",
+              name: t("Genezis.fields.comp.accBik"),
               code: "g_company_field_account_bic",
             },
 
             {
-              name: "Расчетный счет",
+              name: t("Genezis.fields.comp.accRas"),
               code: "g_company_field_account_settlement",
             },
           ],
