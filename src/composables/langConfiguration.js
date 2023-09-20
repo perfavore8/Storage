@@ -3,6 +3,7 @@ import { reactive } from "vue";
 import { useSaveLS } from "./saveLS";
 import { createI18n } from "vue-i18n";
 import { messages } from "@/composables/messages";
+import { ApiReqFunc } from "./ApiReqFunc";
 
 const { saveLSParam, getSavedLSParam } = useSaveLS();
 const langConfiguration = reactive({
@@ -24,6 +25,11 @@ const langConfiguration = reactive({
       return;
     }
     this.select(item, true);
+    ApiReqFunc({
+      method: "post",
+      url: "account/user/update",
+      data: { lang: this.selected.value },
+    });
   },
   dropToDefault: function () {
     const item = this.list.find((el) => el.default);

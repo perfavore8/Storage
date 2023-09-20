@@ -30,7 +30,7 @@
             </h2>
             <small class="text-slate-700">
               (Сделок: {{ column?.res?.meta?.total }} |
-              {{ column?.res?.meta?.sum }} ₽)
+              {{ formatNumber(column?.res?.meta?.sum) }} ₽)
             </small>
           </div>
           <draggable
