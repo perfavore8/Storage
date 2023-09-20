@@ -116,6 +116,10 @@ export function usePreparationOrders() {
     } else if (field.type === 12) {
       const cat = categories.value.find((el) => el.id === value);
       if (cat) intermediate = cat.name;
+    } else if (field.type === 11) {
+      intermediate = formatNumber(
+        Number(typeof value === "object" ? value.cost : value)
+      );
     }
 
     return intermediate;
