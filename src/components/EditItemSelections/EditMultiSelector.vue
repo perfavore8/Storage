@@ -60,7 +60,7 @@ export default {
     change_value() {
       nextTick(() => {
         this.copy_selected_option = [];
-        const split_selected_option = this.selected_option?.split(", ");
+        const split_selected_option = this.selected_option;
 
         this.item.data?.forEach((val, idx) => {
           this.copy_selected_option.push({
@@ -77,7 +77,6 @@ export default {
       this.copy_selected_option.forEach((val) => {
         if (val.selected) a.push(val.name);
       });
-      a = a.join(", ");
       this.$emit("change_value", a, this.idx);
     },
   },
