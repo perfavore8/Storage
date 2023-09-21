@@ -3,7 +3,7 @@
     <p
       class="my-2 md:my-4 text-sm md:text-base text-slate-500 dark:text-slate-300 text-left"
     >
-      Найдено: {{ total }}
+      {{ $t("Archive.count", { count: total }) }}
     </p>
     <table class="table" ref="table">
       <thead>
@@ -74,7 +74,9 @@
         </template>
       </tbody>
     </table>
-    <label v-if="documents.length == 0" class="text"> Ничего не найдено </label>
+    <label v-if="documents.length == 0" class="text">
+      {{ $t("global.nothingFound") }}
+    </label>
   </div>
   <grid-bottom
     :page="page"

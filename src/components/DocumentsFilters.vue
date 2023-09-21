@@ -43,9 +43,11 @@
           </div>
         </div>
         <div class="btns">
-          <button class="btn btn_blue" @click="apply()">Применить</button>
+          <button class="btn btn_blue" @click="apply()">
+            {{ $t("global.apply2") }}
+          </button>
           <button class="btn btn_grey" @click="clearAllFields()">
-            Очистить
+            {{ $t("global.clear") }}
           </button>
         </div>
       </div>

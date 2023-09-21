@@ -18,6 +18,8 @@ export const messages = {
       nothingFound: "Nothing found",
       error: "Error",
       all: "All",
+      clear: "Clear",
+      apply2: "Apply",
     },
     message: {
       OrdersInPipeline: "There are orders in this pipeline.",
@@ -544,6 +546,36 @@ export const messages = {
           "Auto-synchronization of the list of products in the order",
       },
     },
+    DocumentsTitles: {
+      status_id: {
+        name: "Status",
+        placeholder: "Document status",
+      },
+      template_name: {
+        name: "Document name",
+        placeholder: "Document name",
+      },
+      lead_name: {
+        name: "Order name",
+        placeholder: "Order name",
+      },
+      company_name: {
+        name: "Company",
+        placeholder: "Company",
+      },
+      contact_name: {
+        name: "Contact",
+        placeholder: "Contact",
+      },
+      user_name: {
+        name: "Who formed",
+        placeholder: "Who formed",
+      },
+      created_at: {
+        name: "When formed",
+        placeholder: "When formed",
+      },
+    },
   },
   ru: {
     global: {
@@ -564,6 +596,8 @@ export const messages = {
       nothingFound: "Ничего не найдено",
       error: "Ошибка",
       all: "Все",
+      clear: "Очистить",
+      apply2: "Применить",
     },
     message: {
       OrdersInPipeline: "В этой воронке остались заказы",
@@ -1088,6 +1122,36 @@ export const messages = {
         amoGo: "amoCRM -> GoСклад",
         autoSync: "Автосинхронизация товаров",
         autoSyncOrder: "Автосинхронизация списка товаров в сделке",
+      },
+    },
+    DocumentsTitles: {
+      status_id: {
+        name: "Статус",
+        placeholder: "Статус документа",
+      },
+      template_name: {
+        name: "Название документа",
+        placeholder: "Название документа",
+      },
+      lead_name: {
+        name: "Название заказа",
+        placeholder: "Название заказа",
+      },
+      company_name: {
+        name: "Компания",
+        placeholder: "Компания",
+      },
+      contact_name: {
+        name: "Контакт",
+        placeholder: "Контакт",
+      },
+      user_name: {
+        name: "Кто сформировал",
+        placeholder: "Кто сформировал",
+      },
+      created_at: {
+        name: "Когда сформировал",
+        placeholder: "Когда сформировал",
       },
     },
   },

@@ -1,11 +1,14 @@
 import store from "@/store";
 import { computed, reactive } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
+
+const { t } = useLangConfiguration();
 
 const documents = reactive({
   titles: [
     {
-      name: "Статус",
-      placeholder: "Статус документа",
+      name: t("DocumentsTitles.status_id.name"),
+      placeholder: t("DocumentsTitles.status_id.placeholder"),
       code: "status_id",
       type: "AppInputSelect",
       minLength: 0,
@@ -21,8 +24,8 @@ const documents = reactive({
       visibleIds: [148, 1],
     },
     {
-      name: "Название документа",
-      placeholder: "Название документа",
+      name: t("DocumentsTitles.template_name.name"),
+      placeholder: t("DocumentsTitles.template_name.placeholder"),
       code: "template_name",
       isDocumentLink: true,
       type: "AppInputSelect",
@@ -37,8 +40,8 @@ const documents = reactive({
       list: [],
     },
     {
-      name: "Название заказа",
-      placeholder: "Название заказа",
+      name: t("DocumentsTitles.lead_name.name"),
+      placeholder: t("DocumentsTitles.lead_name.placeholder"),
       code: "lead_name",
       type: "AppInputSelect",
       minLength: 0,
@@ -52,8 +55,8 @@ const documents = reactive({
       list: [],
     },
     {
-      name: "Компания",
-      placeholder: "Компания",
+      name: t("DocumentsTitles.company_name.name"),
+      placeholder: t("DocumentsTitles.company_name.placeholder"),
       code: "company_name",
       type: "AppInputSelect",
       minLength: 3,
@@ -67,8 +70,8 @@ const documents = reactive({
       list: [],
     },
     {
-      name: "Контакт",
-      placeholder: "Контакт",
+      name: t("DocumentsTitles.contact_name.name"),
+      placeholder: t("DocumentsTitles.contact_name.placeholder"),
       code: "contact_name",
       type: "AppInputSelect",
       minLength: 3,
@@ -82,8 +85,8 @@ const documents = reactive({
       list: [],
     },
     {
-      name: "Кто сформировал",
-      placeholder: "Кто сформировал",
+      name: t("DocumentsTitles.user_name.name"),
+      placeholder: t("DocumentsTitles.user_name.placeholder"),
       code: "user_name",
       type: "AppInputSelect",
       minLength: 0,
@@ -97,8 +100,8 @@ const documents = reactive({
       list: [],
     },
     {
-      name: "Когда сформировал",
-      placeholder: "Когда сформировал",
+      name: t("DocumentsTitles.created_at.name"),
+      placeholder: t("DocumentsTitles.created_at.placeholder"),
       code: "created_at",
       type: "AppDateRange",
       minLength: 0,
