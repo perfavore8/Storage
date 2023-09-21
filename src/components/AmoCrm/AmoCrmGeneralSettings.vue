@@ -11,11 +11,9 @@
       </div>
       <div class="content space-y-12">
         <div class="border-b border-gray-900/10 pb-12">
-          <h6 style="margin-top: 0">Этапы резервирования товаров со склада</h6>
+          <h6 style="margin-top: 0">{{ $t("Amo.GenSett.stepResH") }}</h6>
           <div class="small">
-            Внимание! В рамках одной воронки этап резерирования должен быть
-            раньше этапа списания. Если этап презервирования не выбран, то
-            резерирование будет происходить в момент добавления товара в сделку.
+            {{ $t("Amo.GenSett.stepResT") }}
           </div>
           <div class="mt-4">
             <input
@@ -25,7 +23,7 @@
               v-model="lock_reserved_products_edit"
             />
             <label for="lock_reserved_products_edit">
-              Блокировать изменения товаров в этапах резервирования
+              {{ $t("Amo.GenSett.block") }}
             </label>
           </div>
           <div class="steps">
@@ -34,16 +32,20 @@
               v-for="item in copyPipelinesListV2"
               :key="item"
             >
-              <label> Воронка "{{ item?.name }}" </label>
+              <label>{{
+                $t("Amo.GenSett.hopper", { name: item?.name })
+              }}</label>
               <AppMultiSelect
-                :list="[{ name: 'Все', value: 'all' }, ...item?.statuses]"
+                :list="[
+                  { name: t('global.all'), value: 'all' },
+                  ...item?.statuses,
+                ]"
                 :placeholder="
-                  item?.statuses.filter((val) => val.selected).length
-                    ? 'Выбрано: ' +
-                      item?.statuses.filter(
-                        (val) => val.selected && val.value !== 'all'
-                      ).length
-                    : 'Не выбрано'
+                  t('EditStuff.stepsRes.placeholder', {
+                    count: item?.statuses.filter(
+                      (val) => val.selected && val.value !== 'all'
+                    ).length,
+                  })
                 "
                 @select="
                   (event) =>
@@ -54,10 +56,9 @@
           </div>
         </div>
         <div class="border-b border-gray-900/10 pb-12">
-          <h6>Этапы списания товаров со склада</h6>
+          <h6>{{ $t("Amo.GenSett.stepWOH") }}</h6>
           <div class="small">
-            Внимание! В рамках одной воронки этап списания должен быть позже
-            этапа резерирования.
+            {{ $t("Amo.GenSett.stepWOT") }}
           </div>
           <div class="steps">
             <div
@@ -65,10 +66,12 @@
               v-for="item in copyPipelinesListV2"
               :key="item"
             >
-              <label> Воронка "{{ item?.name }}" </label>
+              <label>
+                {{ $t("Amo.GenSett.hopper", { name: item?.name }) }}
+              </label>
               <SelectorVue
                 :options_props="[
-                  { name: 'Не выбрано', value: -1 },
+                  { name: t('global.notSelected'), value: -1 },
                   ...item?.statuses,
                 ]"
                 @select="
@@ -80,10 +83,10 @@
           </div>
         </div>
         <div class="border-b border-gray-900/10 pb-12">
-          <h6>Привязка полей сделок</h6>
+          <h6>{{ $t("Amo.GenSett.linkFH") }}</h6>
           <div class="steps">
             <div class="label_input">
-              <label> Не заполнять бюджет сделки </label>
+              <label>{{ $t("Amo.GenSett.linkFBudjet") }}</label>
               <input
                 type="checkbox"
                 class="checkbox"
@@ -98,8 +101,8 @@
               :key="item"
             >
               <label>
-                Поле "{{ item?.name }}"
-                <span v-if="idx >= 2">(число)</span>
+                {{ $t("Amo.GenSett.field", { name: item?.name }) }}
+                <span v-if="idx >= 2">{{ $t("Amo.GenSett.number") }}</span>
               </label>
               <SelectorVue
                 :options_props="leadsDealsList"
@@ -112,7 +115,7 @@
       </div>
       <div class="footer">
         <btns-save-close @close="close" @save="save" :show_close="false">
-          <template v-slot:close>Назад</template>
+          <template v-slot:close>{{ $t("global.back") }}</template>
         </btns-save-close>
       </div>
     </div>
@@ -122,11 +125,18 @@
 import SelectorVue from "@/components/SelectorVue";
 import AppMultiSelect from "@/components/AppMultiSelect.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     SelectorVue,
     BtnsSaveClose,
     AppMultiSelect,
+  },
+  setup() {
+    return { t };
   },
   data() {
     return {
@@ -138,36 +148,36 @@ export default {
       copyLeadFieldsList: [],
       leadsDeals: [
         {
-          name: "Товары",
+          name: t("Amo.GenSett.leadsDeals.field_products"),
           code: "field_products",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
         {
-          name: "Поле для поиска товаров",
+          name: t("Amo.GenSett.leadsDeals.field_search_products"),
           code: "field_search_products",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
         {
-          name: "Себестоимость",
+          name: t("Amo.GenSett.leadsDeals.field_cost_price"),
           code: "field_cost_price",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
         {
-          name: "Прибыль",
+          name: t("Amo.GenSett.leadsDeals.field_profit"),
           code: "field_profit",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
 
         {
-          name: "Общий бюджет",
+          name: t("Amo.GenSett.leadsDeals.field_budget"),
           code: "field_budget",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
 
         {
-          name: "НДС сумма",
+          name: t("Amo.GenSett.leadsDeals.field_nds_sum"),
           code: "field_nds_sum",
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
         },
       ],
       leadsDealsList: [],
@@ -209,7 +219,7 @@ export default {
           })
         );
         val[1].statuses = [...arr];
-        val[1].selectedWriteOff = { name: "Не выбрано", value: -1 };
+        val[1].selectedWriteOff = { name: t("global.notSelected"), value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
@@ -222,8 +232,8 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].fields = arr;
-        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
-        val[1].selected = { name: "Не выбрано", value: -1 };
+        val[1].fields.unshift({ name: t("global.notSelected"), value: -1 });
+        val[1].selected = { name: t("global.notSelected"), value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
@@ -323,7 +333,7 @@ export default {
       }
     },
     searchSelectedInArr(item, arr, code) {
-      let res = { name: "Не выбрано", value: -1 };
+      let res = { name: t("global.notSelected"), value: -1 };
       arr.forEach((val) => {
         if (val[code] == item) res = val;
       });
@@ -356,7 +366,7 @@ export default {
     },
 
     fillLeadsDealsList() {
-      this.leadsDealsList.push({ name: "Не выбрано", value: -1 });
+      this.leadsDealsList.push({ name: t("global.notSelected"), value: -1 });
       this.copyLeadFieldsList.forEach((val) => {
         const optgroup = val.name;
         this.leadsDealsList.push({ name: optgroup, value: "optgroup" });

@@ -18,7 +18,7 @@
           <div class="list">
             <div class="label_input">
               <label>
-                Выберите список товаров из amoCRM для синхронизации
+                {{ $t("Amo.SyncSett.header") }}
               </label>
               <SelectorVue
                 :options_props="copyProductLists"
@@ -28,13 +28,11 @@
             </div>
             <div class="label_input">
               <label>
-                Скрытие штатной вкладки amoCRM с товарами. В штатной вкладке с
-                товарами так же можно прикреплять товары к сделкам, но
-                количество товара на GoСклад учитываться не будет.
+                {{ $t("Amo.SyncSett.hide") }}
               </label>
               <SelectorVue
                 :options_props="[
-                  { name: 'Не выбрано', value: '' },
+                  { name: t('global.notSelected'), value: '' },
                   ...copyLeadFieldGroupsList,
                 ]"
                 @select="
@@ -97,19 +95,17 @@
           </div>
           <div class="fields">
             <h6>
-              Настройка соответствий полей amoCRM-товаров и свойств товаров на
-              GoСклад
+              {{ $t("Amo.SyncSett.corrH") }}
             </h6>
             <p class="small">
-              Указание полей сравнения нужно для того, чтобы по этим полям
-              искать дубли товаров в процессе синхронизации списков товаров
-              amoCRM и GoСклад, которые были добавлены вручную. Если не будет
-              указано ни одного поля, товары будут добавляться без поиска дублей
+              {{ $t("Amo.SyncSett.corrT") }}
             </p>
             <div class="row">
-              <span>Имя поля amoCRM-товара</span>
-              <span>Имя поля товара на GoСклад</span>
-              <span class="center">Сравнение</span>
+              <span>{{ $t("Amo.SyncSett.amoName") }}</span>
+              <span>{{ $t("Amo.SyncSett.goName") }}</span>
+              <span class="center">
+                {{ $t("Amo.SyncSett.comparison.header") }}
+              </span>
             </div>
             <div
               class="row"
@@ -140,10 +136,10 @@
       </div>
       <div class="footer">
         <btns-save-close @close="close" @save="save" :show_close="false">
-          <template v-slot:close>Назад</template>
+          <template v-slot:close>{{ $t("global.back") }}</template>
           <template v-slot:other_btns v-if="false">
             <button class="btn btn_dark_blue" @click="updateFields()">
-              Обновить поля
+              {{ $t("Amo.SyncSett.update") }}
             </button>
           </template>
         </btns-save-close>
@@ -154,10 +150,17 @@
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import SelectorVue from "@/components/SelectorVue.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     BtnsSaveClose,
     SelectorVue,
+  },
+  setup() {
+    return { t };
   },
   data() {
     return {
@@ -171,34 +174,37 @@ export default {
       },
       copyLeadFieldGroupsList: [],
       copyProductLists: [],
-      selectedAmoProductList: { name: "Не выбрано", value: -1 },
+      selectedAmoProductList: { name: t("global.notSelected"), value: -1 },
       amoLeadsGroupHide: [],
-      selectedAmoLeadsGroupHide: { name: "Не выбрано", value: "" },
+      selectedAmoLeadsGroupHide: { name: t("global.notSelected"), value: "" },
       fieldsProductComparison: [
-        { name: "по названию", value: 1 },
-        { name: "по названию и артикулу", value: 2 },
-        { name: "по названию, артикулу и партии", value: 3 },
+        { name: t("Amo.SyncSett.comparison.name"), value: 1 },
+        { name: t("Amo.SyncSett.comparison.art"), value: 2 },
+        { name: t("Amo.SyncSett.comparison.batch"), value: 3 },
       ],
-      productComparisonSelectedField: { name: "по названию", value: 1 },
+      productComparisonSelectedField: {
+        name: t("Amo.SyncSett.comparison.name"),
+        value: 1,
+      },
       autosyncProducts: [
         {
           id: 1,
           productValue: false,
           listProductValue: false,
-          label: "GoСклад -> amoCRM",
+          label: t("Amo.SyncSett.goAmo"),
         },
         {
           id: 2,
           productValue: false,
           listProductValue: false,
-          label: "amoCRM -> GoСклад",
+          label: t("Amo.SyncSett.amoGo"),
         },
       ],
       autosyncValues: [
-        { value: "productValue", label: "Автосинхронизация товаров" },
+        { value: "productValue", label: t("Amo.SyncSett.autoSync") },
         {
           value: "listProductValue",
-          label: "Автосинхронизация списка товаров в сделке",
+          label: t("Amo.SyncSett.autoSyncOrder"),
           test: { value: false, id: 2 },
         },
       ],
@@ -241,8 +247,8 @@ export default {
           arr.push({ name: stat[1], value: stat[0] })
         );
         val[1].fields = arr;
-        val[1].fields.unshift({ name: "Не выбрано", value: -1 });
-        val[1].selected = { name: "Не выбрано", value: -1 };
+        val[1].fields.unshift({ name: t("global.notSelected"), value: -1 });
+        val[1].selected = { name: t("global.notSelected"), value: -1 };
         list.push({ value: val[0], ...val[1] });
       });
       return list;
@@ -329,7 +335,7 @@ export default {
       const fields = list.fields;
       const newFields = [];
       Object.entries(fields).forEach((val) => {
-        const list = [{ name: "Не выбрано", value: -1 }];
+        const list = [{ name: t("global.notSelected"), value: -1 }];
         Object.entries(val[1]).forEach((field) =>
           list.push({ name: field[1], value: field[0] })
         );
@@ -345,7 +351,7 @@ export default {
           type: val[1].type,
           fields: newFields[val[1].type],
           field: val[0],
-          selected: { name: "Не выбрано", value: -1 },
+          selected: { name: t("global.notSelected"), value: -1 },
           disabled: 0,
           product_comparison: false,
         })
@@ -353,7 +359,7 @@ export default {
       this.copySyncFields.amoFields = newAmoFields;
     },
     fillCopyProductLists() {
-      const list = [{ name: "Не выбрано", value: -1 }];
+      const list = [{ name: t("global.notSelected"), value: -1 }];
       Object.entries(this.productLists).forEach((val) =>
         list.push({ name: val[1], value: val[0] })
       );
@@ -377,7 +383,7 @@ export default {
     },
 
     fillAmoLeadsGroupHide() {
-      this.amoLeadsGroupHide.push({ name: "Не выбрано", value: "" });
+      this.amoLeadsGroupHide.push({ name: t("global.notSelected"), value: "" });
       this.copyLeadFieldsList.forEach((val) => {
         this.amoLeadsGroupHide.push({ name: val.name, value: val.value });
       });

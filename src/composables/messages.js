@@ -17,6 +17,7 @@ export const messages = {
       ok: "ok",
       nothingFound: "Nothing found",
       error: "Error",
+      all: "All",
     },
     message: {
       OrdersInPipeline: "There are orders in this pipeline.",
@@ -490,6 +491,59 @@ export const messages = {
       notificationTextSuccess: "You are registered, see the password on: ",
       notificationTextTryCodeFail: "You have used too many code entry attempts",
     },
+    Amo: {
+      header: "amoCRM Integration Settings",
+      office: "amoCRM cabinet:",
+      tabs: {
+        general: "General Settings",
+        sync: "Product synchronization settings",
+        docs: "Document settings",
+      },
+      GenSett: {
+        stepResH: "Stages of products reservation from the warehouse",
+        stepResT:
+          "Attention! Within one pipeline, the reserving stage should be before the write-off stage. If the reservation stage is not selected, then the reservation will take place at the moment the item is added to the deal.",
+        block: "Block product changes in reservation stages",
+        hopper: 'Pipeline "{name}"',
+        stepWOH: "Stages of write-off of goods from the warehouse",
+        stepWOT:
+          "Attention! Within one pipeline, the write-off stage must be later than the reservation stage.",
+        linkFH: "Deal field binding",
+        linkFBudjet: "Do not complete the deal budget",
+        field: 'Field  "{name}"',
+        number: "(number)",
+        leadsDeals: {
+          field_products: "Products",
+          field_search_products: "Product Search field",
+          field_cost_price: "Cost price",
+          field_profit: "Profit",
+          field_budget: "Total budget",
+          field_nds_sum: "VAT amount",
+        },
+      },
+      SyncSett: {
+        header: "Select a list of products from amoCRM to sync",
+        hide: "Hidden regular amoCRM tabs with products. In the standard tab with goods, you can also attach goods to orders, but the quantity of goods on the GoSklad will not be taken into account.",
+        corrH:
+          "Setting up the correspondences of the fields of amoCRM products and the properties of products on the GoSklad",
+        corrT:
+          "Specifying the comparison fields is necessary in order to search for duplicates of goods using these fields in the process of synchronizing the amoCRM and GoSklad lists that were added manually. If no fields are specified, products will be added without searching for duplicates",
+        amoName: "Name of the amoCRM product field",
+        goName: "Name of the product field on GoSklad",
+        comparison: {
+          header: "Comparison",
+          name: "by name",
+          art: "by name and article",
+          batch: "by name, article and batch",
+        },
+        update: "Update fields",
+        goAmo: "GoSklad -> amoCRM",
+        amoGo: "amoCRM -> GoSklad",
+        autoSync: "Auto-synchronization of goods",
+        autoSyncOrder:
+          "Auto-synchronization of the list of products in the order",
+      },
+    },
   },
   ru: {
     global: {
@@ -509,6 +563,7 @@ export const messages = {
       ok: "ок",
       nothingFound: "Ничего не найдено",
       error: "Ошибка",
+      all: "Все",
     },
     message: {
       OrdersInPipeline: "В этой воронке остались заказы",
@@ -982,6 +1037,58 @@ export const messages = {
       notificationTextSuccess: "Вы зарегистрированы смотрите пароль на: ",
       notificationTextTryCodeFail:
         "Вы использовали слишком много попыток ввода кода",
+    },
+    Amo: {
+      header: "Настройки интеграции с amoCRM",
+      office: "Кабинет amoCRM:",
+      tabs: {
+        general: "Общие настройки",
+        sync: "Настройки синхронизации товаров",
+        docs: "Настройки документов",
+      },
+      GenSett: {
+        stepResH: "Этапы резервирования товаров со склада",
+        stepResT:
+          "Внимание! В рамках одной воронки этап резерирования должен быть раньше этапа списания. Если этап презервирования не выбран, то резерирование будет происходить в момент добавления товара в сделку.",
+        block: "Блокировать изменения товаров в этапах резервирования",
+        hopper: 'Воронка "{name}"',
+        stepWOH: "Этапы списания товаров со склада",
+        stepWOT:
+          "Внимание! В рамках одной воронки этап списания должен быть позже этапа резерирования.",
+        linkFH: "Привязка полей сделок",
+        linkFBudjet: "Не заполнять бюджет сделки",
+        field: 'Поле "{name}"',
+        number: "(число)",
+        leadsDeals: {
+          field_products: "Товары",
+          field_search_products: "Поле для поиска товаров",
+          field_cost_price: "Себестоимость",
+          field_profit: "Прибыль",
+          field_budget: "Общий бюджет",
+          field_nds_sum: "НДС сумма",
+        },
+      },
+      SyncSett: {
+        header: "Выберите список товаров из amoCRM для синхронизации",
+        hide: "Скрытие штатной вкладки amoCRM с товарами. В штатной вкладке с товарами так же можно прикреплять товары к сделкам, но количество товара на GoСклад учитываться не будет.",
+        corrH:
+          "Настройка соответствий полей amoCRM-товаров и свойств товаров на GoСклад",
+        corrT:
+          "Указание полей сравнения нужно для того, чтобы по этим полям искать дубли товаров в процессе синхронизации списков товаров amoCRM и GoСклад, которые были добавлены вручную. Если не будет указано ни одного поля, товары будут добавляться без поиска дублей",
+        amoName: "Имя поля amoCRM-товара",
+        goName: "Имя поля товара на GoСклад",
+        comparison: {
+          header: "Сравнение",
+          name: "по названию",
+          art: "по названию и артикулу",
+          batch: "по названию, артикулу и партии",
+        },
+        update: "Обновить поля",
+        goAmo: "GoСклад -> amoCRM",
+        amoGo: "amoCRM -> GoСклад",
+        autoSync: "Автосинхронизация товаров",
+        autoSyncOrder: "Автосинхронизация списка товаров в сделке",
+      },
     },
   },
 };

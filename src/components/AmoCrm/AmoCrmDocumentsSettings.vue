@@ -5,12 +5,12 @@
       <div class="content">
         <div class="binding space-y-12">
           <div>
-            <div class="header">Привязка полей документов</div>
+            <div class="header mb-2">{{ $t("DocumentSetting.templLink") }}</div>
             <div class="patterns border-b border-gray-900/10 pb-12">
               <div class="main">
                 <div class="column">
                   <div class="label_select">
-                    <label>Поле "Документы"</label>
+                    <label>{{ $t("DocumentSetting.docField") }}</label>
                     <SelectorVue
                       :options_props="leadFields.list"
                       @select="leadFields.select"
@@ -18,7 +18,7 @@
                     />
                   </div>
                   <div class="label_select">
-                    <label>Поряд имен контактов</label>
+                    <label>{{ $t("DocumentSetting.contOrder") }}</label>
                     <SelectorVue
                       :options_props="contactNameType.list"
                       @select="contactNameType.select"
@@ -30,19 +30,19 @@
             </div>
           </div>
           <div>
-            <div class="header mb-2">Хуки</div>
+            <div class="header mb-2">{{ $t("DocumentSetting.hooks") }}</div>
             <div class="main mb-4 border-b border-gray-900/10 pb-12">
               <div class="column">
-                <div class="grid grid-cols-[3fr_4fr] items-center">
-                  <label>Хук при загрузке документа в сделку</label>
+                <div class="grid grid-cols-[3fr_4fr] items-center gap-2">
+                  <label>{{ $t("DocumentSetting.hookDown") }}</label>
                   <input
                     type="text"
                     class="input inputhuk my-2"
                     v-model="hooks.download"
                   />
                 </div>
-                <div class="grid grid-cols-[3fr_4fr] items-center">
-                  <label>Хук при генерации документа в сделке</label>
+                <div class="grid grid-cols-[3fr_4fr] items-center gap-2">
+                  <label>{{ $t("DocumentSetting.hookGen") }}</label>
                   <input
                     type="text"
                     class="input inputhuk my-2"
@@ -67,14 +67,17 @@ import SelectorVue from "@/components/SelectorVue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { computed, onMounted, reactive } from "vue";
 import store from "@/store";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     SelectorVue,
     BtnsSaveClose,
   },
   setup() {
+    const { t } = useLangConfiguration();
+
     const leadFields = reactive({
-      selected: { name: "Не выбрано", value: 1 },
+      selected: { name: t("global.notSelected"), value: 1 },
       list: [],
       itialList: computed(() => {
         const list = [];
@@ -84,8 +87,8 @@ export default {
             arr.push({ name: stat[1], value: stat[0] })
           );
           val[1].fields = arr;
-          val[1].fields.unshift({ name: "Не выбрано", value: -1 });
-          val[1].selected = { name: "Не выбрано", value: -1 };
+          val[1].fields.unshift({ name: t("global.notSelected"), value: -1 });
+          val[1].selected = { name: t("global.notSelected"), value: -1 };
           list.push({ value: val[0], ...val[1] });
         });
         return list;
@@ -94,7 +97,7 @@ export default {
         this.selected = option;
       },
       setList: function () {
-        this.list.push({ name: "Не выбрано", value: -1 });
+        this.list.push({ name: t("global.notSelected"), value: -1 });
         this.itialList.forEach((val) => {
           const optgroup = val.name;
           this.list.push({ name: optgroup, value: "optgroup" });
@@ -111,7 +114,7 @@ export default {
     });
 
     const contactNameType = reactive({
-      selected: { name: "Не выбрано", value: -1 },
+      selected: { name: t("global.notSelected"), value: -1 },
       list: [],
       select: function (option) {
         this.selected = option;
@@ -212,6 +215,7 @@ export default {
             .label_select {
               display: grid;
               grid-template-columns: 3fr 4fr;
+              gap: 8px;
               .v-select {
                 width: 50%;
               }

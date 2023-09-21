@@ -7,10 +7,10 @@
       <div class="flex flex-col items-center">
         <div class="flex flex-col items-start w-fit">
           <h1 class="text-3xl font-bold text-slate-700">
-            Настройки интеграции с amoCRM
+            {{ $t("Amo.header") }}
           </h1>
           <div class="flex gap-4" v-if="!inFrame">
-            <span>Кабинет amoCRM:</span>
+            <span>{{ $t("Amo.office") }}</span>
             <a
               :href="`https://${subdomain}.amocrm.ru/`"
               target="blank"
@@ -59,6 +59,7 @@ import AmoCrmDocumentsSettings from "@/components/AmoCrm/AmoCrmDocumentsSettings
 import { computed, reactive } from "vue";
 import store from "@/store";
 import { inFrame } from "@/composables/checkInFrame";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   name: "InstructionsView",
   components: {
@@ -69,22 +70,24 @@ export default {
     AmoCrmDocumentsSettings,
   },
   setup() {
+    const { t } = useLangConfiguration();
+
     const tabs = reactive({
       selected: {},
       list: [
         {
-          name: "Общие настройки",
+          name: t("Amo.tabs.general"),
           value: "general",
           component: "AmoCrmGeneralSettings",
           default: true,
         },
         {
-          name: "Настройки синхронизации товаров",
+          name: t("Amo.tabs.sync"),
           value: "sync",
           component: "AmoCrmSyncSettings",
         },
         {
-          name: "Настройки документов",
+          name: t("Amo.tabs.docs"),
           value: "docs",
           component: "AmoCrmDocumentsSettings",
         },
