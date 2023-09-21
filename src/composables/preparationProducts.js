@@ -33,6 +33,10 @@ export function usePreparationProducts() {
           ) {
             item.fields[field.code] = "";
           }
+          if (field.type === 6 && item.fields?.[field.code].length) {
+            const a = item.fields?.[field.code]?.join(", ");
+            item.fields[field.code] = a;
+          }
         }
         if (field.type === 7 || field.type === 8) {
           if (
