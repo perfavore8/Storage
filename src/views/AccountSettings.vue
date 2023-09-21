@@ -31,7 +31,15 @@
       </div>
     </div>
     <div class="main flex flex-col gap-8">
-      <component :is="pagination.selected.component" />
+      <component
+        :is="pagination.selected.component"
+        :ref="
+          (el) =>
+            pagination.selected.value === 'users'
+              ? (UserListTableRef = el)
+              : null
+        "
+      />
     </div>
   </div>
   <NewUser
@@ -68,9 +76,7 @@ export default {
     const { t } = useLangConfiguration();
 
     const UserListTableRef = ref(null);
-    const updateList = () => {
-      UserListTableRef.value?.setUsers();
-    };
+    const updateList = () => UserListTableRef.value?.setUsers();
 
     const pagination = reactive({
       selected: {},

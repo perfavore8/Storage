@@ -222,6 +222,7 @@ export default {
 
     const setUsers = async () => {
       const list = await store.dispatch("getUsersList");
+      users.length = 0;
       Object.assign(users, list);
       users.map(
         (user) =>
@@ -275,6 +276,7 @@ export default {
       currentSetSettingsInFolder,
       isTest,
       t,
+      setUsers,
     };
   },
 };
