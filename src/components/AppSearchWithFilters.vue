@@ -7,7 +7,7 @@
     >
       <AppInput
         v-model:inputValue="searchValue"
-        :placeholder="'Поиск и фильтр'"
+        :placeholder="t('orders.ser')"
       />
       <span
         class="material-icons-round absolute right-3 -translate-y-1/2 top-1/2 text-shark-500 cursor-pointer"
@@ -103,6 +103,7 @@ import { useToggle, onClickOutside } from "@vueuse/core";
 import { useSearchFilters } from "@/composables/searchFilters";
 import { computed, ref } from "vue";
 import { useClientsTabs } from "@/composables/clientsTabs";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     AppInput,
@@ -113,6 +114,7 @@ export default {
   props: { setOfInstructions: String },
   emits: { emitParams: null },
   setup(props, context) {
+    const { t } = useLangConfiguration();
     const { tabs } = useClientsTabs();
     const selectedTabComp = computed(() => tabs.selected);
 
@@ -177,6 +179,7 @@ export default {
       reset,
       Config,
       splitArrays,
+      t,
     };
   },
 };

@@ -4,7 +4,7 @@
       <div class="item">
         <selector-vue
           :options_props="filteredFiltersValue"
-          :selected_option="{ name: 'Добавить фильтр', value: -1 }"
+          :selected_option="{ name: t('widjet.addF'), value: -1 }"
           @select="add_filter"
         />
       </div>
@@ -70,8 +70,12 @@
       </template>
     </div>
     <div class="accept_btn">
-      <button @click="confirmFilters()" class="btn2 sls_btn">Применить</button>
-      <button @click="clearFilters()" class="btn1 sls_btn">Очистить</button>
+      <button @click="confirmFilters()" class="btn2 sls_btn">
+        {{ $t("global.apply2") }}
+      </button>
+      <button @click="clearFilters()" class="btn1 sls_btn">
+        {{ $t("global.clear") }}
+      </button>
     </div>
   </div>
 </template>
@@ -83,6 +87,10 @@ import FilterList from "../components/FiltersSelections/FilterList.vue";
 import FilterDate from "../components/FiltersSelections/FilterDate.vue";
 import FilterFlag from "../components/FiltersSelections/FilterFlag.vue";
 import SelectorVue from "./SelectorVue.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   props: {
     fields: {
@@ -110,6 +118,9 @@ export default {
     FilterDate,
     FilterFlag,
     SelectorVue,
+  },
+  setup() {
+    return { t };
   },
   data() {
     return {
@@ -166,11 +177,11 @@ export default {
       let res = "";
       const [first, second] = code.split(".");
       res = this.fields.find((field) => field.code === first)?.name;
-      if (second === "count") res = res + ": на складе";
-      if (second === "reserve") res = res + ": в резерве";
-      if (second === "is_nds") res = res + ": с НДС";
-      if (second === "is_price_include_nds") res = res + ": НДС включен в цену";
-      if (second === "nds") res = res + ": НДС %";
+      if (second === "count") res = res + t("widjet.sk");
+      if (second === "reserve") res = res + t("widjet.res");
+      if (second === "is_nds") res = res + t("widjet.nds3");
+      if (second === "is_price_include_nds") res = res + t("widjet.nds4");
+      if (second === "nds") res = res + t("widjet.nds5");
       return res;
     },
     clearFilters() {
@@ -285,7 +296,7 @@ export default {
         value: 1,
         table_config: { filtered: 1, sort: 2, sortable: 1, visible: 1 },
         selected: false,
-        name: "Есть в наличии",
+        name: t("widjet.av"),
       };
       this.filtersValue.push(isAvailable);
     },

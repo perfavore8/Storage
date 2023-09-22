@@ -2,7 +2,9 @@
   <div class="wrapper">
     <div class="backdrop_with_filter" @click="close()" />
     <div class="container max-w-none">
-      <div class="header"><label>Добавление товаров</label></div>
+      <div class="header">
+        <label>{{ $t("ostatki.add") }}</label>
+      </div>
       <div class="content">
         <div class="table_wrapper" ref="tableWrapper">
           <table class="table">
@@ -73,7 +75,7 @@
                       :title="
                         (row.article === '' || row.article === undefined) &&
                         try_accept
-                          ? 'Пустое поле'
+                          ? t('ostatki.fieldE')
                           : null
                       "
                       :disabled="!row.new"
@@ -108,7 +110,7 @@
                       :title="
                         (row.name === '' || row.name === undefined) &&
                         try_accept
-                          ? 'Пустое поле'
+                          ? t('ostatki.fieldE')
                           : null
                       "
                       :disabled="!row.new"
@@ -146,7 +148,7 @@
                           (row.batch === '' || row.batch === undefined) &&
                           try_accept &&
                           row.type.value != 2
-                            ? 'Пустое поле'
+                            ? t('ostatki.fieldE')
                             : null
                         "
                         :disabled="
@@ -183,7 +185,7 @@
                       :title="
                         (row.count === '' || row.count == undefined) &&
                         try_accept
-                          ? 'Пустое поле'
+                          ? t('ostatki.fieldE')
                           : null
                       "
                     />
@@ -271,7 +273,9 @@
                             :id="idx + 'nq'"
                             :disabled="!row.new && !row.newBatch"
                           />
-                          <label :for="idx + 'nq'">НДС</label>
+                          <label :for="idx + 'nq'">{{
+                            $t("ostatki.nds1")
+                          }}</label>
                           <input
                             type="checkbox"
                             v-model="row.price.is_price_include_nds"
@@ -279,7 +283,9 @@
                             :id="idx + 'nw'"
                             :disabled="!row.new && !row.newBatch"
                           />
-                          <label :for="idx + 'nw'">включен в цену</label>
+                          <label :for="idx + 'nw'">{{
+                            $t("ostatki.nds2")
+                          }}</label>
                           <input
                             type="checkbox"
                             v-model="row.price.is_manager_can_change_nds"
@@ -287,13 +293,15 @@
                             :id="idx + 'ne'"
                             :disabled="!row.new && !row.newBatch"
                           />
-                          <label :for="idx + 'ne'">можно менять %</label>
+                          <label :for="idx + 'ne'">{{
+                            $t("ostatki.nds3")
+                          }}</label>
                         </div>
                         <input
                           type="number"
                           class="input"
                           v-model="row.price.nds"
-                          placeholder="% НДС"
+                          :placeholder="t('ostatki.nds4')"
                           min="0"
                           :disabled="!row.new && !row.newBatch"
                         />
@@ -368,6 +376,10 @@
 <script>
 import ImportStuffSelector from "@/components/ImportStuffSelector.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     ImportStuffSelector,
@@ -382,28 +394,30 @@ export default {
       },
     },
   },
+  setup() {
+    return { t };
+  },
   data() {
     return {
       title: [
-        "Тип",
-        "Артикул",
-        "Название",
-        "№ партии",
-        "Склад",
-        "Кол-во",
-        "Единицы измерений",
-        "Себестоимость",
-        "Цена",
-        "Цена",
-        "НДС",
-        "Категория",
-        "Описание",
+        t("ostatki.tip"),
+        t("ostatki.art"),
+        t("ostatki.name"),
+        t("ostatki.batch"),
+        t("ostatki.wh"),
+        t("ostatki.count"),
+        t("ostatki.ed"),
+        t("ostatki.seb"),
+        t("ostatki.price3"),
+        t("ostatki.price3"),
+        t("ostatki.cat2"),
+        t("ostatki.op"),
       ],
       titleWidth: [1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       new_items: [],
       options_type: [
-        { name: "Товар", value: 1 },
-        { name: "Услуга", value: 2 },
+        { name: t("ostatki.tov"), value: 1 },
+        { name: t("ostatki.ysl"), value: 2 },
       ],
       batch_category_options: [],
       wh_options: [],
@@ -469,10 +483,10 @@ export default {
     ]);
     this.tocopyCurrentItems(this.currentItems);
     this.get_categories_options();
-    this.get_options("batch", this.batch_category_options, "Новая");
+    this.get_options("batch", this.batch_category_options, t("ostatki.new"));
     this.fillWhs();
     this.fillPriceCat();
-    this.get_options("units", this.units_options, "Не выбрано");
+    this.get_options("units", this.units_options, t("global.notSelected"));
     this.currentItems.length ? this.pushCurrentItems() : this.push_new_item();
   },
   watch: {
@@ -529,18 +543,18 @@ export default {
     push_new_item() {
       const item = {
         new: true,
-        type: { name: "Товар", value: 1 },
+        type: { name: t("ostatki.tov"), value: 1 },
         article: "",
         name: "",
         description: "",
-        batch_category: { name: "Новая", value: -1 },
+        batch_category: { name: t("ostatki.new"), value: -1 },
         batch: "",
-        wh: { name: "Основной склад", value: "wh" },
+        wh: { name: t("ostatki.osn"), value: "wh" },
         count: 0,
-        units: { name: "Не выбрано", value: -1 },
+        units: { name: t("global.notSelected"), value: -1 },
         cost_price: 0,
         category: this.searchBaseCategory(),
-        price_cat: { name: "Цена", value: "price" },
+        price_cat: { name: t("ostatki.price3"), value: "price" },
         price: {
           cost: 0,
           currency: "RUB",
@@ -584,14 +598,14 @@ export default {
       const item = {
         new: false,
         id: val.id,
-        type: { name: "Товар", value: 1 },
+        type: { name: t("ostatki.tov"), value: 1 },
         article: val.fields.article,
         name: val.fields.name,
         description: val.fields?.description,
         batch_category: { name: "", value: -2 },
-        batch_category_options: [{ name: "Новая", value: -1 }],
+        batch_category_options: [{ name: t("ostatki.new"), value: -1 }],
         batch: val.fields.batch,
-        wh: { name: "Основной склад", value: "wh" },
+        wh: { name: t("ostatki.osn"), value: "wh" },
         count: 0,
         units: {
           ...this.units_options.find((value) => value.name == val.fields.units),
@@ -602,7 +616,7 @@ export default {
             (value) => value.value == val.fields.category
           ),
         },
-        price_cat: { name: "Цена", value: "price" },
+        price_cat: { name: t("ostatki.price3"), value: "price" },
         price: { ...val.fields.price },
         wh_options: this.searchCatArr(
           this.wh_options,

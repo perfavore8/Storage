@@ -1,12 +1,24 @@
 import { computed } from "vue";
 import { reactive } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
+
+const { t } = useLangConfiguration();
 
 const tabs = reactive({
-  selected: { name: "Заказ", value: "products", code: "ProductsTab" },
+  selected: {
+    name: t("newOrder.products"),
+    value: "products",
+    code: "ProductsTab",
+  },
   list: [
-    { name: "Заказ", value: "products", code: "ProductsTab", default: true },
-    { name: "Документы", value: "documents", code: "DocumentsTab" },
-    { name: "Клиент", value: "client", code: "ClientTab" },
+    {
+      name: t("newOrder.products"),
+      value: "products",
+      code: "ProductsTab",
+      default: true,
+    },
+    { name: t("newOrder.documents"), value: "documents", code: "DocumentsTab" },
+    { name: t("newOrder.client"), value: "client", code: "ClientTab" },
   ],
   select: function (option) {
     this.selected = option;

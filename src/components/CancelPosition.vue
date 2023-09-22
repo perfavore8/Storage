@@ -2,7 +2,9 @@
   <div class="wrapper">
     <div class="backdrop_with_filter" @click="close_modal()" />
     <div class="container">
-      <div class="header"><label>Списание товаров</label></div>
+      <div class="header">
+        <label>{{ $t("ostatki.spis") }}</label>
+      </div>
       <div class="content">
         <table class="table">
           <thead>
@@ -86,6 +88,10 @@
 import SelectorVue from "@/components/SelectorVue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     SelectorVue,
@@ -103,12 +109,12 @@ export default {
   data() {
     return {
       title: [
-        "Артикул",
-        "Название",
-        "№ партии",
-        "Склад",
-        "Кол-во",
-        "Причина списания",
+        t("ostatki.art"),
+        t("ostatki.name"),
+        t("ostatki.batch"),
+        t("ostatki.wh"),
+        t("ostatki.count"),
+        t("ostatki.rison"),
       ],
       items_to_cancel: [],
       whs_options: [],
@@ -123,7 +129,7 @@ export default {
         val.fields.countToCancel = 0;
         val.fields.rison = "";
         val.fields.whs_options = [];
-        val.fields.whToCancel = { name: "Не выбрано", value: -1 };
+        val.fields.whToCancel = { name: t("global.notSelected"), value: -1 };
       });
       this.fillWhs();
     });

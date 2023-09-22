@@ -8,7 +8,7 @@
       class="w-full cont px-1 h-full rounded-xl bg-slate-50 shadow-xl shadow-slate-100"
     >
       <h2 class="font-semibold text-gray-700 mb-10 w-full text-start">
-        Список позиций
+        {{ $t("newOrder.spis") }}
       </h2>
       <main-page ref="widjet" />
     </div>

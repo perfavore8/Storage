@@ -2,13 +2,15 @@
   <div
     class="flex flex-col gap-4 justify-center items-center sticky top-[142px] w-full mx-auto"
   >
-    <h2 class="font-semibold text-gray-700 w-full text-start">Данные заказа</h2>
+    <h2 class="font-semibold text-gray-700 w-full text-start">
+      {{ $t("newOrder.dan") }}
+    </h2>
     <div
       class="min-w-[40%] w-full text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
     >
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
-          Название
+          {{ $t("newOrder.name") }}
         </div>
         <input
           type="text"
@@ -19,7 +21,7 @@
       </div>
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
-          Статус
+          {{ $t("newOrder.stat") }}
         </div>
         <SelectorVue
           :selected_option="selector.selected"
@@ -49,7 +51,7 @@
       </div>
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
-          Создан:
+          {{ $t("newOrder.soz") }}
         </div>
         <div class="text-base font-medium">
           {{ dateFormater(order.created_at) }}
@@ -57,7 +59,7 @@
       </div>
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
-          Изменен:
+          {{ $t("newOrder.izm") }}
         </div>
         <div class="text-base font-medium">
           {{ dateFormater(order.updated_at) }}
@@ -72,17 +74,23 @@ import { computed, onMounted, reactive } from "vue";
 import SelectorVue from "../SelectorVue.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import store from "@/store";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { SelectorVue },
   props: { total: Object },
   setup(props) {
+    const { t } = useLangConfiguration();
     const { order, toggleSomeChange, isOrederLoaded } = useNewDeal();
 
     const list = reactive([
-      { label: "Сумма заказа:", value: "price" },
-      { label: "Себестоимость:", value: "cost_price" },
-      { label: "Прибыль:", value: "prib" },
-      { label: "Сотрудник:", value: "user_name", component: "SelectorVue" },
+      { label: t("newOrder.sum"), value: "price" },
+      { label: t("newOrder.cp"), value: "cost_price" },
+      { label: t("newOrder.prib"), value: "prib" },
+      {
+        label: t("newOrder.sotr"),
+        value: "user_name",
+        component: "SelectorVue",
+      },
     ]);
 
     const selector = reactive({

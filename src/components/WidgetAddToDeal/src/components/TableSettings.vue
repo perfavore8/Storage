@@ -6,13 +6,11 @@
     />
     <div class="wrapper">
       <div class="modal-header">
-        <div class="head-text">Настройка таблицы</div>
+        <div class="head-text">{{ $t("tableSet.name") }}</div>
       </div>
       <div class="modal-body">
         <div class="text">
-          <small class="small-text"
-            >Перетаскивайте колонки для изменения очередности</small
-          >
+          <small class="small-text">{{ $t("tableSet.sm") }}</small>
         </div>
         <draggable class="dragArea" :list="list" @change="changeData">
           <div class="item" v-for="item in list" :key="item">

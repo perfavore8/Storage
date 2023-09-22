@@ -20,7 +20,7 @@
           <AppInputSelect
             :list="search.list"
             :value="search.value"
-            :placeholder="'Добавление (поиск на складе по названию или артикулу)...'"
+            :placeholder="t('widjet.placeholder')"
             :countLettersReq="3"
             :disabled="disableAddToDeal"
             @changeInputValue="getProductsAutocomplete"
@@ -122,7 +122,7 @@
               />
               <div class="products sls_grid">
                 <label v-if="products.length == 0" class="text">
-                  Ничего не найдено
+                  {{ $t("global.nothingFound") }}
                 </label>
                 <template v-else>
                   <template v-if="!useSkeletonCard">
@@ -147,10 +147,14 @@
                         <div class="rows">
                           <div class="sls_row">
                             <div class="name" style="font-weight: 500">
-                              Тип :
+                              {{ $t("widjet.type") }}
                             </div>
                             <div class="value">
-                              {{ product.is_service ? "Услуга" : "Товар" }}
+                              {{
+                                product.is_service
+                                  ? $t("widjet.ysl")
+                                  : $t("widjet.tow")
+                              }}
                             </div>
                           </div>
                           <template v-for="field in sortedFields" :key="field">
@@ -175,19 +179,21 @@
                                 v-if="product?.fields[field.code]?.is_nds"
                               >
                                 <div class="sls_row" style="margin-left: 8px">
-                                  <div class="name">НДС :</div>
+                                  <div class="name">{{ $t("widjet.nds") }}</div>
                                   <div class="value">
                                     {{ product?.fields[field.code]?.nds }}
                                   </div>
                                 </div>
                                 <div class="sls_row" style="margin-left: 8px">
-                                  <div class="name">НДС включен в цену :</div>
+                                  <div class="name">
+                                    {{ $t("widjet.nds2") }}
+                                  </div>
                                   <div class="value">
                                     {{
                                       product?.fields[field.code]
                                         ?.is_price_include_nds
-                                        ? "Да"
-                                        : "Нет"
+                                        ? $t("global.yes")
+                                        : $t("global.no")
                                     }}
                                   </div>
                                 </div>
@@ -201,7 +207,7 @@
                                 <div class="value"></div>
                               </div>
                               <div class="sls_row" style="margin-left: 8px">
-                                <div class="name">Свободно для резерва:</div>
+                                <div class="name">{{ $t("widjet.free") }}</div>
                                 <div class="value">
                                   {{
                                     Number(
@@ -315,7 +321,7 @@
                                   ) == 0,
                             }"
                           >
-                            Добавить к сделке
+                            {{ $t("widjet.add") }}
                           </div>
                         </div>
                       </div>
@@ -381,6 +387,7 @@ import ProductCard from "./ProductCard.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import { useValidate } from "@/composables/validate";
 import ProductCardSkeleton from "./ProductCardSkeleton.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 
 const {
   order,
@@ -391,6 +398,8 @@ const {
 } = useNewDeal();
 const { formatNumber } = useValidate();
 
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     AppInputSelect,
@@ -398,6 +407,9 @@ export default {
     AppPaginator,
     ProductCard,
     ProductCardSkeleton,
+  },
+  setup() {
+    return { t };
   },
   data() {
     return {

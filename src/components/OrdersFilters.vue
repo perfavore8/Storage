@@ -71,8 +71,12 @@
       </div>
     </div>
     <div class="btns self-end">
-      <button class="btn btn_blue" @click="apply()">Применить</button>
-      <button class="btn btn_grey" @click="clearAllFields()">Очистить</button>
+      <button class="btn btn_blue" @click="apply()">
+        {{ $t("global.apply2") }}
+      </button>
+      <button class="btn btn_grey" @click="clearAllFields()">
+        {{ $t("global.clear") }}
+      </button>
     </div>
   </div>
 </template>

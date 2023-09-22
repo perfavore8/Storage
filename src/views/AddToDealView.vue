@@ -28,12 +28,12 @@
           v-if="saveParams.needSave"
         >
           <template v-if="saveParams.isSaving">
-            Сохраняем
+            {{ $t("newOrder.saving") }}
             <span class="animate-pulse ml-1">.</span>
             <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
             <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
           </template>
-          <template v-else> Сохранить </template>
+          <template v-else> {{ $t("global.save") }} </template>
         </button>
       </transition>
       <AppRadioBtnsGroupUnderlined

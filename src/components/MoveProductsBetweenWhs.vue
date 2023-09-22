@@ -2,7 +2,9 @@
   <div class="wrapper">
     <div class="backdrop_with_filter" @click="close_modal()" />
     <div class="container">
-      <div class="header"><label>Перенос товаров</label></div>
+      <div class="header">
+        <label>{{ $t("ostatki.per") }}</label>
+      </div>
       <div class="content">
         <table class="table">
           <thead>
@@ -139,6 +141,10 @@ import AppInputSelect from "@/components/AppInputSelect.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
 import store from "@/store";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     SelectorVue,
@@ -154,16 +160,19 @@ export default {
       },
     },
   },
+  setup() {
+    return { t };
+  },
   data() {
     return {
       title: [
-        "Артикул",
-        "Название",
-        "№ партии",
-        "Склад (откуда)",
-        "Склад (куда)",
-        "Кол-во",
-        "Причина списания",
+        t("ostatki.art"),
+        t("ostatki.name"),
+        t("ostatki.batch"),
+        t("ostatki.wh1"),
+        t("ostatki.wh2"),
+        t("ostatki.count"),
+        t("ostatki.rison"),
         "",
       ],
       itemsForMove: [],
@@ -200,8 +209,8 @@ export default {
         item.fields.countToMove = 0;
         item.fields.rison = "";
         item.fields.whs_options = [];
-        item.fields.whToCancel = { name: "Не выбрано", value: -1 };
-        item.fields.whToMove = { name: "Не выбрано", value: -1 };
+        item.fields.whToCancel = { name: t("global.notSelected"), value: -1 };
+        item.fields.whToMove = { name: t("global.notSelected"), value: -1 };
       });
       this.fillWhs();
     });
@@ -262,8 +271,8 @@ export default {
       newItem.fields.countToMove = 0;
       newItem.fields.rison = "";
       newItem.fields.whs_options = [];
-      newItem.fields.whToCancel = { name: "Не выбрано", value: -1 };
-      newItem.fields.whToMove = { name: "Не выбрано", value: -1 };
+      newItem.fields.whToCancel = { name: t("global.notSelected"), value: -1 };
+      newItem.fields.whToMove = { name: t("global.notSelected"), value: -1 };
       this.itemsForMove.splice(idx, 1, newItem);
       this.fillWhs();
     },
@@ -274,8 +283,8 @@ export default {
           countToMove: 0,
           rison: "",
           whs_options: [],
-          whToCancel: { name: "Не выбрано", value: -1 },
-          whToMove: { name: "Не выбрано", value: -1 },
+          whToCancel: { name: t("global.notSelected"), value: -1 },
+          whToMove: { name: t("global.notSelected"), value: -1 },
         },
       });
     },

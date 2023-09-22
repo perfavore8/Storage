@@ -29,7 +29,7 @@
               {{ column.name }}
             </h2>
             <small class="text-slate-700">
-              (Сделок: {{ column?.res?.meta?.total }} |
+              ({{ $t("orders.sd") }} {{ column?.res?.meta?.total }} |
               {{ formatNumber(column?.res?.meta?.sum) }} ₽)
             </small>
           </div>

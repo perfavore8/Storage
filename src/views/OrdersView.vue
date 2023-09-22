@@ -3,7 +3,7 @@
     <div class="header">
       <AppHeader
         :selectedWH="{
-          name: 'Заказы',
+          name: t('orders.ors'),
           value:
             displayType.selected.name === 'kanban' ? 'ordersKanBan' : 'orders',
           maxCountSelected: displayType.selected.name === 'kanban' ? 5 : 999999,
@@ -34,7 +34,7 @@
               class="checkbox"
               v-model="hideFinalSteps"
             />
-            <label for="hideFinalSteps">Скрыть финальные этапы</label>
+            <label for="hideFinalSteps">{{ $t("orders.hfs") }}</label>
           </div>
         </div>
         <AppSearchWithFilters
@@ -45,7 +45,7 @@
         />
         <div class="basis-1/3 flex justify-end">
           <button class="btn btn_dark_blue" @click="addToDeal()">
-            Создать заказ
+            {{ $t("orders.cre") }}
           </button>
         </div>
         <div
@@ -55,7 +55,7 @@
             class="sync_icon btn"
             :disabled="isLocked"
             @click="updateList()"
-            title="Обновить список"
+            :title="$t('orders.up')"
           >
             <span class="material-icons-outlined"> sync </span>
           </button>
@@ -81,7 +81,7 @@
           class="absolute top-[90px] left-0 flex flex-row gap-3 items-center"
           v-if="displayType.selected.name === 'grid'"
         >
-          Сделок: {{ grid?.meta?.meta?.total || 0 }} |
+          {{ $t("orders.sd") }} {{ grid?.meta?.meta?.total || 0 }} |
           {{ grid?.meta?.meta?.sum || 0 }} ₽
         </div>
       </div>
@@ -116,6 +116,7 @@ import { isTest } from "@/composables/isTest";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import { usePreparationOrders } from "@/composables/preporationOrders";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     AppHeader,
@@ -126,6 +127,7 @@ export default {
     OrdersKanbanPipelineSelect,
   },
   setup() {
+    const { t } = useLangConfiguration();
     usePreparationOrders();
     const { currentSetSettingsInFolder } = useRoleSettings("orders");
     const { saveAllQueryParams, saveLSParam, getSavedLSParam } = useSaveLS();
@@ -222,6 +224,7 @@ export default {
       openTableSettings,
       hideFinalSteps,
       currentSetSettingsInFolder,
+      t,
     };
   },
 };

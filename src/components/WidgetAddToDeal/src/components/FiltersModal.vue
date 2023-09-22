@@ -26,7 +26,7 @@
           @click="accepMainGridRef()"
           v-if="savedAllWhsList.length"
         >
-          Добавить к сделке
+          {{ $t("widjet.add") }}
         </button>
         <button class="exit" @click="close()">
           <svg

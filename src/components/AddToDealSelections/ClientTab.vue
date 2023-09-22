@@ -45,6 +45,7 @@ import { computed, onMounted, reactive } from "vue";
 import store from "@/store";
 import { useNewDeal } from "@/composables/newDeal";
 import { useClientTabAutocomplete } from "@/composables/clientTabAutocomlete";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     // ClientTabCastomFields,
@@ -52,6 +53,7 @@ export default {
     ClientTabItem,
   },
   setup() {
+    const { t } = useLangConfiguration();
     const { order, getOrder, saveOrder } = useNewDeal();
 
     onMounted(() => {
@@ -62,7 +64,7 @@ export default {
 
     const list = reactive([
       {
-        name: "Компания",
+        name: t("newOrder.komp"),
         code: "Company",
         getFieldsUrl: "getClientsCompanyFields",
         getAutocompeteUrl: "getClientsCompanyAutocomplete",
@@ -70,7 +72,7 @@ export default {
         items: computed(() =>
           order?.company ? [order?.company] : [...getUnlinkedCompanies()]
         ),
-        placeholderForSearch: "Поиск компаний",
+        placeholderForSearch: t("newOrder.kompP"),
         orderFieldForSave: "company_id",
         placeholders: {
           title: "name",
@@ -80,7 +82,7 @@ export default {
         },
       },
       {
-        name: "Контакт",
+        name: t("newOrder.cont"),
         code: "Contacts",
         getFieldsUrl: "getClientsContactsFields",
         getAutocompeteUrl: "getClientsContactsAutocomplete",
@@ -99,7 +101,7 @@ export default {
             return acc;
           }, [])
         ),
-        placeholderForSearch: "Поиск контактов",
+        placeholderForSearch: t("newOrder.contP"),
         orderFieldForSave: "contacts_id",
         orderFieldSource: "contacts",
         isMultiSave: true,

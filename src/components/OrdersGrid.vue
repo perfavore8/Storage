@@ -138,7 +138,7 @@
                     class="btn small_btn order-1 max-h-[34px] pointer-events-auto relative inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-normal leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
                     @click="refundOrder(row.id)"
                   >
-                    Возврат
+                    {{ $t("orders.woz") }}
                   </button>
                 </div>
               </td>
@@ -185,7 +185,9 @@
         </template>
       </tbody>
     </table>
-    <label v-if="products.length == 0" class="text"> Ничего не найдено </label>
+    <label v-if="products.length == 0" class="text">
+      {{ $t("global.nothingFound") }}
+    </label>
   </div>
   <grid-bottom
     :page="page"

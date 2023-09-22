@@ -4,14 +4,12 @@
     <div class="wrapper">
       <div class="modal-header">
         <div class="head-text">
-          <slot name="header"> Настройка таблицы </slot>
+          <slot name="header">{{ $t("tableSet.name") }}</slot>
         </div>
       </div>
       <div class="modal-body">
         <div class="text">
-          <small class="small-text"
-            >Перетаскивайте колонки для изменения очередности</small
-          >
+          <small class="small-text">{{ $t("tableSet.sm") }}</small>
         </div>
         <draggable class="dragArea" :list="list" @end="() => sort()">
           <div class="item" v-for="item in list" :key="item.name">

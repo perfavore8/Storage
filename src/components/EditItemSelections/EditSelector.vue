@@ -13,6 +13,10 @@
 <script>
 import { nextTick } from "vue";
 import SelectorVue from "@/components/SelectorVue.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     SelectorVue,
@@ -46,7 +50,7 @@ export default {
   },
   data() {
     return {
-      copy_selected_option: "Не выбрано",
+      copy_selected_option: t("global.notSelected"),
     };
   },
   mounted() {

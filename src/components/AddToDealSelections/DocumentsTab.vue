@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isGoogleAuth" class="flex flex-row w-full justify-center gap-2">
     <h1 class="text-xl text-slate-900">
-      Авторизуйтесь в Google для работы с документами.
+      {{ $t("newOrder.auth") }}
     </h1>
     <a
       @click="routeToGoogleAuth()"
@@ -40,24 +40,24 @@
           :disabled="docs.selected.value === -1 && false"
         >
           <template v-if="docs.isGeneration">
-            Генерация
+            {{ $t("newOrder.gen") }}
             <span class="animate-pulse ml-1">.</span>
             <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
             <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
           </template>
-          <template v-else> Сгенерировать </template>
+          <template v-else> {{ $t("newOrder.gen2") }} </template>
         </button>
         <label
           for="xlsx"
           class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <template v-if="isUpload">
-            Загружаем
+            {{ $t("newOrder.z") }}
             <span class="animate-pulse ml-1">.</span>
             <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
             <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
           </template>
-          <template v-else> Загрузить </template>
+          <template v-else> {{ $t("newOrder.z2") }} </template>
         </label>
         <input
           type="file"
@@ -86,12 +86,12 @@
               :href="item.open_url"
               v-if="item.open_url"
             >
-              открыть
+              {{ $t("newOrder.o") }}
             </a>
           </td>
           <td class="cell">
             <a class="link" target="blank" :href="item.download_url">
-              скачать
+              {{ $t("newOrder.d") }}
             </a>
           </td>
           <td class="cell">
