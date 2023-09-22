@@ -2048,3 +2048,23 @@ export const messages = {
     },
   },
 };
+
+// const flattenObject = (obj, prefix = "") => {
+//   return Object.keys(obj).reduce((result, key) => {
+//     const prop = prefix ? `${prefix}_${key}` : key;
+//     if (typeof obj[key] === "object" && obj[key] !== null) {
+//       Object.assign(result, flattenObject(obj[key], prop));
+//     } else {
+//       result[prop] = obj[key];
+//     }
+//     return result;
+//   }, {});
+// };
+// const res = {};
+// Object.keys(messages).forEach((lang) => {
+//   res[lang] = {};
+//   Object.keys(messages[lang]).forEach((head) => {
+//     res[lang][head] = flattenObject(messages[lang][head]);
+//   });
+// });
+// console.log(res);
