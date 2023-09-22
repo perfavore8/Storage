@@ -7,20 +7,20 @@
           @click="addCurrentProducts()"
           :disabled="oneC"
         >
-          Добавить
+          {{ $t("ostatki.btn1") }}
         </button>
         <button class="btn btn_pink smallBtn" @click="openCancelPosition()">
-          Списать
+          {{ $t("ostatki.btn2") }}
         </button>
         <button
           class="btn btn_light_yellow smallBtn"
           @click="openMoveProductsBetweenWhs()"
         >
-          Перемещение
+          {{ $t("ostatki.btn3") }}
         </button>
       </template>
       <button class="btn btn_grey smallBtn" @click="archive_data()">
-        Архивировать
+        {{ $t("ostatki.btn4") }}
       </button>
     </div>
   </transition>

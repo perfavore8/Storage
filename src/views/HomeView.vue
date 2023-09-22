@@ -55,7 +55,9 @@
               />
             </div>
             <div class="bot">
-              <p>Найдено: {{ totalCountProducts }}</p>
+              <p>
+                {{ t("Archive.count", { count: totalCountProducts }) }}
+              </p>
               <input
                 type="checkbox"
                 class="checkbox grid"
@@ -79,7 +81,7 @@
                   class="checkbox"
                   v-model="is_in_wh"
                 />
-                <label for="is_in_wh">Только положительные остатки</label>
+                <label for="is_in_wh">{{ $t("ostatki.inWH") }}</label>
               </div>
               <HomeFilter
                 v-if="!isGrid"
@@ -95,13 +97,13 @@
             @click="open_close_new_position(true)"
             v-if="!oneC"
           >
-            Новая позиция
+            {{ $t("ostatki.newPoz") }}
           </button>
           <button
             class="sync_icon btn"
             :disabled="isUpdateProducts"
             @click="updateProducts()"
-            title="Обновить список"
+            :title="t('ostatki.syncT')"
           >
             <span class="material-icons-outlined"> sync </span>
           </button>
@@ -109,7 +111,7 @@
             class="table_settings_btn"
             v-if="isGrid"
             @click="openTableSettings()"
-            title="Настройка таблицы"
+            :title="t('ostatki.settingsT')"
           >
             <span class="material-icons"> settings </span>
           </button>
@@ -136,6 +138,9 @@ import HomeFilter from "@/components/HomeFilter.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
 
 export default {
   components: {
@@ -155,12 +160,15 @@ export default {
       isServicePage: computed(() => this.isServicePage),
     };
   },
+  setup() {
+    return { t };
+  },
   data() {
     return {
       is_in_wh: true,
       paginatedData: [],
       paginatedParams: [],
-      selectedWH: { name: "Все склады", value: "whs" },
+      selectedWH: { name: t("ostatki.allwhs"), value: "whs" },
       isGrid: false,
       currentItems: [],
       isUpdateProducts: false,

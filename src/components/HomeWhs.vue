@@ -18,7 +18,7 @@
         :selected="selectedWH"
         :requestDelay="0"
         :placeholder="
-          customWhs.includes(selectedWH) ? selectedWH.name : 'Выберите склад'
+          customWhs.includes(selectedWH) ? selectedWH.name : t('ostatki.selWh')
         "
         :input_uderline="true"
         @changeInputValue="changeInputValueWhs"
@@ -33,12 +33,14 @@ import AppInputSelect from "./AppInputSelect.vue";
 import { ref } from "@vue/reactivity";
 import store from "@/store";
 import { computed, watch } from "@vue/runtime-core";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { AppInputSelect },
   props: {
     selectedWH: Object,
   },
   setup(props, context) {
+    const { t } = useLangConfiguration();
     const whs = ref([]);
     const systemWhs = ref([]);
     const customWhs = ref([]);
@@ -59,8 +61,8 @@ export default {
         whs.value.push({ name: wh.name, value: wh.code });
       });
 
-      systemWhs.value.push({ name: "Услуги", value: "services" });
-      whs.value.push({ name: "Услуги", value: "services" });
+      systemWhs.value.push({ name: t("ostatki.ysls"), value: "services" });
+      whs.value.push({ name: t("ostatki.ysls"), value: "services" });
 
       custom.forEach((wh) => {
         customWhs.value.push({ name: wh.name, value: wh.code });
@@ -86,6 +88,7 @@ export default {
       customWhs,
       changeInputValueWhs,
       sortedCustomWhs,
+      t,
     };
   },
 };

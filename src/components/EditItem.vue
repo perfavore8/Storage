@@ -4,13 +4,15 @@
     <div class="app_edit_modal">
       <div class="header">
         <div class="header_left">
-          Редактирование {{ edit_data.fields["name"] }}
+          {{ $t("ostatki.red", { name: edit_data.fields["name"] }) }}
         </div>
         <div class="header_right">
           <BtnsSaveClose @close="close" @save="save">
-            <template v-slot:close>Отмена</template>
+            <template v-slot:close>{{ $t("global.сancel") }}</template>
             <template v-slot:other_btns v-if="!oneC">
-              <button class="btn btn3" @click="archive()">Архивировать</button>
+              <button class="btn btn3" @click="archive()">
+                {{ $t("ostatki.arch") }}
+              </button>
             </template>
           </BtnsSaveClose>
         </div>
@@ -18,7 +20,7 @@
       <div class="hr" />
       <div class="main">
         <div class="row">
-          <label>Тип:</label>
+          <label>{{ $t("ostatki.type") }}</label>
           <SelectorVue
             :options_props="options_1"
             @select="option_select_1"
@@ -27,7 +29,7 @@
           />
         </div>
         <div class="row">
-          <label>Категория:</label>
+          <label>{{ $t("ostatki.cat") }}</label>
           <SelectorVue
             :options_props="categories_options"
             @select="option_select_cat"
@@ -43,9 +45,11 @@
       <div class="hr" />
       <div class="footer">
         <BtnsSaveClose @close="close" @save="save">
-          <template v-slot:close>Отмена</template>
+          <template v-slot:close>{{ $t("global.сancel") }}</template>
           <template v-slot:other_btns v-if="!oneC">
-            <button class="btn btn3" @click="archive()">Архивировать</button>
+            <button class="btn btn3" @click="archive()">
+              {{ $t("ostatki.arch") }}
+            </button>
           </template>
         </BtnsSaveClose>
       </div>
@@ -57,6 +61,10 @@
 import SelectorVue from "@/components/SelectorVue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditItemFields from "@/components/EditItemFields.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     SelectorVue,
@@ -73,10 +81,10 @@ export default {
   data() {
     return {
       options_1: [
-        { name: "Товар", value: 1 },
-        { name: "Услуга", value: 2 },
+        { name: t("ostatki.tov"), value: 1 },
+        { name: t("ostatki.ysl"), value: 2 },
       ],
-      selected_option_1: { name: "Товар", value: 1 },
+      selected_option_1: { name: t("ostatki.tov"), value: 1 },
       new_edit_data: {},
       editPrices: [],
       categories_options: [],

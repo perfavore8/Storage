@@ -3,19 +3,19 @@
     <div class="backdrop_with_filter" @click="close()" />
     <div class="container" v-if="!isAccept">
       <div class="header">
-        <label>Изменение цены "{{ copyEditPrice?.name }}"</label>
+        <label>{{ $t("ostatki.pn", { name: copyEditPrice?.name }) }}</label>
         <button class="btn cross" @click="close()"></button>
       </div>
       <div class="content">
-        <label>Цена:</label>
+        <label>{{ $t("ostatki.price") }}</label>
         <input type="number" class="input" v-model="copyEditPrice.price" />
       </div>
       <div class="footer">
         <btns-save-close @close="close" :show_save="false">
-          <template v-slot:close>Назад</template>
+          <template v-slot:close>{{ $t("global.back") }}</template>
           <template v-slot:other_btns>
             <button class="btn btn_dark_blue" @click="accept()">
-              Сохранить
+              {{ $t("global.save") }}
             </button>
           </template>
         </btns-save-close>
@@ -23,14 +23,16 @@
     </div>
     <div class="container" v-else>
       <div class="header">
-        <label>Изменить цену этого товара в открытых сделках?</label>
+        <label>{{ $t("ostatki.price2") }}</label>
         <button class="btn cross" @click="closeAccept()"></button>
       </div>
       <div class="footer">
         <btns-save-close @close="dismiss" :show_save="false">
-          <template v-slot:close>Нет</template>
+          <template v-slot:close>{{ $t("global.no") }}</template>
           <template v-slot:other_btns>
-            <button class="btn btn_dark_blue" @click="confirm()">Да</button>
+            <button class="btn btn_dark_blue" @click="confirm()">
+              {{ $t("global.yes") }}
+            </button>
           </template>
         </btns-save-close>
       </div>

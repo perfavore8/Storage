@@ -122,7 +122,7 @@
                   style="width: 16px; heigth: 16px"
                   v-if="item[0].split('.')[1] == 'cost'"
                   @click="openGridEditPrice(row, item[0].split('.')[0])"
-                  title="Редактирование цены"
+                  :title="t('ostatki.changePrice')"
                 ></button>
               </td>
             </template>
@@ -130,14 +130,14 @@
               <div
                 class="edit_icon"
                 @click="open_edit_modal(row)"
-                title="Редактирование товара"
+                :title="t('ostatki.changePoz')"
               ></div>
             </td>
           </tr>
         </tbody>
       </table>
       <label v-if="products.length == 0" class="text">
-        Ничего не найдено
+        {{ t("global.nothingFound") }}
       </label>
     </div>
     <grid-bottom
@@ -161,9 +161,12 @@ import MainGridBar from "@/components/MainGridBar.vue";
 import GridEditPrice from "@/components/GridEditPrice.vue";
 import { mapGetters } from "vuex";
 import { nextTick, reactive } from "vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   name: "Main_grid",
   setup() {
+    const { t } = useLangConfiguration();
+
     const a = reactive({
       selectedIdx: 0,
       list: [
@@ -184,7 +187,7 @@ export default {
       },
     });
 
-    return { a };
+    return { a, t };
   },
   components: {
     EditItem,

@@ -22,7 +22,7 @@
       </transition>
       <!-- <card-grid-links ref="links" @emit_link="emit_link" /> -->
       <div class="sort">
-        <span>Сортировать по:</span>
+        <span>{{ $t("ostatki.sortBy") }}</span>
         <SelectorVue
           :options_props="sortedFieldsForSort"
           :selected_option="selectedSort.value"
@@ -36,13 +36,15 @@
           }"
           @click="selectOrder()"
         ></button>
-        <button class="btn btn_blue" @click="sort()">Применить</button>
+        <button class="btn btn_blue" @click="sort()">
+          {{ $t("global.apply2") }}
+        </button>
       </div>
     </div>
     <CardGridCategories @selectCat="selectCat" />
     <div class="grid" ref="grid">
       <label v-if="products.length == 0" class="text">
-        Ничего не найдено
+        {{ $t("global.nothingFound") }}
       </label>
       <div class="card shadow-lg" v-for="(row, idx) in products" :key="row.id">
         <div class="row" v-for="item in sortedFields" :key="item">
@@ -56,8 +58,8 @@
                   ? categories[row.fields[item[0]]]
                   : item[1].type == 9
                   ? !!row.fields[item[0]]
-                    ? "Да"
-                    : "Нет"
+                    ? $t("global.yes")
+                    : $t("global.no")
                   : item[0] == "cost_price"
                   ? row.fields[item[0]]
                     ? Math.round(row.fields[item[0]] * 100) / 100
@@ -85,8 +87,8 @@
                   ? !!row.fields?.[item[0].split(".")[0]]?.[
                       item[0].split(".")[1]
                     ]
-                    ? "Да"
-                    : "Нет"
+                    ? $t("global.yes")
+                    : $t("global.no")
                   : row.fields?.[item[0].split(".")[0]]?.[item[0].split(".")[1]]
               }}
             </span>
@@ -96,7 +98,7 @@
               style="width: 16px; heigth: 16px"
               v-if="item[0].split('.')[1] == 'cost'"
               @click.stop="openGridEditPrice(row, item[0].split('.')[0])"
-              title="Редактирование цены"
+              :title="t('ostatki.changePrice')"
             ></button>
           </div>
         </div>
@@ -115,7 +117,7 @@
           <div
             class="edit_icon"
             @click.stop="open_edit_modal(row)"
-            title="Редактирование товара"
+            :title="t('ostatki.changePoz')"
           />
         </div>
       </div>
@@ -143,6 +145,10 @@ import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { nextTick } from "@vue/runtime-core";
 import CardGridCategories from "./CardGridCategories.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   name: "CardGrid",
   components: {
@@ -161,13 +167,19 @@ export default {
   },
   inject: ["isServicePage"],
   emits: {},
+  setup() {
+    return { t };
+  },
   data() {
     return {
       edit_data: {},
       selectedProducts: [],
       showArrow: false,
       orderList: ["desc", "asc"],
-      selectedSort: { value: { name: "Не выбрано", value: -1 }, order: 1 },
+      selectedSort: {
+        value: { name: t("global.notSelected"), value: -1 },
+        order: 1,
+      },
     };
   },
   created() {
@@ -203,7 +215,7 @@ export default {
       });
     },
     sortedFieldsForSort() {
-      const arr = [{ name: "Не выбрано", value: -1 }];
+      const arr = [{ name: t("global.notSelected"), value: -1 }];
       this.sortedFieldsRow
         .filter((field) => field[1].sortable && field[1].type != 9)
         .forEach((field) => arr.push({ name: field[1].name, value: field[0] }));

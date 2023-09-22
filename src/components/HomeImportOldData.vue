@@ -5,18 +5,15 @@
   >
     <template v-if="account?.is_old_data_load_start">
       <p>
-        Внимание! Идет загурзка данных аккаунта. Это может занять несколько
-        минут
+        {{ $t("ostatki.att") }}
       </p>
     </template>
     <template v-else>
       <p>
-        Внимание, обнаружены данные вашего аккаунта предыдущей версии склада.
-        Для загрузки данных нажмите на кнопку ЗАГРУЗИТЬ. Загрузка может занять
-        некоторое время.
+        {{ $t("ostatki.att2") }}
       </p>
       <button class="btn btn_yellow" @click="importOldData('click')">
-        Загрузить
+        {{ $t("ostatki.d") }}
       </button>
     </template>
   </div>

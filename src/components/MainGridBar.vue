@@ -67,6 +67,7 @@ import { computed } from "@vue/reactivity";
 import { reactive, ref } from "vue";
 import { isTest } from "@/composables/isTest";
 import { useRoleSettings } from "@/composables/roleSettings";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   props: {
     fields: {
@@ -89,6 +90,7 @@ export default {
   },
   setup(props, context) {
     const { currentSetSettingsInFolder } = useRoleSettings("products");
+    const { t } = useLangConfiguration();
 
     const order = reactive({
       code: "",
@@ -153,7 +155,7 @@ export default {
         is_service: is_service,
       };
       store.dispatch("exportXlsx", params);
-      addNotification(0, "Добавлена задача", "Экспорт списка товаров в xlsx");
+      addNotification(0, t("ostatki.taskH"), t("ostatki.taskT"));
       // const blob = await store.dispatch("exportXlsx", params);
       // const file = window.URL.createObjectURL(blob);
       // window.location.assign(file);

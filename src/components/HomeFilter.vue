@@ -7,11 +7,15 @@
       id="filter"
       class="checkbox"
     />
-    <label for="filter">Фильтр</label>
+    <label for="filter">{{ $t("ostatki.f") }}</label>
   </div>
   <div class="btns" v-if="filterValue">
-    <button class="btn btn_tempest" @click="confirmFilters()">Применить</button>
-    <button class="btn btn_rusty_red" @click="clearFilters()">Очистить</button>
+    <button class="btn btn_tempest" @click="confirmFilters()">
+      {{ $t("global.apply2") }}
+    </button>
+    <button class="btn btn_rusty_red" @click="clearFilters()">
+      {{ $t("global.clear") }}
+    </button>
   </div>
 </template>
 
