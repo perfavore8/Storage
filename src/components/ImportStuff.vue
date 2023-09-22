@@ -3,12 +3,12 @@
     <div class="backdrop_with_filter" @click="close()" />
     <div class="bgc">
       <header class="header">
-        <h1>Настройки импорта</h1>
+        <h1>{{ $t("import.header") }}</h1>
         <button class="btn cross" @click="close()"></button>
       </header>
       <main class="main">
         <small class="small">
-          Максимальное количество товаров в файле: {{ max_import_product }}
+          {{ $t("import.max", { count: max_import_product }) }}
         </small>
         <div class="top">
           <div class="template">
@@ -22,7 +22,7 @@
               type="text"
               v-model="templates.newTemplateName"
               v-if="templates.selected.showTemplateName"
-              title="Чтобы не сохранять шаблон оставте поле пустым"
+              :title="t('import.inf')"
             />
           </div>
           <div class="compare" v-if="isAnyCompares">
@@ -64,7 +64,9 @@
                 v-model="templates.selected.compares[i - 1]"
                 @change="checkIsSavedTemplate()"
               />
-              <label :for="'ImportStuffCompares' + i"> Сравнивать поле </label>
+              <label :for="'ImportStuffCompares' + i">
+                {{ $t("import.sr") }}
+              </label>
             </template>
             <template v-if="selectedFields[i - 1]?.isList">
               <input
@@ -75,7 +77,7 @@
                 @change="checkIsSavedTemplate()"
               />
               <label :for="'ImportStuffListAdd' + i">
-                Добавлять новые значения
+                {{ $t("import.dob") }}
               </label>
             </template>
           </div>
@@ -87,7 +89,7 @@
           @save="save"
           :disabledSave="noOneSelectedFields || disabledSave"
         >
-          <template v-slot:save>Импортировать</template>
+          <template v-slot:save>{{ $t("import.im") }}</template>
         </BtnsSaveClose>
       </footer>
     </div>
@@ -103,10 +105,12 @@ import { useImportStuffFields } from "@/composables/importStuffFields";
 import { reactive, ref } from "@vue/reactivity";
 import { computed, nextTick, onMounted, watch } from "@vue/runtime-core";
 import { useNotification } from "@/composables/notification";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { SelectorVue, ImportStuffSelector, BtnsSaveClose },
   setup() {
     const { addNotification } = useNotification();
+    const { t } = useLangConfiguration();
 
     const {
       selectedImportStuffFields,
@@ -117,28 +121,28 @@ export default {
     const templates = reactive({
       newTemplateName: "",
       selected: {
-        name: "Без шаблона",
+        name: t("import.bes"),
         value: 0,
         showTemplateName: false,
         compares: [],
         selectedFields: [],
         addOrUpdateFields: {
-          selected: { name: "Только добавлять", value: "add" },
+          selected: { name: t("import.add"), value: "add" },
         },
       },
       list: [
         {
-          name: "Без шаблона",
+          name: t("import.bes"),
           value: 0,
           showTemplateName: false,
           compares: [],
           selectedFields: [],
           addOrUpdateFields: {
-            selected: { name: "Только добавлять", value: "add" },
+            selected: { name: t("import.add"), value: "add" },
           },
         },
         {
-          name: "Новый шаблон",
+          name: t("import.new"),
           value: 1,
           showTemplateName: true,
           compares: [],
@@ -190,7 +194,7 @@ export default {
             (field.name === "" && field.code === "") ||
             (field.name === null && field.code === null)
           ) {
-            field.name = "Не импортировать поле";
+            field.name = t("import.noimp");
             field.value = -1;
             field.code = "not to import";
           } else {
@@ -206,7 +210,7 @@ export default {
         if (count > 0) {
           for (let i = 0; i < count; i++)
             template.selectedFields.push({
-              name: "Не импортировать поле",
+              name: t("import.noimp"),
               value: -1,
               code: "not to import",
             });
@@ -281,7 +285,7 @@ export default {
           ? templates.newTemplateName
           : templates.selected.name;
       store.dispatch("importStart", params);
-      addNotification(0, "Добавлена задача", "Импорт товаров");
+      addNotification(0, t("import.notifH"), t("import.notifT"));
       close();
       disabledSave.value = false;
     };
@@ -294,9 +298,9 @@ export default {
 
     const addOrUpdateFields = reactive({
       list: [
-        { name: "Только добавлять", value: "add" },
-        { name: "Только обновлять", value: "update" },
-        { name: "Добавлять и обновлять", value: "add_update" },
+        { name: t("import.add"), value: "add" },
+        { name: t("import.update"), value: "update" },
+        { name: t("import.add_update"), value: "add_update" },
       ],
       select: (option) => (
         (templates.selected.addOrUpdateFields.selected = option),
@@ -329,6 +333,7 @@ export default {
       noOneSelectedFields,
       max_import_product,
       disabledSave,
+      t,
     };
   },
 };

@@ -408,6 +408,9 @@ export const messages = {
       templDocs: "Document Templates",
       templDocsText:
         "The template files are available as read-only via the following link. The Google ID file is part of the file link Example link: https://docs.google.com/spreadsheets/d/1XdXdEMtUFa8V__UK234432Dpx5-CeI/editgid\u003d0, where the Google ID file is: 1XdXdEMtUFa8V__UK234432Dpx5-CeI Instead of the Google ID file, it is allowed to enter the full address",
+      alert: "Текст скопирован удачно",
+      alert2: "Текст не скопирован автоматически",
+      alert3: "Попробуйте вручную",
       titles: {
         name: "Name",
         GID: "File Google id",
@@ -966,6 +969,22 @@ export const messages = {
       nds5: ": VAT %",
       av: "Available in stock",
     },
+    import: {
+      header: "Import settings",
+      max: "Maximum number of products in the file: {count}",
+      inf: "To not save the template, leave the field empty",
+      sr: "Compare field",
+      dob: "Add new values",
+      im: "Import",
+      bes: "Without template",
+      new: "New template",
+      noimp: "Do not import field",
+      notifH: "Task added",
+      notifT: "Import goods",
+      add: "Add only",
+      update: "Update only",
+      add_update: "Add and update",
+    },
   },
   ru: {
     global: {
@@ -1377,6 +1396,9 @@ export const messages = {
       templDocs: "Шаблоны документов",
       templDocsText:
         "Файлы шаблонов должны быть доступны для чтения по ссылке. Google ID файла это часть ссылки на файл Пример ссылки: https://docs.google.com/spreadsheets/d/1XdXdEMtUFa8V__UK234432Dpx5-CeI/edit#gid=0, где Google ID файла: 1XdXdEMtUFa8V__UK234432Dpx5-CeI Вместо Google ID файла допускается ввод полного адреса",
+      alert: "Text copied successfully",
+      alert2: "Text not copied automatically",
+      alert3: "Try manually",
       titles: {
         name: "Название",
         GID: "Google ID файла",
@@ -1934,6 +1956,22 @@ export const messages = {
       nds4: ": НДС включен в цену",
       nds5: ": НДС %",
       av: "Есть в наличии",
+    },
+    import: {
+      header: "Настройки импорта",
+      max: "Максимальное количество товаров в файле: {count}",
+      inf: "Чтобы не сохранять шаблон оставте поле пустым",
+      sr: "Сравнивать поле",
+      dob: "Добавлять новые значения",
+      im: "Импортировать",
+      bes: "Без шаблона",
+      new: "Новый шаблон",
+      noimp: "Не импортировать поле",
+      notifH: "Добавлена задача",
+      notifT: "Импорт товаров",
+      add: "Только добавлять",
+      update: "Только обновлять",
+      add_update: "Добавлять и обновлять",
     },
   },
 };

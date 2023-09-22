@@ -38,6 +38,10 @@
 </template>
 
 <script>
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   props: {
     list: {
@@ -53,11 +57,11 @@ export default {
       navigator.clipboard
         .writeText(text)
         .then(() => {
-          alert("Текст скопирован удачно");
+          alert(t("DocumentSetting.alert"));
         })
         .catch(() => {
           alert(
-            "Текст не скопирован автоматически :с" + "\n" + "Попробуйте вручную"
+            t("DocumentSetting.alert2") + "\n" + t("DocumentSetting.alert3")
           );
         });
     },
