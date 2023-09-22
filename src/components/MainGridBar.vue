@@ -190,6 +190,7 @@ export default {
       openTableSettings,
       dropOrder,
       currentSetSettingsInFolder,
+      t,
     };
   },
 };
