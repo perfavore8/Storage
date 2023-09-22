@@ -29,7 +29,7 @@
         :countLettersReq="0"
         :requestDelay="0"
         :SelectedInTitle="true"
-        :placeholder="$t('newOrder.auth')"
+        :placeholder="t('newOrder.auth')"
         @changeInputValue="(val) => (docs.value = val)"
         @select="(option) => docs.select(option)"
       />
@@ -117,10 +117,12 @@ import store from "@/store";
 import { useNewDeal } from "@/composables/newDeal";
 import { useDocumentsTabCustomDocs } from "@/composables/documentsTabCustomDocs";
 import router from "@/router";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 
 export default {
   components: { AppInputSelect },
   setup() {
+    const { t } = useLangConfiguration();
     const { newDealParams, toggleSomeChange } = useNewDeal();
     const {
       uploadFiles,
@@ -208,6 +210,7 @@ export default {
       isUpload,
       isGoogleAuth,
       routeToGoogleAuth,
+      t,
     };
   },
 };

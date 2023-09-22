@@ -111,6 +111,7 @@ import {
 import { computed, ref } from "vue";
 import { useAddToDealTabs } from "@/composables/addToDealTabs";
 import { useNewDeal } from "@/composables/newDeal";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     EditInteger,
@@ -128,6 +129,7 @@ export default {
     copyItem: { type: Object, required: true },
   },
   setup(props, context) {
+    const { t } = useLangConfiguration();
     const { isProductTab } = useAddToDealTabs();
     const { toggleSomeChange } = useNewDeal();
 
@@ -187,6 +189,7 @@ export default {
       WHS,
       selectedWhName,
       del,
+      t,
     };
   },
 };

@@ -280,7 +280,7 @@ export const messages = {
       },
       newUser: {
         header: "Adding a user",
-        name: "Nmae",
+        name: "Name",
         email: "Email",
         alreadyExists: "Such a user already exists.",
         addExistUser: "Add his to your account?",

@@ -75,6 +75,10 @@ import { nextTick } from "vue";
 import EditFloat from "@/components/EditItemSelections/EditFloat.vue";
 import EditSelector from "@/components/EditItemSelections/EditSelector.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     EditFloat,
@@ -107,6 +111,9 @@ export default {
     currencies: {
       type: Array,
     },
+  },
+  setup() {
+    return { t };
   },
   data() {
     return {
