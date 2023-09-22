@@ -1,9 +1,8 @@
 <template>
   <div class="view">
-    <h1>Внимание!</h1>
+    <h1>{{ $t("Errors.at") }}</h1>
     <p>
-      Срок подписки сервиса GoСклад подошел к концу. Для продления обратитесь в
-      отдел продаж:
+      {{ $t("Errors.at2") }}
     </p>
     <div class="icons">
       <a href="https://t.me/goskladbot" target="black">

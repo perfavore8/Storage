@@ -1,8 +1,11 @@
 import store from "@/store";
 import { ref } from "vue";
 import { reactive, computed } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
 
 export function useStatusesForEntities(stat, setStatuses) {
+  const { t } = useLangConfiguration();
+
   const statuses = reactive({
     id: stat.id,
     name: stat.name,
@@ -25,7 +28,7 @@ export function useStatusesForEntities(stat, setStatuses) {
     add: async function () {
       await store.dispatch("ordersPipelinesStatusesAdd", {
         pipeline_id: this.id,
-        name: "новый статус",
+        name: t("SettingEntities.entStats.new"),
         sort: this.list.at(-4).sort + 1,
       });
       setStatuses();

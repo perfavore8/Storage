@@ -220,7 +220,7 @@
                         (row.cost_price === '' ||
                           row.cost_price === undefined) &&
                         try_accept
-                          ? 'Пустое поле'
+                          ? t('ostatki.fieldE')
                           : null
                       "
                       :disabled="!row.new && !row.newBatch"

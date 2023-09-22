@@ -45,7 +45,7 @@
               <div
                 class="edit_icon"
                 @click="unarchive_data(item)"
-                title="Разархивирование товара"
+                :title="t('Archive.unArchive')"
               >
                 <span class="material-icons"> ios_share </span>
               </div>
@@ -99,6 +99,7 @@
 import GridBottom from "@/components/GridBottom.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import store from "@/store";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     GridBottom,
@@ -107,6 +108,7 @@ export default {
   props: { config: Object },
 
   setup(props) {
+    const { t } = useLangConfiguration();
     const isLoading = ref(false);
 
     onMounted(async () => {
@@ -213,6 +215,7 @@ export default {
       changeCount,
       changePage,
       unarchive_data,
+      t,
     };
   },
 };

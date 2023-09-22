@@ -31,7 +31,7 @@
     <template v-if="show">
       <div class="pcrow">
         <EditSelector
-          :item="{ name: 'Тип цены', data: PRICES }"
+          :item="{ name: t('widjet.cenT'), data: PRICES }"
           :selected_option="copyItem?.price_field"
           :idx="'price_field'"
           @change_value="(value, code, value2) => change_value(value2, code)"
@@ -39,7 +39,7 @@
       </div>
       <div class="pcrow">
         <EditFloat
-          :item="'Цена'"
+          :item="t('widjet.cen')"
           :selected_option="copyItem?.price"
           :idx="'price'"
           @change_value="change_value"
@@ -47,7 +47,7 @@
       </div>
       <div class="pcrow">
         <EditSelector
-          :item="{ name: 'Склад', data: WHS }"
+          :item="{ name: t('widjet.sk2'), data: WHS }"
           :selected_option="copyItem?.wh_field"
           :idx="'wh_field'"
           @change_value="(value, code, value2) => change_value(value2, code)"
@@ -55,7 +55,7 @@
       </div>
       <div class="pcrow">
         <EditFloat
-          :item="'Количество'"
+          :item="t('widjet.col')"
           :selected_option="copyItem?.count"
           :idx="'count'"
           :max="copyItem?.['available-count']"
@@ -86,7 +86,7 @@
         @click="del()"
       >
         <span class="material-icons-outlined text-red-600"> delete </span>
-        <span>Удалить позицию</span>
+        <span>{{ $t("widjet.del") }}</span>
       </div>
     </template>
   </div>

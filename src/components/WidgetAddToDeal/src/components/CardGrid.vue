@@ -96,7 +96,7 @@
       v-if="!show_categoryes || path.length == selected_categoryes.length"
     >
       <label v-if="paginatedData.length == 0" class="text">
-        Ничего не найдено
+        {{ $t("global.nothingFound") }}
       </label>
       <div class="card" v-for="(row, i) in paginatedData" :key="row">
         <div
@@ -155,6 +155,10 @@ import FilterText from "../components/FiltersSelections/FilterText.vue";
 import FilterList from "../components/FiltersSelections/FilterList.vue";
 import FilterDate from "../components/FiltersSelections/FilterDate.vue";
 import FilterFlag from "../components/FiltersSelections/FilterFlag.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   name: "Card_grid",
   components: {
@@ -191,7 +195,7 @@ export default {
       filtersValue: [],
       edit_data: [],
       changeValue: [],
-      path: ["Поступление", "№ партии", "НДС включен в цену"],
+      path: [t("widjet.pos"), t("ostatki.batch"), t("widjet.nds4")],
       selected_categoryes: [],
       sel_idx: 0,
       show_categoryes: true,

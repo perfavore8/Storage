@@ -1,14 +1,16 @@
 import store from "@/store";
 import { reactive } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
 
 export function useImportStuffFields() {
+  const { t } = useLangConfiguration();
   const selectedImportStuffFields = reactive([]);
 
   const importStuffFields = reactive([]);
 
   const getFields = async () => {
     importStuffFields.push({
-      name: "Не импортировать поле",
+      name: t("import.noimp"),
       value: -1,
       code: "not to import",
     });

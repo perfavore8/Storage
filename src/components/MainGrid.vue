@@ -80,8 +80,8 @@
                       ? categories[row.fields[item[0]]]
                       : item[1].type == 9
                       ? !!row.fields[item[0]]
-                        ? "Да"
-                        : "Нет"
+                        ? $t("global.yes")
+                        : $t("global.no")
                       : item[0] == "cost_price"
                       ? row.fields[item[0]]
                         ? Math.round(row.fields[item[0]] * 100) / 100
@@ -109,8 +109,8 @@
                       ? !!row.fields?.[item[0].split(".")[0]]?.[
                           item[0].split(".")[1]
                         ]
-                        ? "Да"
-                        : "Нет"
+                        ? $t("global.yes")
+                        : $t("global.no")
                       : row.fields?.[item[0].split(".")[0]]?.[
                           item[0].split(".")[1]
                         ]

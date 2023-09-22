@@ -3,14 +3,14 @@
     <label>{{ item }}:</label>
     <div class="right">
       <edit-integer
-        :item="'На складе'"
+        :item="t('Edit.ns')"
         :selected_option="copy_selected_option?.count"
         :idx="idx"
         :disabled="disabled"
         @change_value="(option) => option_select(option, 'count')"
       />
       <edit-integer
-        :item="'В резерве'"
+        :item="t('Edit.vr')"
         :selected_option="copy_selected_option?.reserve"
         :idx="idx"
         :disabled="disabled"
@@ -23,6 +23,10 @@
 <script>
 import { nextTick } from "vue";
 import EditInteger from "@/components/EditItemSelections/EditInteger.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     EditInteger,
@@ -53,6 +57,9 @@ export default {
         return false;
       },
     },
+  },
+  setup() {
+    return { t };
   },
   data() {
     return {

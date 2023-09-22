@@ -169,10 +169,10 @@ export function useSystems() {
           placeholder: t("Analytics.systemsForReports.contact.placeholder"),
           selected: {},
           list: [
-            { name: "создание (дата)", value: 1 },
-            { name: "звонок", value: 2 },
+            { name: t("Analytics.systemsForReports.contact.1"), value: 1 },
+            { name: t("Analytics.systemsForReports.contact.2"), value: 2 },
             {
-              name: "новый чат (сообщение) - список чатов: вк, фб, инста, вотсап, телега, прочие",
+              name: t("Analytics.systemsForReports.contact.3"),
               value: 3,
             },
             { name: t("Analytics.systemsForReports.contact.4"), value: 4 },

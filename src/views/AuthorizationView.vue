@@ -542,7 +542,7 @@ export default {
           if (res.success) {
             addNotification(
               1,
-              "Регистрация",
+              t("Auth.reg"),
               t("Auth.notificationTextSuccess", {
                 source:
                   notificationSystem.selected.value === "email"

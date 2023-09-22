@@ -11,6 +11,7 @@
 <script>
 import { computed, nextTick, ref, watch } from "vue";
 import SelectorVue from "@/components/SelectorVue.vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 
 export default {
   components: {
@@ -27,10 +28,11 @@ export default {
     },
   },
   setup(props, { emit }) {
+    const { t } = useLangConfiguration();
     const options = ref([
-      { name: "Все", value: 1 },
-      { name: "Да", value: 2 },
-      { name: "Нет", value: 3 },
+      { name: t("global.all"), value: 1 },
+      { name: t("global.yes"), value: 2 },
+      { name: t("global.no"), value: 3 },
     ]);
     const filterValue = ref(1);
 

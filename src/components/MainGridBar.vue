@@ -43,13 +43,13 @@
           class="settings_btn"
           @click="openTableSettings()"
           v-if="isMain || isTest || true"
-          title="Настройка таблицы"
+          :title="t('ostatki.nt')"
         >
           <span class="material-icons"> settings </span>
         </button>
         <button
           class="test_btn"
-          title="Экспорт таблицы в xlsx"
+          :title="t('ostatki.ex')"
           :disabled="disableExportXlsx"
           @click="exportXlsx()"
         >

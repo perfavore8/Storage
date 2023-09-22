@@ -32,13 +32,11 @@
           v-show="item"
         />
       </template>
-      <!-- <ClientTabCastomFields /> -->
     </div>
   </div>
 </template>
 
 <script>
-// import ClientTabCastomFields from "./ClientTabCastomFields.vue";
 import AppInputSelect from "../AppInputSelect.vue";
 import ClientTabItem from "./ClientTabItem.vue";
 import { computed, onMounted, reactive } from "vue";
@@ -48,7 +46,6 @@ import { useClientTabAutocomplete } from "@/composables/clientTabAutocomlete";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
-    // ClientTabCastomFields,
     AppInputSelect,
     ClientTabItem,
   },

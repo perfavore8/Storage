@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <h1>Склад не установен</h1>
+    <h1>{{ $t("message.notInst") }}</h1>
   </div>
 </template>
 

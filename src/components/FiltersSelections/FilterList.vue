@@ -8,7 +8,10 @@
       <multi-selector
         class="selector"
         id="selector123"
-        :options_props="[{ name: 'Все', value: '' }, ...selector_options]"
+        :options_props="[
+          { name: t('global.all'), value: '' },
+          ...selector_options,
+        ]"
         @select="option_select_multi"
         :selected_options="filterValue"
         tabindex="1"
@@ -20,6 +23,10 @@
 <script>
 import { nextTick } from "vue";
 import MultiSelector from "@/components/MultiSelector";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
+
 export default {
   components: {
     MultiSelector,
@@ -37,6 +44,9 @@ export default {
       type: Array,
       required: true,
     },
+  },
+  setup() {
+    return { t };
   },
   data() {
     return {
@@ -78,7 +88,10 @@ export default {
       const res = {
         value: [],
       };
-      const arr = [{ name: "Все", value: "" }, ...this.selector_options];
+      const arr = [
+        { name: t("global.all"), value: "" },
+        ...this.selector_options,
+      ];
       this.option_value.value.forEach((val, idx) =>
         val
           ? this.item.type == 12

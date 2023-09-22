@@ -3,7 +3,7 @@
     <label>{{ item }}:</label>
     <div class="right">
       <edit-float
-        :item="'Значение'"
+        :item="t('Edit.zn')"
         :selected_option="copy_selected_option?.cost"
         :idx="idx + 'cost'"
         :disabled="disabled"
@@ -17,11 +17,11 @@
             class="checkbox"
             v-model="editPrice.is_update_leads"
           />
-          <label for="0">Изменить цену этого товара в открытых сделках?</label>
+          <label for="0">{{ $t("Edit.iz") }}</label>
         </div>
       </template>
       <edit-selector
-        :item="{ name: 'Валюта', data: currencies }"
+        :item="{ name: t('Edit.val'), data: currencies }"
         :selected_option="copy_selected_option?.currency"
         :idx="idx + 'currency'"
         :disabled="disabled"
@@ -30,7 +30,7 @@
         "
       />
       <edit-flag
-        :item="'С НДС'"
+        :item="t('Edit.nds1')"
         :selected_option="copy_selected_option?.is_nds"
         :idx="idx + 'is_nds'"
         :disabled="disabled"
@@ -39,7 +39,7 @@
       <transition-group name="modal">
         <template v-if="copy_selected_option?.is_nds">
           <edit-flag
-            :item="'НДС можно менять %'"
+            :item="t('Edit.nds2')"
             :selected_option="copy_selected_option?.is_manager_can_change_nds"
             :idx="idx + 'is_manager_can_change_nds'"
             :disabled="disabled"
@@ -49,7 +49,7 @@
             v-if="false"
           />
           <edit-flag
-            :item="'НДС включен в цену'"
+            :item="t('Edit.nds3')"
             :selected_option="copy_selected_option?.is_price_include_nds"
             :idx="idx + 'is_price_include_nds'"
             :disabled="disabled"
@@ -58,7 +58,7 @@
             "
           />
           <edit-float
-            :item="'НДС значение'"
+            :item="t('Edit.nds4')"
             :selected_option="copy_selected_option?.nds"
             :idx="idx + 'nds'"
             :disabled="disabled"

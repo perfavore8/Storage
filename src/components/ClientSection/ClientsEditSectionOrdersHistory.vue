@@ -39,7 +39,9 @@
           <span>{{ item.sum }}</span>
         </td>
         <td class="cell order-3 row-span-2 place-self-center">
-          <a class="link" href="#" @click="route()"> Перейти </a>
+          <a class="link" href="#" @click="route()">
+            {{ $t("Clients.follow") }}
+          </a>
         </td>
       </tr>
     </table>

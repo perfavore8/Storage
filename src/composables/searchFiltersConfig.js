@@ -1,7 +1,9 @@
 import { reactive, computed } from "vue";
 import { useClientsTabs } from "./clientsTabs";
+import { useLangConfiguration } from "./langConfiguration";
 
 export function useSearchFiltersConfig() {
+  const { t } = useLangConfiguration();
   const { tabs } = useClientsTabs();
   const selectedTab = computed(() => tabs.selected);
 
@@ -18,28 +20,28 @@ export function useSearchFiltersConfig() {
       sources: [
         {
           code: "orders",
-          title: "Заказы",
+          title: t("search.orders"),
           getFieldsUrl: `getOrdersFields`,
           stateName: "orders",
           stateFieldsName: "fields",
         },
         {
           code: "product",
-          title: "Товары / Услуги",
+          title: t("search.products"),
           getFieldsUrl: `get_all_fields`,
           stateName: "fields",
           stateFieldsName: "all_fields",
         },
         {
           code: "contacts",
-          title: "Контакты",
+          title: t("search.contacts"),
           getFieldsUrl: "getClientsContactsFields",
           stateName: "clientsContacts",
           stateFieldsName: "fields",
         },
         {
           code: "company",
-          title: "Компании",
+          title: t("search.companies"),
           getFieldsUrl: "getClientsCompanyFields",
           stateName: "clientsCompany",
           stateFieldsName: "fields",

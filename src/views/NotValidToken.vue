@@ -2,13 +2,13 @@
   <div class="w-screen pt-10 flex justify-center">
     <div class="w-3/5 flex flex-col items-center">
       <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-        Внимание!
+        {{ $t("NotValidToken.at") }}
       </h1>
       <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-        Зафиксирован вход в GoСклад c данной учетной записи.
+        {{ $t("NotValidToken.at2") }}
       </h1>
       <span class="mt-6 text-base leading-7 text-gray-600">
-        Убедитесь, что этой учетной записью пользуется только один пользователь.
+        {{ $t("NotValidToken.at3") }}
       </span>
       <div class="icons">
         <a href="https://t.me/goskladbot" target="black">

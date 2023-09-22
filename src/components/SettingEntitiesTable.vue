@@ -419,7 +419,7 @@
               v-if="row.name != ''"
               @click="add_new(row, idx)"
             >
-              Сохранить
+              {{ $t("global.save") }}
             </button>
           </td>
         </tr>

@@ -5,7 +5,7 @@
       <TaskCard :task="task" v-for="task in tasks" :key="task.id" />
     </template>
     <div class="text" v-else>
-      <h4>Нет задач в процессе</h4>
+      <h4>{{ $t("message.tasks") }}</h4>
     </div>
   </div>
 </template>

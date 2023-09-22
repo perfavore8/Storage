@@ -215,6 +215,7 @@ export default {
     AppInputSelect,
   },
   setup() {
+    const { t } = useLangConfiguration();
     const { addNotification } = useNotification();
     const { currentSetSettings } = useRoleSettings();
 
@@ -245,7 +246,7 @@ export default {
       payload.append("name", file.name);
       const res = await store.dispatch("importStuff", payload);
       if (res.error) {
-        addNotification(3, "Ошибка", res.error);
+        addNotification(3, t("HomeMenu.err"), res.error);
       } else {
         store.commit("openCloseImportStuff", true);
       }
@@ -257,23 +258,15 @@ export default {
     const open_close_sync = () => store.commit("open_close_sync");
     const syncAmoGs = () => {
       store.dispatch("syncAmoGs");
-      addNotification(
-        0,
-        "Добавлена задача",
-        "Синхронизировать товары amoCRM -> GoСклад"
-      );
+      addNotification(0, t("HomeMenu.sync.title"), t("HomeMenu.sync.amo_go"));
     };
     const syncGsAmo = () => {
       store.dispatch("syncGsAmo");
-      addNotification(
-        0,
-        "Добавлена задача",
-        "Синхронизировать товары GoСклад -> amoCRM"
-      );
+      addNotification(0, t("HomeMenu.sync.title"), t("HomeMenu.sync.go_amo"));
     };
     const sync1C = () => {
       store.dispatch("sync1C");
-      addNotification(0, "Добавлена задача", "Синхронизировать остатки с 1C");
+      addNotification(0, t("HomeMenu.sync.title"), t("HomeMenu.sync.oneC"));
     };
     const open_close_settings = () => store.commit("open_close_settings");
     const close_settings = () => store.commit("close_settings");

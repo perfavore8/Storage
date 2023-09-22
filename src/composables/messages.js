@@ -23,6 +23,8 @@ export const messages = {
     },
     message: {
       OrdersInPipeline: "There are orders in this pipeline.",
+      tasks: "No tasks in progress",
+      notInst: "GoSklad is not installed",
     },
     countries: {
       Abkhazia: "Abkhazia",
@@ -208,6 +210,7 @@ export const messages = {
     },
     HomeMenu: {
       selectLengPlaceholder: "Language selection",
+      err: "Error",
       tasks: {
         notask: "No tasks in progress",
         title: "Task list",
@@ -386,6 +389,7 @@ export const messages = {
         titRes: "Reservation",
         titWO: "Write-off",
         newStatName: "Status {count}",
+        new: "new status",
       },
     },
     DocumentSetting: {
@@ -452,6 +456,7 @@ export const messages = {
     },
     Archive: {
       count: "Found: {count}",
+      unArchive: "Unarchive product",
       tabs: {
         products: "Products / Services",
         companies: "Companies",
@@ -911,6 +916,8 @@ export const messages = {
       ed: "Units of measurement",
       seb: "Cost price",
       price3: "Price",
+      nt: "Setting up a table",
+      ex: "Exporting a table to xlsx",
     },
     orders: {
       ors: "Orders",
@@ -926,6 +933,7 @@ export const messages = {
       sm: "Drag and drop columns to change the order",
     },
     newOrder: {
+      a: "Choosing a template",
       saving: "Saving ",
       spis: "List of positions",
       dan: "Order details",
@@ -985,6 +993,32 @@ export const messages = {
       update: "Update only",
       add_update: "Add and update",
     },
+    NotValidToken: {
+      at: "Attention!",
+      at2: "The login to the Go Warehouse from this account is fixed.",
+      at3: "Make sure that only one user uses this account.",
+    },
+    Edit: {
+      zn: "Value",
+      iz: "Change the price of this product in open transactions?",
+      val: "Currency",
+      nds1: "With VAT",
+      nds2: "VAT can be changed%",
+      nds3: "VAT is included in the price",
+      nds4: "VAT value",
+      ns: "In stock",
+      vr: "In reserve",
+    },
+    Errors: {
+      at: "Attention!",
+      at2: "The subscription period of the Go Warehouse service has come to an end. For an extension, contact the sales department:",
+    },
+    search: {
+      orders: "Orders",
+      products: "Products / Services",
+      contacts: "Contacts",
+      companies: "Companies",
+    },
   },
   ru: {
     global: {
@@ -1011,6 +1045,8 @@ export const messages = {
     },
     message: {
       OrdersInPipeline: "В этой воронке остались заказы",
+      tasks: "Нет задач в процессе",
+      notInst: "Склад не установен",
     },
     countries: {
       Abkhazia: "Абхазия",
@@ -1196,6 +1232,7 @@ export const messages = {
     },
     HomeMenu: {
       selectLengPlaceholder: "Выбор языка",
+      err: "Ошибка",
       tasks: {
         notask: "Нет задач в процессе",
         title: "Список задач",
@@ -1374,6 +1411,7 @@ export const messages = {
         titRes: "Резервация",
         titWO: "Списание",
         newStatName: "Статус {count}",
+        new: "новый статус",
       },
     },
     DocumentSetting: {
@@ -1440,6 +1478,7 @@ export const messages = {
     },
     Archive: {
       count: "Найдено: {count}",
+      unArchive: "Разархивирование товара",
       tabs: {
         products: "Товары / Услуги",
         companies: "Компании",
@@ -1899,6 +1938,8 @@ export const messages = {
       ed: "Единицы измерений",
       seb: "Себестоимость",
       price3: "Цена",
+      nt: "Настройка таблицы",
+      ex: "Экспорт таблицы в xlsx",
     },
     orders: {
       ors: "Заказы",
@@ -1914,6 +1955,7 @@ export const messages = {
       sm: "Перетаскивайте колонки для изменения очередности",
     },
     newOrder: {
+      a: "Выбор шаблона",
       saving: "Сохраняем",
       spis: "Список позиций",
       dan: "Данные заказа",
@@ -1955,7 +1997,12 @@ export const messages = {
       nds3: ": с НДС",
       nds4: ": НДС включен в цену",
       nds5: ": НДС %",
-      av: "Есть в наличии",
+      pos: "Поступление",
+      cenT: "Тип цены",
+      cen: "Цена",
+      sk2: "Склад",
+      col: "Количество",
+      del: "Удалить позицию",
     },
     import: {
       header: "Настройки импорта",
@@ -1972,6 +2019,32 @@ export const messages = {
       add: "Только добавлять",
       update: "Только обновлять",
       add_update: "Добавлять и обновлять",
+    },
+    NotValidToken: {
+      at: "Внимание!",
+      at2: "Зафиксирован вход в GoСклад c данной учетной записи.",
+      at3: "Убедитесь, что этой учетной записью пользуется только один пользователь.",
+    },
+    Edit: {
+      zn: "Значение",
+      iz: "Изменить цену этого товара в открытых сделках?",
+      val: "Валюта",
+      nds1: "С НДС",
+      nds2: "НДС можно менять %",
+      nds3: "НДС включен в цену",
+      nds4: "НДС значение",
+      ns: "На складе",
+      vr: "В резерве",
+    },
+    Errors: {
+      at: "Внимание!",
+      at2: "Срок подписки сервиса GoСклад подошел к концу. Для продления обратитесь в отдел продаж:",
+    },
+    search: {
+      orders: "Заказы",
+      products: "Товары / Услуги",
+      contacts: "Контакты",
+      companies: "Компании",
     },
   },
 };

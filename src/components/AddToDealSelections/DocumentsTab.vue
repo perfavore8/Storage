@@ -29,7 +29,7 @@
         :countLettersReq="0"
         :requestDelay="0"
         :SelectedInTitle="true"
-        :placeholder="'Выбор шаблона'"
+        :placeholder="$t('newOrder.auth')"
         @changeInputValue="(val) => (docs.value = val)"
         @select="(option) => docs.select(option)"
       />
