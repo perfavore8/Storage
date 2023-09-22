@@ -8,7 +8,7 @@
         @emitParams="emitParams"
       />
       <button class="btn btn_light_dark_blue self-end" @click="add()">
-        Добавить
+        {{ $t("global.add") }}
       </button>
     </div>
 
@@ -42,19 +42,19 @@
       <div
         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-4 border border-slate-300 rounded-lg shadow-md"
       >
-        <span>Вы уверены что хотите выйти без сохранения?</span>
+        <span>{{ $t("Clients.exitConfirm") }}</span>
         <div class="flex flex-row gap-2 items-center justify-end mt-4">
           <button
             class="btn small_btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
             @click="closeAdd(true)"
           >
-            Выйти
+            {{ $t("Clients.exit") }}
           </button>
           <button
             class="btn small_btn btn_light_dark_blue"
             @click="closeAdd(false), save()"
           >
-            Сохранить
+            {{ $t("global.save") }}
           </button>
         </div>
       </div>

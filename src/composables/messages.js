@@ -836,6 +836,24 @@ export const messages = {
         },
       },
     },
+    Clients: {
+      tabs: {
+        contact: "Contacts",
+        company: "Сompany",
+      },
+      exitConfirm: "Are you sure you want to exit without saving?",
+      exit: "Exit",
+      Edit: {
+        archivate: "Archive",
+        orders: "Order history",
+        emptyF: "Empty field",
+        lenght: "Minimum of 3 characters",
+        link: "Binding",
+        rating: "Rating",
+        follow: "Follow",
+        delete: "Remove",
+      },
+    },
   },
   ru: {
     global: {
@@ -858,6 +876,7 @@ export const messages = {
       all: "Все",
       clear: "Очистить",
       apply2: "Применить",
+      drop: "Сбросить",
     },
     message: {
       OrdersInPipeline: "В этой воронке остались заказы",
@@ -1672,6 +1691,24 @@ export const messages = {
           1: "Входящий",
           2: "Исходящий",
         },
+      },
+    },
+    Clients: {
+      tabs: {
+        contact: "Контакты",
+        company: "Компании",
+      },
+      exitConfirm: "Вы уверены что хотите выйти без сохранения?",
+      exit: "Выйти",
+      Edit: {
+        archivate: "Архивировать",
+        orders: "История заказов",
+        emptyF: "Пустое поле",
+        lenght: "Минимум 3 символа",
+        link: "Привязка",
+        rating: "Рейтинг",
+        follow: "Перейти",
+        delete: "Удалить",
       },
     },
   },

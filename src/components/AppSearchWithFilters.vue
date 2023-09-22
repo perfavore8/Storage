@@ -26,10 +26,10 @@
       >
         <template v-slot:other_btns>
           <button class="btn bg-transparent order-2" @click="reset()">
-            Сбросить
+            {{ $t("global.drop") }}
           </button>
         </template>
-        <template v-slot:save> Применить </template>
+        <template v-slot:save> {{ $t("global.apply2") }} </template>
       </BtnsSaveClose>
       <div
         v-for="source in Config.hasDifferentSources ? Config.sources : 1"
@@ -85,10 +85,10 @@
       >
         <template v-slot:other_btns>
           <button class="btn bg-transparent order-2" @click="reset()">
-            Сбросить
+            {{ $t("global.drop") }}
           </button>
         </template>
-        <template v-slot:save> Применить </template>
+        <template v-slot:save> {{ $t("global.apply2") }} </template>
       </BtnsSaveClose>
     </div>
   </div>

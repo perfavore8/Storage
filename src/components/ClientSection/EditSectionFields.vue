@@ -17,9 +17,9 @@
       >
         {{
           checkError(field).empty
-            ? "Пустое поле"
+            ? t("Clients.Edit.emptyF")
             : checkError(field).short
-            ? "Минимум 3 символа"
+            ? t("Clients.Edit.lenght")
             : ""
         }}
       </small>
@@ -39,6 +39,7 @@ import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
 import { useCheckError } from "@/composables/checkError";
 import { computed } from "vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     EditInteger,
@@ -65,7 +66,7 @@ export default {
     const change_value = (value, code) =>
       context.emit("change_value", value, code);
 
-    return { change_value, checkError };
+    return { change_value, checkError, ...useLangConfiguration() };
   },
 };
 </script>

@@ -20,7 +20,7 @@
               class="btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
               @click="close()"
             >
-              Назад
+              {{ $t("global.back") }}
             </button>
             <AppDelBtnAccept
               v-if="!isNew"
@@ -28,7 +28,9 @@
               :key="copyItem"
               :btnClass="'btn_grey'"
             >
-              <template v-slot:label> Архивировать </template>
+              <template v-slot:label>
+                {{ $t("Clients.Edit.archivate") }}
+              </template>
             </AppDelBtnAccept>
           </template>
         </BtnsSaveClose>
@@ -41,7 +43,7 @@
               @click="toggleOrderHistory(true)"
               v-if="!isNew"
             >
-              История заказов
+              {{ $t("Clients.Edit.orders") }}
             </button>
             <div class="order-1" v-else />
             <AppInputSelect
@@ -49,7 +51,7 @@
               :list="isNew ? binding.filteredOppositeList : binding.list"
               :countLettersReq="isNew ? 0 : 3"
               :requestDelay="300"
-              :placeholder="'Привязка'"
+              :placeholder="t('Clients.Edit.link')"
               @changeInputValue="
                 (val) => (
                   (binding.value = val),
@@ -78,9 +80,9 @@
               >
                 {{
                   checkError(rating).empty
-                    ? "Пустое поле"
+                    ? t("Clients.Edit.emptyF")
                     : checkError(rating).short
-                    ? "Минимум 3 символа"
+                    ? t("Clients.Edit.lenght")
                     : ""
                 }}
               </small>
@@ -88,7 +90,7 @@
                 for="rating"
                 class="absolute -top-[10px] left-4 text-sm bg-white/80 text-slate-700/80 px-2"
               >
-                Рейтинг
+                {{ $t("Clients.Edit.rating") }}
               </label>
             </div>
           </div>
@@ -121,13 +123,13 @@
                 class="text-gray-900 text-sm leading-6 py-1 px-3 block hover:bg-gray-50 rounded-[inherit]"
                 @click="selectedBind.follow()"
               >
-                Перейти
+                {{ $t("Clients.Edit.follow") }}
               </a>
               <a
                 class="text-gray-900 text-sm leading-6 py-1 px-3 block hover:bg-gray-50 rounded-[inherit]"
                 @click="selectedBind.del()"
               >
-                Удалить
+                {{ $t("Clients.Edit.delete") }}
               </a>
             </div>
           </OnClickOutside>
@@ -150,7 +152,7 @@
             class="btn bg-transparent focus-visible:underline focus-visible:underline-offset-4"
             @click="close()"
           >
-            Назад
+            {{ $t("global.back") }}
           </button>
           <AppDelBtnAccept
             v-if="!isNew"
@@ -158,7 +160,9 @@
             :key="copyItem"
             :btnClass="'btn_grey'"
           >
-            <template v-slot:label> Архивировать </template>
+            <template v-slot:label>
+              {{ $t("Clients.Edit.archivate") }}
+            </template>
           </AppDelBtnAccept>
         </template>
       </BtnsSaveClose>
@@ -179,6 +183,7 @@ import { useClientsTabs } from "@/composables/clientsTabs";
 import { OnClickOutside } from "@vueuse/components";
 import { useElementVisibility, useToggle } from "@vueuse/core";
 import { useCheckError } from "@/composables/checkError";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     BtnsSaveClose,
@@ -193,6 +198,8 @@ export default {
     item: { type: Object, required: false },
   },
   setup(props, context) {
+    const { t } = useLangConfiguration();
+
     const { tabs } = useClientsTabs();
     const selectedTabComp = computed(() => tabs.selected);
     const { binding } = useClientBinding(selectedTabComp);
@@ -336,6 +343,7 @@ export default {
       rating,
       downButtons,
       downButtonsIsVisible,
+      t,
     };
   },
 };
