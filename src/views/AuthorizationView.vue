@@ -1,5 +1,10 @@
 <template>
-  <div class="w-screen h-screen flex items-start justify-center bg-slate-50">
+  <div
+    class="w-screen h-screen flex items-start justify-center bg-slate-50 relative"
+  >
+    <div class="absolute top-3 right-5" v-if="false">
+      <AppChangeLanguage :floatRight="true" />
+    </div>
     <div
       class="continer w-80 sm:w-96 relative overflow-hidden flex flex-col gap-8 bg-white p-12 items-center shadow-xl rounded-2xl border mt-4 md:mt-24 border-slate-200"
     >
@@ -382,9 +387,10 @@ import { useValidate } from "@/composables/validate";
 import { useNotification } from "@/composables/notification";
 import { useLockBtn } from "@/composables/lockBtn";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import AppChangeLanguage from "@/components/AppChangeLanguage.vue";
 
 export default {
-  components: { SelectorVue, AuthBtnsGroup },
+  components: { SelectorVue, AuthBtnsGroup, AppChangeLanguage },
   setup() {
     const { checkPath, getCachedToken } = useRedirectToAuth();
     const { addNotification } = useNotification();

@@ -20,7 +20,7 @@
       <div class="backdrop" @click="closeList()" />
       <transition-group name="list">
         <template v-if="list.length">
-          <ul class="list">
+          <ul class="list" :class="{ '!right-0 !left-auto': floatRight }">
             <li
               class="item"
               :class="{
@@ -71,6 +71,7 @@ export default {
     input_uderline: { type: Boolean, required: false, default: () => false }, // стиль интпута
     SelectedInTitle: { type: Boolean, required: false, default: () => false }, // показывать выбранный итем в тайтле
     dropInputAftSel: { type: Boolean, required: false, default: () => true }, // Сбрасывать инпут после селекта
+    floatRight: { type: Boolean, required: false, default: () => false }, // Список относительно правой стораны
   },
   emits: ["changeInputValue", "focusIn", "select"],
   setup(props, context) {

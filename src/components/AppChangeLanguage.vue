@@ -3,6 +3,7 @@
     :placeholder="t('HomeMenu.selectLengPlaceholder')"
     :selected="langConfiguration.selected"
     :list="langConfiguration.list"
+    :floatRight="floatRight"
     @select="(op) => langConfiguration.select(op)"
   >
     <template #title>
@@ -29,6 +30,9 @@ import AppInputSelect from "./AppInputSelect.vue";
 
 export default {
   components: { AppInputSelect },
+  props: {
+    floatRight: { type: Boolean, required: false, default: () => false },
+  },
   setup() {
     return { ...useLangConfiguration() };
   },
