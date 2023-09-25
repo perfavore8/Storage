@@ -1,13 +1,7 @@
 <template>
   <div class="menu">
     <div class="ref ref_center" v-if="isTest">
-      <AppInputSelect
-        :placeholder="t('HomeMenu.selectLengPlaceholder')"
-        :selected="langConfiguration.selected"
-        :list="langConfiguration.list"
-        class="w-44"
-        @select="(op) => langConfiguration.select(op)"
-      />
+      <AppChangeLanguage />
     </div>
     <div class="ref ref_center">
       <button
@@ -53,7 +47,7 @@
       </template>
     </div>
 
-    <div class="ref" v-if="isColored">
+    <div class="ref" v-if="false">
       <button
         class="ref_2_logo btn"
         @click="open_close_sync()"
@@ -206,13 +200,13 @@ import { useToggle } from "@vueuse/core";
 import store from "@/store";
 import router from "@/router";
 import { useRoleSettings } from "@/composables/roleSettings";
-import AppInputSelect from "./AppInputSelect.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import AppChangeLanguage from "./AppChangeLanguage.vue";
 export default {
   components: {
     TaskCenter,
     HomeMenuUser,
-    AppInputSelect,
+    AppChangeLanguage,
   },
   setup() {
     const { t } = useLangConfiguration();
