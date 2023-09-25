@@ -1,18 +1,21 @@
 <template>
   <div class="input-select">
-    <input
-      type="text"
-      class="input"
-      :class="{
-        input_uderline: input_uderline,
-        black_text: SelectedInTitle && selected?.name,
-      }"
-      v-model="inputValue"
-      @click="openList()"
-      :placeholder="
-        SelectedInTitle && selected?.name ? selected?.name : placeholder
-      "
-    />
+    <div @click="openList()">
+      <slot name="title">
+        <input
+          type="text"
+          class="input"
+          :class="{
+            input_uderline: input_uderline,
+            black_text: SelectedInTitle && selected?.name,
+          }"
+          v-model="inputValue"
+          :placeholder="
+            SelectedInTitle && selected?.name ? selected?.name : placeholder
+          "
+        />
+      </slot>
+    </div>
     <template v-if="showList">
       <div class="backdrop" @click="closeList()" />
       <transition-group name="list">
