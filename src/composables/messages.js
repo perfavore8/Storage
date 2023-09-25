@@ -924,7 +924,7 @@ export const messages = {
       hfs: "Hide final stages",
       cre: "Create an order",
       up: "Update the list",
-      sd: "Transactions:",
+      sd: "Orders:",
       woz: "Refund",
       ser: "Search and filter",
     },
