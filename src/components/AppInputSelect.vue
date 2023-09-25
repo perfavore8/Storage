@@ -67,6 +67,7 @@ export default {
     placeholder: { type: String, required: false },
     input_uderline: { type: Boolean, required: false, default: () => false }, // стиль интпута
     SelectedInTitle: { type: Boolean, required: false, default: () => false }, // показывать выбранный итем в тайтле
+    dropInputAftSel: { type: Boolean, required: false, default: () => true }, // Сбрасывать инпут после селекта
   },
   emits: ["changeInputValue", "focusIn", "select"],
   setup(props, context) {
@@ -103,7 +104,7 @@ export default {
     const selectItem = (item) => {
       context.emit("select", item);
       closeList();
-      inputValue.value = "";
+      if (props.dropInputAftSel) inputValue.value = "";
     };
 
     return {
