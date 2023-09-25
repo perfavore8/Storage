@@ -20,6 +20,7 @@ export const messages = {
       all: "All",
       clear: "Clear",
       apply2: "Apply",
+      drop: "Reset",
     },
     message: {
       OrdersInPipeline: "There are orders in this pipeline.",
