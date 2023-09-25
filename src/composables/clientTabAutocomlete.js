@@ -34,6 +34,7 @@ export function useClientTabAutocomplete(params) {
       }
       await saveOrder();
       getOrder();
+      this.list = [];
     },
   });
 
