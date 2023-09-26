@@ -53,7 +53,7 @@
                   {{ $t("EditStuff.oneWh") }}
                 </label>
               </div>
-              <div class="permit">
+              <div class="permit" v-if="isTest">
                 <input
                   type="checkbox"
                   class="checkbox"
@@ -288,6 +288,9 @@ export default {
         list.push({ value: val[0], ...val[1] });
       });
       return list;
+    },
+    isTest() {
+      return this.$store.state.account.account.id === 1;
     },
   },
   methods: {
