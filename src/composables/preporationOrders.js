@@ -8,7 +8,7 @@ import { ref } from "vue";
 const userList = ref([]);
 
 export function usePreparationOrders() {
-  const { formatNumber } = useValidate();
+  const { formatNumber, dateFormater } = useValidate();
   onMounted(async () => {
     if (!userList.value.length) {
       const users = await store.dispatch("getUsersList");
@@ -24,11 +24,6 @@ export function usePreparationOrders() {
 
   const getValue = (value, code) =>
     value?.[code] || value?.fields?.[code] || "";
-
-  const dateFormater = (date) => {
-    const res = new Date(date);
-    return res.toLocaleString();
-  };
 
   const preparationValueByType = (value, field) => {
     if (field.type === 8) return value && dateFormater(value);

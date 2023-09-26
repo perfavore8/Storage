@@ -19,5 +19,10 @@ export function useValidate() {
     return parts.join(".");
   }
 
-  return { validateEmail, formatNumber };
+  const dateFormater = (date) => {
+    const res = new Date(date);
+    return res.toLocaleString();
+  };
+
+  return { validateEmail, formatNumber, dateFormater };
 }
