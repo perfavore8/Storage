@@ -1,8 +1,5 @@
 <template>
   <div class="menu">
-    <div class="ref ref_center" v-if="isTest">
-      <AppChangeLanguage />
-    </div>
     <div class="ref ref_center">
       <button
         class="ref_2_logo btn"
@@ -201,12 +198,10 @@ import store from "@/store";
 import router from "@/router";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { useLangConfiguration } from "@/composables/langConfiguration";
-import AppChangeLanguage from "./AppChangeLanguage.vue";
 export default {
   components: {
     TaskCenter,
     HomeMenuUser,
-    AppChangeLanguage,
   },
   setup() {
     const { t } = useLangConfiguration();

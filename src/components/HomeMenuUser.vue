@@ -2,6 +2,11 @@
   <div
     class="cont z-[999] flex flex-col items-stretch rounded-xl absolute top-[200%] right-0 min-w-[300px] overflow-hidden shadow-lg shadow-slate-500/10 bg-white origin-top"
   >
+    <AppChangeLanguage
+      class="!absolute top-[18px] right-2"
+      :floatRight="true"
+      v-if="isTest"
+    />
     <router-link :to="'/profile'">
       <div
         class="head bg-big-stone-100 w-full p-3 flex flex-row gap-3 items-center min-h-[72px]"
@@ -50,14 +55,16 @@ import { useLogOut } from "@/composables/logOut";
 import { inFrame } from "@/composables/checkInFrame";
 import { useAvailableUserAccounts } from "@/composables/availableUserAccounts";
 import ImportStuffSelector from "./ImportStuffSelector.vue";
+import AppChangeLanguage from "./AppChangeLanguage.vue";
 
 export default {
-  components: { ImportStuffSelector },
+  components: { ImportStuffSelector, AppChangeLanguage },
   setup() {
     const { logOut } = useLogOut();
     const { availableUserAccounts } = useAvailableUserAccounts();
 
     const userName = computed(() => store.state.account.user?.name);
+    const isTest = computed(() => store.state.account?.account?.id == 1);
 
     const isImgLoaded = ref(true);
     const img = ref(null);
@@ -72,6 +79,7 @@ export default {
       logOut,
       inFrame,
       availableUserAccounts,
+      isTest,
     };
   },
 };
