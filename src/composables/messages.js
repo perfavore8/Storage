@@ -330,6 +330,7 @@ export const messages = {
       otherDeals: "Allow adding items from the reserve to other deals",
       zeroCount: "Allow adding goods with zero balance to deal",
       oneWh: "Products in a deal from only one warehouse",
+      manualBudjet: "Allow manual budget editing",
       stepsRes: {
         header: "Stages of products reservation from the warehouse",
         text: "Attention! Within one pipeline, the reserving stage should be before the write-off stage. If the reservation stage is not selected, then the reservation will take place at the moment the item is added to the deal.",
@@ -1368,6 +1369,7 @@ export const messages = {
       otherDeals: "Разрешать добавлять товары из резерва в другие сделки",
       zeroCount: "Разрешать добавлять в сделки товар с нулевым остатком",
       oneWh: "Товары в сделке только из одного склада",
+      manualBudjet: "Разрешать ручное редактирование бюджета",
       stepsRes: {
         header: "Этапы резервирования товаров со склада",
         text: "Внимание! В рамках одной воронки этап резерирования должен быть раньше этапа списания. Если этап презервирования не выбран, то резерирование будет происходить в момент добавления товара в сделку.",

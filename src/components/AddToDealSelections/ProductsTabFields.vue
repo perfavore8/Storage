@@ -46,7 +46,17 @@
           />
         </template>
         <div class="text-base font-medium" v-else>
-          {{ total?.[item.value] }}
+          <input
+            type="text"
+            class="input"
+            v-if="item.value === 'price' && config?.manual_budget_editing"
+            v-model="order.custom_price"
+            :placeholder="total?.[item.value]"
+            @change="toggleSomeChange()"
+          />
+          <template v-else>
+            {{ total?.[item.value] }}
+          </template>
         </div>
       </div>
       <div class="flex flex-col pb-3 items-start w-full">
@@ -167,7 +177,17 @@ export default {
       return response === "Invalid Date" ? "" : response;
     };
 
-    return { list, selector, order, user_name, toggleSomeChange, dateFormater };
+    const config = computed(() => store.state.account.account?.config);
+
+    return {
+      list,
+      selector,
+      order,
+      user_name,
+      toggleSomeChange,
+      dateFormater,
+      config,
+    };
   },
 };
 </script>

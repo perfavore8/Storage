@@ -53,6 +53,17 @@
                   {{ $t("EditStuff.oneWh") }}
                 </label>
               </div>
+              <div class="permit">
+                <input
+                  type="checkbox"
+                  class="checkbox"
+                  id="q5"
+                  v-model="copyConfing.manual_budget_editing"
+                />
+                <label for="q5">
+                  {{ $t("EditStuff.manualBudjet") }}
+                </label>
+              </div>
             </div>
           </div>
         </div>

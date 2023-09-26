@@ -515,10 +515,28 @@ export default {
         if (prod.user_name) res.user_name = prod.user_name;
         res.price_currency = prod.price_currency || "";
       });
+      const costPriceNumber = res.cost_price;
       res.cost_price =
         String(formatNumber(res.cost_price)) + " " + res.price_currency;
-      res.price = String(formatNumber(res.price)) + " " + res.price_currency;
-      res.prib = String(formatNumber(res.prib)) + " " + res.price_currency;
+      res.price =
+        String(formatNumber(order.custom_price || res.price)) +
+        " " +
+        res.price_currency;
+      res.prib =
+        String(
+          formatNumber(
+            order.custom_price ? order.custom_price - costPriceNumber : res.prib
+          )
+        ) +
+        " " +
+        res.price_currency;
+      return res;
+    },
+    allPrices() {
+      const res = [];
+      this.addedProducts.forEach((prod) =>
+        res.push(Number(prod.price || 0) * Number(prod.count || 0))
+      );
       return res;
     },
   },
@@ -557,6 +575,12 @@ export default {
     allWhsList: {
       handler: function () {
         this.saveSelectedWirePerLead();
+      },
+      deep: true,
+    },
+    allPrices: {
+      handler: function () {
+        order.custom_price = null;
       },
       deep: true,
     },
