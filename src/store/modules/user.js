@@ -11,6 +11,8 @@ export default {
         data: params,
       });
 
+      context.dispatch("getUsersList", { isUpdate: true });
+
       return data;
     },
     async addUser(context, params) {
@@ -20,6 +22,8 @@ export default {
         data: params,
       });
 
+      context.dispatch("getUsersList", { isUpdate: true });
+
       return data;
     },
     async linkUser(context, params) {
@@ -28,6 +32,8 @@ export default {
         params: params,
       });
 
+      context.dispatch("getUsersList", { isUpdate: true });
+
       return data;
     },
     async unLinkUser(context, params) {
@@ -35,6 +41,8 @@ export default {
         url: "account/user/unlink",
         params: params,
       });
+
+      context.dispatch("getUsersList", { isUpdate: true });
 
       return data;
     },

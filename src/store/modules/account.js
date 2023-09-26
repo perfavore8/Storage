@@ -10,6 +10,8 @@ export default {
     leadFieldGroupsList: {},
     productLists: {},
     syncFields: {},
+    users: [],
+    tarifs: [],
   },
   getters: {},
   mutations: {
@@ -39,6 +41,12 @@ export default {
     },
     updateSyncFields(state, value) {
       state.syncFields = { ...value };
+    },
+    updateUsers(state, value) {
+      state.users = [...value];
+    },
+    updateTarifs(state, value) {
+      state.tarifs = [...value];
     },
   },
   actions: {
@@ -188,10 +196,26 @@ export default {
       return data;
     },
 
-    async getUsersList() {
+    async getUsersList(context, params) {
+      if (!params?.isUpdate && context.state.users.length)
+        return context.state.users;
+      delete params?.isUpdate;
       const { data } = await ApiReqFunc({
         url: "account/users",
       });
+      context.commit("updateUsers", data);
+
+      return data;
+    },
+
+    async getTarifsList(context, params) {
+      if (!params?.isUpdate && context.state.tarifs.length)
+        return context.state.tarifs;
+      delete params?.isUpdate;
+      const { data } = await ApiReqFunc({
+        url: "account/tarifs",
+      });
+      context.commit("updateTarifs", data);
 
       return data;
     },
