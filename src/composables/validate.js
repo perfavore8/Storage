@@ -19,7 +19,7 @@ export function useValidate() {
     return parts.join(".");
   }
 
-  const dateFormater = (date, params) => {
+  const dateFormater = (date, params = []) => {
     const res = new Date(date);
     return res.toLocaleString(...params);
   };
