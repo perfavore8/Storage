@@ -52,7 +52,7 @@
             v-if="item.value === 'price' && config?.manual_budget_editing"
             v-model="order.custom_price"
             :placeholder="total?.[item.value]"
-            @change="toggleSomeChange()"
+            @change="toggleSomeChange(true)"
           />
           <template v-else>
             {{ total?.[item.value] }}
