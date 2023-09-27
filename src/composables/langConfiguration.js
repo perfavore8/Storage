@@ -48,7 +48,8 @@ const i18n = createI18n({
 });
 
 const t = (...args) => i18n.global.t(...args);
+const tc = (...args) => i18n.global.tc(...args);
 
 export function useLangConfiguration() {
-  return { langConfiguration, i18n, t };
+  return { langConfiguration, i18n, t, tc };
 }
