@@ -39,6 +39,7 @@
               ? (UserListTableRef = el)
               : null
         "
+        :pagination="pagination"
       />
     </div>
   </div>

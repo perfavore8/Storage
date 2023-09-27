@@ -26,6 +26,7 @@
           class="fixed bottom-10 left-[10%] btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
           @click="saveParams.save()"
           v-if="saveParams.needSave"
+          :disabled="saveParams.isSaving"
         >
           <template v-if="saveParams.isSaving">
             {{ $t("newOrder.saving") }}

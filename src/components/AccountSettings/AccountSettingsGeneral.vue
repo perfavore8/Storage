@@ -20,6 +20,7 @@
             :countLettersReq="0"
             @select="(op) => country.select(op)"
             @changeInputValue="(val) => (country.value = val)"
+            id="123"
           />
         </form>
       </div>

@@ -63,18 +63,35 @@
         </span>
       </span>
     </p>
-    <a
-      @click="item.current || item.select()"
-      class="cursor-pointer ring-1 ring-inset ring-indigo-200 text-indigo-600 text-sm leading-6 font-semibold text-center py-2 px-3 rounded-md block mt-6"
-      :class="{
-        'bg-indigo-500 shadow-sm shadow-black/5 text-white': item.accent,
-        '!cursor-default text-slate-400': item.current && !item.accent,
-        '!cursor-default text-slate-500 bg-indigo-500/70':
-          item.current && item.accent,
-      }"
-    >
-      {{ $t("tarifs.buyBtn", { n: Number(item.current) + 1 }) }}
-    </a>
+    <div class="flex flex-row gap-y-1 gap-x-4 items-center mt-6">
+      <a
+        @click="item.current || select(item.id, 'buy')"
+        v-if="!isRussia && !item.current && item.id !== 3"
+        class="cursor-pointer w-full ring-1 ring-inset ring-indigo-200 text-indigo-600 text-sm leading-6 font-semibold text-center py-2 px-3 rounded-md block"
+        :class="{
+          'bg-indigo-500 shadow-sm shadow-black/5 text-white': item.accent,
+          '!cursor-default text-slate-400': item.current && !item.accent,
+          '!cursor-default text-slate-500 bg-indigo-500/70':
+            item.current && item.accent,
+        }"
+      >
+        {{ $tc("tarifs.buyBtn") }}
+      </a>
+      <a
+        @click="item.current || select(item.id, 'bill')"
+        class="cursor-pointer w-full ring-1 ring-inset ring-indigo-200 text-indigo-600 text-sm leading-6 font-semibold text-center py-2 px-3 rounded-md block"
+        :class="{
+          'bg-indigo-500 shadow-sm shadow-black/5 text-white': item.accent,
+          '!cursor-default text-slate-400': item.current && !item.accent,
+          '!cursor-default text-slate-500 bg-indigo-500/70':
+            item.current && item.accent,
+        }"
+      >
+        {{
+          $tc("tarifs.buyBtn2", item.id === 3 ? 0 : Number(item.current) + 1)
+        }}
+      </a>
+    </div>
     <ol class="text-gray-600 text-sm leading-6 mt-8 list-none">
       <li
         class="flex gap-3"
@@ -142,7 +159,7 @@
 
 <script>
 export default {
-  props: { item: Object },
+  props: { item: Object, isRussia: Boolean, select: Function },
   setup() {},
 };
 </script>

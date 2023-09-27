@@ -330,7 +330,7 @@ export const messages = {
       otherDeals: "Allow adding items from the reserve to other deals",
       zeroCount: "Allow adding goods with zero balance to deal",
       oneWh: "Products in a deal from only one warehouse",
-      manualBudjet: "Allow manual budget editing",
+      manualBudjet: "Allow manual editing of the order sum",
       stepsRes: {
         header: "Stages of products reservation from the warehouse",
         text: "Attention! Within one pipeline, the reserving stage should be before the write-off stage. If the reservation stage is not selected, then the reservation will take place at the moment the item is added to the deal.",
@@ -1022,8 +1022,9 @@ export const messages = {
       companies: "Companies",
     },
     tarifs: {
-      buyBtn: "Purchase | Purchased",
-      price: "{price}€",
+      buyBtn: "Purchase",
+      buyBtn2: "Connect | Request an invoice | Purchased",
+      price: "0 | {price}$",
       freePriceSmall: "one-time",
       pos: "positions",
       zak: "orders",
@@ -1369,7 +1370,7 @@ export const messages = {
       otherDeals: "Разрешать добавлять товары из резерва в другие сделки",
       zeroCount: "Разрешать добавлять в сделки товар с нулевым остатком",
       oneWh: "Товары в сделке только из одного склада",
-      manualBudjet: "Разрешать ручное редактирование бюджета",
+      manualBudjet: "Разрешать ручное редактирование суммы заказа",
       stepsRes: {
         header: "Этапы резервирования товаров со склада",
         text: "Внимание! В рамках одной воронки этап резерирования должен быть раньше этапа списания. Если этап презервирования не выбран, то резерирование будет происходить в момент добавления товара в сделку.",
@@ -2066,8 +2067,9 @@ export const messages = {
       companies: "Компании",
     },
     tarifs: {
-      buyBtn: "Приобрести | Приобретено",
-      price: "{price}₽",
+      buyBtn: "Приобрести",
+      buyBtn2: "Подключить | Запросить счет | Приобретено",
+      price: "0 | {price}$",
       freePriceSmall: "одноразово",
       pos: "позиций",
       zak: "заказов",

@@ -40,6 +40,8 @@ export function usePreparationOrders() {
         stepRes = getValue(value, code);
         if (code === "sum")
           stepRes = String(formatNumber(stepRes)) + " " + value.currency;
+        if (code === "budget")
+          stepRes = String(formatNumber(stepRes)) + " " + value.currency;
         if (code === "profit")
           stepRes = String(formatNumber(stepRes)) + " " + value.currency;
         if (code === "cost_price")
