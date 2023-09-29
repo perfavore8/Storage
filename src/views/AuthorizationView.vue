@@ -42,6 +42,7 @@
                   }"
                   :placeholder="t('Auth.passwordPh')"
                   :disabled="isSignUp || showRestorePassword"
+                  @keyup.enter="isLocked || submit()"
                 />
                 <input
                   type="checkbox"
@@ -103,6 +104,7 @@
                   }"
                   :placeholder="t('Auth.passwordPh')"
                   :disabled="isSignUp || showRestorePassword"
+                  @keyup.enter="isLocked || submit()"
                 />
                 <input
                   type="checkbox"
@@ -152,6 +154,7 @@
                   :type="showCurrentPassword ? 'text' : 'password'"
                   name="password"
                   v-model="form.password"
+                  @keyup.enter="isLocked || submit()"
                   :class="{
                     input_error:
                       inputErrors.trySubmit &&
@@ -265,6 +268,7 @@
                   placeholder="Example@email.com"
                   :disabled="!(isSignUp || showRestorePassword)"
                   class="mask-email input"
+                  @keyup.enter="isLocked || submit()"
                 />
               </template>
               <template v-else>
@@ -285,6 +289,7 @@
                       (isSignUp || showRestorePassword),
                   }"
                   v-model="form.phone"
+                  @keyup.enter="isLocked || submit()"
                   masked="false"
                   v-mask="imask.mask"
                   autocomplete="off"
