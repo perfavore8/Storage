@@ -1038,6 +1038,10 @@ export const messages = {
       users: "{count} users",
       exp: "Until {date}",
     },
+    filters: {
+      from: "from:",
+      to: "to:",
+    },
   },
   ru: {
     global: {
@@ -2082,6 +2086,10 @@ export const messages = {
       evry: "за каждого пользователя",
       users: "{count} пользователей",
       exp: "До {date}",
+    },
+    filters: {
+      from: "от:",
+      to: "до:",
     },
   },
 };

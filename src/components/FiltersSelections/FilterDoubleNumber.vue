@@ -4,14 +4,14 @@
       type="number"
       class="input"
       v-model.number="valueOne"
-      placeholder="от:"
+      :placeholder="t('filters.from')"
       @focusout="checkCorrectOrder()"
     />
     <input
       type="number"
       class="input"
       v-model.number="valueTwo"
-      placeholder="до:"
+      :placeholder="t('filters.to')"
       @focusout="checkCorrectOrder()"
     />
   </div>
@@ -19,6 +19,7 @@
 
 <script>
 import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   props: {
     item: {
@@ -31,6 +32,8 @@ export default {
     },
   },
   setup(props, context) {
+    const { t } = useLangConfiguration();
+
     const valueOne = ref("");
     const valueTwo = ref("");
 
@@ -77,7 +80,7 @@ export default {
       context.emit("change_filter_value", option_value.value, props.idx);
     };
 
-    return { valueOne, valueTwo, checkCorrectOrder };
+    return { valueOne, valueTwo, checkCorrectOrder, t };
   },
 };
 </script>
