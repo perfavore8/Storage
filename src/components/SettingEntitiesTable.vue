@@ -437,11 +437,7 @@
         :class="animationStarted ? 'in' : 'out'"
       >
         <AppMultiSelect
-          :list="
-            copyFieldsPropertiesWithSpace.newList([
-              ...(categories.selected.categories_id || []),
-            ])
-          "
+          :list="categories.newList"
           :placeholder="t('SettingEntities.table.titCat')"
           :rightSideSticky="true"
           :withTick="true"
@@ -822,12 +818,24 @@ export default {
       selected: {},
       ref: null,
       list: [],
+      newList: [],
       select: function (item) {
         if (!this.selected.categories_id) this.selected.categories_id = [];
         const idx = this.selected.categories_id.indexOf(item.value);
         idx === -1
           ? this.selected.categories_id.push(item.value)
           : this.selected.categories_id.splice(idx, 1);
+        this.getCats(this.selected.id, true);
+      },
+      getCats: async function (id, isUpdate) {
+        if (!isUpdate) {
+          const cats = await store.dispatch("getCatsField", { id: id });
+          if (!this.selected.categories_id)
+            this.selected.categories_id = cats || [];
+        }
+        this.newList = copyFieldsPropertiesWithSpace.newList(
+          this.selected.categories_id
+        );
       },
     });
     const modalRef = ref(null);
@@ -845,6 +853,7 @@ export default {
       () => categories.selected,
       (val) => {
         animationStarted.value = !!val.id;
+        if (val.id) categories.getCats(categories.selected.id);
         if (!val.id) {
           categories.list = [];
         } else if (categories.selected.specialList?.length) {

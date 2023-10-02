@@ -73,5 +73,14 @@ export default {
 
       return data;
     },
+
+    async getCatsField(context, params) {
+      const { data } = await ApiReqFunc({
+        url: "field/categories",
+        params: params,
+      });
+
+      return data;
+    },
   },
 };
