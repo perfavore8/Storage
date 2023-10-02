@@ -67,6 +67,7 @@ export default {
       Object.assign(state.types, value);
     },
     updatePipelines(state, value) {
+      if (!Array.isArray(value)) return;
       state.pipelines = [...value];
     },
     updateOrdersFields(state, value) {
