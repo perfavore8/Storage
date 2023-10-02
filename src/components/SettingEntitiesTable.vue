@@ -279,6 +279,7 @@
               v-if="
                 row.changeName ||
                 row.changeData ||
+                row.changeCats ||
                 row.changeLeadConfig ||
                 row.changeConfig
               "
@@ -286,6 +287,7 @@
                 update_field(idx, [
                   row.changeName ? 'name' : null,
                   row.changeData ? 'data' : null,
+                  row.changeCats ? 'categories_id' : null,
                   row.changeLeadConfig ? 'lead_config' : null,
                   row.changeConfig ? 'config' : null,
                 ])
@@ -437,8 +439,7 @@
         <AppMultiSelect
           :list="
             copyFieldsPropertiesWithSpace.newList([
-              categories.selected?.category_id,
-              ...categories.list,
+              ...(categories.selected.categories_id || []),
             ])
           "
           :placeholder="t('SettingEntities.table.titCat')"
@@ -510,6 +511,7 @@ export default {
           res ||
           field.changeName ||
           field.changeData ||
+          field.changeCats ||
           field.changeLeadConfig ||
           field.changeConfig;
       });
@@ -594,12 +596,14 @@ export default {
         const needUpdate =
           field.changeName ||
           field.changeData ||
+          field.changeCats ||
           field.changeLeadConfig ||
           field.changeConfig;
         if (needUpdate)
           update_field(idx, [
             field.changeName ? "name" : null,
             field.changeData ? "data" : null,
+            field.changeCats ? "categories_id" : null,
             field.changeLeadConfig ? "lead_config" : null,
             field.changeConfig ? "config" : null,
           ]);
@@ -734,6 +738,7 @@ export default {
     const changeFieldsSource = reactive({
       changeName: "name",
       changeData: "data",
+      changeCats: "categories_id",
       changeLeadConfig: "lead_config",
       changeConfig: "config",
     });
@@ -818,8 +823,11 @@ export default {
       ref: null,
       list: [],
       select: function (item) {
-        const idx = this.list.indexOf(item.value);
-        idx === -1 ? this.list.push(item.value) : this.list.splice(idx, 1);
+        if (!this.selected.categories_id) this.selected.categories_id = [];
+        const idx = this.selected.categories_id.indexOf(item.value);
+        idx === -1
+          ? this.selected.categories_id.push(item.value)
+          : this.selected.categories_id.splice(idx, 1);
       },
     });
     const modalRef = ref(null);
