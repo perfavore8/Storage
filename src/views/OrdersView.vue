@@ -82,7 +82,7 @@
           v-if="displayType.selected.name === 'grid'"
         >
           {{ $t("orders.sd") }} {{ grid?.meta?.meta?.total || 0 }} |
-          {{ grid?.meta?.meta?.sum || 0 }} ₽
+          {{ formatNumber(grid?.meta?.meta?.sum) }} ₽
         </div>
       </div>
       <OrdersFilters v-if="false" />
@@ -117,6 +117,7 @@ import { useRoleSettings } from "@/composables/roleSettings";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import { usePreparationOrders } from "@/composables/preporationOrders";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useValidate } from "@/composables/validate";
 export default {
   components: {
     AppHeader,
@@ -132,6 +133,7 @@ export default {
     const { currentSetSettingsInFolder } = useRoleSettings("orders");
     const { saveAllQueryParams, saveLSParam, getSavedLSParam } = useSaveLS();
     saveAllQueryParams();
+    const { formatNumber } = useValidate();
 
     const addToDeal = () => router.push("/addToDeal");
 
@@ -224,6 +226,7 @@ export default {
       openTableSettings,
       hideFinalSteps,
       currentSetSettingsInFolder,
+      formatNumber,
       t,
     };
   },
