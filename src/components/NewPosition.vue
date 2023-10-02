@@ -410,6 +410,7 @@ export default {
         t("ostatki.seb"),
         t("ostatki.price3"),
         t("ostatki.price3"),
+        t("ostatki.ndsT"),
         t("ostatki.cat2"),
         t("ostatki.op"),
       ],
