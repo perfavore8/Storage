@@ -394,8 +394,11 @@ export default {
     };
     const { pipelines } = useOrdersPipelinesSelect();
     const getOrders = async () => {
+      const params1 = {};
+      if (pipelines.selected.id !== -1)
+        params1.pipeline_id = pipelines.selected.id;
       await store.dispatch("getOrders", {
-        pipeline_id: pipelines.selected.id,
+        ...params1,
         ...params.value,
       });
       fillOrders();

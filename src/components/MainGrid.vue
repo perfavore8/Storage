@@ -223,7 +223,7 @@ export default {
   async mounted() {
     this.$store.commit("toggleIsNavBarDisabled", true);
     await Promise.all([
-      this.$store.dispatch("get_fields_properties"),
+      // this.$store.dispatch("get_fields_properties"),
       this.$store.dispatch(
         "getTableConfig",
         this.selectedWH.value != "whs" ? this.selectedWH.value : ""

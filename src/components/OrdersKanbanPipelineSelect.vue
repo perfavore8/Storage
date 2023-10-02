@@ -12,8 +12,9 @@ import AppInputSelect from "./AppInputSelect.vue";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 export default {
   components: { AppInputSelect },
-  setup() {
-    const { pipelines } = useOrdersPipelinesSelect();
+  props: { needAll: { type: Boolean, req: false } },
+  setup(props) {
+    const { pipelines } = useOrdersPipelinesSelect(props.needAll);
 
     return { pipelines };
   },

@@ -1,19 +1,26 @@
 import store from "@/store";
 import { computed } from "vue";
 import { reactive } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
+
+const { t } = useLangConfiguration();
 
 const pipelines = reactive({
   selected: {},
   list: [],
   allStatuses: computed(() =>
-    pipelines.list.flatMap((item) => [...item.statuses])
+    pipelines.list.flatMap((item) => [
+      ...(Array.isArray(item.statuses) ? item.statuses : []),
+    ])
   ),
   select: function (option) {
     if (option) this.selected = option;
   },
-  getList: function () {
+  getList: function (needAll) {
+    if (needAll && this.list[0].value !== -1)
+      this.list.unshift({ name: t("global.all"), value: -1, id: -1 });
     if (this.list.length) return;
-    this.getNewList();
+    this.getNewList(needAll);
   },
   getNewList: async function () {
     const list = await store.dispatch("ordersPipelinesList");
@@ -27,9 +34,9 @@ const pipelines = reactive({
     this.select(item);
   },
 });
-export function useOrdersPipelinesSelect() {
+export function useOrdersPipelinesSelect(needAll) {
   const start = async () => {
-    await pipelines.getList();
+    await pipelines.getList(needAll);
     pipelines.dropToDefault();
   };
   const startPromise = start();

@@ -26,7 +26,7 @@
               </span>
             </transition>
           </button>
-          <OrdersKanbanPipelineSelect />
+          <OrdersKanbanPipelineSelect :needAll="true" />
           <div class="flex items-center" v-if="isMain || isTest">
             <input
               type="checkbox"
