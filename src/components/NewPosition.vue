@@ -56,9 +56,13 @@
                           'article',
                           row.article,
                           idx
-                        )
+                        ),
+                          toggleShowOptions(true)
                       "
-                      @focusout="set_selected_field_autocomplete('', '', idx)"
+                      @focusout="
+                        set_selected_field_autocomplete('', '', idx),
+                          toggleShowOptions(false)
+                      "
                       @input="
                         set_selected_field_autocomplete(
                           'article',
@@ -95,9 +99,13 @@
                       type="text"
                       v-model="row.name"
                       @focusin="
-                        set_selected_field_autocomplete('name', row.name, idx)
+                        set_selected_field_autocomplete('name', row.name, idx),
+                          toggleShowOptions(true)
                       "
-                      @focusout="set_selected_field_autocomplete('', '', idx)"
+                      @focusout="
+                        set_selected_field_autocomplete('', '', idx),
+                          toggleShowOptions(false)
+                      "
                       @input="
                         set_selected_field_autocomplete('name', row.name, idx)
                       "
@@ -347,10 +355,7 @@
           <button class="add_new_button" @click="push_new_item()">+</button>
         </div>
       </div>
-      <teleport
-        :to="targetAutocomplete"
-        v-if="selected_field_autocomplete_list.length"
-      >
+      <teleport to="body" v-if="selected_field_autocomplete_list.length">
         <ul class="autocomplete_teleport">
           <li
             v-for="item in selected_field_autocomplete_list"
@@ -439,6 +444,8 @@ export default {
       fieldsServiceForValidation: ["article", "name", "cost_price"],
       try_accept: false,
       acceptBtnDisable: false,
+      optionsX: null,
+      optionsY: null,
     };
   },
   computed: {
@@ -507,6 +514,7 @@ export default {
               "autocomplete_" + complete.field,
               complete.value
             );
+            this.calcOptionsPosition();
             if (list != undefined)
               this.selected_field_autocomplete_list = [...list];
           }
@@ -813,6 +821,11 @@ export default {
         this.$refs.tableWrapper.style.overflowX = option;
       };
       isOpen ? changeOverflow("hidden") : changeOverflow("auto");
+    },
+    calcOptionsPosition() {
+      const rect = this.targetAutocomplete?.getBoundingClientRect();
+      this.optionsX = rect?.x + "px";
+      this.optionsY = rect?.bottom - 10 + "px";
     },
   },
 };
@@ -1125,6 +1138,8 @@ input[type="number"]::-webkit-inner-spin-button {
   position: absolute;
   top: 50px;
   left: 0;
+  left: v-bind(optionsX);
+  top: v-bind(optionsY);
   border-radius: 4px;
   list-style: none;
   max-height: 400px;
@@ -1141,7 +1156,7 @@ input[type="number"]::-webkit-inner-spin-button {
   background-color: white;
   border: 1px solid #ced4da;
   border-radius: 4px;
-  z-index: 5;
+  z-index: 265;
 
   box-sizing: border-box;
   li {
