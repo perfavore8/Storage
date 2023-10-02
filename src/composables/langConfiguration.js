@@ -12,9 +12,14 @@ const langConfiguration = reactive({
     { name: "English", value: "en" },
     { name: "Русский", value: "ru", default: true },
   ],
-  select: function (option, initial) {
+  select: async function (option, initial) {
     saveLSParam("lang", option.value);
     this.selected = option;
+    await ApiReqFunc({
+      method: "post",
+      url: "account/user/update",
+      data: { lang: this.selected.value },
+    });
     if (!initial) router.go(0);
   },
   getSavedlang: function () {
@@ -25,11 +30,6 @@ const langConfiguration = reactive({
       return;
     }
     this.select(item, true);
-    ApiReqFunc({
-      method: "post",
-      url: "account/user/update",
-      data: { lang: this.selected.value },
-    });
   },
   dropToDefault: function () {
     const item = this.list.find((el) => el.default);
