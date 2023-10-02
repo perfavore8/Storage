@@ -3,6 +3,7 @@ export default {
   state: {
     fields_properties: [],
     isLoading: false,
+    getPromise: null,
   },
   getters: {
     fields_properties(state) {
@@ -16,13 +17,27 @@ export default {
     updateIsLoading(state, value) {
       state.isLoading = value;
     },
+    updatePromise(state, value) {
+      state.getPromise = value;
+    },
   },
   actions: {
-    async get_fields_properties(context) {
+    async get_fields_properties(context, params) {
       context.commit("updateIsLoading", true);
-      const { data } = await ApiReqFunc({
+      if (context.getPromise !== null) {
+        await context.getPromise;
+        await new Promise((res) => setTimeout(() => res(), 100));
+      }
+      if (!params?.isUpdate && context.state.fields_properties.length) {
+        context.commit("updateIsLoading", false);
+        return context.state.fields_properties;
+      }
+      delete params?.isUpdate;
+      const promise = ApiReqFunc({
         url: "category/list",
       });
+      context.commit("updatePromise", promise);
+      const { data } = await promise;
       context.commit("update_fields_properties", data);
 
       context.commit("updateIsLoading", false);
@@ -34,7 +49,7 @@ export default {
         method: "post",
         data: params,
       });
-      context.dispatch("get_fields_properties");
+      context.dispatch("get_fields_properties", { isUpdate: true });
 
       return data;
     },
@@ -44,7 +59,7 @@ export default {
         method: "post",
         data: params,
       });
-      context.dispatch("get_fields_properties");
+      context.dispatch("get_fields_properties", { isUpdate: true });
 
       return data;
     },
@@ -54,7 +69,7 @@ export default {
         method: "post",
         data: params,
       });
-      context.dispatch("get_fields_properties");
+      context.dispatch("get_fields_properties", { isUpdate: true });
 
       return data;
     },
