@@ -10,6 +10,7 @@
       />
       <label for="all"></label>
     </th>
+    <th class="bar_item item" />
     <th
       class="bar_item item"
       :style="{
