@@ -81,9 +81,7 @@
               <MaskEmail
                 :class="{
                   'mask-email--error':
-                    inputErrors.trySubmit &&
-                    inputErrors.email &&
-                    (isSignUp || showRestorePassword),
+                    inputErrors.trySubmit && inputErrors.email,
                 }"
                 v-model:value="form.email"
                 placeholder="Example@email.com"
