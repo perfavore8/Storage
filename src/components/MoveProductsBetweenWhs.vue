@@ -109,11 +109,11 @@
                 <td class="item">
                   <input
                     type="text"
-                    v-model="row.fields.rison"
+                    v-model="row.fields.reason"
                     class="input"
                     :disabled="row.isNew"
                     :class="{
-                      not_valid: row.fields?.rison == '' && try_accept,
+                      not_valid: row.fields?.reason == '' && try_accept,
                     }"
                   />
                 </td>
@@ -172,7 +172,7 @@ export default {
         t("ostatki.wh1"),
         t("ostatki.wh2"),
         t("ostatki.count"),
-        t("ostatki.rison"),
+        t("ostatki.reason"),
         "",
       ],
       itemsForMove: [],
@@ -207,7 +207,7 @@ export default {
       this.itemsForMove = [...this.currentItems];
       this.itemsForMove.map((item) => {
         item.fields.countToMove = 0;
-        item.fields.rison = "";
+        item.fields.reason = "";
         item.fields.whs_options = [];
         item.fields.whToCancel = { name: t("global.notSelected"), value: -1 };
         item.fields.whToMove = { name: t("global.notSelected"), value: -1 };
@@ -269,7 +269,7 @@ export default {
     },
     autocompleteSelect(newItem, idx) {
       newItem.fields.countToMove = 0;
-      newItem.fields.rison = "";
+      newItem.fields.reason = "";
       newItem.fields.whs_options = [];
       newItem.fields.whToCancel = { name: t("global.notSelected"), value: -1 };
       newItem.fields.whToMove = { name: t("global.notSelected"), value: -1 };
@@ -281,7 +281,7 @@ export default {
         isNew: true,
         fields: {
           countToMove: 0,
-          rison: "",
+          reason: "",
           whs_options: [],
           whToCancel: { name: t("global.notSelected"), value: -1 },
           whToMove: { name: t("global.notSelected"), value: -1 },
@@ -308,9 +308,9 @@ export default {
         accept =
           accept &&
           item.fields.countToMove != "" &&
-          item.fields.rison != "" &&
+          item.fields.reason != "" &&
           item.fields.countToMove != undefined &&
-          item.fields.rison != undefined &&
+          item.fields.reason != undefined &&
           item.fields.whToCancel.value != item.fields.whToMove.value &&
           item.fields.whToCancel.value != -1 &&
           item.fields.whToMove.value != -1;
@@ -325,7 +325,7 @@ export default {
             wh_from: itemMove.fields.whToCancel.value,
             wh_to: itemMove.fields.whToMove.value,
             count: itemMove.fields.countToMove,
-            comment: itemMove.fields.rison,
+            comment: itemMove.fields.reason,
           };
           params.products.push(item);
         });

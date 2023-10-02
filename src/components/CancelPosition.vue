@@ -65,10 +65,10 @@
                 <td class="item">
                   <input
                     type="text"
-                    v-model="row.fields.rison"
+                    v-model="row.fields.reason"
                     class="input"
                     :class="{
-                      not_valid: row.fields?.rison == '' && try_accept,
+                      not_valid: row.fields?.reason == '' && try_accept,
                     }"
                   />
                 </td>
@@ -114,7 +114,7 @@ export default {
         t("ostatki.batch"),
         t("ostatki.wh"),
         t("ostatki.count"),
-        t("ostatki.rison"),
+        t("ostatki.reason"),
       ],
       items_to_cancel: [],
       whs_options: [],
@@ -127,7 +127,7 @@ export default {
       this.items_to_cancel = [...this.currentItems];
       this.items_to_cancel.map((val) => {
         val.fields.countToCancel = 0;
-        val.fields.rison = "";
+        val.fields.reason = "";
         val.fields.whs_options = [];
         val.fields.whToCancel = { name: t("global.notSelected"), value: -1 };
       });
@@ -227,9 +227,9 @@ export default {
         accept =
           accept &&
           val.fields.countToCancel != "" &&
-          val.fields.rison != "" &&
+          val.fields.reason != "" &&
           val.fields.countToCancel != undefined &&
-          val.fields.rison != undefined;
+          val.fields.reason != undefined;
       });
       if (accept) {
         const params = {
@@ -239,7 +239,7 @@ export default {
           const item = {
             id: val.id,
             fields: val.fields,
-            comment: val.fields.rison,
+            comment: val.fields.reason,
           };
           item.fields[val.fields.whToCancel.value].count =
             item.fields[val.fields.whToCancel.value].count -
@@ -247,7 +247,7 @@ export default {
           // item.fields[val.fields.whToCancel.value].reserve +=
           //   item.fields.countToCancel;
           delete item.fields.countToCancel;
-          delete item.fields.rison;
+          delete item.fields.reason;
           delete item.fields.whs_options;
           delete item.fields.whToCancel;
           params.products.push(item);
