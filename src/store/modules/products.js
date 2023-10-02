@@ -129,7 +129,7 @@ export default {
     async autocomplete_name(context, query) {
       const { data } = await ApiReqFunc({
         url: "product/autocomplete/name",
-        data: { query: query },
+        params: { query: query },
       });
 
       return data;
