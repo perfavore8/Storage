@@ -29,7 +29,7 @@
         :countLettersReq="0"
         :requestDelay="0"
         :SelectedInTitle="true"
-        :placeholder="t('newOrder.auth')"
+        :placeholder="t('newOrder.a')"
         @changeInputValue="(val) => (docs.value = val)"
         @select="(option) => docs.select(option)"
       />
