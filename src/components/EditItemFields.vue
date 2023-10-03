@@ -90,6 +90,14 @@
       @change_value="change_value"
       v-if="field.type == 13"
     />
+    <edit-img-list
+      :item="field.name"
+      :selected_option="new_edit_data.fields[field.code]"
+      :idx="field.code"
+      :disabled="!field.is_editable"
+      @change_value="change_value"
+      v-if="field.type == 15"
+    />
   </div>
 </template>
 
@@ -106,6 +114,7 @@ import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
 import EditPrice from "@/components/EditItemSelections/EditPrice.vue";
 import EditWh from "@/components/EditItemSelections/EditWh.vue";
 import { nextTick } from "vue";
+import EditImgList from "./EditItemSelections/EditImgList.vue";
 export default {
   components: {
     EditInteger,
@@ -119,6 +128,7 @@ export default {
     EditFlag,
     EditPrice,
     EditWh,
+    EditImgList,
   },
   props: {
     new_edit_data: {
