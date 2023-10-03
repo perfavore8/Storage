@@ -85,13 +85,15 @@ export default {
       showPlaceholder.value = false;
       clearTimeout(timer.value);
       if (inputValue.value.length >= props.countLettersReq) {
-        showPlaceholder.value = true;
+        if (props.requestDelay >= 100) showPlaceholder.value = true;
         timer.value = setTimeout(() => {
           context.emit("changeInputValue", inputValue.value);
-          setTimeout(
-            () => (showPlaceholder.value = false),
-            props.requestDelay * 3
-          );
+          if (props.requestDelay >= 100) {
+            setTimeout(
+              () => (showPlaceholder.value = false),
+              props.requestDelay * 3
+            );
+          }
         }, props.requestDelay);
       }
     };
