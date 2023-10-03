@@ -15,7 +15,7 @@
       </transition>
     </div>
 
-    <div class="ref ref_center">
+    <div class="ref ref_center" v-if="isHomePage">
       <button
         class="ref_2_logo btn"
         @click="openImportXlsl()"
@@ -279,6 +279,10 @@ export default {
 
     const [showUserMenu, toggleShowUserMenu] = useToggle(false);
 
+    const isHomePage = computed(
+      () => router?.currentRoute?.value?.name === "home"
+    );
+
     return {
       showTaskCenter,
       show_sync,
@@ -316,6 +320,7 @@ export default {
       openUserLIst,
       currentSetSettings,
       ...useLangConfiguration(),
+      isHomePage,
     };
   },
 };
