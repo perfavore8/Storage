@@ -118,7 +118,7 @@
                 v-model="item.img_url"
                 :placeholder="t('SettingEntities.entCats.url')"
                 @input="() => changeImgUrl(item)"
-                v-if="isTest"
+                v-if="isTest && item.level !== 1"
               />
             </div>
             <div
