@@ -35,7 +35,7 @@ export function usePreparationProducts() {
           }
           if (field.type === 6 && item.fields?.[field.code].length) {
             const a = item.fields?.[field.code]?.join(", ");
-            item.fields[field.code] = a;
+            item.fields[field.code + "_string"] = a;
           }
         }
         if (field.type === 7 || field.type === 8) {
