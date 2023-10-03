@@ -40,7 +40,10 @@ export default {
     async get_fields(context, category_id) {
       const { data } = await ApiReqFunc({
         url: "field/list",
-        params: { category_id: category_id, with_parents: 0 },
+        params: {
+          ...(category_id !== -1 ? { category_id: category_id } : {}),
+          with_parents: 0,
+        },
       });
       context.commit("update_fields", data);
 
