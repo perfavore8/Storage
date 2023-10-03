@@ -832,6 +832,11 @@ export default {
           const cats = await store.dispatch("getCatsField", { id: id });
           if (!this.selected.categories_id)
             this.selected.categories_id = cats || [];
+          setComputeds(
+            this.selected,
+            JSON.parse(JSON.stringify(this.selected)),
+            "changeCats"
+          );
         }
         this.newList = copyFieldsPropertiesWithSpace.newList(
           this.selected.categories_id
