@@ -40,7 +40,7 @@
         </td>
         <td class="cell order-3 row-span-2 place-self-center">
           <a class="link" href="#" @click="route()">
-            {{ $t("Clients.follow") }}
+            {{ $t("Clients.Edit.follow") }}
           </a>
         </td>
       </tr>
