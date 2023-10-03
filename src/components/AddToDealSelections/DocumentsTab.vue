@@ -37,7 +37,7 @@
         <button
           class="btn pointer-events-auto relative inline-flex transition-all rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
           @click="generate()"
-          :disabled="docs.selected.value === -1 && false"
+          :disabled="docs.selected.value === -1"
         >
           <template v-if="docs.isGeneration">
             {{ $t("newOrder.gen") }}
