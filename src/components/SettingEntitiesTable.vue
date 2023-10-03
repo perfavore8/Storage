@@ -115,6 +115,7 @@
             <button
               class="btn btn_save_all btn_yellow"
               v-if="showUpdateAllFieldsBtn"
+              :disabled="isUpdatingAllFields"
               @click="updateAllFields()"
             >
               {{ $t("SettingEntities.table.btnSaveAll") }}
@@ -284,6 +285,7 @@
                 row.changeLeadConfig ||
                 row.changeConfig
               "
+              :disabled="updatingFields.includes(idx)"
               @click="
                 update_field(idx, [
                   row.changeName ? 'name' : null,
@@ -588,7 +590,11 @@ export default {
       }
     };
 
-    const updateAllFields = () => {
+    const isUpdatingAllFields = ref(false);
+
+    const updateAllFields = async () => {
+      isUpdatingAllFields.value = true;
+      const promiseList = [];
       copy_fields.map((field, idx) => {
         const needUpdate =
           field.changeName ||
@@ -597,20 +603,27 @@ export default {
           field.changeLeadConfig ||
           field.changeConfig;
         if (needUpdate)
-          update_field(idx, [
-            field.changeName ? "name" : null,
-            field.changeData ? "data" : null,
-            field.changeCats ? "categories_id" : null,
-            field.changeLeadConfig ? "lead_config" : null,
-            field.changeConfig ? "config" : null,
-          ]);
+          promiseList.push(
+            update_field(idx, [
+              field.changeName ? "name" : null,
+              field.changeData ? "data" : null,
+              field.changeCats ? "categories_id" : null,
+              field.changeLeadConfig ? "lead_config" : null,
+              field.changeConfig ? "config" : null,
+            ])
+          );
         // field.changeName = false;
         // field.changeData = false;
         // field.changeLeadConfig = false;
         // field.changeConfig = false;
       });
+      await Promise.all(promiseList);
+      isUpdatingAllFields.value = false;
     };
+    const updatingFields = reactive([]);
     const update_field = async (idx, params_names) => {
+      if (updatingFields.includes(idx)) return;
+      updatingFields.push(idx);
       const params = {};
       params["id"] = copy_fields[idx]["id"];
       params_names.forEach((val) => {
@@ -655,6 +668,8 @@ export default {
             )
         );
       }
+      const i = updatingFields.indexOf(idx);
+      updatingFields.splice(i, 1);
     };
     const get_fields = async () => {
       is_loading.value = true;
@@ -900,6 +915,8 @@ export default {
       categories,
       modalRef,
       animationStarted,
+      updatingFields,
+      isUpdatingAllFields,
       t,
     };
   },
