@@ -217,7 +217,7 @@ export const messages = {
         title: "Task list",
       },
       import: {
-        title: "Import settings",
+        title: "Import of goods",
         btnPlaceholder: "Upload a file",
       },
       sync: {
@@ -1262,7 +1262,7 @@ export const messages = {
         title: "Список задач",
       },
       import: {
-        title: "Настройки импорта",
+        title: "Импорт товаров",
         btnPlaceholder: "Загрузить файл",
       },
       sync: {
