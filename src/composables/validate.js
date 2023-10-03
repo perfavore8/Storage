@@ -12,7 +12,7 @@ export function useValidate() {
     const wideSpace = " ";
     const narrowSpace = " ";
     wideSpace, narrowSpace;
-    number = round(Number(number), 2);
+    number = round(Number(number || 0), 2);
     let parts = number.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, narrowSpace);
 
