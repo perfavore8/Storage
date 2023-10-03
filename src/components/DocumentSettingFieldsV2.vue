@@ -88,8 +88,8 @@ export default {
   .container {
     position: relative;
     z-index: 260;
-    width: 60%;
-    max-width: 900px;
+    width: 90%;
+    max-width: 1200px;
     background-color: #fff;
     background: #f5f5f5;
     background-clip: padding-box;
