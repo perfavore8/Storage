@@ -657,12 +657,7 @@ export default {
     };
     const get_fields = async () => {
       is_loading.value = true;
-      await store.dispatch(
-        selectedTab.value.getFieldsName,
-        props.selectedTab.haveFieldsProperties && selectedFieldProperty.value
-          ? selectedFieldProperty.value?.id
-          : 0
-      );
+      await store.dispatch(selectedTab.value.getFieldsName, -1);
       copy_fields.length = 0;
       Object.assign(copy_fields, [
         ...store.state[selectedTab.value.storeName]?.[
