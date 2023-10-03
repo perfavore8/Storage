@@ -28,11 +28,16 @@
             optgroup: item.value === 'optgroup',
             selected: item.selected,
           }"
+          class="relative"
           :style="{ backgroundColor: item.color }"
           @click="select(item)"
         >
           <template v-if="item.selected && (item.color || withTick)">
-            <span class="material-icons-outlined opacity-50"> check </span>
+            <span
+              class="material-icons-outlined opacity-50 absolute left-1 top-1/2 -translate-y-1/2"
+            >
+              check
+            </span>
           </template>
           <template v-if="item.optgroup">
             &nbsp;&nbsp;&nbsp;&nbsp;{{ item.name }}
