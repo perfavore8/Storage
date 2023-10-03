@@ -821,10 +821,10 @@ export default {
         idx === -1
           ? this.selected.categories_id.push(item.value)
           : this.selected.categories_id.splice(idx, 1);
-        this.getCats(this.selected.id, true);
+        this.getCats(this.selected.id);
       },
       getCats: async function (id, isUpdate) {
-        if (!isUpdate) {
+        if (isUpdate) {
           const cats = await store.dispatch("getCatsField", { id: id });
           if (!this.selected.categories_id)
             this.selected.categories_id = cats || [];
@@ -850,11 +850,17 @@ export default {
     });
 
     const animationStarted = ref(false);
+
     watch(
       () => categories.selected,
       (val) => {
         animationStarted.value = !!val.id;
-        if (val.id) categories.getCats(categories.selected.id);
+        if (val.id) {
+          categories.getCats(
+            categories.selected.id,
+            !Array.isArray(val.categories_id)
+          );
+        }
         if (!val.id) {
           categories.list = [];
         } else if (categories.selected.specialList?.length) {
