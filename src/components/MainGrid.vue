@@ -42,36 +42,47 @@
               />
               <label :for="row.id"></label>
             </td>
-            <td class="item group/img relative" v-if="isTest">
-              <img
-                :src="a.list[a.selectedIdx]"
-                class="h-14 w-14 rounded-md"
-                alt=""
-              />
-              <div
-                class="h-52 w-52 hidden group-hover/img:block absolute z-[110] inset-x-0 top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
+            <template v-for="item in sortedFields" :key="item">
+              <td
+                class="item group/img relative"
+                v-if="item[1].type === 15 && row.fields[item[0]]?.length"
               >
                 <img
-                  :src="a.list[a.selectedIdx]"
-                  class="w-full h-full rounded-xl"
+                  :src="row.fields[item[0]]?.[images.selectedIdxes[idx]]"
+                  class="h-14 w-14 rounded-md"
                   alt=""
                 />
                 <div
-                  class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
+                  class="h-52 w-52 hidden group-hover/img:block absolute z-[110] inset-x-0 top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
                 >
-                  <button class="h-full" @click="a.pref()">
-                    <span class="material-icons-outlined">
-                      navigate_before
-                    </span>
-                  </button>
-                  <button class="h-full" @click="a.next()">
-                    <span class="material-icons-outlined"> navigate_next </span>
-                  </button>
+                  <img
+                    :src="row.fields[item[0]]?.[images.selectedIdxes[idx]]"
+                    class="w-full h-full rounded-xl"
+                    alt=""
+                  />
+                  <div
+                    class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
+                  >
+                    <button
+                      class="h-full"
+                      @click="images.pref(idx, row.fields[item[0]]?.length)"
+                    >
+                      <span class="material-icons-outlined">
+                        navigate_before
+                      </span>
+                    </button>
+                    <button
+                      class="h-full"
+                      @click="images.next(idx, row.fields[item[0]]?.length)"
+                    >
+                      <span class="material-icons-outlined">
+                        navigate_next
+                      </span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <template v-for="item in sortedFields" :key="item">
-              <td class="item">
+              </td>
+              <td class="item" v-else>
                 <span v-if="item[0].split('.').length < 2">
                   {{
                     item[1].type === 6
@@ -163,34 +174,38 @@ import MainGridFilters from "@/components/MainGridFilters.vue";
 import MainGridBar from "@/components/MainGridBar.vue";
 import GridEditPrice from "@/components/GridEditPrice.vue";
 import { mapGetters } from "vuex";
-import { nextTick, reactive } from "vue";
+import { computed, nextTick, reactive, watch } from "vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import store from "@/store";
 export default {
   name: "Main_grid",
   setup() {
     const { t } = useLangConfiguration();
 
-    const a = reactive({
-      selectedIdx: 0,
-      list: [
-        "https://media.baamboozle.com/uploads/images/782616/1673530953_756862_url.png",
-        "https://stroymir74.ru/upload/iblock/c63/38xo1of28olrlp7i4v75s0z3rddpx0p5.jpeg",
-        "https://avatars.dzeninfra.ru/get-zen_doc/5235782/pub_60e5a749573ea63fd7d936b0_60e5a7d128eae162a03d8200/scale_1200",
-        "https://avatars.dzeninfra.ru/get-zen_doc/1872852/pub_5dd35fe52fb64b4381e2fe69_5dd36038f3cd8870191ca649/scale_1200",
-      ],
-      next: function () {
-        let next = this.selectedIdx + 1;
-        if (this.list.length <= next) next = 0;
-        this.selectedIdx = next;
+    const products = computed(() => {
+      return store.state.products.products;
+    });
+    watch(products, () => images.setSelectedIdxes());
+
+    const images = reactive({
+      selectedIdxes: [],
+      next: function (idx, length) {
+        let next = this.selectedIdxes[idx] + 1;
+        if (length <= next) next = 0;
+        this.selectedIdxes[idx] = next;
       },
-      pref: function () {
-        let pref = this.selectedIdx - 1;
-        if (pref < 0) pref = this.list.length - 1;
-        this.selectedIdx = pref;
+      pref: function (idx, length) {
+        let pref = this.selectedIdxes[idx] - 1;
+        if (pref < 0) pref = length - 1;
+        this.selectedIdxes[idx] = pref;
+      },
+      setSelectedIdxes: function () {
+        this.selectedIdxes = [];
+        products.value.forEach(() => this.selectedIdxes.push(0));
       },
     });
 
-    return { a, t };
+    return { images, t };
   },
   components: {
     EditItem,
