@@ -102,7 +102,7 @@ export default {
     background-color: #fff;
     padding-top: 20px;
     padding-bottom: 20px;
-    z-index: 50;
+    z-index: 48;
     display: flex;
     justify-content: center;
     align-items: center;
