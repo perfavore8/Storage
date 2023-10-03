@@ -81,7 +81,6 @@ export default {
       });
     },
     option_select() {
-      console.log(this.copy_selected_option);
       this.$emit("change_value", this.copy_selected_option, this.idx);
     },
     add() {
