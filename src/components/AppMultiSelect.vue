@@ -27,6 +27,7 @@
           :class="{
             optgroup: item.value === 'optgroup',
             selected: item.selected,
+            '!pl-[30px]': item.color || withTick,
           }"
           class="relative"
           :style="{ backgroundColor: item.color }"
