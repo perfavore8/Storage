@@ -6,7 +6,7 @@
           <th
             v-for="(col, idx) in titles.length ? titles : countCols"
             :key="col"
-            class="cell bg-slate-200 align-middle !text-center text-base"
+            class="cell bg-[#e5e5e5] align-middle !text-center text-base text-[#3f3f3f]"
           >
             <span v-if="titles.length">{{ col }}</span>
             <div
@@ -51,9 +51,9 @@ export default {
 
 <style lang="scss" scoped>
 .cell {
-  @apply p-2.5 pl-4 border border-slate-300 min-w-[50px] text-start;
+  @apply p-2.5 pl-4 border border-[#c9c9c9] min-w-[50px] text-start;
 }
 .skeleton {
-  @apply w-28 bg-slate-400/50 rounded-full animate-pulse duration-500;
+  @apply w-28 bg-neutral-400/50 rounded-full animate-pulse duration-500;
 }
 </style>
