@@ -10,7 +10,30 @@
         @close="get_products(productsParams)"
       />
     </teleport>
-    <AppTablePreloader :titles="titlesForPreloader" v-if="isDataLoading" />
+    <AppTablePreloader :titles="titlesForPreloader" v-if="isDataLoading">
+      <template #customCellHeadStart>
+        <th class="head_cell_table_preloader" />
+      </template>
+      <template #customCellStart>
+        <th class="cell_table_preloader">
+          <input
+            type="checkbox"
+            class="checkbox !cursor-default"
+            :id="1"
+            disabled
+          />
+          <label :for="1"></label>
+        </th>
+      </template>
+      <template #customCellHeadEnd>
+        <td class="head_cell_table_preloader" />
+      </template>
+      <template #customCellEnd>
+        <td class="cell_table_preloader">
+          <div class="edit_icon !cursor-default" />
+        </td>
+      </template>
+    </AppTablePreloader>
     <div class="main" v-else>
       <table class="table" :class="{ blur: show_edit_modal }" ref="table">
         <thead>
