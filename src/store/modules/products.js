@@ -34,7 +34,6 @@ export default {
       Object.assign(state.productsParams, params);
     },
     updateIsLoadingProducts(state, value) {
-      console.log(value);
       state.isLoading = value;
     },
     updateImportStuff(state, value) {
