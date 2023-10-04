@@ -62,6 +62,7 @@
                     alt=""
                   />
                   <div
+                    v-if="row.fields[item[0]]?.length > 1"
                     class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
                   >
                     <button
@@ -80,6 +81,18 @@
                         navigate_next
                       </span>
                     </button>
+                  </div>
+                  <div
+                    class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
+                  >
+                    <span>
+                      {{
+                        images.selectedIdxes[idx] +
+                        1 +
+                        " / " +
+                        row.fields[item[0]]?.length
+                      }}
+                    </span>
                   </div>
                 </div>
               </td>
