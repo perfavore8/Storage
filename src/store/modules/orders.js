@@ -56,7 +56,7 @@ export default {
     updateOrdersFilters(state, value) {
       Object.assign(state.filters, value);
     },
-    updateIsLoading(state, value) {
+    updateIsLoadingOrders(state, value) {
       state.isLoading = value;
     },
     updateMeta(state, value) {
@@ -90,7 +90,7 @@ export default {
     async getOrders(context, params) {
       const dontSaveMeta = params.dontSaveMeta;
       delete params.dontSaveMeta;
-      context.commit("updateIsLoading", true);
+      context.commit("updateIsLoadingOrders", true);
       const { data } = await ApiReqFunc({
         url: isTest.value ? "orders/list-v2" : "orders/list",
         method: "post",
@@ -99,7 +99,7 @@ export default {
 
       context.commit("updateOrders", data.data);
       if (!dontSaveMeta) context.commit("updateMeta", data);
-      context.commit("updateIsLoading", false);
+      context.commit("updateIsLoadingOrders", false);
 
       return data;
     },

@@ -33,7 +33,8 @@ export default {
     updateProductsParams(state, params) {
       Object.assign(state.productsParams, params);
     },
-    updateIsLoading(state, value) {
+    updateIsLoadingProducts(state, value) {
+      console.log(value);
       state.isLoading = value;
     },
     updateImportStuff(state, value) {
@@ -42,7 +43,7 @@ export default {
   },
   actions: {
     async get_products(context, params) {
-      context.commit("updateIsLoading", true);
+      context.commit("updateIsLoadingProducts", true);
       const { data } = await ApiReqFunc({
         url: "product/list",
         method: "post",
@@ -50,7 +51,7 @@ export default {
       });
       context.commit("update_meta", { links: data.links, meta: data.meta });
       context.commit("update_products", data.data);
-      context.commit("updateIsLoading", false);
+      context.commit("updateIsLoadingProducts", false);
 
       return data;
     },

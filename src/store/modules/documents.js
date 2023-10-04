@@ -29,7 +29,7 @@ export default {
         }
       });
     },
-    updateIsLoading(state, value) {
+    updateIsLoadingDocs(state, value) {
       state.isLoading = value;
     },
     updateMeta(state, value) {
@@ -47,7 +47,7 @@ export default {
       return data;
     },
     async getDocuments(context, params) {
-      context.commit("updateIsLoading", true);
+      context.commit("updateIsLoadingDocs", true);
       const { data } = await ApiReqFunc({
         url: "document/registry",
         method: "post",
@@ -55,7 +55,7 @@ export default {
       });
       context.commit("updateDocuments", data.data);
       context.commit("updateMeta", data);
-      context.commit("updateIsLoading", false);
+      context.commit("updateIsLoadingDocs", false);
 
       return data;
     },

@@ -14,7 +14,7 @@ export default {
     update_fields_properties(state, value) {
       state.fields_properties = [...value];
     },
-    updateIsLoading(state, value) {
+    updateIsLoadingCats(state, value) {
       state.isLoading = value;
     },
     updatePromise(state, value) {
@@ -23,13 +23,13 @@ export default {
   },
   actions: {
     async get_fields_properties(context, params) {
-      context.commit("updateIsLoading", true);
+      context.commit("updateIsLoadingCats", true);
       if (context.getPromise !== null) {
         await context.getPromise;
         await new Promise((res) => setTimeout(() => res(), 100));
       }
       if (!params?.isUpdate && context.state.fields_properties.length) {
-        context.commit("updateIsLoading", false);
+        context.commit("updateIsLoadingCats", false);
         return context.state.fields_properties;
       }
       delete params?.isUpdate;
@@ -40,7 +40,7 @@ export default {
       const { data } = await promise;
       context.commit("update_fields_properties", data);
 
-      context.commit("updateIsLoading", false);
+      context.commit("updateIsLoadingCats", false);
       return data;
     },
     async add_fields_properties(context, params) {
