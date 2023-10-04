@@ -184,7 +184,7 @@ export default {
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
-    this.$store.commit("updateIsLoading", true);
+    this.$store.commit("updateIsLoadingProducts", true);
   },
   unmounted() {
     window.removeEventListener("scroll", this.handleScroll);

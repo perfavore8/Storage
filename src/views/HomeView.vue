@@ -250,7 +250,7 @@ export default {
         : (document.body.style.overflowX = "auto");
     },
     selected_storage() {
-      this.$store.commit("updateIsLoading", true);
+      this.$store.commit("updateIsLoadingProducts", true);
       this.isGrid ? this.ref_card.drop_page() : this.ref_main.drop_page();
     },
     async is_in_wh() {
