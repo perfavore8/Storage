@@ -5,6 +5,7 @@
       disabled:
         disabled_for_modals ||
         (account?.is_old_data_load_start && !account?.is_old_data_loaded),
+      'pointer-events-none': isLoadingProducts,
     }"
   >
     <HomeModals
@@ -236,6 +237,9 @@ export default {
             ),
           ]);
       return arr;
+    },
+    isLoadingProducts() {
+      return this.$store.state.products.isLoading;
     },
   },
   async mounted() {
