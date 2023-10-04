@@ -174,6 +174,7 @@
       :show="products.length != 0"
       :count="count"
       :showBtns="showGridBottom"
+      :disabled="isDataLoading"
       @changePage="changePage"
       @changeCount="changeCount"
     />

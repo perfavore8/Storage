@@ -2,6 +2,7 @@
   <div class="grid gap-3">
     <button
       @click="prev()"
+      :disabled="disabled"
       v-if="page.current != page.first && page.prev != null"
       class="a"
     >
@@ -54,7 +55,7 @@
 
 <script>
 export default {
-  props: { page: Object },
+  props: { page: Object, disabled: Boolean },
   emits: {
     changePage(payload) {
       return payload > 0 && typeof payload === "number";

@@ -12,10 +12,15 @@
       <button v-if="next" @click="changePage(page + 1)" class="btn next">
         {{ ">" }}
       </button> -->
-      <AppPaginator :page="page" @changePage="changePage" />
+      <AppPaginator
+        :page="page"
+        :disabled="disabled"
+        @changePage="changePage"
+      />
     </template>
     <template v-if="showSelector">
       <selector-vue
+        :disabled="disabled"
         class="count"
         :options_props="count_values"
         :selected_option="{ name: count, value: -1 }"
