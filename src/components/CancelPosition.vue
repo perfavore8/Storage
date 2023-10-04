@@ -253,6 +253,7 @@ export default {
           params.products.push(item);
         });
         await this.$store.dispatch("update_product", params);
+        this.$emit("save");
         this.close_modal();
       }
     },

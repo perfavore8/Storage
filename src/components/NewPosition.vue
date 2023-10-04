@@ -811,6 +811,7 @@ export default {
           });
           await this.$store.dispatch("update_product", params);
         }
+        this.$emit("save");
         this.close();
       }
       this.acceptBtnDisable = false;

@@ -330,6 +330,7 @@ export default {
           params.products.push(item);
         });
         await this.$store.dispatch("transfer_product", params);
+        this.$emit("save");
         this.close_modal();
       }
     },

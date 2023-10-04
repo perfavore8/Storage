@@ -39,19 +39,19 @@
   </transition>
   <transition name="modal_window">
     <div v-if="show_new_position" class="new_position">
-      <new-position :currentItems="currentItems" @close="updateProducts" />
+      <new-position :currentItems="currentItems" @save="updateProducts" />
     </div>
   </transition>
   <transition name="modal_window">
     <div v-if="show_cancel_position" class="cancel_position">
-      <cancel-position :currentItems="currentItems" @close="updateProducts" />
+      <cancel-position :currentItems="currentItems" @save="updateProducts" />
     </div>
   </transition>
   <transition name="modal_window">
     <div v-if="showMoveProductsBetweenWhs" class="move_products_between_whs">
       <MoveProductsBetweenWhs
         :currentItems="currentItems"
-        @close="updateProducts"
+        @save="updateProducts"
       />
     </div>
   </transition>
