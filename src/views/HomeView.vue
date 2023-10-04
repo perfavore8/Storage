@@ -172,6 +172,7 @@ export default {
       isGrid: false,
       currentItems: [],
       isUpdateProducts: false,
+      disableWatchIsInWh: false,
     };
   },
   computed: {
@@ -241,7 +242,9 @@ export default {
     await this.$store.dispatch("get_account");
     this.ref_homeWhs?.changeStoreWhs();
     this.$refs?.oldData?.importOldData("start");
+    this.disableWatchIsInWh = true;
     this.is_in_wh = this.user?.config?.is_in_wh;
+    this.$nextTick(() => (this.disableWatchIsInWh = false));
   },
   watch: {
     show_modals() {
@@ -254,6 +257,7 @@ export default {
       this.isGrid ? this.ref_card.drop_page() : this.ref_main.drop_page();
     },
     async is_in_wh() {
+      if (this.disableWatchIsInWh) return;
       await this.$store.dispatch("update_user", { is_in_wh: this.is_in_wh });
       this.updateProducts();
     },
