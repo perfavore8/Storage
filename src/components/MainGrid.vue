@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" :class="{ blur: isDataLoading }">
+  <div class="wrapper" :class="{ blur: isDataLoading && false }">
     <teleport to="body">
       <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
     </teleport>
@@ -10,7 +10,8 @@
         @close="get_products(productsParams)"
       />
     </teleport>
-    <div class="main">
+    <AppTablePreloader :titles="titlesForPreloader" v-if="isDataLoading" />
+    <div class="main" v-else>
       <table class="table" :class="{ blur: show_edit_modal }" ref="table">
         <thead>
           <main-grid-bar
@@ -177,6 +178,7 @@ import { mapGetters } from "vuex";
 import { computed, nextTick, reactive, watch } from "vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import store from "@/store";
+import AppTablePreloader from "./AppTablePreloader.vue";
 export default {
   name: "Main_grid",
   setup() {
@@ -213,6 +215,7 @@ export default {
     MainGridFilters,
     MainGridBar,
     GridEditPrice,
+    AppTablePreloader,
   },
   props: {
     selectedWH: {
@@ -232,7 +235,7 @@ export default {
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
-    this.$store.commit("updateIsLoading", true);
+    this.$store.commit("updateIsLoadingProducts", true);
   },
   unmounted() {
     window.removeEventListener("scroll", this.handleScroll);
@@ -327,6 +330,12 @@ export default {
     },
     isTest() {
       return this.$store.state.account.account?.id === 1;
+    },
+    titlesForPreloader() {
+      return Object.values(this.tableConfig).reduce((acc, field) => {
+        if (field.visible) acc.push(field.name);
+        return acc;
+      }, []);
     },
     ...mapGetters(["show_edit_modal"]),
   },
