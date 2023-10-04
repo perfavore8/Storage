@@ -84,6 +84,11 @@ export default {
       required: false,
       default: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: { changePage: null, changeCount: null },
   data() {
