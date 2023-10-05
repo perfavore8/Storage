@@ -5,7 +5,6 @@
       disabled:
         disabled_for_modals ||
         (account?.is_old_data_load_start && !account?.is_old_data_loaded),
-      'pointer-events-none': isLoadingProducts,
     }"
   >
     <HomeModals
@@ -24,7 +23,11 @@
           <NavBar />
           <HomeImportOldData ref="oldData" @importComplete="importComplete" />
         </div>
-        <HomeWhs ref="homeWhs" v-model:selectedWH="selectedWH" />
+        <HomeWhs
+          ref="homeWhs"
+          v-model:selectedWH="selectedWH"
+          :class="{ 'pointer-events-none': isLoadingProducts }"
+        />
       </div>
       <HomeMenu />
     </div>
@@ -32,6 +35,7 @@
       class="wrapper"
       :class="{
         blur: home_blur,
+        'pointer-events-none': isLoadingProducts,
       }"
     >
       <div class="filters" :class="{ blur: show_edit_modal }">
