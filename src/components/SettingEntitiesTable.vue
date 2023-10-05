@@ -831,11 +831,13 @@ export default {
       list: [],
       newList: [],
       select: function (item) {
+        if (this.checkIsParentSelected(item)) return;
         if (!this.selected.categories_id) this.selected.categories_id = [];
         const idx = this.selected.categories_id.indexOf(item.value);
         idx === -1
           ? this.selected.categories_id.push(item.value)
           : this.selected.categories_id.splice(idx, 1);
+        this.removeSubCats(item);
         this.getCats(this.selected.id);
       },
       getCats: async function (id, isUpdate) {
@@ -851,6 +853,20 @@ export default {
         }
         this.newList = copyFieldsPropertiesWithSpace.newList(
           this.selected.categories_id
+        );
+      },
+      checkIsParentSelected: function (item) {
+        if (item.level === 1) return false;
+        return this.newList.find(
+          (cat) => cat.id === item.levels[item.level - 2]
+        ).selected;
+      },
+      removeSubCats: function (item) {
+        const subCats = this.newList.filter(
+          (cat) => cat.levels.includes(item.value) && cat.id !== item.value
+        );
+        this.selected.categories_id = this.selected.categories_id.filter(
+          (catId) => !subCats.some((subCat) => subCat.id === catId)
         );
       },
     });
