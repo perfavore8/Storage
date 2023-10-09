@@ -7,7 +7,7 @@
           {{ $t("ostatki.red", { name: edit_data.fields["name"] }) }}
         </div>
         <div class="header_right">
-          <BtnsSaveClose @close="close" @save="save">
+          <BtnsSaveClose @close="close" @save="save" :disabledSave="isLocked">
             <template v-slot:close>{{ $t("global.сancel") }}</template>
             <template v-slot:other_btns v-if="!oneC">
               <button class="btn btn3" @click="archive()">
@@ -44,7 +44,7 @@
       </div>
       <div class="hr" />
       <div class="footer">
-        <BtnsSaveClose @close="close" @save="save">
+        <BtnsSaveClose @close="close" @save="save" :disabledSave="isLocked">
           <template v-slot:close>{{ $t("global.сancel") }}</template>
           <template v-slot:other_btns v-if="!oneC">
             <button class="btn btn3" @click="archive()">
@@ -62,8 +62,10 @@ import SelectorVue from "@/components/SelectorVue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditItemFields from "@/components/EditItemFields.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useLockBtn } from "@/composables/lockBtn";
 
 const { t } = useLangConfiguration();
+const { isLocked, lockBtn, handleUnLock } = useLockBtn();
 
 export default {
   components: {
@@ -78,6 +80,9 @@ export default {
     },
   },
   inject: ["isServicePage"],
+  setup() {
+    return { isLocked };
+  },
   data() {
     return {
       options_1: [
@@ -129,6 +134,7 @@ export default {
       this.$store.commit("close_edit_modal");
     },
     async save() {
+      lockBtn("handle");
       this.dataPreparation();
       await this.$store.dispatch("update_product", {
         products: [this.new_edit_data],
@@ -141,6 +147,7 @@ export default {
         }
       });
       this.$store.dispatch("get_products", this.productsParams);
+      handleUnLock();
       this.close();
     },
     dataPreparation() {
