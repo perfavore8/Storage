@@ -2,14 +2,13 @@
   <div class="bg">
     <div class="backdrop filter" />
     <div class="modal">
-      <h3 class="header">Подтверждаете удаление категории?</h3>
+      <h3 class="header">{{ $t("removeCat.header") }}</h3>
       <p class="text">
-        В случае удаления категории свойства товаров этой категории будут
-        перенесены в корневую категорию
+        {{ $t("removeCat.text") }}
       </p>
       <div class="buttons">
         <BtnsSaveClose @close="close" @save="remove">
-          <template v-slot:save>Удалить</template>
+          <template v-slot:save>{{ $t("removeCat.del") }}</template>
         </BtnsSaveClose>
       </div>
     </div>

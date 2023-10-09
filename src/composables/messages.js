@@ -1043,6 +1043,11 @@ export const messages = {
       from: "from:",
       to: "to:",
     },
+    removeCat: {
+      header: "Do you confirm the deletion of the category?",
+      text: "If a category is deleted, the properties of the products of this category will be moved to the root category",
+      del: "Delete",
+    },
   },
   ru: {
     global: {
@@ -2092,6 +2097,11 @@ export const messages = {
     filters: {
       from: "от:",
       to: "до:",
+    },
+    removeCat: {
+      header: "Подтверждаете удаление категории?",
+      text: "В случае удаления категории свойства товаров этой категории будут перенесены в корневую категорию",
+      del: "Удалить",
     },
   },
 };
