@@ -397,25 +397,7 @@
             <td
               class="box item text-lg relative"
               v-if="selectedTab.haveFieldsProperties"
-              :ref="
-                (el) =>
-                  categories.selected === row ? (categories.ref = el) : null
-              "
-            >
-              <button
-                id="catBtn"
-                @click="categories.selected = row"
-                class="pointer-events-auto relative inline-flex w-fit h-fit p-1 rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900"
-              >
-                <span
-                  id="catBtn"
-                  class="material-icons-round opacity-70"
-                  style="font-size: 20px"
-                >
-                  open_in_full
-                </span>
-              </button>
-            </td>
+            ></td>
           </template>
           <td class="item del_sell">
             <button class="del_btn" @click="delete_new_field(idx)"></button>
