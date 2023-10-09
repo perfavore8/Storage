@@ -34,7 +34,7 @@
         </td>
       </template>
     </AppTablePreloader>
-    <div class="main" v-else>
+    <div class="main" :class="{ hidden: isDataLoading }">
       <table class="table" :class="{ blur: show_edit_modal }" ref="table">
         <thead>
           <main-grid-bar
@@ -387,7 +387,8 @@ export default {
       handler: function () {
         this.updateKey += 1;
         nextTick(() => {
-          if (!this.filters?.isConfirmFilters) this.filters?.clearFilters();
+          if (!this.filters?.isConfirmFilters && this.updateKey > 1)
+            this.filters?.clearFilters();
           this.filters?.setFalseIsConfirmFilters();
         });
       },
