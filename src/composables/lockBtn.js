@@ -13,16 +13,15 @@ export function useLockBtn(
     toggleLock(true);
     if (type === "timer")
       setTimeout(() => toggleLock(false), delay || globalDelay);
-    if (type === "async" && promise) {
+    else if (type === "async" && promise) {
       await promise;
       toggleLock(false);
-    }
-    if (type === "asyncWithTimer" && promise) {
+    } else if (type === "asyncWithTimer" && promise) {
       setTimeout(async () => {
         await promise;
         toggleLock(false);
       }, delay || globalDelay);
-    }
+    } else if (type === "handle") return;
   };
 
   const handleUnLock = () => toggleLock(false);
