@@ -911,8 +911,8 @@ export const messages = {
       op: "Description",
       nds1: "VAT",
       nds2: "included in the price",
-      ds3: "% can be changed",
-      ds4: "% VAT",
+      nds3: "% can be changed",
+      nds4: "% VAT",
       field: "Empty field",
       add: "Adding goods",
       ed: "Units of measurement",
@@ -2124,4 +2124,4 @@ export const messages = {
 //     res[lang][head] = flattenObject(messages[lang][head]);
 //   });
 // });
-// console.log(res);
+// console.log(JSON.stringify(res));
