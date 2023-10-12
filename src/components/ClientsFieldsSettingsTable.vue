@@ -158,6 +158,7 @@
 
 <script>
 import { computed, onMounted, reactive, ref, watch } from "vue";
+import { isTest } from "@/composables/isTest";
 import store from "@/store";
 import SelectorVue from "./SelectorVue.vue";
 export default {
@@ -236,9 +237,6 @@ export default {
         arr.push({ name: value, value: key });
       });
       return arr;
-    });
-    const isTest = computed(() => {
-      return store.state.account?.account?.id == 1;
     });
 
     const add_new_field = () => {

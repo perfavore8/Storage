@@ -198,6 +198,7 @@ import store from "@/store";
 import router from "@/router";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { isTest } from "@/composables/isTest";
 export default {
   components: {
     TaskCenter,
@@ -214,7 +215,6 @@ export default {
     const oneC = computed(() => store.state.account.account?.config?.g_enabled);
     const account = computed(() => store.state.account.account);
     const userName = computed(() => store.state.account.user?.name);
-    const isTest = computed(() => store.state.account?.account?.id == 1);
     const amoTest = computed(() => store.state.account?.account?.id == 454);
     const is_empty_amo_product_list = computed(
       () =>

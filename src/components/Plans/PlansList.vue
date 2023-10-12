@@ -40,6 +40,7 @@
 
 <script>
 import { computed, nextTick, reactive } from "vue";
+import { isTest } from "@/composables/isTest";
 import PlansCard from "./PlansCard.vue";
 import store from "@/store";
 import { useValidate } from "@/composables/validate";
@@ -146,8 +147,6 @@ export default {
       list.map((el) => (el.header = tarifs[el.id]));
     };
     setHeaders();
-
-    const isTest = computed(() => store.state.account.account?.id === 1);
 
     const isCountrySelected = computed(() =>
       Boolean(store.state.account.account?.config?.country)

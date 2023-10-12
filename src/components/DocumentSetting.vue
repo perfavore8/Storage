@@ -227,9 +227,6 @@ export default {
     account() {
       return this.$store.state.account.account;
     },
-    isTest() {
-      return this.$store.state.account.account.id == 1;
-    },
     leadFieldsList() {
       const list = [];
       Object.entries(this.$store.state.account.leadFieldsList).map((val) => {

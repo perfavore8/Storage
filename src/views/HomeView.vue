@@ -143,6 +143,7 @@ import HomeFilter from "@/components/HomeFilter.vue";
 // import SelectorVue from "@/components/SelectorVue.vue";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
+import { isTest } from "@/composables/isTest";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 
 const { t } = useLangConfiguration();
@@ -166,7 +167,7 @@ export default {
     };
   },
   setup() {
-    return { t };
+    return { t, isTest };
   },
   data() {
     return {
@@ -223,9 +224,6 @@ export default {
     },
     ref_homeWhs() {
       return this.$refs.homeWhs;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
     },
     filteredSelectedProducts() {
       let arr = [];

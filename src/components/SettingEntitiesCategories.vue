@@ -200,6 +200,7 @@ import { ref, watch, computed, nextTick, reactive, onMounted } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import store from "@/store";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { isTest } from "@/composables/isTest";
 export default {
   components: {
     ProductsCategoryRemoveModal,
@@ -228,10 +229,6 @@ export default {
 
     const copy_fields_properties = computed(() => {
       return store.state.categories.fields_properties;
-    });
-
-    const isTest = computed(() => {
-      return store.state.account?.account?.id == 1;
     });
 
     const changeImgUrl = (item) => {

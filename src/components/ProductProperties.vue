@@ -397,10 +397,14 @@
 <script>
 import SelectorVue from "@/components/SelectorVue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
+import { isTest } from "@/composables/isTest";
 export default {
   components: {
     SelectorVue,
     BtnsSaveClose,
+  },
+  setup() {
+    return { isTest };
   },
   data() {
     return {
@@ -468,9 +472,6 @@ export default {
         arr.push({ name: spaces + val.name, value: val.id });
       });
       return arr;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
     },
   },
   methods: {

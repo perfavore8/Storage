@@ -154,7 +154,7 @@ import {
   watch,
 } from "@vue/runtime-core";
 import store from "@/store";
-import { useRoute } from "vue-router";
+import { isTest } from "@/composables/isTest";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
@@ -175,13 +175,6 @@ export default {
     const addFilteringSystem = () => filteringSystems.push(useSystems());
 
     const { t } = useLangConfiguration();
-
-    const route = useRoute();
-    const isTest = computed(() => {
-      return (
-        store.state.account?.account?.id == 1 || route.query.test === "salesUp"
-      );
-    });
 
     const selected_field_autocomplete = ref(null);
     const selected_field_autocomplete_list = ref([]);

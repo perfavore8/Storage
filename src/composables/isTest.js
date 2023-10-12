@@ -1,4 +1,8 @@
 import store from "@/store";
 import { computed } from "vue";
 
-export const isTest = computed(() => store.state.account?.account?.id == 1);
+const accountIds = [1, 591];
+
+export const isTest = computed(() =>
+  accountIds.includes(store.state.account?.account?.id)
+);

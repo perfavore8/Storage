@@ -365,9 +365,6 @@ export default {
     isDataLoading() {
       return this.$store.state.products.isLoading;
     },
-    isTest() {
-      return this.$store.state.account.account?.id === 1;
-    },
     titlesForPreloader() {
       return Object.values(this.tableConfig).reduce((acc, field) => {
         if (field.visible) acc.push(field.name);

@@ -435,6 +435,7 @@
 
 <script>
 import { computed, onMounted, reactive, ref, watch } from "vue";
+import { isTest } from "@/composables/isTest";
 import store from "@/store";
 import SelectorVue from "./SelectorVue.vue";
 import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsProperties";
@@ -507,7 +508,6 @@ export default {
       });
       return arr;
     });
-    const isTest = computed(() => store.state.account?.account?.id == 1);
 
     const add_new_field = () => {
       const item = {

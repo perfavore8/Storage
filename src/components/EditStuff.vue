@@ -174,6 +174,7 @@
   </div>
 </template>
 <script>
+import { isTest } from "@/composables/isTest";
 import SelectorVue from "@/components/SelectorVue";
 import AppMultiSelect from "./AppMultiSelect.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
@@ -182,7 +183,7 @@ const { t } = useLangConfiguration();
 
 export default {
   setup() {
-    return { t };
+    return { t, isTest };
   },
   components: {
     SelectorVue,
@@ -288,9 +289,6 @@ export default {
         list.push({ value: val[0], ...val[1] });
       });
       return list;
-    },
-    isTest() {
-      return this.$store.state.account.account.id === 1;
     },
   },
   methods: {

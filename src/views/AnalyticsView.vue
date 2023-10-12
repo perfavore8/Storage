@@ -119,6 +119,7 @@ import ReportChartsFilter from "@/components/ReportChartsFilter.vue";
 import AppHeader from "@/components/AppHeader.vue";
 import GridBottom from "@/components/GridBottom.vue";
 import { nextTick } from "@vue/runtime-core";
+import { isTest } from "@/composables/isTest";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
@@ -137,6 +138,9 @@ export default {
     GridBottom,
     AppRadioBtnsGroupUnderlined,
     AppRadioBtnsGroup,
+  },
+  setup() {
+    return { isTest };
   },
   data() {
     return {
@@ -294,9 +298,6 @@ export default {
     },
     refGrid() {
       return this.$refs.grid;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
     },
     isChartsView() {
       return this.view.selected.value !== "table";

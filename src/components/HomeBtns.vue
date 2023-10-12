@@ -28,6 +28,7 @@
 
 <script>
 import { computed } from "@vue/runtime-core";
+import { isTest } from "@/composables/isTest";
 import store from "@/store";
 export default {
   props: {
@@ -37,7 +38,6 @@ export default {
   setup(props, context) {
     const show_buttons = computed(() => store.state.shows.show_buttons);
     const oneC = computed(() => store.state.account.account?.config?.g_enabled);
-    const isTest = computed(() => store.state.account?.account?.id == 1);
 
     const addCurrentProducts = () => {
       setCurrentItems();

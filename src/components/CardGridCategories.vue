@@ -78,6 +78,7 @@
 
 <script>
 import { computed, onMounted, reactive } from "vue";
+import { isTest } from "@/composables/isTest";
 import store from "@/store";
 export default {
   emits: { selectCat: null },
@@ -105,8 +106,6 @@ export default {
     onMounted(() => {
       categories.getList();
     });
-
-    const isTest = computed(() => store.state.account.account?.id === 1);
 
     const newImagesShow = true;
 

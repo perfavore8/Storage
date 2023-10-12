@@ -151,6 +151,7 @@
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import SelectorVue from "@/components/SelectorVue.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { isTest } from "@/composables/isTest";
 
 const { t } = useLangConfiguration();
 
@@ -160,7 +161,7 @@ export default {
     SelectorVue,
   },
   setup() {
-    return { t };
+    return { t, isTest };
   },
   data() {
     return {
@@ -235,9 +236,6 @@ export default {
     },
     productLists() {
       return this.$store.state.account.productLists;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
     },
     leadFieldsList() {
       const list = [];

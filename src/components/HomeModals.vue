@@ -127,12 +127,6 @@ export default {
       "showClientsFieldsSettings",
       "showSettingEntities",
     ]),
-    isTest() {
-      return (
-        this.$store.state.account?.account?.id == 1 ||
-        this.$route.query.test === "salesUp"
-      );
-    },
   },
 
   methods: {

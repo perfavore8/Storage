@@ -52,6 +52,7 @@ import AppHeader from "@/components/AppHeader.vue";
 import store from "@/store";
 import { useRoute } from "vue-router";
 import { computed } from "@vue/reactivity";
+import { isTest } from "@/composables/isTest";
 import router from "@/router";
 import { useArchiveConfig } from "@/composables/archiveConfig";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
@@ -65,7 +66,6 @@ export default {
   setup() {
     const route = useRoute();
 
-    const isTest = computed(() => store.state.account?.account?.id == 1);
     const count_archive = computed(
       () =>
         store.state[config.selected.stateName][config.selected.stateMetaName]

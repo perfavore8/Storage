@@ -212,6 +212,7 @@
 import GridBottom from "@/components/GridBottom.vue";
 import AppPaginator from "./AppPaginator.vue";
 import { computed, onMounted, reactive, ref } from "vue";
+import { isTest } from "@/composables/isTest";
 import store from "@/store";
 import { useRouter } from "vue-router";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
@@ -340,7 +341,6 @@ export default {
     const accountSubdomain = computed(
       () => store.state.account.account.subdomain
     );
-    const isTest = computed(() => store.state.account?.account?.id == 1);
     const params = computed(() => store.state.orders.filters);
     const page = computed(() => {
       const obj = {

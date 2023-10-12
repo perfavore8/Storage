@@ -167,10 +167,14 @@
 <script>
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import SelectorVue from "@/components/SelectorVue.vue";
+import { isTest } from "@/composables/isTest";
 export default {
   components: {
     BtnsSaveClose,
     SelectorVue,
+  },
+  setup() {
+    return { isTest };
   },
   data() {
     return {
@@ -242,9 +246,6 @@ export default {
     },
     productLists() {
       return this.$store.state.account.productLists;
-    },
-    isTest() {
-      return this.$store.state.account?.account?.id == 1;
     },
     leadFieldsList() {
       const list = [];

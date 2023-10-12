@@ -24,13 +24,8 @@
 import { computed } from "@vue/runtime-core";
 import store from "@/store";
 import router from "@/router";
-import { useRoute } from "vue-router";
+import { isTest } from "@/composables/isTest";
 
-const Route = useRoute();
-
-const isTest = computed(
-  () => store.state.account?.account?.id == 1 || Route?.query?.test === "test"
-);
 const accountId = computed(() => store.state.account?.account?.id);
 const isAdmin = computed(() =>
   store.state.account?.user?.isAdmin === undefined

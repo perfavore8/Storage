@@ -1,10 +1,8 @@
 import { useNewDeal } from "@/composables/newDeal";
-import store from "..";
-import { computed } from "vue";
 import { ApiReqFunc } from "@/composables/ApiReqFunc";
 import { usePreparationOrders } from "@/composables/preporationOrders";
 const { newDealParams, order } = useNewDeal();
-const isTest = computed(() => store.state.account.account?.id === 1);
+import { isTest } from "@/composables/isTest";
 
 const { preparationOrder } = usePreparationOrders();
 

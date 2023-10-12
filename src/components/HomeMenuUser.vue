@@ -56,6 +56,7 @@ import { inFrame } from "@/composables/checkInFrame";
 import { useAvailableUserAccounts } from "@/composables/availableUserAccounts";
 import ImportStuffSelector from "./ImportStuffSelector.vue";
 import AppChangeLanguage from "./AppChangeLanguage.vue";
+import { isTest } from "@/composables/isTest";
 
 export default {
   components: { ImportStuffSelector, AppChangeLanguage },
@@ -64,7 +65,6 @@ export default {
     const { availableUserAccounts } = useAvailableUserAccounts();
 
     const userName = computed(() => store.state.account.user?.name);
-    const isTest = computed(() => store.state.account?.account?.id == 1);
 
     const isImgLoaded = ref(true);
     const img = ref(null);

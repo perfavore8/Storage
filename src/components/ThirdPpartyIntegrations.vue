@@ -92,6 +92,7 @@
 
 <script>
 import { computed } from "vue";
+import { isTest } from "@/composables/isTest";
 import store from "@/store";
 import { useRouter } from "vue-router";
 export default {
@@ -101,7 +102,6 @@ export default {
     const oneC = computed(() => store.state.account.account?.config?.g_enabled);
     const account = computed(() => store.state.account.account);
     const user = computed(() => store.state.account.user);
-    const isTest = computed(() => store.state.account?.account?.id == 1);
 
     const route = (page_name) => {
       close();
