@@ -239,6 +239,85 @@
                               </div>
                             </template>
                             <template v-else-if="field.code === 'name'" />
+                            <template
+                              v-else-if="
+                                field.type === 15 &&
+                                product?.fields[field.code]?.length
+                              "
+                            >
+                              <div class="sls_row">
+                                <div class="name">{{ field.name }}:</div>
+                                <div class="value group/img relative">
+                                  <img
+                                    :src="
+                                      product?.fields[field.code]?.[
+                                        images.selectedIdxes[idx]
+                                      ]
+                                    "
+                                    class="h-14 w-14 rounded-md"
+                                    alt=""
+                                  />
+                                  <div
+                                    class="h-40 w-40 hidden group-hover/img:block absolute z-[110] right-0 top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
+                                  >
+                                    <img
+                                      :src="
+                                        product?.fields[field.code]?.[
+                                          images.selectedIdxes[idx]
+                                        ]
+                                      "
+                                      class="w-full h-full rounded-xl"
+                                      alt=""
+                                    />
+                                    <div
+                                      v-if="
+                                        product?.fields[field.code]?.length > 1
+                                      "
+                                      class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
+                                    >
+                                      <button
+                                        class="h-full"
+                                        @click="
+                                          images.pref(
+                                            idx,
+                                            product?.fields[field.code]?.length
+                                          )
+                                        "
+                                      >
+                                        <span class="material-icons-outlined">
+                                          navigate_before
+                                        </span>
+                                      </button>
+                                      <button
+                                        class="h-full"
+                                        @click="
+                                          images.next(
+                                            idx,
+                                            product?.fields[field.code]?.length
+                                          )
+                                        "
+                                      >
+                                        <span class="material-icons-outlined">
+                                          navigate_next
+                                        </span>
+                                      </button>
+                                    </div>
+                                    <div
+                                      class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
+                                    >
+                                      <span>
+                                        {{
+                                          images.selectedIdxes[idx] +
+                                          1 +
+                                          " / " +
+                                          product?.fields[field.code]?.length
+                                        }}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </template>
                             <div class="sls_row" v-else>
                               <div class="name">{{ field.name }}:</div>
                               <div class="value">
@@ -388,6 +467,8 @@ import { useNewDeal } from "@/composables/newDeal";
 import { useValidate } from "@/composables/validate";
 import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { computed, reactive, watch } from "vue";
+import store from "@/store";
 
 const {
   order,
@@ -409,7 +490,30 @@ export default {
     ProductCardSkeleton,
   },
   setup() {
-    return { t };
+    const products = computed(() => {
+      return store.state.widjetProducts.products;
+    });
+    watch(products, () => images.setSelectedIdxes());
+
+    const images = reactive({
+      selectedIdxes: [],
+      next: function (idx, length) {
+        let next = this.selectedIdxes[idx] + 1;
+        if (length <= next) next = 0;
+        this.selectedIdxes[idx] = next;
+      },
+      pref: function (idx, length) {
+        let pref = this.selectedIdxes[idx] - 1;
+        if (pref < 0) pref = length - 1;
+        this.selectedIdxes[idx] = pref;
+      },
+      setSelectedIdxes: function () {
+        this.selectedIdxes = [];
+        products.value.forEach(() => this.selectedIdxes.push(0));
+      },
+    });
+
+    return { t, images };
   },
   data() {
     return {
