@@ -189,7 +189,7 @@ export default {
 <style lang="scss">
 @import "@/app.scss";
 .app_edit_modal {
-  z-index: 9999;
+  z-index: 250;
   width: 50%;
   min-width: 500px;
   background-color: #f5f5f5;
@@ -286,6 +286,6 @@ export default {
   left: 0;
 }
 .backdrop_with_filter {
-  z-index: 2000;
+  z-index: 249;
 }
 </style>
