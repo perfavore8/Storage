@@ -1048,6 +1048,28 @@ export const messages = {
       text: "If a category is deleted, the properties of the products of this category will be moved to the root category",
       del: "Delete",
     },
+    Tips: {
+      EditImg: {
+        header:
+          "Find the image on the internet or upload it to the cloud storage.",
+        GDHeader: "For Google Drive:",
+        GDStep1: "1. Log in to your Google account and go to the Disk service.",
+        GDStep2:
+          '2. Create a folder by clicking the "Create" button and configure sharing by changing the access level to the folder to "Everyone on the Internet" or "Everyone who has a link".',
+        GDStep3: "3. Add the files that need direct links to this folder.",
+        GDStep4:
+          '4. Select the desired file by highlighting it, and get a link for distribution by clicking on the "Make shared" icon on the top panel or "Share" in the dialog box when uploading.',
+        GDStep5:
+          "The links will look like: https://docs.google.com/file/d/здесь Your file ID/edit?usp=sharing",
+        GDStep6:
+          "Carefully copy the ID and add the following construction to the end: https://drive.google.com/uc ?export=download&confirm=no_antivirus&id=here is the ID of your file.",
+        GDStep7: "5. Insert the link in the product field.",
+        EHeader: "For Yandex Disk or images from the Internet:",
+        EStep1: "1. Open the image.",
+        EStep2: '2. Click RMB and select "Copy Image URL".',
+        EStep3: "3. Insert the link in the product field.",
+      },
+    },
   },
   ru: {
     global: {
@@ -2102,6 +2124,29 @@ export const messages = {
       header: "Подтверждаете удаление категории?",
       text: "В случае удаления категории свойства товаров этой категории будут перенесены в корневую категорию",
       del: "Удалить",
+    },
+    Tips: {
+      EditImg: {
+        header:
+          "Найдите изображение в интернете или загрузите его в облачное хранилище.",
+        GDHeader: "Для Google Drive:",
+        GDStep1: "1. Зайдите в свой аккаунт Google и перейдите в сервис Диск.",
+        GDStep2:
+          '2. Создайте папку, нажав кнопку "Создать", и настройте совместный доступ, изменив уровень доступа к папке на "Всем в интернете" или "Всем, у кого есть ссылка".',
+        GDStep3:
+          "3. Добавьте файлы, для которых нужны прямые ссылки, в эту папку.",
+        GDStep4:
+          '4. Выберите нужный файл, выделив его, и получите ссылку для раздачи, кликнув по значку "Сделать общими" на верхней панели или "Поделиться" в диалоговом окне при загрузке.',
+        GDStep5:
+          "Ссылки будут иметь вид: https://docs.google.com/file/d/здесь ID вашего файла/edit?usp=sharing",
+        GDStep6:
+          "Аккуратно скопируйте идентификатор и добавьте в конец следующую конструкцию: https://drive.google.com/uc?export=download&confirm=no_antivirus&id=здесь ID вашего файла.",
+        GDStep7: "5. Вставьте ссылку в поле товара.",
+        EHeader: "Для Яндекс Диска или изображения из интернета:",
+        EStep1: "1. Откройте изображение.",
+        EStep2: '2. Нажмите ПКМ и выберите "Копировать URL картинки".',
+        EStep3: "3. Вставьте ссылку в поле товара.",
+      },
     },
   },
 };
