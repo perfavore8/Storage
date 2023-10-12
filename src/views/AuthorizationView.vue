@@ -341,11 +341,7 @@
       <template v-else>
         <span>
           {{ $t("Auth.sendCode") }}<br />
-          {{
-            notificationSystem.selected.value === "email"
-              ? form.email
-              : form.phone
-          }}
+          {{ form[notificationSystem.selected.form] }}
         </span>
         <div class="pinBox relative">
           <input
@@ -517,10 +513,7 @@ export default {
               1,
               "Сброс пароля",
               t("Auth.notificationTextPassword", {
-                source:
-                  notificationSystem.selected.value === "email"
-                    ? form.email
-                    : form.phone,
+                source: form[notificationSystem.selected.form],
               })
             );
             return;
@@ -529,10 +522,7 @@ export default {
               0,
               "Сброс пароля",
               t("Auth.notificationTextCode", {
-                source:
-                  notificationSystem.selected.value === "email"
-                    ? form.email
-                    : form.phone,
+                source: form[notificationSystem.selected.form],
               })
             );
             return;
@@ -549,14 +539,16 @@ export default {
             name: form.name,
           });
           if (res.success) {
+            console.log(
+              form,
+              notificationSystem.selected.form,
+              form[notificationSystem.selected.form]
+            );
             addNotification(
               1,
               t("Auth.reg"),
               t("Auth.notificationTextSuccess", {
-                source:
-                  notificationSystem.selected.value === "email"
-                    ? form.email
-                    : form.phone,
+                source: form[notificationSystem.selected.form],
               })
             );
             closeSignUp();
@@ -591,6 +583,7 @@ export default {
           name: "",
           value: "telegram",
           mode: "tg_username",
+          form: "tgLogin",
           login: computed(() => form.tgLogin),
           iconUrl:
             "https://okeygeek.ru/wp-content/uploads/2020/08/telegram-2048x2048.png",
@@ -601,6 +594,7 @@ export default {
           name: "",
           value: "whatsapp",
           mode: "phone",
+          form: "phone",
           login: computed(() => deleteOther(form.phone)),
           default: true,
           iconUrl:
@@ -613,6 +607,7 @@ export default {
           name: "",
           value: "email",
           mode: "email",
+          form: "email",
           login: computed(() => form.email),
           iconUrl: "https://www.svgrepo.com/show/444193/brand-google-gmail.svg",
           formReqFields: ["email", "password"],
