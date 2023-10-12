@@ -75,4 +75,7 @@ ul > li:not([hidden]) ~ :not([hidden]) {
   margin-top: 0;
   margin-bottom: 0;
 }
+ol > li {
+  height: auto;
+}
 </style>
