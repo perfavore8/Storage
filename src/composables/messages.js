@@ -1064,7 +1064,7 @@ export const messages = {
         GDStep6:
           "Carefully copy the ID and add the following construction to the end: https://drive.google.com/uc ?export=download&confirm=no_antivirus&id=here is the ID of your file.",
         GDStep7: "5. Insert the link in the product field.",
-        EHeader: "For Yandex Disk or images from the Internet:",
+        EHeader: "For images from the Internet:",
         EStep1: "1. Open the image.",
         EStep2: '2. Click RMB and select "Copy Image URL".',
         EStep3: "3. Insert the link in the product field.",
@@ -2142,7 +2142,7 @@ export const messages = {
         GDStep6:
           "Аккуратно скопируйте идентификатор и добавьте в конец следующую конструкцию: https://drive.google.com/uc?export=download&confirm=no_antivirus&id=здесь ID вашего файла.",
         GDStep7: "5. Вставьте ссылку в поле товара.",
-        EHeader: "Для Яндекс Диска или изображения из интернета:",
+        EHeader: "Для изображения из интернета:",
         EStep1: "1. Откройте изображение.",
         EStep2: '2. Нажмите ПКМ и выберите "Копировать URL картинки".',
         EStep3: "3. Вставьте ссылку в поле товара.",
