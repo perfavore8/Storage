@@ -500,7 +500,8 @@ export const messages = {
       sendCode: "Sent the code to :",
       notificationTextPassword: "We have sent you a new password to: {source}",
       notificationTextCode: "We have sent you a confirmation code to: {source}",
-      notificationTextSuccess: "You are registered, see the password on: ",
+      notificationTextSuccess:
+        "You are registered, see the password on: {source}",
       notificationTextTryCodeFail: "You have used too many code entry attempts",
     },
     Amo: {
@@ -1572,7 +1573,8 @@ export const messages = {
       sendCode: "Отправили код на :",
       notificationTextPassword: "Мы выслали вам новый пароль на: {source}",
       notificationTextCode: "Мы выслали вам код подтверждения на: {source}",
-      notificationTextSuccess: "Вы зарегистрированы смотрите пароль на: ",
+      notificationTextSuccess:
+        "Вы зарегистрированы смотрите пароль на: {source}",
       notificationTextTryCodeFail:
         "Вы использовали слишком много попыток ввода кода",
     },
