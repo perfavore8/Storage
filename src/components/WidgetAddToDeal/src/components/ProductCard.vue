@@ -66,7 +66,11 @@
         class="pcrow"
         v-for="field in fields"
         :key="field.id"
-        v-show="field.lead_config.visible > 0 && field.component"
+        v-show="
+          field.lead_config.visible > 0 &&
+          field.component &&
+          getAllFieldsInSubCat(copyItem.fields.category)?.includes(field.id)
+        "
       >
         <component
           :is="field.component"
@@ -112,6 +116,7 @@ import { computed, ref } from "vue";
 import { useAddToDealTabs } from "@/composables/addToDealTabs";
 import { useNewDeal } from "@/composables/newDeal";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useCats } from "../composables/cats";
 export default {
   components: {
     EditInteger,
@@ -132,6 +137,7 @@ export default {
     const { t } = useLangConfiguration();
     const { isProductTab } = useAddToDealTabs();
     const { toggleSomeChange } = useNewDeal();
+    const { getAllFieldsInSubCat } = useCats();
 
     const change_value = (value, code) => (
       context.emit("change_value", value, code), toggleSomeChange(true)
@@ -190,6 +196,7 @@ export default {
       selectedWhName,
       del,
       t,
+      getAllFieldsInSubCat,
     };
   },
 };

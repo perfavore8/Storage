@@ -1,0 +1,33 @@
+import store from "@/store";
+import { reactive } from "vue";
+import { computed } from "vue";
+
+export function useCats() {
+  const cats = computed(() => store.state.widjetCategories.fields_properties);
+  const getSubCatsForId = (catId) => {
+    const currentCat = cats.value.find((cat) => cat.id === catId);
+    const res = [];
+    currentCat.levels.forEach((id) => {
+      if (id === 0) return;
+      const cat = cats.value.find((el) => el.id === id);
+      if (cat) res.push(cat);
+    });
+    return res;
+  };
+
+  const hash = reactive({});
+
+  const getAllFieldsInSubCat = (catId) => {
+    if (hash[catId]) return hash[catId];
+    const res = [];
+    const allCats = getSubCatsForId(catId);
+    allCats.forEach((cat) => {
+      if (!cat.fields_id?.length) return;
+      cat.fields_id?.forEach((fieldId) => res.push(fieldId));
+    });
+    hash[catId] = res;
+    return res;
+  };
+
+  return { getAllFieldsInSubCat };
+}
