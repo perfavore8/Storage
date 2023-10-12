@@ -1,6 +1,33 @@
 <template>
   <div class="row">
-    <label>{{ item }}:</label>
+    <div class="flex flex-row items-center justify-between w-full">
+      <label>{{ item }}:</label>
+      <AppTip :float="'left'" :separateWindow="true">
+        <h1 class="text-lg font-semibold mb-2">
+          {{ $t("Tips.EditImg.header") }}
+        </h1>
+        <h2 class="text-lg font-semibold mb-1">
+          {{ $t("Tips.EditImg.GDHeader") }}
+        </h2>
+        <ol class="list-decimal pl-2 mb-2">
+          <li>{{ $t("Tips.EditImg.GDStep1") }}</li>
+          <li>{{ $t("Tips.EditImg.GDStep2") }}</li>
+          <li>{{ $t("Tips.EditImg.GDStep3") }}</li>
+          <li>{{ $t("Tips.EditImg.GDStep4") }}</li>
+          <li>{{ $t("Tips.EditImg.GDStep5") }}</li>
+          <li>{{ $t("Tips.EditImg.GDStep6") }}</li>
+          <li>{{ $t("Tips.EditImg.GDStep7") }}</li>
+        </ol>
+        <h2 class="text-lg font-semibold mb-1">
+          {{ $t("Tips.EditImg.EHeader") }}
+        </h2>
+        <ol class="list-decimal pl-2 mb-2">
+          <li>{{ $t("Tips.EditImg.EStep1") }}</li>
+          <li>{{ $t("Tips.EditImg.EStep2") }}</li>
+          <li>{{ $t("Tips.EditImg.EStep3") }}</li>
+        </ol>
+      </AppTip>
+    </div>
     <div class="type_selector_options">
       <div
         class="type_selector_option gap-2"
@@ -23,8 +50,9 @@
 
 <script>
 import { nextTick } from "vue";
+import AppTip from "../AppTip.vue";
 export default {
-  components: {},
+  components: { AppTip },
   props: {
     item: {
       type: String,
@@ -100,6 +128,7 @@ export default {
   flex-direction: column;
   margin-top: 5px;
   gap: 5px;
+  width: 100%;
   .type_selector_option {
     display: flex;
     flex-direction: row;
