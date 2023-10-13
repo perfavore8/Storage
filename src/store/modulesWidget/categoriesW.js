@@ -13,10 +13,10 @@ export default {
     updateCategories(state, value) {
       state.categories = [...value];
     },
-    update_fields_properties(state, value) {
+    update_fields_propertiesW(state, value) {
       state.fields_properties = [...value];
     },
-    update_fields_properties2(state, value) {
+    update_fields_properties2W(state, value) {
       state.fields_properties2 = [...value];
     },
   },
@@ -43,7 +43,7 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("update_fields_properties", json);
+      context.commit("update_fields_propertiesW", json);
 
       return json;
     },
@@ -56,7 +56,7 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("update_fields_properties2", json);
+      context.commit("update_fields_properties2W", json);
 
       return json;
     },

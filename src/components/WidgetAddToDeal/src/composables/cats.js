@@ -22,8 +22,8 @@ export function useCats() {
     const res = [];
     const allCats = getSubCatsForId(catId);
     allCats.forEach((cat) => {
-      if (!cat.fields_id?.length) return;
-      cat.fields_id?.forEach((fieldId) => res.push(fieldId));
+      if (!cat.fields_id_2?.length) return;
+      cat.fields_id_2?.forEach((fieldId) => res.push(fieldId));
     });
     hash[catId] = res;
     return res;

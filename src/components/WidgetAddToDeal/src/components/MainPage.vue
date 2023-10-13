@@ -31,6 +31,7 @@
               type="checkbox"
               class="sls_checkbox"
               v-model="show_cards"
+              :disabled="isLockedShowCards"
               id="grid"
             />
             <label for="grid"></label>
@@ -158,172 +159,187 @@
                             </div>
                           </div>
                           <template v-for="field in sortedFields" :key="field">
-                            <template v-if="field.type === 11">
-                              <div class="sls_row">
-                                <div class="name" style="font-weight: 500">
-                                  {{ field.name }} :
-                                </div>
-                                <div class="value">
-                                  {{
-                                    product?.fields[field.code]?.cost
-                                      ? product?.fields[field.code]?.cost
-                                      : "" +
-                                        " " +
-                                        product?.fields[field.code]?.currency
-                                      ? product?.fields[field.code]?.currency
-                                      : ""
-                                  }}
-                                </div>
-                              </div>
-                              <template
-                                v-if="product?.fields[field.code]?.is_nds"
-                              >
-                                <div class="sls_row" style="margin-left: 8px">
-                                  <div class="name">{{ $t("widjet.nds") }}</div>
-                                  <div class="value">
-                                    {{ product?.fields[field.code]?.nds }}
-                                  </div>
-                                </div>
-                                <div class="sls_row" style="margin-left: 8px">
-                                  <div class="name">
-                                    {{ $t("widjet.nds2") }}
+                            <template
+                              v-if="
+                                getAllFieldsInSubCat(
+                                  product?.fields?.category
+                                )?.includes(field.id)
+                              "
+                            >
+                              <template v-if="field.type === 11">
+                                <div class="sls_row">
+                                  <div class="name" style="font-weight: 500">
+                                    {{ field.name }} :
                                   </div>
                                   <div class="value">
                                     {{
-                                      product?.fields[field.code]
-                                        ?.is_price_include_nds
-                                        ? $t("global.yes")
-                                        : $t("global.no")
+                                      product?.fields[field.code]?.cost
+                                        ? product?.fields[field.code]?.cost
+                                        : "" +
+                                          " " +
+                                          product?.fields[field.code]?.currency
+                                        ? product?.fields[field.code]?.currency
+                                        : ""
+                                    }}
+                                  </div>
+                                </div>
+                                <template
+                                  v-if="product?.fields[field.code]?.is_nds"
+                                >
+                                  <div class="sls_row" style="margin-left: 8px">
+                                    <div class="name">
+                                      {{ $t("widjet.nds") }}
+                                    </div>
+                                    <div class="value">
+                                      {{ product?.fields[field.code]?.nds }}
+                                    </div>
+                                  </div>
+                                  <div class="sls_row" style="margin-left: 8px">
+                                    <div class="name">
+                                      {{ $t("widjet.nds2") }}
+                                    </div>
+                                    <div class="value">
+                                      {{
+                                        product?.fields[field.code]
+                                          ?.is_price_include_nds
+                                          ? $t("global.yes")
+                                          : $t("global.no")
+                                      }}
+                                    </div>
+                                  </div>
+                                </template>
+                              </template>
+                              <template v-else-if="field.type === 13">
+                                <div class="sls_row">
+                                  <div class="name" style="font-weight: 500">
+                                    {{ field.name }}:
+                                  </div>
+                                  <div class="value"></div>
+                                </div>
+                                <div class="sls_row" style="margin-left: 8px">
+                                  <div class="name">
+                                    {{ $t("widjet.free") }}
+                                  </div>
+                                  <div class="value">
+                                    {{
+                                      Number(
+                                        product?.fields[field.code]?.count
+                                          ? product?.fields[field.code]?.count
+                                          : 0
+                                      ) +
+                                      Number(
+                                        product?.fields[field.code]?.reserve
+                                          ? product?.fields[field.code]?.reserve
+                                          : 0
+                                      )
                                     }}
                                   </div>
                                 </div>
                               </template>
-                            </template>
-                            <template v-else-if="field.type === 13">
-                              <div class="sls_row">
-                                <div class="name" style="font-weight: 500">
-                                  {{ field.name }}:
-                                </div>
-                                <div class="value"></div>
-                              </div>
-                              <div class="sls_row" style="margin-left: 8px">
-                                <div class="name">{{ $t("widjet.free") }}</div>
-                                <div class="value">
-                                  {{
-                                    Number(
-                                      product?.fields[field.code]?.count
-                                        ? product?.fields[field.code]?.count
-                                        : 0
-                                    ) +
-                                    Number(
-                                      product?.fields[field.code]?.reserve
-                                        ? product?.fields[field.code]?.reserve
-                                        : 0
-                                    )
-                                  }}
-                                </div>
-                              </div>
-                            </template>
-                            <template v-else-if="field.type === 12">
-                              <div class="sls_row">
-                                <div class="name" style="font-weight: 500">
-                                  {{ field.name }}:
-                                </div>
-                                <div class="value">
-                                  {{
-                                    categoriesForCard?.[
-                                      product?.fields?.[field.code]
-                                    ]
-                                  }}
-                                </div>
-                              </div>
-                            </template>
-                            <template v-else-if="field.code === 'name'" />
-                            <template
-                              v-else-if="
-                                field.type === 15 &&
-                                product?.fields[field.code]?.length
-                              "
-                            >
-                              <div class="sls_row">
-                                <div class="name">{{ field.name }}:</div>
-                                <div class="value group/img relative">
-                                  <img
-                                    :src="
-                                      product?.fields[field.code]?.[
-                                        images.selectedIdxes[idx]
+                              <template v-else-if="field.type === 12">
+                                <div class="sls_row">
+                                  <div class="name" style="font-weight: 500">
+                                    {{ field.name }}:
+                                  </div>
+                                  <div class="value">
+                                    {{
+                                      categoriesForCard?.[
+                                        product?.fields?.[field.code]
                                       ]
-                                    "
-                                    class="h-14 w-14 rounded-md"
-                                    alt=""
-                                  />
-                                  <div
-                                    class="h-40 w-40 hidden group-hover/img:block absolute z-[110] right-0 top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
-                                  >
+                                    }}
+                                  </div>
+                                </div>
+                              </template>
+                              <template v-else-if="field.code === 'name'" />
+                              <template
+                                v-else-if="
+                                  field.type === 15 &&
+                                  product?.fields[field.code]?.length
+                                "
+                              >
+                                <div class="sls_row">
+                                  <div class="name">{{ field.name }}:</div>
+                                  <div class="value group/img relative">
                                     <img
                                       :src="
                                         product?.fields[field.code]?.[
                                           images.selectedIdxes[idx]
                                         ]
                                       "
-                                      class="w-full h-full rounded-xl"
+                                      class="h-14 w-14 rounded-md"
                                       alt=""
                                     />
                                     <div
-                                      v-if="
-                                        product?.fields[field.code]?.length > 1
-                                      "
-                                      class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
+                                      class="h-40 w-40 hidden group-hover/img:block absolute z-[110] right-0 top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
                                     >
-                                      <button
-                                        class="h-full"
-                                        @click="
-                                          images.pref(
-                                            idx,
-                                            product?.fields[field.code]?.length
-                                          )
+                                      <img
+                                        :src="
+                                          product?.fields[field.code]?.[
+                                            images.selectedIdxes[idx]
+                                          ]
                                         "
-                                      >
-                                        <span class="material-icons-outlined">
-                                          navigate_before
-                                        </span>
-                                      </button>
-                                      <button
-                                        class="h-full"
-                                        @click="
-                                          images.next(
-                                            idx,
-                                            product?.fields[field.code]?.length
-                                          )
+                                        class="w-full h-full rounded-xl"
+                                        alt=""
+                                      />
+                                      <div
+                                        v-if="
+                                          product?.fields[field.code]?.length >
+                                          1
                                         "
+                                        class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
                                       >
-                                        <span class="material-icons-outlined">
-                                          navigate_next
+                                        <button
+                                          class="h-full"
+                                          @click="
+                                            images.pref(
+                                              idx,
+                                              product?.fields[field.code]
+                                                ?.length
+                                            )
+                                          "
+                                        >
+                                          <span class="material-icons-outlined">
+                                            navigate_before
+                                          </span>
+                                        </button>
+                                        <button
+                                          class="h-full"
+                                          @click="
+                                            images.next(
+                                              idx,
+                                              product?.fields[field.code]
+                                                ?.length
+                                            )
+                                          "
+                                        >
+                                          <span class="material-icons-outlined">
+                                            navigate_next
+                                          </span>
+                                        </button>
+                                      </div>
+                                      <div
+                                        class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
+                                      >
+                                        <span>
+                                          {{
+                                            images.selectedIdxes[idx] +
+                                            1 +
+                                            " / " +
+                                            product?.fields[field.code]?.length
+                                          }}
                                         </span>
-                                      </button>
-                                    </div>
-                                    <div
-                                      class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
-                                    >
-                                      <span>
-                                        {{
-                                          images.selectedIdxes[idx] +
-                                          1 +
-                                          " / " +
-                                          product?.fields[field.code]?.length
-                                        }}
-                                      </span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
+                              </template>
+                              <div class="sls_row" v-else>
+                                <div class="name">{{ field.name }}:</div>
+                                <div class="value">
+                                  {{ product?.fields[field.code] }}
+                                </div>
                               </div>
                             </template>
-                            <div class="sls_row" v-else>
-                              <div class="name">{{ field.name }}:</div>
-                              <div class="value">
-                                {{ product?.fields[field.code] }}
-                              </div>
-                            </div>
                           </template>
                         </div>
                         <div class="card_footer">
@@ -469,6 +485,8 @@ import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { computed, reactive, watch } from "vue";
 import store from "@/store";
+import { useCats } from "../composables/cats";
+import { useLockBtn } from "@/composables/lockBtn";
 
 const {
   order,
@@ -480,6 +498,8 @@ const {
 const { formatNumber } = useValidate();
 
 const { t } = useLangConfiguration();
+
+const { isLocked: isLockedShowCards, lockBtn, handleUnLock } = useLockBtn();
 
 export default {
   components: {
@@ -513,7 +533,7 @@ export default {
       },
     });
 
-    return { t, images };
+    return { t, images, ...useCats(), isLockedShowCards };
   },
   data() {
     return {
@@ -645,6 +665,7 @@ export default {
     },
   },
   async mounted() {
+    lockBtn("handle");
     setWatcherUpdateAddedProducts(this.updateAddedProducts);
     this.isAddedProductsLoading = true;
     this.routeWatcher = this.$router.beforeResolve((to, from, next) => {
@@ -661,9 +682,11 @@ export default {
     await Promise.all([
       // this.getCategoriesW(0),
       this.$store.dispatch("getAllFieldsW"),
+      this.$store.dispatch("get_fields_propertiesW"),
       this.getFields(1),
     ]);
     // await this.selectCategories(this.categories[0]);
+    handleUnLock();
     this.updateAddedProducts(true);
   },
   watch: {
@@ -961,6 +984,13 @@ export default {
           }
           .sls_checkbox:not(:disabled):active + label::before {
             background-color: transparent;
+          }
+          .sls_checkbox:disabled + label::before {
+            opacity: 0.5;
+            cursor: default;
+          }
+          .sls_checkbox:disabled + label:hover::before {
+            background-size: 100%;
           }
           .sls_btn {
             width: 32px;
