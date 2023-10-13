@@ -922,6 +922,7 @@ export const messages = {
       ndsT: "VAT",
       nt: "Setting up a table",
       ex: "Exporting a table to xlsx",
+      error: "Error",
     },
     orders: {
       ors: "Orders",
@@ -1995,6 +1996,7 @@ export const messages = {
       ndsT: "НДС",
       nt: "Настройка таблицы",
       ex: "Экспорт таблицы в xlsx",
+      error: "Ошибка",
     },
     orders: {
       ors: "Заказы",
