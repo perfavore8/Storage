@@ -59,7 +59,9 @@ import FilterText from "@/components/FiltersSelections/FilterText.vue";
 import FilterList from "@/components/FiltersSelections/FilterList.vue";
 import FilterDate from "@/components/FiltersSelections/FilterDate.vue";
 import FilterFlag from "@/components/FiltersSelections/FilterFlag.vue";
+import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
 import { mapGetters } from "vuex";
+import { computed } from "vue";
 export default {
   props: {
     fields: {
@@ -107,6 +109,7 @@ export default {
   async mounted() {
     await this.$store.dispatch("get_fields_properties");
     this.get_categories_options();
+    await waitForNonAsyncFunction(computed(() => this.fields.length));
     this.feelFilters();
   },
   watch: {
