@@ -35,7 +35,7 @@
     </div>
   </div>
   <img
-    :src="product?.fields[field.code]?.[images.selectedIdxes[idx]]"
+    :src="product?.fields[field.code]?.[images.selectedIdx[idx]]"
     class="h-14 w-14 rounded-md"
     alt=""
   />
@@ -43,7 +43,7 @@
     class="h-40 w-40 hidden group-hover/img:block absolute z-[110] right-0 top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
   >
     <img
-      :src="product?.fields[field.code]?.[images.selectedIdxes[idx]]"
+      :src="product?.fields[field.code]?.[images.selectedIdx[idx]]"
       class="w-full h-full rounded-xl"
       alt=""
     />
@@ -69,7 +69,7 @@
     >
       <span>
         {{
-          images.selectedIdxes[idx] +
+          images.selectedIdx[idx] +
           1 +
           " / " +
           product?.fields[field.code]?.length
