@@ -49,7 +49,13 @@
       <div class="card shadow-lg" v-for="(row, idx) in products" :key="row.id">
         <div class="row" v-for="item in sortedFields" :key="item">
           <div class="name">{{ item[1].name }}<span> :</span></div>
-          <div class="value">
+          <div class="value" v-if="item[1].type === 15">
+            <AppImagesCarusel
+              :imagesList="row.fields[item[0]]"
+              :float="'right'"
+            />
+          </div>
+          <div class="value" v-else>
             <span v-if="item[0].split('.').length < 2">
               {{
                 item[0] === "free_4_reserve" && row.fields[item[0]] == -1
@@ -146,6 +152,7 @@ import { mapGetters } from "vuex";
 import { nextTick } from "@vue/runtime-core";
 import CardGridCategories from "./CardGridCategories.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import AppImagesCarusel from "./AppImagesCarusel.vue";
 
 const { t } = useLangConfiguration();
 
@@ -159,6 +166,7 @@ export default {
     GridEditPrice,
     SelectorVue,
     CardGridCategories,
+    AppImagesCarusel,
   },
   props: {
     selectedWH: {

@@ -7,7 +7,13 @@
     />
     <div
       class="hidden group-hover/img:block absolute z-[110] top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
-      :class="[`h-${sizeWindow} w-${sizeWindow} ${float}-0`]"
+      :class="[
+        `${float}-0`,
+        {
+          'h-40 w-40': sizeWindow === 'm',
+          'h-52 w-52': sizeWindow === 'l',
+        },
+      ]"
     >
       <img
         :src="imagesList[images.selectedIdx]"
@@ -42,7 +48,12 @@ import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   props: {
     imagesList: Array,
-    sizeWindow: { type: Number, required: false, default: () => 52 },
+    sizeWindow: {
+      type: String,
+      required: false,
+      default: () => "l",
+      validator: (value) => ["m", "l"].includes(value),
+    },
     float: {
       type: String,
       required: false,

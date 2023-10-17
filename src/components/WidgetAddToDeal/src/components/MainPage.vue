@@ -262,7 +262,7 @@
                                   <div class="value">
                                     <AppImagesCarusel
                                       :imagesList="product?.fields[field.code]"
-                                      :sizeWindow="40"
+                                      :sizeWindow="'m'"
                                       :float="'right'"
                                     />
                                   </div>
