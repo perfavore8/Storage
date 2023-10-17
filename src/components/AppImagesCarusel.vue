@@ -34,49 +34,6 @@
       </div>
     </div>
   </div>
-  <img
-    :src="product?.fields[field.code]?.[images.selectedIdx[idx]]"
-    class="h-14 w-14 rounded-md"
-    alt=""
-  />
-  <div
-    class="h-40 w-40 hidden group-hover/img:block absolute z-[110] right-0 top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
-  >
-    <img
-      :src="product?.fields[field.code]?.[images.selectedIdx[idx]]"
-      class="w-full h-full rounded-xl"
-      alt=""
-    />
-    <div
-      v-if="product?.fields[field.code]?.length > 1"
-      class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
-    >
-      <button
-        class="h-full"
-        @click="images.pref(idx, product?.fields[field.code]?.length)"
-      >
-        <span class="material-icons-outlined"> navigate_before </span>
-      </button>
-      <button
-        class="h-full"
-        @click="images.next(idx, product?.fields[field.code]?.length)"
-      >
-        <span class="material-icons-outlined"> navigate_next </span>
-      </button>
-    </div>
-    <div
-      class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
-    >
-      <span>
-        {{
-          images.selectedIdx[idx] +
-          1 +
-          " / " +
-          product?.fields[field.code]?.length
-        }}
-      </span>
-    </div>
-  </div>
 </template>
 
 <script>
