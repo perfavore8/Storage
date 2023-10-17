@@ -222,8 +222,10 @@ export default {
       setStatuses();
     });
 
-    const setStatuses = async () => {
-      const stats = await store.dispatch("ordersPipelinesList", {});
+    const setStatuses = async (isUpdate) => {
+      const stats = await store.dispatch("ordersPipelinesList", {
+        isUpdate: Boolean(isUpdate),
+      });
       stats.forEach((stat) => stat.statuses.map((s) => (s.value = s.id)));
       statusesList.length = 0;
       stats.forEach((stat) =>
