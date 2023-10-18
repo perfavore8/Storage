@@ -146,26 +146,31 @@
                 {{ $t("HomeMenu.settings.archive") }}
               </div>
             </a>
-            <a>
-              <div class="modal_container" @click="open_product_category()">
-                {{ $t("HomeMenu.settings.categories") }}
-              </div>
-            </a>
-            <a>
-              <div class="modal_container" @click="open_product_properties()">
-                {{ $t("HomeMenu.settings.properties") }}
-              </div>
-            </a>
-            <a v-if="!oneC && isColored">
-              <div class="modal_container" @click="openSyncSettings()">
-                {{ $t("HomeMenu.settings.sync") }}
-              </div>
-            </a>
-            <a v-if="isTest">
-              <div class="modal_container" @click="openClientsFieldsSettings()">
-                {{ $t("HomeMenu.settings.clients") }}
-              </div>
-            </a>
+            <template v-if="!isTest">
+              <a>
+                <div class="modal_container" @click="open_product_category()">
+                  {{ $t("HomeMenu.settings.categories") }}
+                </div>
+              </a>
+              <a>
+                <div class="modal_container" @click="open_product_properties()">
+                  {{ $t("HomeMenu.settings.properties") }}
+                </div>
+              </a>
+              <a v-if="!oneC && isColored">
+                <div class="modal_container" @click="openSyncSettings()">
+                  {{ $t("HomeMenu.settings.sync") }}
+                </div>
+              </a>
+              <a v-if="isTest">
+                <div
+                  class="modal_container"
+                  @click="openClientsFieldsSettings()"
+                >
+                  {{ $t("HomeMenu.settings.clients") }}
+                </div>
+              </a>
+            </template>
           </div>
         </transition>
       </template>

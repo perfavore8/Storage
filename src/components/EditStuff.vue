@@ -67,7 +67,7 @@
             </div>
           </div>
         </div>
-        <div class="content">
+        <div class="content" v-if="!isTest">
           <h6>{{ $t("EditStuff.stepsRes.header") }}</h6>
           <div class="small">
             {{ $t("EditStuff.stepsRes.text") }}
