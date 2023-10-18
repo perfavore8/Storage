@@ -5,8 +5,10 @@ import { useNotification } from "./notification";
 import { useToggle } from "@vueuse/core";
 import { computed, nextTick } from "vue";
 import { useAddToDealTabs } from "./addToDealTabs";
+import { useLangConfiguration } from "./langConfiguration";
 
 const { tabs } = useAddToDealTabs();
+const { t } = useLangConfiguration();
 
 const newDealParams = reactive({});
 const order = reactive({ fields: {} });
@@ -40,7 +42,8 @@ const getOrder = async () => {
   if (Array.isArray(newOrder.fields)) newOrder.fields = {};
   Object.assign(order, newOrder);
   if (!order.fields) order.fields = {};
-  if (!order.fields.name) order.fields.name = `Заказ №${newDealParams.id}`;
+  if (!order.fields.name)
+    order.fields.name = t("newOrder.newOrderName", { id: newDealParams.id });
 
   isOrderGeted.value = true;
 };

@@ -938,6 +938,7 @@ export const messages = {
       sm: "Drag and drop columns to change the order",
     },
     newOrder: {
+      newOrderName: "Order №{id}",
       a: "Choosing a template",
       saving: "Saving ",
       spis: "List of positions",
@@ -2014,6 +2015,7 @@ export const messages = {
       sm: "Перетаскивайте колонки для изменения очередности",
     },
     newOrder: {
+      newOrderName: "Заказ №{id}",
       a: "Выбор шаблона",
       saving: "Сохраняем",
       spis: "Список позиций",
