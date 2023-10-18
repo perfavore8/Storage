@@ -82,6 +82,7 @@ export function useClientBinding(selectedTab) {
       this.selected.forEach((val) =>
         params[`${selectedTab.value.oppositeValue3}_id`].push(val.id)
       );
+      if (!params[`${selectedTab.value.oppositeValue3}_id`].length) return;
 
       await store.dispatch(`linkClients${selectedTab.value.value}`, params);
     },

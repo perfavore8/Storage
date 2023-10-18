@@ -267,14 +267,10 @@ export default {
     };
 
     const tryAccept = ref(false);
-    const checkValues = () => {
-      return (
-        sistemsFields.value.some(
-          (field) => !copyItem.value.fields[field.code]
-        ) || copyItem.value.fields?.name?.length < 3
-      );
-    };
     const { checkError } = useCheckError(copyItem, tryAccept);
+    const checkValues = () => {
+      return sistemsFields.value.some((field) => checkError(field).global);
+    };
 
     const del = () => {
       store.dispatch("deleteClientsContacts", { id: copyItem.value.id });
