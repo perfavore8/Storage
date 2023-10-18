@@ -106,7 +106,7 @@ export default {
       list.value.map((item) => {
         item.visible = {
           value: config.value.special
-            ? kanBanConfig.value.includes(item.code)
+            ? kanBanConfig.value?.includes(item.code)
             : Boolean(item.visible),
           disabled: item.visible === 2 || item.visible === -1,
         };
