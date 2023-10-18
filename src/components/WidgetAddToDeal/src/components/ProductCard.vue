@@ -69,7 +69,9 @@
         v-show="
           field.lead_config.visible > 0 &&
           field.component &&
-          getAllFieldsInSubCat(copyItem.fields.category)?.includes(field.id)
+          getAllFieldsInSubCat(
+            copyItem.fields?.category || copyItem.product?.fields?.category
+          )?.includes(field.id)
         "
       >
         <component

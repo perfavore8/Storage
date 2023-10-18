@@ -242,10 +242,10 @@ export default {
       },
       close: () => toggleEditUser(false),
       submit: function (newFields) {
-        Object.assign(this.selected, newFields);
         store.dispatch("updateUser", {
           id: this.selected.id,
-          is_active: this.selected.is_active,
+          is_active: newFields.is_active,
+          role: newFields.role,
         });
       },
     });

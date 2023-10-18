@@ -11,7 +11,7 @@ export default {
         data: params,
       });
 
-      context.dispatch("getUsersList", { isUpdate: true });
+      await context.dispatch("getUsersList", { isUpdate: true });
 
       return data;
     },
@@ -22,7 +22,7 @@ export default {
         data: params,
       });
 
-      context.dispatch("getUsersList", { isUpdate: true });
+      await context.dispatch("getUsersList", { isUpdate: true });
 
       return data;
     },
@@ -32,7 +32,7 @@ export default {
         params: params,
       });
 
-      context.dispatch("getUsersList", { isUpdate: true });
+      await context.dispatch("getUsersList", { isUpdate: true });
 
       return data;
     },
@@ -42,7 +42,7 @@ export default {
         params: params,
       });
 
-      context.dispatch("getUsersList", { isUpdate: true });
+      await context.dispatch("getUsersList", { isUpdate: true });
 
       return data;
     },
