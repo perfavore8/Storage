@@ -80,6 +80,8 @@ export default {
           { text: t("tarifs.pol", { count: 1 }), type: 1 },
           { text: t("tarifs.pos2", { count: 30 }), type: 1 },
           { text: t("tarifs.ord", { count: 10 }), type: 1 },
+          { text: t("tarifs.kontikomp", { count: 100 }), type: 1 },
+          { text: t("tarifs.noApi"), type: 1 },
         ],
       },
       {
