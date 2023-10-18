@@ -392,7 +392,7 @@ export default {
           : (product.item = {});
       });
     };
-    const { pipelines } = useOrdersPipelinesSelect();
+    const { pipelines } = useOrdersPipelinesSelect(true);
     const getOrders = async () => {
       const params1 = {};
       if (pipelines.selected.id !== -1)

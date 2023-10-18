@@ -125,7 +125,7 @@ export default {
   props: { hideFinalSteps: Boolean },
   setup() {
     const { getRandomColor3 } = useColor();
-    const { pipelines, startPromise } = useOrdersPipelinesSelect();
+    const { pipelines, startPromise } = useOrdersPipelinesSelect(false);
     const { formatNumber } = useValidate();
 
     const params = computed(() => store.state.orders.filters);

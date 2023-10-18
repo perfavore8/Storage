@@ -26,7 +26,10 @@
               </span>
             </transition>
           </button>
-          <OrdersKanbanPipelineSelect :needAll="true" />
+          <OrdersKanbanPipelineSelect
+            :key="displayType.selected.name"
+            :needAll="displayType.selected.name === 'grid'"
+          />
           <div class="flex items-center" v-if="isMain || isTest">
             <input
               type="checkbox"

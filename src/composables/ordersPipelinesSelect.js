@@ -16,11 +16,16 @@ const pipelines = reactive({
   select: function (option) {
     if (option) this.selected = option;
   },
-  getList: function (needAll) {
-    if (needAll && this.list[0].value !== -1)
+  getList: async function (needAll) {
+    await this.getNewList();
+    if (needAll === true && this.list[0].value !== -1)
       this.list.unshift({ name: t("global.all"), value: -1, id: -1 });
-    if (this.list.length) return;
-    this.getNewList(needAll);
+    if (needAll === false && this.list[0].value === -1) {
+      this.list.shift();
+      if (this.selected.value !== -1) return;
+      this.selected = {};
+      this.dropToDefault();
+    }
   },
   getNewList: async function () {
     const list = await store.dispatch("ordersPipelinesList");
