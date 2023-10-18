@@ -327,9 +327,9 @@ export const messages = {
     },
     EditStuff: {
       header: "General settings",
-      otherDeals: "Allow adding items from the reserve to other deals",
-      zeroCount: "Allow adding goods with zero balance to deal",
-      oneWh: "Products in a deal from only one warehouse",
+      otherDeals: "Allow adding items from the reserve to other orders",
+      zeroCount: "Allow adding goods with zero balance to order",
+      oneWh: "Products in a order from only one warehouse",
       manualBudjet: "Allow manual editing of the order sum",
       stepsRes: {
         header: "Stages of products reservation from the warehouse",
@@ -345,7 +345,7 @@ export const messages = {
       },
       dealBinding: {
         header: "Deal field binding",
-        budget: "Do not complete the deal budget",
+        budget: "Do not complete the order budget",
         field: 'Field  "{name}"',
         number: "(number)",
       },
@@ -1403,9 +1403,9 @@ export const messages = {
     },
     EditStuff: {
       header: "Общие настройки",
-      otherDeals: "Разрешать добавлять товары из резерва в другие сделки",
-      zeroCount: "Разрешать добавлять в сделки товар с нулевым остатком",
-      oneWh: "Товары в сделке только из одного склада",
+      otherDeals: "Разрешать добавлять товары из резерва в другие заказы",
+      zeroCount: "Разрешать добавлять в заказы товар с нулевым остатком",
+      oneWh: "Товары в заказы только из одного склада",
       manualBudjet: "Разрешать ручное редактирование суммы заказа",
       stepsRes: {
         header: "Этапы резервирования товаров со склада",
@@ -1421,7 +1421,7 @@ export const messages = {
       },
       dealBinding: {
         header: "Привязка полей сделок",
-        budget: "Не заполнять бюджет сделки",
+        budget: "Не заполнять бюджет заказы",
         field: 'Поле "{name}"',
         number: "(число)",
       },
@@ -1438,9 +1438,9 @@ export const messages = {
       table: {
         field: "Поле",
         type: "Тип",
-        visible: "Видимость в сделке",
-        edit: "Редактирование в сделке",
-        headerDeal: "Заголовок товара в сделке",
+        visible: "Видимость в заказы",
+        edit: "Редактирование в заказы",
+        headerDeal: "Заголовок товара в заказы",
         double: "Дублировать в новые партии",
         bind: "Привязка к категориям",
         btnSaveAll: "Сохранить все поля",
