@@ -85,6 +85,9 @@
           :idx="field.code"
           :disabled="field.lead_config.editable < 1"
           @change_value="change_value"
+          :imagesList="copyItem.product?.fields[field.code]"
+          :sizeWindow="'l'"
+          :float="'left'"
         />
       </div>
       <div
@@ -108,6 +111,7 @@ import EditMultiSelector from "@/components/EditItemSelections/EditMultiSelector
 import EditDate from "@/components/EditItemSelections/EditDate.vue";
 import EditDateTime from "@/components/EditItemSelections/EditDateTime.vue";
 import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
+import AppImagesCarusel from "@/components/AppImagesCarusel.vue";
 import {
   useToggle,
   onClickOutside,
@@ -130,6 +134,7 @@ export default {
     EditDate,
     EditDateTime,
     EditFlag,
+    AppImagesCarusel,
   },
   props: {
     fields: { type: Array, required: true },

@@ -1,42 +1,45 @@
 <template>
-  <div class="group/img relative w-fit h-fit" v-if="imagesList?.length">
-    <img
-      :src="imagesList[images.selectedIdx]"
-      class="h-14 w-14 rounded-md"
-      :alt="t('ostatki.error')"
-    />
-    <div
-      class="hidden group-hover/img:block absolute z-[110] top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
-      :class="[
-        `${float}-0`,
-        {
-          'h-40 w-40': sizeWindow === 'm',
-          'h-52 w-52': sizeWindow === 'l',
-        },
-      ]"
-    >
+  <div>
+    <label v-if="item">{{ item }}:</label>
+    <div class="group/img relative w-fit h-fit" v-if="imagesList?.length">
       <img
         :src="imagesList[images.selectedIdx]"
-        class="w-full h-full rounded-xl"
+        class="h-14 w-14 rounded-md"
         :alt="t('ostatki.error')"
       />
       <div
-        v-if="imagesList.length > 1"
-        class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
+        class="hidden group-hover/img:block absolute z-[110] top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
+        :class="[
+          `${float}-0`,
+          {
+            'h-40 w-40': sizeWindow === 'm',
+            'h-52 w-52': sizeWindow === 'l',
+          },
+        ]"
       >
-        <button class="h-full" @click="images.pref(imagesList.length)">
-          <span class="material-icons-outlined"> navigate_before </span>
-        </button>
-        <button class="h-full" @click="images.next(imagesList.length)">
-          <span class="material-icons-outlined"> navigate_next </span>
-        </button>
-      </div>
-      <div
-        class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
-      >
-        <span>
-          {{ images.selectedIdx + 1 + " / " + imagesList.length }}
-        </span>
+        <img
+          :src="imagesList[images.selectedIdx]"
+          class="w-full h-full rounded-xl"
+          :alt="t('ostatki.error')"
+        />
+        <div
+          v-if="imagesList.length > 1"
+          class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
+        >
+          <button class="h-full" @click="images.pref(imagesList.length)">
+            <span class="material-icons-outlined"> navigate_before </span>
+          </button>
+          <button class="h-full" @click="images.next(imagesList.length)">
+            <span class="material-icons-outlined"> navigate_next </span>
+          </button>
+        </div>
+        <div
+          class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
+        >
+          <span>
+            {{ images.selectedIdx + 1 + " / " + imagesList.length }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -59,6 +62,11 @@ export default {
       required: false,
       default: () => "left",
       validator: (value) => ["right", "left"].includes(value),
+    },
+    item: {
+      type: String,
+      required: false,
+      default: () => "",
     },
   },
   setup() {
