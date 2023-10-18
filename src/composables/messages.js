@@ -2115,7 +2115,7 @@ export const messages = {
       pol: "{count} пользователь",
       pos2: "{count} позиций",
       kontikomp: "{count} контактов и компаний",
-      noApi: "Нет API и инеграций",
+      noApi: "Нет API и интеграций",
       ord: "{count} заказов / месяц",
       g: "год",
       d: "14 дней",
