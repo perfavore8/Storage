@@ -137,7 +137,7 @@ export default {
     );
 
     onMounted(() => {
-      store.dispatch("get_documents_v2");
+      store.dispatch("get_documents_v3");
       getDocs();
       getCustomDocList();
     });

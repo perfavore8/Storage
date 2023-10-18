@@ -77,6 +77,15 @@ export default {
 
       return data;
     },
+    async get_documents_v3(context) {
+      const { data } = await ApiReqFunc({
+        url: "document/listV3",
+      });
+      context.commit("update_templates", data.templates);
+      context.commit("update_config", data.config);
+
+      return data;
+    },
     async delete_template(context, params) {
       const { data } = await ApiReqFunc({
         url: "document/delete",
