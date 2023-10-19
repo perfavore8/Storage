@@ -156,6 +156,7 @@ import {
 import store from "@/store";
 import { isTest } from "@/composables/isTest";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useFollowAnalytics } from "@/composables/followAnalytics";
 export default {
   components: {
     AppInputSelect,
@@ -171,6 +172,8 @@ export default {
     },
   },
   setup(props, context) {
+    const { followStep2 } = useFollowAnalytics();
+
     const filteringSystems = reactive([useSystems()]);
     const addFilteringSystem = () => filteringSystems.push(useSystems());
 
@@ -378,6 +381,7 @@ export default {
     onMounted(() => {
       nextTick(() => {
         copySelectedItems.value = structuredClone(selectedItems.value);
+        followStep2(fields, selectField, apply);
       });
     });
 

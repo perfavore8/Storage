@@ -2,12 +2,7 @@
   <div
     class="w-auto m-4 p-4 flex flex-col gap-6 items-center rounded-xl border h-fit shadow-lg shadow-slate-100 relative"
   >
-    <template v-if="showOrderHistory">
-      <ClientsEditSectionOrdersHistory
-        @back="() => toggleOrderHistory(false)"
-      />
-    </template>
-    <template v-else>
+    <template>
       <div class="w-full flex flex-col items-center">
         <BtnsSaveClose
           v-show="!downButtonsIsVisible"
@@ -40,7 +35,7 @@
           >
             <button
               class="btn order-1 max-h-[34px] pointer-events-auto relative inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
-              @click="toggleOrderHistory(true)"
+              @click="followStep1(tabs.selected?.value2, item?.fields?.name)"
               v-if="!isNew"
             >
               {{ $t("Clients.Edit.orders") }}
@@ -175,15 +170,15 @@ import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import EditSectionFields from "./EditSectionFields.vue";
 import AppDelBtnAccept from "../AppDelBtnAccept.vue";
 import AppInputSelect from "../AppInputSelect.vue";
-import ClientsEditSectionOrdersHistory from "./ClientsEditSectionOrdersHistory.vue";
 import { computed, onMounted, reactive, ref, unref, watch } from "vue";
 import store from "@/store";
 import { useClientBinding } from "@/composables/clientEditSectionBinding";
 import { useClientsTabs } from "@/composables/clientsTabs";
 import { OnClickOutside } from "@vueuse/components";
-import { useElementVisibility, useToggle } from "@vueuse/core";
+import { useElementVisibility } from "@vueuse/core";
 import { useCheckError } from "@/composables/checkError";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useFollowAnalytics } from "@/composables/followAnalytics";
 export default {
   components: {
     BtnsSaveClose,
@@ -191,7 +186,6 @@ export default {
     AppDelBtnAccept,
     AppInputSelect,
     OnClickOutside,
-    ClientsEditSectionOrdersHistory,
   },
   props: {
     isNew: { type: Boolean, required: true },
@@ -203,6 +197,7 @@ export default {
     const { tabs } = useClientsTabs();
     const selectedTabComp = computed(() => tabs.selected);
     const { binding } = useClientBinding(selectedTabComp);
+    const { followStep1 } = useFollowAnalytics();
 
     const copyItem = ref({ fields: {} });
 
@@ -313,8 +308,6 @@ export default {
       (val) => (animationStarted.value = val !== null)
     );
 
-    const [showOrderHistory, toggleOrderHistory] = useToggle(false);
-
     const downButtons = ref(null);
     let downButtonsIsVisible = ref(true);
     onMounted(() => {
@@ -332,14 +325,14 @@ export default {
       tryAccept,
       selectedBind,
       animationStarted,
-      showOrderHistory,
-      toggleOrderHistory,
       filteredFields,
       checkError,
       rating,
       downButtons,
       downButtonsIsVisible,
       t,
+      followStep1,
+      tabs,
     };
   },
 };
