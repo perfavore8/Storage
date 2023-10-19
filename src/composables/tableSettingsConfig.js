@@ -25,6 +25,8 @@ export function useTableSettingsConfig(code) {
         "order_responsible",
         "contact_name",
         "company_name",
+        "order_user",
+        "order_status",
       ],
     },
     stock: {
