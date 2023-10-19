@@ -34,7 +34,7 @@ body {
   width: fit-content;
   overflow: auto;
   font-family: "Inter";
-  width: 100%;
+  // width: 100%;
 }
 html {
   scroll-behavior: smooth;
