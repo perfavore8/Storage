@@ -47,7 +47,7 @@
           >
           <small>{{ $t("Integrations.free") }}</small>
         </div>
-        <div class="item">
+        <div class="item" v-if="false">
           <img class="icon" src="@/assets/re.jpg" />
           <a
             href="https://www.amocrm.ru/oauth/?client_id=47855e7f-c170-44b3-8d95-a3fe357d2cc7"
