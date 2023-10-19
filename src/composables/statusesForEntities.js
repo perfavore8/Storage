@@ -33,8 +33,8 @@ export function useStatusesForEntities(stat, setStatuses) {
       });
       setStatuses(true);
     },
-    del: function (id) {
-      store.dispatch("ordersPipelinesStatusesDelete", { id: id });
+    del: async function (id) {
+      await store.dispatch("ordersPipelinesStatusesDelete", { id: id });
       setStatuses(true);
     },
     changeVal: function (field, val) {
