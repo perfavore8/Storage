@@ -32,17 +32,17 @@ const pipelines = reactive({
     list.map((el) => (el.value = el.id));
     this.list = list;
   },
-  dropToDefault: function () {
-    if (Object.keys(pipelines.selected).length) return;
+  dropToDefault: function (handleDrop) {
+    if (Object.keys(pipelines.selected).length && !handleDrop) return;
     const item = this.list.find((el) => Boolean(el.is_system));
     if (!item) return;
     this.select(item);
   },
 });
-export function useOrdersPipelinesSelect(needAll) {
+export function useOrdersPipelinesSelect(needAll, handleDrop) {
   const start = async () => {
     await pipelines.getList(needAll);
-    pipelines.dropToDefault();
+    pipelines.dropToDefault(handleDrop);
   };
   const startPromise = start();
 

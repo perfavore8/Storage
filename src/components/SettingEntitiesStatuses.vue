@@ -75,7 +75,10 @@
                         <template v-if="!stat.is_system">
                           <button
                             class="up leading-[1] h-min flex justify-center items-center w-fit"
-                            @click="statuses.sort(idx, 'up')"
+                            @click="
+                              statuses.sort(idx, 'up'),
+                                toggleNeedUpdateStatuses(true)
+                            "
                             v-if="idx !== 1"
                           >
                             <span
@@ -87,7 +90,10 @@
                           <div v-else></div>
                           <button
                             class="down leading-[1] h-min flex justify-center items-center w-fit"
-                            @click="statuses.sort(idx, 'down')"
+                            @click="
+                              statuses.sort(idx, 'down'),
+                                toggleNeedUpdateStatuses(true)
+                            "
                             v-if="statuses.list[idx + 1].sort < 100"
                           >
                             <span
@@ -136,7 +142,8 @@
                           :disabled="stat.sort > 99"
                           :checked="statuses.reservation.includes(stat.value)"
                           @change="
-                            statuses.changeVal('reservation', stat.value)
+                            statuses.changeVal('reservation', stat.value),
+                              toggleNeedUpdateStatuses(true)
                           "
                         />
 
@@ -169,7 +176,10 @@
                           :id="idx + 'nb2' + statuses.id"
                           :disabled="statuses.resIdx > idx - 1"
                           :checked="statuses.write_off === stat.value"
-                          @change="statuses.changeVal('write_off', stat.value)"
+                          @change="
+                            statuses.changeVal('write_off', stat.value),
+                              toggleNeedUpdateStatuses(true)
+                          "
                         />
 
                         <label :for="idx + 'nb2' + statuses.id"></label>
@@ -179,24 +189,31 @@
                         :style="{
                           visibility: stat.is_system ? 'hidden' : 'visible',
                         }"
-                        @click="statuses.del(stat.id)"
+                        @click="
+                          statuses.del(stat.id), toggleNeedUpdateStatuses(true)
+                        "
                       ></button>
                     </div>
                   </template>
                 </transition-group>
-                <button @click="statuses.add()" class="add_button"></button>
+                <button
+                  @click="statuses.add(), toggleNeedUpdateStatuses(true)"
+                  class="add_button"
+                ></button>
               </div>
             </td>
             <td class="item del_sell">
               <button
                 v-if="statuses.isNew"
                 class="del_btn"
-                @click="removeStatuses(statuses.id)"
+                @click="
+                  removeStatuses(statuses.id), toggleNeedUpdateStatuses(true)
+                "
               />
               <button
                 class="btn btn_save btn_blue"
                 v-if="statusesIsChange"
-                @click="saveStatuses()"
+                @click="saveStatuses(), toggleNeedUpdateStatuses(true)"
               >
                 {{ $t("global.save") }}
               </button>
@@ -210,9 +227,11 @@
 <script>
 import store from "@/store";
 import { useStatusesForEntities } from "@/composables/statusesForEntities";
-import { onMounted, reactive } from "vue";
+import { onMounted, onUnmounted, reactive } from "vue";
 import AppErrorText from "./AppErrorText.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useUpdateKeys } from "@/composables/updateKeys";
+import { useToggle } from "@vueuse/core";
 export default {
   components: { AppErrorText },
   setup(props, context) {
@@ -256,9 +275,26 @@ export default {
       }
     };
 
+    const { OrderViewKey } = useUpdateKeys();
+    const [needUpdateStatuses, toggleNeedUpdateStatuses] = useToggle(false);
+
     const close = () => context.emit("toggleStatuses");
 
-    return { statusesList, addStatuses, removeStatuses, close, t };
+    onUnmounted(async () => {
+      if (needUpdateStatuses.value) {
+        await store.dispatch("ordersPipelinesList", { isUpdate: true });
+        OrderViewKey.value++;
+      }
+    });
+
+    return {
+      statusesList,
+      addStatuses,
+      removeStatuses,
+      close,
+      t,
+      toggleNeedUpdateStatuses,
+    };
   },
 };
 </script>

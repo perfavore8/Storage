@@ -10,7 +10,7 @@
         }"
       />
     </div>
-    <div class="wrapper">
+    <div class="wrapper" :key="OrderViewKey">
       <div
         class="filters w-full flex justify-between items-center relative"
         v-if="isTest"
@@ -121,6 +121,7 @@ import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import { usePreparationOrders } from "@/composables/preporationOrders";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useValidate } from "@/composables/validate";
+import { useUpdateKeys } from "@/composables/updateKeys";
 export default {
   components: {
     AppHeader,
@@ -137,6 +138,7 @@ export default {
     const { saveAllQueryParams, saveLSParam, getSavedLSParam } = useSaveLS();
     saveAllQueryParams();
     const { formatNumber } = useValidate();
+    const { OrderViewKey } = useUpdateKeys();
 
     const addToDeal = () => router.push("/addToDeal");
 
@@ -230,6 +232,7 @@ export default {
       hideFinalSteps,
       currentSetSettingsInFolder,
       formatNumber,
+      OrderViewKey,
       t,
     };
   },
@@ -254,7 +257,7 @@ export default {
   padding: 0 30px;
   left: 0;
   width: calc(100vw - 20px);
-  z-index: 50;
+  z-index: 51;
   &_left {
     .header_row {
       display: flex;

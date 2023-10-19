@@ -14,7 +14,7 @@ export default {
   components: { AppInputSelect },
   props: { needAll: { type: Boolean, req: false } },
   setup(props) {
-    const { pipelines } = useOrdersPipelinesSelect(props.needAll);
+    const { pipelines } = useOrdersPipelinesSelect(props.needAll, true);
 
     return { pipelines };
   },
