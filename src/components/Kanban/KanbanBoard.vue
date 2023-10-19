@@ -89,7 +89,9 @@
                 <div
                   class="card-futter flex flex-row justify-between items-center"
                 >
-                  <span> {{ formatNumber(element.sum || 0) }} ₽ </span>
+                  <span>
+                    {{ formatNumber(element.sum || element.budget || 0) }} ₽
+                  </span>
                   <div class="img_wrapper">
                     <img
                       :src="
