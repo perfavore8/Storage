@@ -420,7 +420,7 @@ export default {
         if (
           val.name === field &&
           val.id === id &&
-          !val.selected.filter((val) => val.value == item.value).length
+          !val.selected.some((val) => val.value == item.value)
         )
           val.selected.push(item);
       });
