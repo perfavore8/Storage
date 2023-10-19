@@ -245,10 +245,12 @@ export default {
       const stats = await store.dispatch("ordersPipelinesList", {
         isUpdate: Boolean(isUpdate),
       });
-      stats.forEach((stat) => stat.statuses.map((s) => (s.value = s.id)));
+      stats.forEach((stat) => stat.statuses?.map((s) => (s.value = s.id)));
       statusesList.length = 0;
-      stats.forEach((stat) =>
-        statusesList.push(useStatusesForEntities(stat, setStatuses))
+      stats.forEach(
+        (stat) =>
+          stat.value !== -1 &&
+          statusesList.push(useStatusesForEntities(stat, setStatuses))
       );
     };
     const statusesList = reactive([]);
