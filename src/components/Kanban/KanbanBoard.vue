@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-fit mt-20 pb-10 mx-auto text-left overflow-x-scroll max-w-[95vw]"
+    class="w-fit mt-20 pb-10 mx-auto text-left overflow-x-scroll max-w-[95vw] limit_height"
     :class="{ blur: isDataLoading }"
   >
     <div class="w-full flex flex-row gap-2">
@@ -298,6 +298,9 @@ export default {
 <style lang="scss" scoped>
 .sortable-ghost {
   @apply bg-slate-50 text-slate-400 border-slate-400/50;
+}
+.limit_height {
+  min-height: calc(100vh - 262px);
 }
 .blur {
   transition: filter 0.2s ease-out;
