@@ -246,7 +246,12 @@ export default {
     );
 
     const savedDragEl = ref(null);
+    const savedDragCol = ref(null);
     const saveDragEl = (el) => {
+      const col = pipelines.selected.statuses.find((el2) =>
+        el2.res.data.includes(el)
+      );
+      if (col) savedDragCol.value = col;
       savedDragEl.value = el;
     };
 
