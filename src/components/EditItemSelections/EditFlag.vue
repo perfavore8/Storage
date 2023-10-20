@@ -6,6 +6,7 @@
       :id="idx + 'za'"
       v-model="copy_selected_option"
       :disabled="disabled"
+      @change="option_select(copy_selected_option)"
     />
     <label :for="idx + 'za'">{{ item }}</label>
   </div>
@@ -50,15 +51,12 @@ export default {
     selected_option() {
       this.change_value();
     },
-    copy_selected_option() {
-      this.option_select(this.copy_selected_option);
-    },
   },
   methods: {
     change_value() {
       nextTick(() => {
         if (this.selected_option != undefined)
-          this.copy_selected_option = !!this.selected_option;
+          this.copy_selected_option = Boolean(this.selected_option);
       });
     },
     option_select(value) {
