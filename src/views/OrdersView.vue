@@ -140,7 +140,14 @@ export default {
     const { formatNumber } = useValidate();
     const { OrderViewKey } = useUpdateKeys();
 
-    const addToDeal = () => router.push("/addToDeal");
+    const addToDeal = () =>
+      router.push({
+        name: "addToDeal",
+        params: {
+          pipelineId:
+            pipelines.selected.id === -1 ? null : pipelines.selected.id,
+        },
+      });
 
     const grid = ref(null);
     const emitParams = (params) => grid.value.emitParams(params);

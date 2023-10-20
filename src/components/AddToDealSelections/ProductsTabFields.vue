@@ -89,6 +89,8 @@ import { useNewDeal } from "@/composables/newDeal";
 import store from "@/store";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppInputSelect from "../AppInputSelect.vue";
+import router from "@/router";
+import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
 export default {
   components: { SelectorVue, AppInputSelect },
   props: { total: Object },
@@ -118,6 +120,7 @@ export default {
           : await store.dispatch("ordersPipelinesList", {});
         const list = [];
         stats.map((stat) => {
+          if (stat.value === -1) return;
           stat.value = "optgroup";
           list.push(stat);
           stat.statuses.map((s) => {
@@ -130,8 +133,11 @@ export default {
         this.list = list;
       },
       setSelected: function () {
+        const pipelineId = router?.currentRoute?.value?.params?.pipelineId;
         const catItem = this.list.find(
-          (el) => el.is_system && el.value === "optgroup"
+          (el) =>
+            (!pipelineId ? el.is_system : el.id === Number(pipelineId)) &&
+            el.value === "optgroup"
         );
         const idx = this.list.indexOf(catItem);
         order.status_id = this.list[idx + 1].id;
@@ -148,11 +154,9 @@ export default {
     });
 
     onMounted(async () => {
-      const prom = new Promise((resolve) =>
-        setInterval(() => (isOrederLoaded.value ? resolve() : null), 100)
-      );
-      await prom;
-      await selector.getStatuses();
+      await waitForNonAsyncFunction(isOrederLoaded);
+      await Promise.all([user_name.getList(), selector.getStatuses()]);
+      user_name.setSelected();
       if (!selector.checkSelStat(order.status_id)) selector.setSelected();
     });
 
@@ -168,12 +172,17 @@ export default {
         this.list = [];
         res.forEach((user) => this.list.push({ ...user, value: user.name }));
       },
+      setSelected: function () {
+        if (this.selected) return;
+        const curUser = this.list.find((us) => us.id === user.value?.id);
+        if (!curUser) return;
+        this.select(curUser);
+      },
       select: function (option) {
         order.user_id = option.id;
         toggleSomeChange(true);
       },
     });
-    user_name.getList();
 
     const dateFormater = (date) => {
       const res = new Date(date);
@@ -182,6 +191,7 @@ export default {
     };
 
     const config = computed(() => store.state.account.account?.config);
+    const user = computed(() => store.state.account.user);
 
     return {
       list,
