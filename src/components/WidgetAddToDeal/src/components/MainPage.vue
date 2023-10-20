@@ -127,235 +127,252 @@
                 </label>
                 <template v-else>
                   <template v-if="!useSkeletonCard">
-                    <div
-                      class="card"
-                      :class="{ card__flip: !flip[idx] }"
-                      @click="false && (flip[idx] = !flip[idx])"
-                      v-for="(product, idx) in products"
-                      :key="product"
-                    >
-                      <div class="bg_image">
-                        <img
-                          src="https://img2.freepng.ru/20180518/rpa/kisspng-parcel-computer-icons-package-tracking-mail-5aff95be3be2a8.2770409315266994542453.jpg"
-                          class="img"
-                        />
-                      </div>
-                      <div class="back">
-                        <div class="sls_row title">
-                          <div class="name"></div>
-                          <div class="value">{{ product?.fields?.name }}</div>
+                    <template v-for="(product, idx) in products" :key="product">
+                      <div
+                        class="card"
+                        :class="{ card__flip: !flip[idx] }"
+                        @click="false && (flip[idx] = !flip[idx])"
+                        v-if="!addedProductsIds.includes(product.id)"
+                      >
+                        <div class="bg_image">
+                          <img
+                            src="https://img2.freepng.ru/20180518/rpa/kisspng-parcel-computer-icons-package-tracking-mail-5aff95be3be2a8.2770409315266994542453.jpg"
+                            class="img"
+                          />
                         </div>
-                        <div class="rows">
-                          <div class="sls_row">
-                            <div class="name" style="font-weight: 500">
-                              {{ $t("widjet.type") }}
-                            </div>
-                            <div class="value">
-                              {{
-                                product.is_service
-                                  ? $t("widjet.ysl")
-                                  : $t("widjet.tow")
-                              }}
-                            </div>
+                        <div class="back">
+                          <div class="sls_row title">
+                            <div class="name"></div>
+                            <div class="value">{{ product?.fields?.name }}</div>
                           </div>
-                          <template v-for="field in sortedFields" :key="field">
+                          <div class="rows">
+                            <div class="sls_row">
+                              <div class="name" style="font-weight: 500">
+                                {{ $t("widjet.type") }}
+                              </div>
+                              <div class="value">
+                                {{
+                                  product.is_service
+                                    ? $t("widjet.ysl")
+                                    : $t("widjet.tow")
+                                }}
+                              </div>
+                            </div>
                             <template
-                              v-if="
-                                getAllFieldsInSubCat(
-                                  product?.fields?.category
-                                )?.includes(field.id)
-                              "
+                              v-for="field in sortedFields"
+                              :key="field"
                             >
-                              <template v-if="field.type === 11">
-                                <div class="sls_row">
-                                  <div class="name" style="font-weight: 500">
-                                    {{ field.name }} :
-                                  </div>
-                                  <div class="value">
-                                    {{
-                                      product?.fields[field.code]?.cost
-                                        ? product?.fields[field.code]?.cost
-                                        : "" +
-                                          " " +
-                                          product?.fields[field.code]?.currency
-                                        ? product?.fields[field.code]?.currency
-                                        : ""
-                                    }}
-                                  </div>
-                                </div>
-                                <template
-                                  v-if="product?.fields[field.code]?.is_nds"
-                                >
-                                  <div class="sls_row" style="margin-left: 8px">
-                                    <div class="name">
-                                      {{ $t("widjet.nds") }}
-                                    </div>
-                                    <div class="value">
-                                      {{ product?.fields[field.code]?.nds }}
-                                    </div>
-                                  </div>
-                                  <div class="sls_row" style="margin-left: 8px">
-                                    <div class="name">
-                                      {{ $t("widjet.nds2") }}
+                              <template
+                                v-if="
+                                  getAllFieldsInSubCat(
+                                    product?.fields?.category
+                                  )?.includes(field.id)
+                                "
+                              >
+                                <template v-if="field.type === 11">
+                                  <div class="sls_row">
+                                    <div class="name" style="font-weight: 500">
+                                      {{ field.name }} :
                                     </div>
                                     <div class="value">
                                       {{
-                                        product?.fields[field.code]
-                                          ?.is_price_include_nds
-                                          ? $t("global.yes")
-                                          : $t("global.no")
+                                        product?.fields[field.code]?.cost
+                                          ? product?.fields[field.code]?.cost
+                                          : "" +
+                                            " " +
+                                            product?.fields[field.code]
+                                              ?.currency
+                                          ? product?.fields[field.code]
+                                              ?.currency
+                                          : ""
+                                      }}
+                                    </div>
+                                  </div>
+                                  <template
+                                    v-if="product?.fields[field.code]?.is_nds"
+                                  >
+                                    <div
+                                      class="sls_row"
+                                      style="margin-left: 8px"
+                                    >
+                                      <div class="name">
+                                        {{ $t("widjet.nds") }}
+                                      </div>
+                                      <div class="value">
+                                        {{ product?.fields[field.code]?.nds }}
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="sls_row"
+                                      style="margin-left: 8px"
+                                    >
+                                      <div class="name">
+                                        {{ $t("widjet.nds2") }}
+                                      </div>
+                                      <div class="value">
+                                        {{
+                                          product?.fields[field.code]
+                                            ?.is_price_include_nds
+                                            ? $t("global.yes")
+                                            : $t("global.no")
+                                        }}
+                                      </div>
+                                    </div>
+                                  </template>
+                                </template>
+                                <template v-else-if="field.type === 13">
+                                  <div class="sls_row">
+                                    <div class="name" style="font-weight: 500">
+                                      {{ field.name }}:
+                                    </div>
+                                    <div class="value"></div>
+                                  </div>
+                                  <div class="sls_row" style="margin-left: 8px">
+                                    <div class="name">
+                                      {{ $t("widjet.free") }}
+                                    </div>
+                                    <div class="value">
+                                      {{
+                                        Number(
+                                          product?.fields[field.code]?.count
+                                            ? product?.fields[field.code]?.count
+                                            : 0
+                                        ) +
+                                        Number(
+                                          product?.fields[field.code]?.reserve
+                                            ? product?.fields[field.code]
+                                                ?.reserve
+                                            : 0
+                                        )
                                       }}
                                     </div>
                                   </div>
                                 </template>
-                              </template>
-                              <template v-else-if="field.type === 13">
-                                <div class="sls_row">
-                                  <div class="name" style="font-weight: 500">
-                                    {{ field.name }}:
+                                <template v-else-if="field.type === 12">
+                                  <div class="sls_row">
+                                    <div class="name" style="font-weight: 500">
+                                      {{ field.name }}:
+                                    </div>
+                                    <div class="value">
+                                      {{
+                                        categoriesForCard?.[
+                                          product?.fields?.[field.code]
+                                        ]
+                                      }}
+                                    </div>
                                   </div>
-                                  <div class="value"></div>
-                                </div>
-                                <div class="sls_row" style="margin-left: 8px">
-                                  <div class="name">
-                                    {{ $t("widjet.free") }}
+                                </template>
+                                <template v-else-if="field.code === 'name'" />
+                                <template
+                                  v-else-if="
+                                    field.type === 15 &&
+                                    product?.fields[field.code]?.length
+                                  "
+                                >
+                                  <div class="sls_row">
+                                    <div class="name">{{ field.name }}:</div>
+                                    <div class="value">
+                                      <AppImagesCarusel
+                                        :imagesList="
+                                          product?.fields[field.code]
+                                        "
+                                        :sizeWindow="'m'"
+                                        :float="'right'"
+                                      />
+                                    </div>
                                   </div>
-                                  <div class="value">
-                                    {{
-                                      Number(
-                                        product?.fields[field.code]?.count
-                                          ? product?.fields[field.code]?.count
-                                          : 0
-                                      ) +
-                                      Number(
-                                        product?.fields[field.code]?.reserve
-                                          ? product?.fields[field.code]?.reserve
-                                          : 0
-                                      )
-                                    }}
-                                  </div>
-                                </div>
-                              </template>
-                              <template v-else-if="field.type === 12">
-                                <div class="sls_row">
-                                  <div class="name" style="font-weight: 500">
-                                    {{ field.name }}:
-                                  </div>
-                                  <div class="value">
-                                    {{
-                                      categoriesForCard?.[
-                                        product?.fields?.[field.code]
-                                      ]
-                                    }}
-                                  </div>
-                                </div>
-                              </template>
-                              <template v-else-if="field.code === 'name'" />
-                              <template
-                                v-else-if="
-                                  field.type === 15 &&
-                                  product?.fields[field.code]?.length
-                                "
-                              >
-                                <div class="sls_row">
+                                </template>
+                                <div class="sls_row" v-else>
                                   <div class="name">{{ field.name }}:</div>
                                   <div class="value">
-                                    <AppImagesCarusel
-                                      :imagesList="product?.fields[field.code]"
-                                      :sizeWindow="'m'"
-                                      :float="'right'"
-                                    />
+                                    {{ product?.fields[field.code] }}
                                   </div>
                                 </div>
                               </template>
-                              <div class="sls_row" v-else>
-                                <div class="name">{{ field.name }}:</div>
-                                <div class="value">
-                                  {{ product?.fields[field.code] }}
-                                </div>
-                              </div>
                             </template>
-                          </template>
-                        </div>
-                        <div class="card_footer">
-                          <template v-if="product.is_service">
-                            <input
-                              v-if="allWhsList?.[idx]?.length"
-                              type="number"
-                              class="sls_input"
-                              style="min-width: 70px"
-                              v-model="allWhsList[idx][0].specialValue"
-                            />
-                          </template>
-                          <template v-else>
-                            <AppInputSelect
-                              @click.stop=""
-                              style="min-width: 70px; width: 100%"
-                              v-if="allWhsList?.[idx]?.length"
-                              :list="
-                                allWhsList?.[idx]?.filter(
-                                  (val) =>
-                                    (product.allow_add_with_zero_count ||
-                                      !(val.count < 1)) &&
-                                    (selectedWirePerLead.value
-                                      ? val.code == selectedWirePerLead.value
-                                      : true)
-                                )
-                              "
-                              :special="true"
-                              :requestDelay="0"
-                              :countLettersReq="0"
-                              :allow_add_with_zero_count="
-                                product.allow_add_with_zero_count
-                              "
-                              :one_wh_per_lead="product.one_wh_per_lead"
-                              :placeholder="
-                                allWhsList?.[idx]?.reduce(
-                                  (sum, wh) =>
-                                    (sum += Number(wh?.specialValue)),
-                                  0
-                                )
-                              "
-                              @changeInputValue="
-                                (value) => (inputValues[idx] = value)
-                              "
-                            />
-                          </template>
-                          <div
-                            class="sls_btn btn_green btn_del"
-                            @click.stop="
-                              () =>
-                                disableAddToDeal
-                                  ? null
-                                  : (
-                                      product.is_service
-                                        ? !allWhsList[idx][0].specialValue
-                                        : allWhsList?.[idx]?.reduce(
-                                            (sum, wh) =>
-                                              (sum += Number(wh?.specialValue)),
-                                            0
-                                          ) == 0
-                                    )
-                                  ? null
-                                  : addToLead(product.id)
-                            "
-                            :class="{
-                              btn_del_disabled: disableAddToDeal
-                                ? true
-                                : product.is_service
-                                ? !allWhsList[idx][0].specialValue
-                                : allWhsList?.[idx]?.reduce(
+                          </div>
+                          <div class="card_footer">
+                            <template v-if="product.is_service">
+                              <input
+                                v-if="allWhsList?.[idx]?.length"
+                                type="number"
+                                class="sls_input"
+                                style="min-width: 70px"
+                                v-model="allWhsList[idx][0].specialValue"
+                              />
+                            </template>
+                            <template v-else>
+                              <AppInputSelect
+                                @click.stop=""
+                                style="min-width: 70px; width: 100%"
+                                v-if="allWhsList?.[idx]?.length"
+                                :list="
+                                  allWhsList?.[idx]?.filter(
+                                    (val) =>
+                                      (product.allow_add_with_zero_count ||
+                                        !(val.count < 1)) &&
+                                      (selectedWirePerLead.value
+                                        ? val.code == selectedWirePerLead.value
+                                        : true)
+                                  )
+                                "
+                                :special="true"
+                                :requestDelay="0"
+                                :countLettersReq="0"
+                                :allow_add_with_zero_count="
+                                  product.allow_add_with_zero_count
+                                "
+                                :one_wh_per_lead="product.one_wh_per_lead"
+                                :placeholder="
+                                  allWhsList?.[idx]?.reduce(
                                     (sum, wh) =>
                                       (sum += Number(wh?.specialValue)),
                                     0
-                                  ) == 0,
-                            }"
-                          >
-                            {{ $t("widjet.add") }}
+                                  )
+                                "
+                                @changeInputValue="
+                                  (value) => (inputValues[idx] = value)
+                                "
+                              />
+                            </template>
+                            <div
+                              class="sls_btn btn_green btn_del"
+                              @click.stop="
+                                () =>
+                                  disableAddToDeal
+                                    ? null
+                                    : (
+                                        product.is_service
+                                          ? !allWhsList[idx][0].specialValue
+                                          : allWhsList?.[idx]?.reduce(
+                                              (sum, wh) =>
+                                                (sum += Number(
+                                                  wh?.specialValue
+                                                )),
+                                              0
+                                            ) == 0
+                                      )
+                                    ? null
+                                    : addToLead(product.id)
+                              "
+                              :class="{
+                                btn_del_disabled: disableAddToDeal
+                                  ? true
+                                  : product.is_service
+                                  ? !allWhsList[idx][0].specialValue
+                                  : allWhsList?.[idx]?.reduce(
+                                      (sum, wh) =>
+                                        (sum += Number(wh?.specialValue)),
+                                      0
+                                    ) == 0,
+                              }"
+                            >
+                              {{ $t("widjet.add") }}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </template>
                   </template>
                   <template v-else>
                     <div
@@ -574,6 +591,11 @@ export default {
         res.push(Number(prod.price || 0) * Number(prod.count || 0))
       );
       return res;
+    },
+    addedProductsIds() {
+      const ids = [];
+      this.addedProducts.forEach((prod) => ids.push(prod.product?.id));
+      return ids;
     },
   },
   async mounted() {
