@@ -98,7 +98,7 @@
                 selectedBind.id === sel.id ? (selectedBind.ref = el) : null
             "
           >
-            {{ sel.fields?.name }}
+            {{ sel.fields?.name || sel?.name }}
           </span>
         </div>
       </div>
