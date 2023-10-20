@@ -19,17 +19,28 @@
     <template v-if="showList">
       <div class="backdrop" @click="closeList()" />
       <transition-group name="list">
-        <template v-if="list.length">
+        <template v-if="currentList.length">
           <ul class="list" :class="{ '!right-0 !left-auto': floatRight }">
             <li
-              class="item"
+              class="item relative"
               :class="{
-                optgroup: item.value === 'optgroup',
+                optgroup:
+                  item.value === 'optgroup' &&
+                  (!haveStackedOpgroup || idx === stackedOptgroup.openedIdx),
+                stacked_optgroup:
+                  item.value === 'optgroup' && haveStackedOpgroup,
                 selected: item.value === selected?.value,
               }"
               :style="{ backgroundColor: item.color }"
-              v-for="item in list"
+              v-for="(item, idx) in currentList"
               :key="item.value"
+              v-show="
+                !(
+                  haveStackedOpgroup &&
+                  stackedOptgroup.openedIdx !== item.optgroupIdx &&
+                  item.optgroupIdx !== undefined
+                )
+              "
               @click="selectItem(item)"
             >
               <template v-if="item.value === selected?.value && item.color">
@@ -39,6 +50,13 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
               </template>
               {{ item.name }}
+              <span
+                class="material-icons-outlined opacity-50 absolute right-2 top-1/2 -translate-y-1/2 transition-transform"
+                :class="{ 'rotate-180': idx === stackedOptgroup.openedIdx }"
+                v-if="item.value === 'optgroup' && haveStackedOpgroup"
+              >
+                expand_more
+              </span>
             </li>
           </ul>
         </template>
@@ -59,8 +77,9 @@
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
-import { watch } from "@vue/runtime-core";
+import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
+import { reactive, ref } from "@vue/reactivity";
+import { computed, onMounted, watch } from "@vue/runtime-core";
 export default {
   props: {
     list: Array,
@@ -72,6 +91,16 @@ export default {
     SelectedInTitle: { type: Boolean, required: false, default: () => false }, // показывать выбранный итем в тайтле
     dropInputAftSel: { type: Boolean, required: false, default: () => true }, // Сбрасывать инпут после селекта
     floatRight: { type: Boolean, required: false, default: () => false }, // Список относительно правой стораны
+    haveStackedOpgroup: {
+      type: Boolean,
+      required: false,
+      default: () => false,
+    },
+    dropStackedIdxAfterOpen: {
+      type: Boolean,
+      required: false,
+      default: () => false,
+    },
   },
   emits: ["changeInputValue", "focusIn", "select"],
   setup(props, context) {
@@ -101,17 +130,69 @@ export default {
     watch(inputValue, () => changeInputValue());
 
     const showList = ref(false);
-    const closeList = () => (showList.value = false);
-    const openList = () => (
-      (showList.value = true), focusIn(), changeInputValue()
-    );
+    const closeList = () => {
+      showList.value = false;
+    };
+    const openList = () => {
+      showList.value = true;
+      focusIn();
+      changeInputValue();
+      if (props.dropStackedIdxAfterOpen && props.haveStackedOpgroup)
+        stackedOptgroup.searchOpenedIdx();
+    };
     const focusIn = () => context.emit("focusIn");
 
     const selectItem = (item) => {
+      if (item.value === "optgroup" && props.haveStackedOpgroup) {
+        const idx = currentList.value.indexOf(item);
+        if (idx !== -1) stackedOptgroup.openedIdx = idx;
+        return;
+      }
       context.emit("select", item);
       closeList();
       if (props.dropInputAftSel) inputValue.value = "";
     };
+
+    const stackedOptgroup = reactive({
+      openedIdx: null,
+      select: function (idx) {
+        this.openedIdx = idx;
+      },
+      searchOpenedIdx: function () {
+        const elem = this.listOpt.find(
+          (el) => el.value === props.selected.value
+        );
+        if (!elem || elem.optgroupIdx === undefined) return;
+        this.openedIdx = elem.optgroupIdx;
+      },
+      listOpt: computed(() => {
+        const arr = [];
+        let curOptgroupIdx = null;
+        props.list.forEach((el, idx) => {
+          if (el.value === "optgroup") curOptgroupIdx = idx;
+          if (props.list[idx]?.optgroup && curOptgroupIdx !== null) {
+            arr.push({ ...el, optgroupIdx: curOptgroupIdx });
+            return;
+          }
+          arr.push(el);
+          if (!props.list[idx + 1]?.optgroup) curOptgroupIdx = null;
+        });
+        return arr;
+      }),
+    });
+
+    const currentList = computed(() =>
+      props.haveStackedOpgroup ? stackedOptgroup.listOpt : props.list
+    );
+    onMounted(async () => {
+      if (props.haveStackedOpgroup) {
+        await waitForNonAsyncFunction(
+          computed(() => stackedOptgroup.listOpt.length)
+        );
+        await waitForNonAsyncFunction(computed(() => props.selected?.value));
+        stackedOptgroup.searchOpenedIdx();
+      }
+    });
 
     return {
       inputValue,
@@ -120,6 +201,8 @@ export default {
       openList,
       selectItem,
       showPlaceholder,
+      stackedOptgroup,
+      currentList,
     };
   },
 };
@@ -172,6 +255,9 @@ export default {
       background-color: #ffffff !important;
       cursor: default !important;
     }
+    .stacked_optgroup {
+      @include font(500, 16px, 20px);
+    }
     .item {
       display: flex;
       align-items: center;
@@ -184,6 +270,9 @@ export default {
       transition: background-color 0.15s ease-out;
       white-space: pre;
       border-top: 1px solid #ced4da7d;
+      &.stacked_optgroup:hover {
+        background-color: rgb(13 110 253 / 15%);
+      }
     }
     .item:hover {
       background-color: rgb(13 110 253 / 25%);

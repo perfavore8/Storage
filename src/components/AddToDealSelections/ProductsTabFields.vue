@@ -23,9 +23,12 @@
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ $t("newOrder.stat") }}
         </div>
-        <SelectorVue
-          :selected_option="selector.selected"
-          :options_props="selector.list"
+        <AppInputSelect
+          :selected="selector.selected"
+          :list="selector.list"
+          :haveStackedOpgroup="true"
+          :dropStackedIdxAfterOpen="true"
+          :SelectedInTitle="true"
           @select="(option) => selector.select(option)"
         />
       </div>
@@ -85,8 +88,9 @@ import SelectorVue from "../SelectorVue.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import store from "@/store";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import AppInputSelect from "../AppInputSelect.vue";
 export default {
-  components: { SelectorVue },
+  components: { SelectorVue, AppInputSelect },
   props: { total: Object },
   setup(props) {
     const { t } = useLangConfiguration();
@@ -119,7 +123,7 @@ export default {
           stat.statuses.map((s) => {
             s.value = s.id;
             s.optgroup = true;
-            list.push(s);
+            if (s.type !== 3) list.push(s);
           });
         });
         this.list.length = 0;
