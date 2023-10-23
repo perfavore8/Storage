@@ -5,7 +5,7 @@
     <AppChangeLanguage
       class="!absolute top-[18px] right-2"
       :floatRight="true"
-      v-if="isTest"
+      v-if="isTest2"
     />
     <router-link :to="'/profile'">
       <div
@@ -56,7 +56,7 @@ import { inFrame } from "@/composables/checkInFrame";
 import { useAvailableUserAccounts } from "@/composables/availableUserAccounts";
 import ImportStuffSelector from "./ImportStuffSelector.vue";
 import AppChangeLanguage from "./AppChangeLanguage.vue";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 
 export default {
   components: { ImportStuffSelector, AppChangeLanguage },
@@ -79,7 +79,7 @@ export default {
       logOut,
       inFrame,
       availableUserAccounts,
-      isTest,
+      isTest2,
     };
   },
 };

@@ -71,14 +71,14 @@
               v-for="autosync in autosyncValues"
               :key="autosync"
             >
-              <template v-if="!(autosync.test?.value && !isTest)">
+              <template v-if="!(autosync.test?.value && !isTest2)">
                 <h6>{{ autosync.label }}</h6>
                 <div
                   class="row"
                   v-for="item in autosyncProducts"
                   :key="item.id"
                 >
-                  <template v-if="!(autosync.test?.id === item.id && !isTest)">
+                  <template v-if="!(autosync.test?.id === item.id && !isTest2)">
                     <input
                       type="checkbox"
                       class="checkbox"
@@ -151,7 +151,7 @@
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import SelectorVue from "@/components/SelectorVue.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 
 const { t } = useLangConfiguration();
 
@@ -161,7 +161,7 @@ export default {
     SelectorVue,
   },
   setup() {
-    return { t, isTest };
+    return { t, isTest2 };
   },
   data() {
     return {

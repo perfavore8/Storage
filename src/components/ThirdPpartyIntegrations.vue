@@ -58,7 +58,7 @@
           >
           <small>{{ $t("Integrations.free") }}</small>
         </div>
-        <div class="item" v-if="isTest || amoTest">
+        <div class="item" v-if="isTest2 || amoTest">
           <img
             class="icon"
             src="https://wp.static-cdn-shsp.com/wp-content/uploads/2017/06/amo_fon.png"
@@ -66,7 +66,7 @@
           <a :href="urlSutupInAmoCrm" target="blank">
             <button
               class="btn btn_dark_blue"
-              :disabled="account?.install && !isTest"
+              :disabled="account?.install && !isTest2"
             >
               {{
                 account?.install
@@ -92,7 +92,7 @@
 
 <script>
 import { computed } from "vue";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import store from "@/store";
 import { useRouter } from "vue-router";
 export default {
@@ -115,7 +115,7 @@ export default {
 
     const amoTest = computed(() => store.state.account?.account?.id == 454);
 
-    return { oneC, account, isTest, route, close, urlSutupInAmoCrm, amoTest };
+    return { oneC, account, isTest2, route, close, urlSutupInAmoCrm, amoTest };
   },
 };
 </script>

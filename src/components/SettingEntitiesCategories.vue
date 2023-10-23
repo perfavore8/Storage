@@ -124,7 +124,7 @@
                 v-model="item.img_url"
                 :placeholder="t('SettingEntities.entCats.url')"
                 @input="() => changeImgUrl(item)"
-                v-if="isTest && item.level !== 1"
+                v-if="isTest2 && item.level !== 1"
               />
             </div>
             <div
@@ -206,7 +206,7 @@ import { ref, watch, computed, nextTick, reactive, onMounted } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import store from "@/store";
 import { useLangConfiguration } from "@/composables/langConfiguration";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import { useLockBtnByKey } from "@/composables/lockBtnByKey";
 export default {
   components: {
@@ -381,7 +381,7 @@ export default {
       del_modal_config,
       timer,
       copy_fields_properties,
-      isTest,
+      isTest2,
       changeImgUrl,
       changeData,
       get_all_old,

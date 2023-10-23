@@ -13,7 +13,7 @@
     <div class="wrapper" :key="OrderViewKey">
       <div
         class="filters w-full flex justify-between items-center relative"
-        v-if="isTest"
+        v-if="isTest2"
       >
         <div class="flex flex-row items-center gap-2 h-fit basis-1/3">
           <button class="cursor-pointer h-7" @click="displayType.selectNext()">
@@ -30,7 +30,7 @@
             :key="displayType.selected.name"
             :needAll="displayType.selected.name === 'grid'"
           />
-          <div class="flex items-center" v-if="isMain || isTest">
+          <div class="flex items-center" v-if="isMain || isTest2">
             <input
               type="checkbox"
               id="hideFinalSteps"
@@ -63,7 +63,7 @@
             <span class="material-icons-outlined"> sync </span>
           </button>
           <div
-            v-if="isTest && currentSetSettingsInFolder.tableSettingsBtn"
+            v-if="isTest2 && currentSetSettingsInFolder.tableSettingsBtn"
             @click="openTableSettings()"
             class="tableSettings"
           >
@@ -115,7 +115,7 @@ import { computed, reactive, ref, watch } from "vue";
 import { useLockBtn } from "@/composables/lockBtn";
 import { useSaveLS } from "@/composables/saveLS";
 import { useToggle } from "@vueuse/core";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import { usePreparationOrders } from "@/composables/preporationOrders";
@@ -229,7 +229,7 @@ export default {
 
     return {
       addToDeal,
-      isTest,
+      isTest2,
       grid,
       emitParams,
       displayType,

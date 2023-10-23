@@ -89,7 +89,7 @@
               </div>
             </th>
           </template>
-          <template v-if="isTest">
+          <template v-if="isTest2">
             <th
               class="item item_icon title"
               v-if="selectedTab.haveFieldsProperties"
@@ -135,7 +135,7 @@
           <th
             class="p-[10px] border border-[#c9c9c9] w-min"
             v-if="
-              isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort
+              isTest2 && selectedFieldPropertyIsBasic && selectedTab.haveSort
             "
           >
             <div class="flex flex-row">
@@ -247,7 +247,7 @@
               <label :for="idx + 'nd'"></label>
             </td>
           </template>
-          <template v-if="isTest">
+          <template v-if="isTest2">
             <td
               class="box item text-lg relative"
               v-if="selectedTab.haveFieldsProperties"
@@ -317,7 +317,7 @@
           <th
             class="p-[10px] border border-[#c9c9c9]"
             v-if="
-              isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort
+              isTest2 && selectedFieldPropertyIsBasic && selectedTab.haveSort
             "
           ></th>
           <td class="item">
@@ -399,7 +399,7 @@
               <label :for="idx + 'n3'"></label>
             </td>
           </template>
-          <template v-if="isTest">
+          <template v-if="isTest2">
             <td
               class="box item text-lg relative"
               v-if="selectedTab.haveFieldsProperties"
@@ -442,7 +442,7 @@
 
 <script>
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { isTest } from "@/composables/isTest";
+import { isTest2, isTest } from "@/composables/isTest";
 import store from "@/store";
 import SelectorVue from "./SelectorVue.vue";
 import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsProperties";
@@ -890,6 +890,7 @@ export default {
       showUpdateAllFieldsBtn,
       types,
       isTest,
+      isTest2,
       add_new_field,
       add_new,
       updateAllFields,

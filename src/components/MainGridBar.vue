@@ -38,11 +38,11 @@
       </div>
     </th>
     <th class="bar_item item" style="min-width: 80px">
-      <div v-if="!(isTest && !currentSetSettingsInFolder.tableSettingsBtn)">
+      <div v-if="!(isTest2 && !currentSetSettingsInFolder.tableSettingsBtn)">
         <button
           class="settings_btn"
           @click="openTableSettings()"
-          v-if="isMain || isTest || true"
+          v-if="isMain || isTest2 || true"
           :title="t('ostatki.nt')"
         >
           <span class="material-icons"> settings </span>
@@ -65,7 +65,7 @@ import { useNotification } from "@/composables/notification";
 import store from "@/store";
 import { computed } from "@vue/reactivity";
 import { reactive, ref } from "vue";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
@@ -179,7 +179,7 @@ export default {
       sort,
       collsCount,
       oneC,
-      isTest,
+      isTest2,
       width,
       productsParams,
       disableExportXlsx,

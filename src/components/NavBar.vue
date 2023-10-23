@@ -6,14 +6,14 @@
       @click="route(page.value)"
       v-for="page in catalog"
       v-show="
-        !(page.isTest && !isTest) &&
-        !(page.isProduction && isTest) &&
+        !(page.isTest && !isTest2) &&
+        !(page.isProduction && isTest2) &&
         !(page.isAdmin && !isAdmin) &&
         !page.hideId?.includes(accountId)
       "
       :disabled="isNavBarDisabled"
       :key="page"
-      :style="{ order: isTest ? page.testOrder : 'unset' }"
+      :style="{ order: isTest2 ? page.testOrder : 'unset' }"
     >
       {{ page.name }}
     </button>
@@ -24,7 +24,7 @@
 import { computed } from "@vue/runtime-core";
 import store from "@/store";
 import router from "@/router";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 
 const accountId = computed(() => store.state.account?.account?.id);
 const isAdmin = computed(() =>

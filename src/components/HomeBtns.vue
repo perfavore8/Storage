@@ -28,7 +28,6 @@
 
 <script>
 import { computed } from "@vue/runtime-core";
-import { isTest } from "@/composables/isTest";
 import store from "@/store";
 export default {
   props: {
@@ -59,7 +58,6 @@ export default {
     return {
       show_buttons,
       oneC,
-      isTest,
       addCurrentProducts,
       openCancelPosition,
       openMoveProductsBetweenWhs,

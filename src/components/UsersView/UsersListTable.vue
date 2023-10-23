@@ -46,11 +46,11 @@
             <th v-for="title in titiles" :key="title.code">{{ title.name }}</th>
             <th
               class="editCell"
-              v-if="!(isTest && !currentSetSettingsInFolder.usersList.editBtn)"
+              v-if="!(isTest2 && !currentSetSettingsInFolder.usersList.editBtn)"
             ></th>
             <th
               class="delCell"
-              v-if="!(isTest && !currentSetSettingsInFolder.usersList.delBtn)"
+              v-if="!(isTest2 && !currentSetSettingsInFolder.usersList.delBtn)"
             ></th>
           </tr>
         </thead>
@@ -107,7 +107,7 @@
             </td>
             <td
               class="editCell"
-              v-if="!(isTest && !currentSetSettingsInFolder.usersList.editBtn)"
+              v-if="!(isTest2 && !currentSetSettingsInFolder.usersList.editBtn)"
             >
               <button
                 class="export btn order-1 max-h-[34px] pointer-events-auto relative inline-flex items-center gap-2 whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
@@ -130,7 +130,7 @@
             </td>
             <td
               class="delCell"
-              v-if="!(isTest && !currentSetSettingsInFolder.usersList.delBtn)"
+              v-if="!(isTest2 && !currentSetSettingsInFolder.usersList.delBtn)"
             >
               <AppDelBtnAccept
                 :btnClass="'!p-2 rounded-full !text-gray-500 disabled:!text-gray-300 hover:!text-red-500 transition-colors duration-300 bg-transparent'"
@@ -192,7 +192,7 @@ import EditUser from "./EditUser.vue";
 import { useToggle } from "@vueuse/core";
 import AppDelBtnAccept from "../AppDelBtnAccept.vue";
 import { useRoleSettings } from "@/composables/roleSettings";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: { AppInput, GridBottom, AppPaginator, EditUser, AppDelBtnAccept },
@@ -274,7 +274,7 @@ export default {
       mainUserId,
       currentUserId,
       currentSetSettingsInFolder,
-      isTest,
+      isTest2,
       t,
       setUsers,
     };

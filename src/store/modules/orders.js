@@ -2,7 +2,7 @@ import { useNewDeal } from "@/composables/newDeal";
 import { ApiReqFunc } from "@/composables/ApiReqFunc";
 import { usePreparationOrders } from "@/composables/preporationOrders";
 const { newDealParams, order } = useNewDeal();
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 
 const { preparationOrder } = usePreparationOrders();
 
@@ -90,7 +90,7 @@ export default {
       delete params.dontSaveMeta;
       context.commit("updateIsLoadingOrders", true);
       const { data } = await ApiReqFunc({
-        url: isTest.value ? "orders/list-v2" : "orders/list",
+        url: isTest2.value ? "orders/list-v2" : "orders/list",
         method: "post",
         data: params,
       });

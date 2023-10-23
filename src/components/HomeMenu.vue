@@ -97,7 +97,7 @@
         </transition>
       </template>
     </div>
-    <div class="ref" v-if="!(isTest && !currentSetSettings?.app?.settingsBtn)">
+    <div class="ref" v-if="!(isTest2 && !currentSetSettings?.app?.settingsBtn)">
       <button
         class="settings_btn"
         :class="{ settings_btn_rotate: show_settings }"
@@ -115,7 +115,7 @@
                 {{ $t("HomeMenu.settings.general") }}
               </div>
             </a>
-            <a v-if="isTest">
+            <a v-if="isTest2">
               <div class="modal_container" @click="openSettingEntities()">
                 {{ $t("HomeMenu.settings.entities") }}
               </div>
@@ -141,12 +141,12 @@
                 {{ $t("HomeMenu.settings.integration") }}
               </div>
             </a>
-            <a v-if="isTest">
+            <a v-if="isTest2">
               <div class="modal_container" @click="openArchive()">
                 {{ $t("HomeMenu.settings.archive") }}
               </div>
             </a>
-            <template v-if="!isTest">
+            <template v-if="!isTest2">
               <a>
                 <div class="modal_container" @click="open_product_category()">
                   {{ $t("HomeMenu.settings.categories") }}
@@ -162,7 +162,7 @@
                   {{ $t("HomeMenu.settings.sync") }}
                 </div>
               </a>
-              <a v-if="isTest">
+              <a v-if="isTest2">
                 <div
                   class="modal_container"
                   @click="openClientsFieldsSettings()"
@@ -203,7 +203,7 @@ import store from "@/store";
 import router from "@/router";
 import { useRoleSettings } from "@/composables/roleSettings";
 import { useLangConfiguration } from "@/composables/langConfiguration";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 export default {
   components: {
     TaskCenter,
@@ -293,7 +293,7 @@ export default {
       show_sync,
       oneC,
       is_empty_amo_product_list,
-      isTest,
+      isTest2,
       show_settings,
       openTaskCenter,
       closeTaskCenter,

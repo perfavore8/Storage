@@ -64,7 +64,7 @@
                 class="item"
                 v-if="
                   title.value === 'order_name' ||
-                  (!isTest && title.code === 'name')
+                  (!isTest2 && title.code === 'name')
                 "
                 style="padding: 5px 10px 5px 15px"
               >
@@ -72,7 +72,7 @@
                   <div class="img_wrapper" v-if="row.lead_id || true">
                     <a
                       :href="
-                        isTest &&
+                        isTest2 &&
                         statList.find((el) => el.name === row.stat)?.value !==
                           3 &&
                         row.lead_id
@@ -94,17 +94,17 @@
                     ></div>
                   </div>
                   <a
-                    :target="isTest ? '_self' : '_blank'"
+                    :target="isTest2 ? '_self' : '_blank'"
                     class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline cursor-pointer"
                     :href="
-                      isTest
+                      isTest2
                         ? null
                         : 'https://' +
                           accountSubdomain +
                           '.amocrm.ru/leads/detail/' +
                           row.lead_id
                     "
-                    @click="isTest ? routeToOrder(row.id) : null"
+                    @click="isTest2 ? routeToOrder(row.id) : null"
                     v-if="
                       statList.find((el) => el.name === row.stat)?.value !== 3
                     "
@@ -129,7 +129,7 @@
                 <div class="flex flex-row gap-4 items-center">
                   <span class="">
                     {{
-                      isTest
+                      isTest2
                         ? row.fieldsForRender?.[title.value]
                         : row[title.code]
                     }}
@@ -144,13 +144,13 @@
               </td>
               <td
                 class="item"
-                :class="{ 'cursor-pointer': !isTest }"
+                :class="{ 'cursor-pointer': !isTest2 }"
                 v-else
                 :colspan="title.isGroup ? 2 : 1"
-                @click="isTest ? null : (row.isOpen = !row.isOpen)"
+                @click="isTest2 ? null : (row.isOpen = !row.isOpen)"
               >
                 {{
-                  isTest ? row.fieldsForRender?.[title.value] : row[title.code]
+                  isTest2 ? row.fieldsForRender?.[title.value] : row[title.code]
                 }}
               </td>
             </template>
@@ -212,7 +212,7 @@
 import GridBottom from "@/components/GridBottom.vue";
 import AppPaginator from "./AppPaginator.vue";
 import { computed, onMounted, reactive, ref } from "vue";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import store from "@/store";
 import { useRouter } from "vue-router";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
@@ -448,7 +448,7 @@ export default {
     // );
 
     const setTitles = async () => {
-      if (isTest.value) {
+      if (isTest2.value) {
         await store.dispatch("getOrdersTableConfig", { for: "table" });
         products.titles = computed(
           () => store.getters.sortedFilteredTableConfig
@@ -498,7 +498,7 @@ export default {
             last: Math.ceil(poz.length / maxCount.value),
           },
           isOpen: false,
-          name: isTest.value ? order.fields?.name : order.lead_name,
+          name: isTest2.value ? order.fields?.name : order.lead_name,
           lead_id: order.lead_id,
           client: client,
           otv: order.responsible_name,
@@ -544,7 +544,7 @@ export default {
       meta,
       orders,
       accountSubdomain,
-      isTest,
+      isTest2,
       page,
       changePage,
       setSelectedProducts,

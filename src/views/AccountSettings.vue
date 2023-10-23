@@ -22,7 +22,7 @@
             @click="toggleAddNewUser(true)"
             v-if="
               pagination.selected.value === 'users' &&
-              !(isTest && !currentSetSettingsInFolder.general.changeName)
+              !(isTest2 && !currentSetSettingsInFolder.general.changeName)
             "
           >
             {{ $t("AccountSettings.users.addBtn") }}
@@ -60,7 +60,7 @@ import { useToggle } from "@vueuse/core";
 import NewUser from "@/components/UsersView/NewUser.vue";
 import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
 import { useRoleSettings } from "@/composables/roleSettings";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
@@ -116,7 +116,7 @@ export default {
       UserListTableRef,
       updateList,
       currentSetSettingsInFolder,
-      isTest,
+      isTest2,
     };
   },
 };

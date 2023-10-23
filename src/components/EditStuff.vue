@@ -53,7 +53,7 @@
                   {{ $t("EditStuff.oneWh") }}
                 </label>
               </div>
-              <div class="permit" v-if="isTest">
+              <div class="permit" v-if="isTest2">
                 <input
                   type="checkbox"
                   class="checkbox"
@@ -67,7 +67,7 @@
             </div>
           </div>
         </div>
-        <div class="content" v-if="!isTest">
+        <div class="content" v-if="!isTest2">
           <h6>{{ $t("EditStuff.stepsRes.header") }}</h6>
           <div class="small">
             {{ $t("EditStuff.stepsRes.text") }}
@@ -174,7 +174,7 @@
   </div>
 </template>
 <script>
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import SelectorVue from "@/components/SelectorVue";
 import AppMultiSelect from "./AppMultiSelect.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
@@ -183,7 +183,7 @@ const { t } = useLangConfiguration();
 
 export default {
   setup() {
-    return { t, isTest };
+    return { t, isTest2 };
   },
   components: {
     SelectorVue,

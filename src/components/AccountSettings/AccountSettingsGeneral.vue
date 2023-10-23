@@ -8,7 +8,7 @@
             type="text"
             class="input"
             v-model="accountName"
-            v-if="!(isTest && !currentSetSettingsInFolder.general.changeName)"
+            v-if="!(isTest2 && !currentSetSettingsInFolder.general.changeName)"
           />
           <span v-else>{{ accountName }}</span>
           <span>{{ $t("AccountSettings.general.accountCountry") }}</span>
@@ -50,7 +50,7 @@ import store from "@/store";
 import { useLockBtn } from "@/composables/lockBtn";
 import router from "@/router";
 import { useRoleSettings } from "@/composables/roleSettings";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import AppInputSelect from "../AppInputSelect.vue";
 import { useCountries } from "@/composables/countries";
 export default {
@@ -109,7 +109,7 @@ export default {
       save,
       isLocked,
       currentSetSettingsInFolder,
-      isTest,
+      isTest2,
       country,
     };
   },

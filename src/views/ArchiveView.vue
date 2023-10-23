@@ -2,7 +2,7 @@
   <div :class="{ dark: isDarkTest }">
     <div class="app min-h-screen px-4 md:px-[30px] dark:bg-slate-900">
       <div class="header w-full !justify-between">
-        <template v-if="isTest">
+        <template v-if="isTest2">
           <button
             class="bg-slate-400 bg-opacity-90 p-2 h-fit w-fit rounded-xl hover:shadow-sm hover:drop-shadow-md outline-none focus-visible:drop-shadow-md"
             @click="back()"
@@ -52,7 +52,7 @@ import AppHeader from "@/components/AppHeader.vue";
 import store from "@/store";
 import { useRoute } from "vue-router";
 import { computed } from "@vue/reactivity";
-import { isTest } from "@/composables/isTest";
+import { isTest2 } from "@/composables/isTest";
 import router from "@/router";
 import { useArchiveConfig } from "@/composables/archiveConfig";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
@@ -77,7 +77,7 @@ export default {
 
     const back = () => router.go(-1);
 
-    return { isTest, count_archive, isDarkTest, back, config };
+    return { isTest2, count_archive, isDarkTest, back, config };
   },
 };
 </script>
