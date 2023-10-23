@@ -115,8 +115,8 @@
             <button
               class="btn btn_save_all btn_yellow"
               v-if="showUpdateAllFieldsBtn"
-              :disabled="isUpdatingAllFields"
-              @click="updateAllFields()"
+              :disabled="IBL('updAllF')"
+              @click="LB('updAllF', updateAllFields())"
             >
               {{ $t("SettingEntities.table.btnSaveAll") }}
             </button>
@@ -141,13 +141,15 @@
             <div class="flex flex-row">
               <button
                 class="bar_item_icon bar_item_icon_up"
-                :disabled="idx === 0"
-                @click="changeTitleSort(idx, true)"
+                :disabled="idx === 0 || IBL('changeTSU' + row.id)"
+                @click="LB('changeTSU' + row.id, changeTitleSort(idx, true))"
               />
               <button
                 class="bar_item_icon bar_item_icon_down"
-                :disabled="idx === copy_fields.length - 1"
-                @click="changeTitleSort(idx, false)"
+                :disabled="
+                  idx === copy_fields.length - 1 || IBL('changeTSD' + row.id)
+                "
+                @click="LB('changeTSD' + row.id, changeTitleSort(idx, false))"
               />
             </div>
           </th>
@@ -274,7 +276,8 @@
             <button
               class="del_btn"
               v-show="!row.is_system"
-              @click="delete_field(row.id)"
+              :disabled="IBL('DelF' + row.id)"
+              @click="LB('DelF' + row.id, delete_field(row.id))"
             />
             <button
               class="btn btn_save btn_blue"
@@ -285,15 +288,18 @@
                 row.changeLeadConfig ||
                 row.changeConfig
               "
-              :disabled="updatingFields.includes(idx)"
+              :disabled="IBL('updF' + row.id)"
               @click="
-                update_field(idx, [
-                  row.changeName ? 'name' : null,
-                  row.changeData ? 'data' : null,
-                  row.changeCats ? 'categories_id' : null,
-                  row.changeLeadConfig ? 'lead_config' : null,
-                  row.changeConfig ? 'config' : null,
-                ])
+                LB(
+                  'updF' + row.id,
+                  update_field(idx, [
+                    row.changeName ? 'name' : null,
+                    row.changeData ? 'data' : null,
+                    row.changeCats ? 'categories_id' : null,
+                    row.changeLeadConfig ? 'lead_config' : null,
+                    row.changeConfig ? 'config' : null,
+                  ])
+                )
               "
             >
               {{ $t("global.save") }}
@@ -404,7 +410,8 @@
             <button
               class="btn btn_save btn_blue"
               v-if="row.name != ''"
-              @click="add_new(row, idx)"
+              @click="LB(row.id + 'addNew', add_new(row, idx))"
+              :bisabled="IBL(row.id + 'addNew')"
             >
               {{ $t("global.save") }}
             </button>
@@ -442,6 +449,7 @@ import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsPropert
 import { onClickOutside } from "@vueuse/core";
 import AppMultiSelect from "./AppMultiSelect.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useLockBtnByKey } from "@/composables/lockBtnByKey";
 export default {
   components: { SelectorVue, AppMultiSelect },
   props: { selectedTab: Object },
@@ -456,6 +464,7 @@ export default {
     });
 
     const { t } = useLangConfiguration();
+    const { lockBtn: LB, isBtnLocked: IBL } = useLockBtnByKey();
 
     const toolTips = reactive({
       visibility: false,
@@ -568,14 +577,11 @@ export default {
       if (nameError) new_fields[idx]["nameError"] = true;
       if (!errorData.error) {
         new_fields.splice(new_fields.indexOf(item), 1);
-        get_fields();
+        await get_fields();
       }
     };
 
-    const isUpdatingAllFields = ref(false);
-
     const updateAllFields = async () => {
-      isUpdatingAllFields.value = true;
       const promiseList = [];
       copy_fields.map((field, idx) => {
         const needUpdate =
@@ -600,12 +606,8 @@ export default {
         // field.changeConfig = false;
       });
       await Promise.all(promiseList);
-      isUpdatingAllFields.value = false;
     };
-    const updatingFields = reactive([]);
     const update_field = async (idx, params_names) => {
-      if (updatingFields.includes(idx)) return;
-      updatingFields.push(idx);
       const params = {};
       params["id"] = copy_fields[idx]["id"];
       params_names.forEach((val) => {
@@ -650,8 +652,6 @@ export default {
             )
         );
       }
-      const i = updatingFields.indexOf(idx);
-      updatingFields.splice(i, 1);
     };
     const get_fields = async () => {
       is_loading.value = true;
@@ -770,7 +770,7 @@ export default {
     const option_select_new_field_type = (option, idx) => {
       new_fields[idx].type = option.value;
     };
-    const changeTitleSort = (idx, isUp) => {
+    const changeTitleSort = async (idx, isUp) => {
       const currentSort = copy_fields[idx].config?.sort;
       if (
         copy_fields[idx].config?.sort === undefined ||
@@ -785,11 +785,11 @@ export default {
         copy_fields[idx].config.sort = copy_fields[idx + 1].config?.sort;
         copy_fields[idx + 1].config.sort = currentSort;
       }
-      update_field(idx, ["config"]);
+      await update_field(idx, ["config"]);
       if (isUp) {
-        update_field(idx - 1, ["config"]);
+        await update_field(idx - 1, ["config"]);
       } else {
-        update_field(idx + 1, ["config"]);
+        await update_field(idx + 1, ["config"]);
       }
       get_fields();
     };
@@ -913,9 +913,9 @@ export default {
       categories,
       modalRef,
       animationStarted,
-      updatingFields,
-      isUpdatingAllFields,
       t,
+      LB,
+      IBL,
     };
   },
 };

@@ -49,7 +49,11 @@
         >
           {{ $t("global.back") }}
         </button>
-        <button class="btn btn_blue" @click="submit()">
+        <button
+          class="btn btn_blue"
+          @click="LB('submit', submit())"
+          :disabled="IBL('submit')"
+        >
           {{ $t("global.add") }}
         </button>
       </div>
@@ -64,6 +68,7 @@ import store from "@/store";
 import { useToggle } from "@vueuse/core";
 import { useNotification } from "@/composables/notification";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useLockBtnByKey } from "@/composables/lockBtnByKey";
 export default {
   components: {},
   props: {},
@@ -71,6 +76,7 @@ export default {
     const { validateEmail } = useValidate();
     const { addNotification } = useNotification();
     const { t } = useLangConfiguration();
+    const { lockBtn: LB, isBtnLocked: IBL } = useLockBtnByKey();
 
     const [isNewUser, toggleIsNewUser] = useToggle(true);
 
@@ -163,7 +169,7 @@ export default {
 
     const close = () => context.emit("close");
 
-    return { close, form, submit, errors, existingUser, isNewUser };
+    return { close, form, submit, errors, existingUser, isNewUser, LB, IBL };
   },
 };
 </script>

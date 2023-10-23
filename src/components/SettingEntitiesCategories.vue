@@ -29,7 +29,8 @@
         <div class="bottom">
           <teleport to="body" v-if="del_modal_config.show">
             <ProductsCategoryRemoveModal
-              @remove="remove"
+              :disabled="IBL('del')"
+              @remove="() => LB('del', remove())"
               @close="closeRemoveModal"
             />
           </teleport>
@@ -49,10 +50,14 @@
                 class="input_teleport"
                 v-model="fields_cat_name"
                 ref="input"
-                @keyup.enter="add_new()"
+                @keyup.enter="LB('addNew' + selected_category_id, add_new())"
                 @keyup.esc="reset_fields_cat_name()"
               />
-              <button class="button_teleport" @click="add_new()">
+              <button
+                class="button_teleport"
+                @click="LB('addNew' + selected_category_id, add_new())"
+                :disabled="IBL('addNew' + selected_category_id)"
+              >
                 {{ $t("global.ok") }}
               </button>
             </div>
@@ -82,13 +87,14 @@
                 <input
                   type="text"
                   class="input_uderline"
-                  @keyup.enter="rename(item.id)"
+                  @keyup.enter="LB('rename' + item.id, rename(item.id))"
                   v-model="item.name"
                   :disabled="item.parent_id === 0"
                 />
               </div>
               <button
-                @click="rename(item.id)"
+                @click="LB('rename' + item.id, rename(item.id))"
+                :disabled="IBL('rename' + item.id)"
                 v-if="
                   !all_old?.name?.includes(item.name) &&
                   all_old?.id?.includes(item.id)
@@ -201,6 +207,7 @@ import { VueDraggableNext } from "vue-draggable-next";
 import store from "@/store";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { isTest } from "@/composables/isTest";
+import { useLockBtnByKey } from "@/composables/lockBtnByKey";
 export default {
   components: {
     ProductsCategoryRemoveModal,
@@ -208,6 +215,7 @@ export default {
   },
   setup(props, context) {
     const { t } = useLangConfiguration();
+    const { lockBtn: LB, isBtnLocked: IBL } = useLockBtnByKey();
 
     const fields_cat_name = ref("");
     const selected_category_id = ref(null);
@@ -270,12 +278,12 @@ export default {
       Object.assign(all_old, list);
     };
 
-    const add_new = () => {
+    const add_new = async () => {
       const parent = copy_fields_properties.value.find(
         (val) => val.id === selected_category_id.value
       );
       if (parent.level + 1 <= 10 && fields_cat_name.value != "") {
-        store.dispatch("add_fields_properties", {
+        await store.dispatch("add_fields_properties", {
           name: fields_cat_name.value,
           parent_id: parent.id,
         });
@@ -295,10 +303,13 @@ export default {
       await store.dispatch("update_fields_properties", params);
 
       confirm.value = true;
-      setTimeout(() => {
-        confirm.value = false;
-        get_all_old();
-      }, 1000);
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          confirm.value = false;
+          get_all_old();
+          resolve();
+        }, 1000)
+      );
     };
 
     const prevname = (id) => {
@@ -332,9 +343,9 @@ export default {
       del_modal_config.show = true;
     };
 
-    const remove = () => {
+    const remove = async () => {
       if (del_modal_config.level != 1) {
-        store.dispatch("delete_fields_properties", {
+        await store.dispatch("delete_fields_properties", {
           id: del_modal_config.id,
         });
       }
@@ -385,6 +396,8 @@ export default {
       close,
       input,
       t,
+      LB,
+      IBL,
     };
   },
 };

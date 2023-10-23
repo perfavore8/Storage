@@ -14,7 +14,11 @@
         <button class="btn_edit" @click="open_edit(doc)">
           <div class="icon"></div>
         </button>
-        <button class="btn_del" @click="delete_cur_doc(doc.id)">
+        <button
+          class="btn_del"
+          @click="LB('del' + doc.id, delete_cur_doc(doc.id))"
+          :disabled="IBL('del' + doc.id)"
+        >
           <div class="icon"></div>
         </button>
       </div>
@@ -23,6 +27,7 @@
 </template>
 
 <script>
+import { useLockBtnByKey } from "@/composables/lockBtnByKey";
 export default {
   props: {
     doc: {
@@ -31,12 +36,16 @@ export default {
     },
   },
   emits: { open_edit: null, delete_cur_doc: null },
+  setup() {
+    const { lockBtn: LB, isBtnLocked: IBL } = useLockBtnByKey();
+    return { LB, IBL };
+  },
   methods: {
     open_edit(doc) {
       this.$emit("open_edit", doc);
     },
-    delete_cur_doc(id) {
-      this.$store.dispatch("delete_template", { id: id });
+    async delete_cur_doc(id) {
+      await this.$store.dispatch("delete_template", { id: id });
     },
     getHref(GId, type) {
       let res = "#";

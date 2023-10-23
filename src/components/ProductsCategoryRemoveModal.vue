@@ -7,7 +7,7 @@
         {{ $t("removeCat.text") }}
       </p>
       <div class="buttons">
-        <BtnsSaveClose @close="close" @save="remove">
+        <BtnsSaveClose @close="close" @save="remove" :disabledSave="disabled">
           <template v-slot:save>{{ $t("removeCat.del") }}</template>
         </BtnsSaveClose>
       </div>
@@ -19,6 +19,7 @@
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 export default {
   components: { BtnsSaveClose },
+  props: { disabled: Boolean },
   created() {
     document.body.style.overflowY = "hidden";
   },

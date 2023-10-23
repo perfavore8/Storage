@@ -1,6 +1,10 @@
 <template>
   <div class="bgc">
-    <button @click="addStatuses()" class="add_new_button"></button>
+    <button
+      @click="LB('addNew', addStatuses())"
+      :disabled="IBL('addNew')"
+      class="add_new_button"
+    ></button>
     <button
       class="bg-slate-400 bg-opacity-90 p-2 h-fit w-fit rounded-xl absolute left-0 hover:shadow-sm hover:drop-shadow-md outline-none focus-visible:drop-shadow-md"
       @click="close()"
@@ -190,14 +194,19 @@
                           visibility: stat.is_system ? 'hidden' : 'visible',
                         }"
                         @click="
-                          statuses.del(stat.id), toggleNeedUpdateStatuses(true)
+                          LB('del' + stat.id, statuses.del(stat.id)),
+                            toggleNeedUpdateStatuses(true)
                         "
+                        :disabled="IBL('del' + stat.id)"
                       ></button>
                     </div>
                   </template>
                 </transition-group>
                 <button
-                  @click="statuses.add(), toggleNeedUpdateStatuses(true)"
+                  @click="
+                    LB('add', statuses.add()), toggleNeedUpdateStatuses(true)
+                  "
+                  :disabled="IBL('add')"
                   class="add_button"
                 ></button>
               </div>
@@ -207,13 +216,18 @@
                 v-if="statuses.isNew"
                 class="del_btn"
                 @click="
-                  removeStatuses(statuses.id), toggleNeedUpdateStatuses(true)
+                  LB('remove' + statuses.id, removeStatuses(statuses.id)),
+                    toggleNeedUpdateStatuses(true)
                 "
+                :disabled="IBL('remove' + statuses.id)"
               />
               <button
                 class="btn btn_save btn_blue"
                 v-if="statusesIsChange"
-                @click="saveStatuses(), toggleNeedUpdateStatuses(true)"
+                @click="
+                  LB('save', saveStatuses()), toggleNeedUpdateStatuses(true)
+                "
+                :disabled="IBL('save')"
               >
                 {{ $t("global.save") }}
               </button>
@@ -231,11 +245,13 @@ import { onMounted, onUnmounted, reactive } from "vue";
 import AppErrorText from "./AppErrorText.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useUpdateKeys } from "@/composables/updateKeys";
+import { useLockBtnByKey } from "@/composables/lockBtnByKey";
 import { useToggle } from "@vueuse/core";
 export default {
   components: { AppErrorText },
   setup(props, context) {
     const { t } = useLangConfiguration();
+    const { lockBtn: LB, isBtnLocked: IBL } = useLockBtnByKey();
 
     onMounted(() => {
       setStatuses();
@@ -296,6 +312,8 @@ export default {
       close,
       t,
       toggleNeedUpdateStatuses,
+      LB,
+      IBL,
     };
   },
 };

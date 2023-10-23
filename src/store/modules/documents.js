@@ -9,6 +9,7 @@ export default {
       page: 1,
     },
     isLoading: false,
+    isloadingDocumentsList: false,
   },
   getters: {},
   mutations: {
@@ -20,6 +21,9 @@ export default {
     },
     updateDocuments(state, value) {
       state.documents = [...value];
+    },
+    updateIsloadingDocumentsList(state, value) {
+      state.isloadingDocumentsList = value;
     },
     updateDocumentsFilters(state, value) {
       Object.assign(state.filters, value);
@@ -69,11 +73,13 @@ export default {
       return data;
     },
     async get_documents_v2(context) {
+      context.commit("updateIsloadingDocumentsList", true);
       const { data } = await ApiReqFunc({
         url: "document/listV2",
       });
       context.commit("update_templates", data.templates);
       context.commit("update_config", data.config);
+      context.commit("updateIsloadingDocumentsList", false);
 
       return data;
     },

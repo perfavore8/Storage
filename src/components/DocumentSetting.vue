@@ -137,7 +137,8 @@
               {{ $t("DocumentSetting.templDocsText") }}
             </p>
           </div>
-          <div class="main">
+          <AppTablePreloader :titles="title" v-if="isDataLoading" />
+          <div class="main" :class="{ hiden: isDataLoading }" v-else>
             <table class="table">
               <thead>
                 <tr class="row title">
@@ -181,6 +182,7 @@ import DocumentSettingFieldsV2 from "@/components/DocumentSettingFieldsV2.vue";
 import DocumentSettingDocRow from "@/components/DocumentSettingDocRow.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import AppTablePreloader from "./AppTablePreloader.vue";
 
 const { t } = useLangConfiguration();
 
@@ -191,6 +193,7 @@ export default {
     DocumentSettingFieldsV2,
     DocumentSettingDocRow,
     BtnsSaveClose,
+    AppTablePreloader,
   },
   setup() {
     return { t };
@@ -240,6 +243,9 @@ export default {
         list.push({ value: val[0], ...val[1] });
       });
       return list;
+    },
+    isDataLoading() {
+      return this.$store.state.documents.isloadingDocumentsList;
     },
   },
   async mounted() {
