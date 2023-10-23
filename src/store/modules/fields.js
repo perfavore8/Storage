@@ -75,11 +75,11 @@ export default {
 
       return data;
     },
-    async delete_field(context, id) {
+    async delete_field(context, params) {
       const { data } = await ApiReqFunc({
         url: "field/delete",
         method: "post",
-        data: { id: id },
+        data: params,
       });
 
       return data;
