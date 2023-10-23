@@ -264,7 +264,9 @@ export default {
     };
 
     const del = () => {
-      store.dispatch("deleteClientsContacts", { id: copyItem.value.id });
+      store.dispatch(`deleteClients${selectedTabComp.value.value}`, {
+        id: copyItem.value.id,
+      });
       close();
     };
 
