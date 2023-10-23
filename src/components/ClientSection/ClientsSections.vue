@@ -21,7 +21,15 @@
           :selected="selected"
           :selectedTab="selectedTabComp"
         />
-        <AppPaginator :page="page" @changePage="changePage" class="w-fit" />
+        <AppPaginator
+          :page="page"
+          @changePage="changePage"
+          class="w-fit"
+          v-if="clientsList.length"
+        />
+        <label v-if="clientsList.length == 0 && !isLoading" class="text">
+          {{ t("global.nothingFound") }}
+        </label>
       </div>
       <div class="h-full relative">
         <transition name="modal">
@@ -71,6 +79,7 @@ import { computed, nextTick, reactive, ref, watch } from "vue";
 import { useClients } from "@/composables/clients";
 import { onClickOutside } from "@vueuse/core";
 import { useClientsTabs } from "@/composables/clientsTabs";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   components: {
     ClientsEditSection,
@@ -90,6 +99,8 @@ export default {
       () => (getClientsList(), getClientsFields(), closeAdd(true))
     );
 
+    const { t } = useLangConfiguration();
+
     const {
       clientsList,
       getClientsList,
@@ -97,6 +108,7 @@ export default {
       page,
       changePage,
       updateParams,
+      isLoading,
     } = useClients(selectedTabComp);
 
     const emitParams = (params) => {
@@ -177,6 +189,8 @@ export default {
       page,
       changePage,
       emitParams,
+      t,
+      isLoading,
     };
   },
 };
@@ -186,5 +200,11 @@ export default {
 @import "@/app.scss";
 .add_section_selected {
   @apply bg-slate-100;
+}
+.text {
+  position: relative;
+  top: 20px;
+  margin: 0 auto;
+  @include font(500, 18px);
 }
 </style>

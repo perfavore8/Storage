@@ -1,10 +1,12 @@
 import store from "@/store";
+import { ref } from "vue";
 import { computed } from "vue";
 import { reactive } from "vue";
 
 const clientsList = reactive([]);
 
 export function useClients(selectedTab) {
+  const isLoading = ref(false);
   const products = computed(
     () => store.state[`clients${selectedTab.value.value}`]?.list
   );
@@ -17,12 +19,14 @@ export function useClients(selectedTab) {
   };
 
   const getClientsList = async () => {
+    isLoading.value = true;
+    clientsList.length = 0;
     await store.dispatch(
       `getClients${selectedTab.value.value}List`,
       params.value
     );
-    clientsList.length = 0;
     Object.assign(clientsList, products.value);
+    isLoading.value = false;
   };
   const getClientsFields = async () => {
     await store.dispatch(`getClients${selectedTab.value.value}Fields`);
@@ -73,5 +77,6 @@ export function useClients(selectedTab) {
     updateParams,
     page,
     changePage,
+    isLoading,
   };
 }
