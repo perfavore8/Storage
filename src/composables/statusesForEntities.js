@@ -31,11 +31,11 @@ export function useStatusesForEntities(stat, setStatuses) {
         name: t("SettingEntities.entStats.new"),
         sort: this.list.at(-4).sort + 1,
       });
-      setStatuses(true);
+      await setStatuses(true);
     },
     del: async function (id) {
       await store.dispatch("ordersPipelinesStatusesDelete", { id: id });
-      setStatuses(true);
+      await setStatuses(true);
     },
     changeVal: function (field, val) {
       if (field === "reservation") {
