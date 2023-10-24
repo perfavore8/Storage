@@ -105,7 +105,7 @@ export default {
         current: computed(() => store.state.account.account.tarif == 2),
         header: "Базовый",
         description: "",
-        price: tc("tarifs.price", 2, { price: 70 }),
+        price: tc("tarifs.price", 2, { price: 90 }),
         period: t("tarifs.g"),
         priceSmall: t("tarifs.evry"),
         advantages: [
