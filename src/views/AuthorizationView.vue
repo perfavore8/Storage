@@ -490,6 +490,10 @@ export default {
         lockBtn();
         let res = { success: false };
         if (showRestorePassword.value) {
+          if (notificationSystem.selected.value === "telegram") {
+            window.open("http://t.me/gosklad_reg_bot");
+            return;
+          }
           if (showPin.value) {
             res = await store.dispatch("authRestorePasswordEnd", {
               code: phoneCode.value,
@@ -539,11 +543,6 @@ export default {
             name: form.name,
           });
           if (res.success) {
-            console.log(
-              form,
-              notificationSystem.selected.form,
-              form[notificationSystem.selected.form]
-            );
             addNotification(
               1,
               t("Auth.reg"),
