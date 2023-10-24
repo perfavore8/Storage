@@ -32,10 +32,10 @@ export function useRoleSettings(folder) {
         addNewUserBtn: 0,
       },
       orders: {
-        tableSettingsBtn: 0,
+        tableSettingsBtn: 1,
       },
       products: {
-        tableSettingsBtn: 0,
+        tableSettingsBtn: 1,
       },
     },
   });
