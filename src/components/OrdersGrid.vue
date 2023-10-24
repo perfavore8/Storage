@@ -94,17 +94,17 @@
                     ></div>
                   </div>
                   <a
-                    :target="isTest2 ? '_self' : '_blank'"
+                    target="_blank"
                     class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline cursor-pointer"
                     :href="
-                      isTest2
-                        ? null
-                        : 'https://' +
+                      row.lead_id
+                        ? 'https://' +
                           accountSubdomain +
                           '.amocrm.ru/leads/detail/' +
                           row.lead_id
+                        : null
                     "
-                    @click="isTest2 ? routeToOrder(row.id) : null"
+                    @click="row.lead_id ? null : routeToOrder(row.id)"
                     v-if="
                       statList.find((el) => el.name === row.stat)?.value !== 3
                     "
