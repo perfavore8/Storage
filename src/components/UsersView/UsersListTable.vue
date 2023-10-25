@@ -130,7 +130,10 @@
             </td>
             <td
               class="delCell"
-              v-if="!(isTest2 && !currentSetSettingsInFolder.usersList.delBtn)"
+              v-if="
+                currentSetSettingsInFolder.usersList.delBtn &&
+                user.id !== currentUserId
+              "
             >
               <AppDelBtnAccept
                 :btnClass="'!p-2 rounded-full !text-gray-500 disabled:!text-gray-300 hover:!text-red-500 transition-colors duration-300 bg-transparent'"
