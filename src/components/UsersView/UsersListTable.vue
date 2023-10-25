@@ -241,12 +241,13 @@ export default {
         toggleEditUser(true);
       },
       close: () => toggleEditUser(false),
-      submit: function (newFields) {
-        store.dispatch("updateUser", {
+      submit: async function (newFields) {
+        await store.dispatch("updateUser", {
           id: this.selected.id,
           is_active: newFields.is_active,
           role: newFields.role,
         });
+        setUsers();
       },
     });
 
