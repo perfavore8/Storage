@@ -13,7 +13,7 @@
                     <label>{{ $t("DocumentSetting.docField") }}</label>
                     <SelectorVue
                       :options_props="leadFields.list"
-                      @select="leadFields.select"
+                      @select="(op) => leadFields.select(op)"
                       :selected_option="leadFields.selected"
                     />
                   </div>
@@ -21,7 +21,7 @@
                     <label>{{ $t("DocumentSetting.contOrder") }}</label>
                     <SelectorVue
                       :options_props="contactNameType.list"
-                      @select="contactNameType.select"
+                      @select="(op) => contactNameType.select(op)"
                       :selected_option="contactNameType.selected"
                     />
                   </div>
@@ -154,7 +154,7 @@ export default {
       store.dispatch("update_account", {
         hook_download: hooks.download,
         hook_generate_doc: hooks.generateDoc,
-        field_docs: leadFields.setList.value,
+        field_docs: leadFields.selected.value,
         contact_name_type: contactNameType.selected.value,
       });
     };
