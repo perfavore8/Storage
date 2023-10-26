@@ -435,7 +435,7 @@ import { useNewDeal } from "@/composables/newDeal";
 import { useValidate } from "@/composables/validate";
 import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
-import { useCats } from "../composables/cats";
+import { useCats } from "@/composables/cats";
 import { useLockBtn } from "@/composables/lockBtn";
 import AppImagesCarusel from "@/components/AppImagesCarusel.vue";
 

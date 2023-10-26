@@ -122,7 +122,7 @@ import { computed, ref } from "vue";
 import { useAddToDealTabs } from "@/composables/addToDealTabs";
 import { useNewDeal } from "@/composables/newDeal";
 import { useLangConfiguration } from "@/composables/langConfiguration";
-import { useCats } from "../composables/cats";
+import { useCats } from "@/composables/cats";
 export default {
   components: {
     EditInteger,
