@@ -22,6 +22,29 @@ export function usePreparationOrders() {
     pipelines = pip;
   });
 
+  const statList = [
+    {
+      name: "Открытый",
+      value: 0,
+    },
+    {
+      name: "В резерве",
+      value: 1,
+    },
+    {
+      name: "Успешный",
+      value: 2,
+    },
+    {
+      name: "Отменен",
+      value: 3,
+    },
+    {
+      name: "Удален",
+      value: 4,
+    },
+  ];
+
   const getValue = (value, code) =>
     value?.[code] || value?.fields?.[code] || "";
 
@@ -52,9 +75,15 @@ export function usePreparationOrders() {
           )?.name;
         }
         if (code === "status") {
-          stepRes = pipelines.allStatuses.find(
-            (el) => el.id == getValue(value, "status_id")
-          )?.name;
+          if (value.lead_id) {
+            stepRes = statList.find(
+              (el) => el.value == getValue(value, "status")
+            )?.name;
+          } else {
+            stepRes = pipelines.allStatuses.find(
+              (el) => el.id == getValue(value, "status_id")
+            )?.name;
+          }
         }
       } else if (source === "company") {
         stepRes = getValue(value.company, code);
