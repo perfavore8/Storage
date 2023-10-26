@@ -312,7 +312,7 @@ export default {
     },
     searchSelectedSyncFields() {
       this.copySyncFields.amoFields.map((val) => {
-        this.$store.state.account.account?.config?.sync_products_fields.forEach(
+        this.$store.state.account.account?.config?.sync_products_fields?.forEach(
           (field) => {
             if (field.field == val.field) {
               const items = this.copySyncFields.fields[val.type].filter(
