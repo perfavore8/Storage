@@ -135,7 +135,7 @@
           <th
             class="p-[10px] border border-[#c9c9c9] w-min"
             v-if="
-              isTest2 && selectedFieldPropertyIsBasic && selectedTab.haveSort
+              isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort
             "
           >
             <div class="flex flex-row">
@@ -317,7 +317,7 @@
           <th
             class="p-[10px] border border-[#c9c9c9]"
             v-if="
-              isTest2 && selectedFieldPropertyIsBasic && selectedTab.haveSort
+              isTest && selectedFieldPropertyIsBasic && selectedTab.haveSort
             "
           ></th>
           <td class="item">
