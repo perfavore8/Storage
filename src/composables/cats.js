@@ -3,7 +3,7 @@ import { reactive } from "vue";
 import { computed } from "vue";
 
 export function useCats() {
-  const cats = computed(() => store.state.widjetCategories.fields_properties);
+  const cats = computed(() => store.state.categories.fields_properties);
   const getSubCatsForId = (catId) => {
     const currentCat = cats.value.find((cat) => cat.id === catId);
     const res = [];

@@ -47,67 +47,75 @@
         {{ $t("global.nothingFound") }}
       </label>
       <div class="card shadow-lg" v-for="(row, idx) in products" :key="row.id">
-        <div class="row" v-for="item in sortedFields" :key="item">
-          <div class="name">{{ item[1].name }}<span> :</span></div>
-          <div class="value" v-if="item[1].type === 15">
-            <AppImagesCarusel
-              :imagesList="row.fields[item[0]]"
-              :float="'right'"
-            />
-          </div>
-          <div class="value" v-else>
-            <span v-if="item[0].split('.').length < 2">
-              {{
-                item[0] === "free_4_reserve" && row.fields[item[0]] == -1
-                  ? "&infin;"
-                  : item[0] == "category"
-                  ? categories[row.fields[item[0]]]
-                  : item[1].type == 9
-                  ? !!row.fields[item[0]]
-                    ? $t("global.yes")
-                    : $t("global.no")
-                  : item[0] == "cost_price"
-                  ? row.fields[item[0]]
-                    ? Math.round(row.fields[item[0]] * 100) / 100
-                    : "0"
-                  : row.fields[item[0]]
-              }}
-            </span>
-            <span v-else>
-              {{
-                item[0].split(".")[1] == "cost"
-                  ? row.fields?.[item[0].split(".")[0]]?.[
-                      item[0].split(".")[1]
-                    ] == undefined
-                    ? "0"
+        <template v-for="item in sortedFields" :key="item">
+          <div
+            class="row"
+            v-if="getAllFieldsInSubCat(selectedCatId).includes(item[1].id)"
+          >
+            <div class="name">{{ item[1].name }}<span> :</span></div>
+            {{ item[1].id }}
+            <div class="value" v-if="item[1].type === 15">
+              <AppImagesCarusel
+                :imagesList="row.fields[item[0]]"
+                :float="'right'"
+              />
+            </div>
+            <div class="value" v-else>
+              <span v-if="item[0].split('.').length < 2">
+                {{
+                  item[0] === "free_4_reserve" && row.fields[item[0]] == -1
+                    ? "&infin;"
+                    : item[0] == "category"
+                    ? categories[row.fields[item[0]]]
+                    : item[1].type == 9
+                    ? !!row.fields[item[0]]
+                      ? $t("global.yes")
+                      : $t("global.no")
+                    : item[0] == "cost_price"
+                    ? row.fields[item[0]]
+                      ? Math.round(row.fields[item[0]] * 100) / 100
+                      : "0"
+                    : row.fields[item[0]]
+                }}
+              </span>
+              <span v-else>
+                {{
+                  item[0].split(".")[1] == "cost"
+                    ? row.fields?.[item[0].split(".")[0]]?.[
+                        item[0].split(".")[1]
+                      ] == undefined
+                      ? "0"
+                      : row.fields?.[item[0].split(".")[0]]?.[
+                          item[0].split(".")[1]
+                        ] +
+                        " " +
+                        (row.fields?.[item[0].split(".")[0]]?.currency ==
+                          undefined ||
+                        row.fields?.[item[0].split(".")[0]]?.currency == null
+                          ? ""
+                          : row.fields?.[item[0].split(".")[0]]?.currency)
+                    : item[1].type == 9
+                    ? !!row.fields?.[item[0].split(".")[0]]?.[
+                        item[0].split(".")[1]
+                      ]
+                      ? $t("global.yes")
+                      : $t("global.no")
                     : row.fields?.[item[0].split(".")[0]]?.[
                         item[0].split(".")[1]
-                      ] +
-                      " " +
-                      (row.fields?.[item[0].split(".")[0]]?.currency ==
-                        undefined ||
-                      row.fields?.[item[0].split(".")[0]]?.currency == null
-                        ? ""
-                        : row.fields?.[item[0].split(".")[0]]?.currency)
-                  : item[1].type == 9
-                  ? !!row.fields?.[item[0].split(".")[0]]?.[
-                      item[0].split(".")[1]
-                    ]
-                    ? $t("global.yes")
-                    : $t("global.no")
-                  : row.fields?.[item[0].split(".")[0]]?.[item[0].split(".")[1]]
-              }}
-            </span>
-            &nbsp;
-            <button
-              class="edit_icon"
-              style="width: 16px; heigth: 16px"
-              v-if="item[0].split('.')[1] == 'cost'"
-              @click.stop="openGridEditPrice(row, item[0].split('.')[0])"
-              :title="t('ostatki.changePrice')"
-            ></button>
+                      ]
+                }}
+              </span>
+              &nbsp;
+              <button
+                class="edit_icon"
+                style="width: 16px; heigth: 16px"
+                v-if="item[0].split('.')[1] == 'cost'"
+                @click.stop="openGridEditPrice(row, item[0].split('.')[0])"
+                :title="t('ostatki.changePrice')"
+              ></button>
+            </div>
           </div>
-        </div>
+        </template>
         <div class="card_footer">
           <template v-if="!oneC">
             <input
@@ -153,6 +161,7 @@ import { nextTick } from "@vue/runtime-core";
 import CardGridCategories from "./CardGridCategories.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppImagesCarusel from "./AppImagesCarusel.vue";
+import { useCats } from "@/composables/cats";
 
 const { t } = useLangConfiguration();
 
@@ -176,10 +185,11 @@ export default {
   inject: ["isServicePage"],
   emits: {},
   setup() {
-    return { t };
+    return { t, ...useCats() };
   },
   data() {
     return {
+      selectedCatId: 1,
       edit_data: {},
       selectedProducts: [],
       showArrow: false,
@@ -215,7 +225,12 @@ export default {
       return this.sortedFieldsRow.filter((val) => val[1].visible);
     },
     sortedFieldsRow() {
+      const allFieldsObj = {};
+      this.all_fields.forEach((field) => (allFieldsObj[field.code] = field));
       const list = Object.entries(this.tableConfig);
+      list.map(
+        ([code, val]) => (val.id = allFieldsObj[code.split(".")[0]]?.id)
+      );
       return list.sort((a, b) => {
         if (a[1].sort > b[1].sort) return 1;
         if (a[1].sort == b[1].sort) return 0;
@@ -422,6 +437,7 @@ export default {
       Object.assign(this.link, obj);
     },
     selectCat(cat) {
+      this.selectedCatId = cat.id;
       const params = {
         filter: { category: { compare: "in", query: [cat.id] } },
       };
