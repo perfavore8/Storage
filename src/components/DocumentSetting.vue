@@ -79,58 +79,7 @@
         </div>
       </div>
       <div class="content">
-        <div class="binding" v-if="account.install">
-          <div class="header">
-            {{ $t("DocumentSetting.templLink") }}
-            <div class="save">
-              <btns-save-close @save="save" :show_close="false" />
-            </div>
-          </div>
-          <div class="main">
-            <div class="column">
-              <div class="label_select">
-                <label>{{ $t("DocumentSetting.docField") }}</label>
-                <SelectorVue
-                  :options_props="lead_fields_options"
-                  @select="lead_fields_select"
-                  :selected_option="lead_fields"
-                />
-              </div>
-              <div class="label_select">
-                <label>{{ $t("DocumentSetting.contOrder") }}</label>
-                <SelectorVue
-                  :options_props="contact_name_type_options"
-                  @select="contact_name_type_select"
-                  :selected_option="contact_name_type"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="patterns">
-          <template v-if="account.install">
-            <div class="header mb-2">{{ $t("DocumentSetting.hooks") }}</div>
-            <div class="main mb-4">
-              <div class="column">
-                <div class="grid grid-cols-[3fr_4fr] items-center">
-                  <label>{{ $t("DocumentSetting.hookDown") }}</label>
-                  <input
-                    type="text"
-                    class="input inputhuk my-2"
-                    v-model="hook_download"
-                  />
-                </div>
-                <div class="grid grid-cols-[3fr_4fr] items-center">
-                  <label>{{ $t("DocumentSetting.hookGen") }}</label>
-                  <input
-                    type="text"
-                    class="input inputhuk my-2"
-                    v-model="hook_generate_doc"
-                  />
-                </div>
-              </div>
-            </div>
-          </template>
           <div class="header">
             <div>{{ $t("DocumentSetting.templDocs") }}</div>
             <p class="small">
@@ -176,7 +125,6 @@
 </template>
 
 <script>
-import SelectorVue from "@/components/SelectorVue.vue";
 import DocumentSettingAddNew from "@/components/DocumentSettingAddNew.vue";
 import DocumentSettingFieldsV2 from "@/components/DocumentSettingFieldsV2.vue";
 import DocumentSettingDocRow from "@/components/DocumentSettingDocRow.vue";
@@ -188,7 +136,6 @@ const { t } = useLangConfiguration();
 
 export default {
   components: {
-    SelectorVue,
     DocumentSettingAddNew,
     DocumentSettingFieldsV2,
     DocumentSettingDocRow,
