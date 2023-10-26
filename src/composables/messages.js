@@ -1075,6 +1075,13 @@ export const messages = {
         EStep3: "3. Insert the link in the product field.",
       },
     },
+    statusesForAmo: {
+      opened: "Open",
+      reserved: "In reserve",
+      success: "Successful",
+      unsuccessful: "Cancelled",
+      deleted: "Deleted",
+    },
   },
   ru: {
     global: {
@@ -2157,6 +2164,13 @@ export const messages = {
         EStep2: '2. Нажмите ПКМ и выберите "Копировать URL картинки".',
         EStep3: "3. Вставьте ссылку в поле товара.",
       },
+    },
+    statusesForAmo: {
+      opened: "Открытый",
+      reserved: "В резерве",
+      success: "Успешный",
+      unsuccessful: "Отменен",
+      deleted: "Удален",
     },
   },
 };

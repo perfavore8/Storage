@@ -4,10 +4,12 @@ import { nextTick, onMounted } from "vue";
 import { computed } from "vue";
 import { useValidate } from "./validate";
 import { ref } from "vue";
+import { useLangConfiguration } from "./langConfiguration";
 
 const userList = ref([]);
 
 export function usePreparationOrders() {
+  const { t } = useLangConfiguration();
   const { formatNumber, dateFormater } = useValidate();
   onMounted(async () => {
     if (!userList.value.length) {
@@ -24,23 +26,23 @@ export function usePreparationOrders() {
 
   const statList = [
     {
-      name: "Открытый",
+      name: t("statusesForAmo.opened"),
       value: 0,
     },
     {
-      name: "В резерве",
+      name: t("statusesForAmo.reserved"),
       value: 1,
     },
     {
-      name: "Успешный",
+      name: t("statusesForAmo.success"),
       value: 2,
     },
     {
-      name: "Отменен",
+      name: t("statusesForAmo.unsuccessful"),
       value: 3,
     },
     {
-      name: "Удален",
+      name: t("statusesForAmo.deleted"),
       value: 4,
     },
   ];
