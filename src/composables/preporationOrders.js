@@ -47,6 +47,15 @@ export function usePreparationOrders() {
     },
   ];
 
+  const getStatusType = (status, status_id, isAmo) => {
+    if (isAmo) {
+      return status;
+    } else {
+      const status = pipelines.allStatuses?.find((el) => el.id == status_id);
+      return status?.type && status?.type + 1;
+    }
+  };
+
   const getValue = (value, code) =>
     value?.[code] || value?.fields?.[code] || "";
 
@@ -57,6 +66,9 @@ export function usePreparationOrders() {
 
   const preparationOrder = (value) => {
     const res = {};
+    res.img = value.lead_id
+      ? "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png"
+      : require("@/assets/favicon2.png");
     store.getters.preporatedTableConfig.forEach((field) => {
       const [source, code] = field.value.split(/_(.*)/s);
       let stepRes = null;
@@ -109,6 +121,12 @@ export function usePreparationOrders() {
 
       if (stepRes !== null && stepRes !== undefined) res[field.value] = stepRes;
     });
+
+    res.statusType = getStatusType(
+      value.status,
+      value.status_id,
+      Boolean(value.lead_id)
+    );
 
     return res;
   };

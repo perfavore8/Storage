@@ -4,16 +4,6 @@
     <table class="table relative" ref="table" v-else>
       <thead>
         <tr class="bar_row">
-          <!-- <th class="bar_item item" style="min-width: 17px">
-              <input
-                type="checkbox"
-                class="checkbox"
-                id="all"
-                v-model="allSelectedProducts"
-                @change="changeAllSelectedProducts()"
-              />
-              <label for="all"></label>
-            </th> -->
           <th
             class="bar_item item"
             :class="{ cursor_pointer: title.sortable }"
@@ -42,43 +32,25 @@
                     title.value.split(/_(.*)/s)[1] === sorting.order_by,
                 }"
                 v-if="title.sortable && title.isOrder"
-              ></button>
+              />
             </div>
           </th>
         </tr>
       </thead>
       <tbody v-if="products.list.length">
-        <template v-for="(row, idx) in products.list" :key="row">
+        <template v-for="row in products.list" :key="row">
           <tr class="row">
-            <!-- <td class="item">
-                <input
-                  type="checkbox"
-                  class="checkbox"
-                  :id="row + idx"
-                  v-if="selectedProducts[idx] != undefined"
-                  v-model="selectedProducts[idx].value"
-                />
-                <label :for="row + idx"></label>
-              </td> -->
             <template v-for="title in products.titles" :key="title">
               <td
                 class="item"
-                v-if="
-                  title.value === 'order_name' ||
-                  (!isTest2 && title.code === 'name')
-                "
+                v-if="title.value === 'order_name'"
                 style="padding: 5px 10px 5px 15px"
               >
                 <div class="stat">
-                  <div class="img_wrapper" v-if="row.lead_id || true">
+                  <div class="img_wrapper">
                     <a
                       :href="
-                        isTest2 &&
-                        getStatusType(
-                          row.lead_id ? row.status : row.status_id,
-                          Boolean(row.lead_id)
-                        ) !== 4 &&
-                        row.lead_id
+                        row.fieldsForRender.statusType !== 4 && row.lead_id
                           ? 'https://' +
                             accountSubdomain +
                             '.amocrm.ru/leads/detail/' +
@@ -87,17 +59,11 @@
                       "
                       target="_blank"
                     >
-                      <img :src="row.img" class="img" />
+                      <img :src="row.fieldsForRender.img" class="img" />
                     </a>
                     <div
                       class="handle_cross"
-                      v-if="
-                        getStatusType(
-                          row.status,
-                          row.status_id,
-                          Boolean(row.lead_id)
-                        ) === 4
-                      "
+                      v-if="row.fieldsForRender.statusType === 4"
                     ></div>
                   </div>
                   <a
@@ -112,21 +78,18 @@
                         : null
                     "
                     @click="row.lead_id ? null : routeToOrder(row.id)"
-                    v-if="
-                      getStatusType(
-                        row.status,
-                        row.status_id,
-                        Boolean(row.lead_id)
-                      ) !== 4
-                    "
+                    v-if="row.fieldsForRender.statusType !== 4"
                   >
                     {{
-                      (row.name || "") +
+                      (row.fieldsForRender?.[title.value] || "") +
                       (row.lead_id ? ` (${row.lead_id})` : "")
                     }}
                   </a>
                   <span v-else>
-                    {{ (row.name || "") + ` (${row.lead_id || ""})` }}
+                    {{
+                      (row.fieldsForRender?.[title.value] || "") +
+                      ` (${row.lead_id || ""})`
+                    }}
                   </span>
                 </div>
               </td>
@@ -134,11 +97,7 @@
                 class="item"
                 v-else-if="
                   title.code === 'status' &&
-                  getStatusType(
-                    row.status,
-                    row.status_id,
-                    Boolean(row.lead_id)
-                  ) === 2
+                  row.fieldsForRender.statusType === 2
                 "
               >
                 <div class="flex flex-row gap-4 items-center">
@@ -153,46 +112,11 @@
                   </button>
                 </div>
               </td>
-              <td
-                class="item"
-                :class="{ 'cursor-pointer': !isTest2 }"
-                v-else
-                :colspan="title.isGroup ? 2 : 1"
-                @click="isTest2 ? null : (row.isOpen = !row.isOpen)"
-              >
-                {{
-                  isTest2 ? row.fieldsForRender?.[title.value] : row[title.code]
-                }}
+              <td class="item" v-else>
+                {{ row.fieldsForRender?.[title.value] }}
               </td>
             </template>
           </tr>
-
-          <template v-if="row.isOpen">
-            <tr
-              class="row hidden-row"
-              v-for="row2 in row.list.slice(
-                (row.page.current - 1) * maxCount,
-                row.page.current * maxCount
-              )"
-              :key="row2"
-            >
-              <!-- <td class="item"></td> -->
-              <template v-for="title in selectedOrder.title" :key="title">
-                <td class="item">{{ row2[title.code] }}</td>
-              </template>
-            </tr>
-            <tr v-if="row.list.length > maxCount">
-              <td :colspan="Object.values(row.list?.[0])?.length">
-                <div class="w-full flex items-center justify-center mt-2">
-                  <AppPaginator
-                    :page="row.page"
-                    @changePage="(page) => changePageRow(page, idx)"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr class="space" />
-          </template>
         </template>
       </tbody>
     </table>
@@ -206,67 +130,34 @@
     :showSelector="false"
     :count="meta?.per_page"
     @changePage="changePage"
+    v-if="!isDataLoading && products.list.length"
   />
-  <!-- <Teleport to="body">
-    <ReportGridModal
-      v-if="selectedOrder?.isOpen"
-      :title="selectedOrder?.title"
-      :list="selectedOrder?.list"
-      @close="closeOrderGridModal"
-    >
-      <template v-slot:title>Позиции</template>
-    </ReportGridModal>
-  </Teleport> -->
 </template>
 
 <script>
 import GridBottom from "@/components/GridBottom.vue";
-import AppPaginator from "./AppPaginator.vue";
 import { computed, onMounted, reactive, ref } from "vue";
 import { isTest2 } from "@/composables/isTest";
 import store from "@/store";
 import { useRouter } from "vue-router";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import AppTablePreloader from "./AppTablePreloader.vue";
-// import ReportGridModal from "./ReportGridModal.vue";
-// import { nextTick } from "vue";
 export default {
   name: "Main_grid",
   components: {
     GridBottom,
-    AppPaginator,
     AppTablePreloader,
   },
   setup() {
     const router = useRouter();
-
-    const selectedProducts = reactive([]);
-    const allSelectedProducts = ref(false);
     const maxCount = ref(10);
     const sorting = reactive({
       order_by: null,
       order: "",
     });
-    const whOptions = reactive([]);
-    const priceCatOptions = reactive([]);
-    const selectedOrder = reactive({
-      isOpen: false,
-      title: [
-        { name: "Название", code: "name" },
-        { name: "Артикул", code: "article" },
-        // { name: "Партия", code: "batch" },
-        { name: "Склад", code: "wh" },
-        { name: "Цена", code: "price" },
-        { name: "Валюта", code: "price_currency" },
-        { name: "Количество", code: "count" },
-        // { name: "Тип цены", code: "price_type" },
-        { name: "Сумма", code: "sum" },
-      ],
-      list: [],
-    });
     const products = reactive({
       titles: [],
-      list: [],
+      list: computed(() => orders.value),
     });
 
     onMounted(() => {
@@ -276,15 +167,10 @@ export default {
     const updateList = async () => {
       await setTitles();
       await Promise.all([store.dispatch("get_account"), getOrders()]);
-      fillWhs();
-      fillPriceCat();
-      setSelectedProducts();
     };
 
     const collsCount = computed(() => products.titles.length);
-    const count = computed(() => products.list.length);
     const meta = computed(() => store.state.orders.meta);
-    const fields = computed(() => store.state.fields.all_fields);
     const orders = computed(() => store.state.orders.orders);
     const accountSubdomain = computed(
       () => store.state.account.account.subdomain
@@ -316,29 +202,10 @@ export default {
         return null;
       }
     };
-    const dateFormater = (date) => {
-      if (!date) return "";
-      const [dateTime] = date.split(".");
-      const [day, time] = dateTime.split("T");
-      return day + " " + time;
-    };
     const changePage = (val) => {
       const params = { page: val };
       store.commit("updateOrdersFilters", params);
       getOrders();
-    };
-    const setSelectedProducts = () => {
-      selectedProducts.length = 0;
-      for (let i = 0; i < count.value; i++)
-        selectedProducts.push({ value: false, item: {} });
-    };
-    const changeAllSelectedProducts = () => {
-      selectedProducts.map((product, idx) => {
-        product.value = allSelectedProducts.value;
-        allSelectedProducts.value
-          ? (product.item = products[idx])
-          : (product.item = {});
-      });
     };
     const { pipelines } = useOrdersPipelinesSelect(true);
     const getOrders = async () => {
@@ -349,19 +216,6 @@ export default {
         ...params1,
         ...params.value,
       });
-      fillOrders();
-    };
-    const fillWhs = () => {
-      fields.value
-        .filter((val) => val.type == 13 && val.code != "whs")
-        .forEach((val) => whOptions.push({ name: val.name, value: val.code }));
-    };
-    const fillPriceCat = () => {
-      fields.value
-        .filter((val) => val.type == 11)
-        .forEach((val) =>
-          priceCatOptions.push({ name: val.name, value: val.code })
-        );
     };
     const sort = (code) => {
       if (sorting.order_by != code.split(/_(.*)/s)[1]) {
@@ -380,114 +234,22 @@ export default {
       store.commit("updateOrdersFilters", params);
       getOrders();
     };
-    const changePageRow = (page, idx) => {
-      const obj = {
-        prev: page === 1 ? null : page - 1,
-        current: page,
-        next: page === products?.list?.[idx]?.page?.last ? null : page + 1,
-      };
-      Object.assign(products?.list?.[idx]?.page, obj);
-    };
-
-    // watch(
-    //   () => store.state.account.user?.table?.orders,
-    //   () => setTitles(),
-    //   { deep: true }
-    // );
 
     const setTitles = async () => {
-      if (isTest2.value) {
-        await store.dispatch("getOrdersTableConfig", { for: "table" });
-        products.titles = computed(
-          () => store.getters.sortedFilteredTableConfig
-        );
-      }
+      await store.dispatch("getOrdersTableConfig", { for: "table" });
+      products.titles = computed(() => store.getters.sortedFilteredTableConfig);
     };
 
-    const fillOrders = () => {
-      products.list = [];
-      orders.value.forEach((order) => {
-        const poz = [];
-        let posTotalSum = 0;
-        order.positions?.forEach((pos) => {
-          posTotalSum += pos?.sum;
-          const a = {
-            name: pos?.name,
-            article: pos?.article,
-            batch: pos?.batch,
-            wh_field: pos?.wh_field,
-            count: pos?.count,
-            sum: pos?.sum,
-            price_field: pos?.price_field,
-            price: pos?.price,
-            price_currency: pos?.price_currency,
-            wh: whOptions.find((el) => el.value == pos.wh_field)?.name,
-            price_type: priceCatOptions.find(
-              (el) => el.value == pos.price_field
-            )?.name,
-          };
-          poz.push(a);
-        });
-        let client = "";
-        if (order.company_name == null && order.contact_name != null)
-          client = order.contact_name;
-        if (order.company_name != null && order.contact_name == null)
-          client = order.company_name;
-        if (order.company_name != null && order.contact_name != null)
-          client = order.company_name + ", " + order.contact_name;
-        const obj = {
-          ...order,
-          id: order.id,
-          page: {
-            first: 1,
-            prev: null,
-            current: 1,
-            next: Math.ceil(poz.length / maxCount.value) > 1 ? 2 : null,
-            last: Math.ceil(poz.length / maxCount.value),
-          },
-          isOpen: false,
-          name: isTest2.value ? order.fields?.name : order.lead_name,
-          lead_id: order.lead_id,
-          client: client,
-          otv: order.responsible_name,
-          date: dateFormater(order.created_at),
-          sum:
-            (posTotalSum ? Math.round(Number(posTotalSum) * 100) / 100 : "") +
-            " " +
-            order.price_currency
-              ? order.price_currency
-              : "",
-          poz: poz.length,
-          img: order.lead_id
-            ? "https://www.digiseller.ru/preview/571523/p1_3380359_3410fdc6.png"
-            : require("../assets/favicon2.png"),
-          list: [...poz],
-        };
-        products.list.push(obj);
-      });
-    };
     const routeToOrder = (id) => {
       router.push("addToDeal?order_id=" + id);
     };
 
     const refundOrder = async (orderId) => {
       await store.dispatch("refundOrder", { order_id: orderId });
-      await store.dispatch("getOrders", store.state.orders.filters);
-      fillOrders();
+      getOrders();
     };
 
     const isDataLoading = computed(() => store.state.orders.isLoading);
-
-    const getStatusType = (status, status_id, isAmo) => {
-      if (isAmo) {
-        return status;
-      } else {
-        const status = pipelines.allStatuses?.find(
-          (el) => el.value == status_id
-        );
-        return status?.type && status?.type + 1;
-      }
-    };
 
     const titlesForPreloader = computed(() => {
       return products.titles.reduce((acc, field) => {
@@ -497,33 +259,23 @@ export default {
     });
 
     return {
-      selectedProducts,
-      allSelectedProducts,
       maxCount,
       sorting,
-      selectedOrder,
       products,
       collsCount,
-      count,
       meta,
       orders,
       accountSubdomain,
       isTest2,
       page,
       changePage,
-      setSelectedProducts,
-      changeAllSelectedProducts,
       getOrders,
-      fillWhs,
-      fillPriceCat,
       sort,
       emitParams,
-      changePageRow,
       routeToOrder,
       refundOrder,
       updateList,
       isDataLoading,
-      getStatusType,
       titlesForPreloader,
     };
   },
