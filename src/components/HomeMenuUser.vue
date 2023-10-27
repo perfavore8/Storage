@@ -1,6 +1,6 @@
 <template>
   <div
-    class="cont z-[999] flex flex-col items-stretch rounded-xl absolute top-[200%] right-0 min-w-[300px] overflow-hidden shadow-lg shadow-slate-500/10 bg-white origin-top"
+    class="cont z-[999] flex flex-col items-stretch rounded-xl absolute top-[200%] right-0 min-w-[300px] overflow-visible shadow-lg shadow-slate-500/10 bg-white origin-top"
   >
     <AppChangeLanguage
       class="!absolute top-[18px] right-2"
@@ -9,7 +9,7 @@
     />
     <router-link :to="'/profile'">
       <div
-        class="head bg-big-stone-100 w-full p-3 flex flex-row gap-3 items-center min-h-[72px]"
+        class="head bg-big-stone-100 w-full p-3 flex flex-row gap-3 items-center min-h-[72px] rounded-t-xl"
       >
         <img
           src="https://cdn1.iconfinder.com/data/icons/people-49/512/_formal_mustache_man-01-1024.png"
