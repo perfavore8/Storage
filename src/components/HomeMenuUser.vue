@@ -10,6 +10,7 @@
     <router-link :to="'/profile'">
       <div
         class="head bg-big-stone-100 w-full p-3 flex flex-row gap-3 items-center min-h-[72px] rounded-t-xl"
+        :class="{ 'rounded-xl': inFrame }"
       >
         <img
           src="https://cdn1.iconfinder.com/data/icons/people-49/512/_formal_mustache_man-01-1024.png"
@@ -31,18 +32,20 @@
     </router-link>
     <div class="main">
       <ul class="text-slate-600">
-        <li v-if="!inFrame">
-          <ImportStuffSelector
-            class="!w-full"
-            :options_props="availableUserAccounts.list"
-            :selected_option="availableUserAccounts.selected"
-            @select="(option) => availableUserAccounts.select(option.id)"
-          />
-        </li>
-        <li @click="logOut()" v-if="!inFrame">
-          <span class="material-icons-outlined"> logout </span>
-          <span>{{ $t("HomeMenuUser.logout") }}</span>
-        </li>
+        <template v-if="!inFrame">
+          <li>
+            <ImportStuffSelector
+              class="!w-full"
+              :options_props="availableUserAccounts.list"
+              :selected_option="availableUserAccounts.selected"
+              @select="(option) => availableUserAccounts.select(option.id)"
+            />
+          </li>
+          <li @click="logOut()">
+            <span class="material-icons-outlined"> logout </span>
+            <span>{{ $t("HomeMenuUser.logout") }}</span>
+          </li>
+        </template>
       </ul>
     </div>
   </div>
