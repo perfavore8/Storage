@@ -1,6 +1,7 @@
 <template>
   <div class="main mt-20 relative overflow-y-scroll">
-    <table class="table relative" ref="table" :class="{ blur: isDataLoading }">
+    <AppTablePreloader :titles="titlesForPreloader" v-if="isDataLoading" />
+    <table class="table relative" ref="table" v-else>
       <thead>
         <tr class="bar_row">
           <!-- <th class="bar_item item" style="min-width: 17px">
@@ -226,6 +227,7 @@ import { isTest2 } from "@/composables/isTest";
 import store from "@/store";
 import { useRouter } from "vue-router";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
+import AppTablePreloader from "./AppTablePreloader.vue";
 // import ReportGridModal from "./ReportGridModal.vue";
 // import { nextTick } from "vue";
 export default {
@@ -233,7 +235,7 @@ export default {
   components: {
     GridBottom,
     AppPaginator,
-    // ReportGridModal,
+    AppTablePreloader,
   },
   setup() {
     const router = useRouter();
@@ -263,53 +265,7 @@ export default {
       list: [],
     });
     const products = reactive({
-      titles: [
-        {
-          name: "Название сделки",
-          code: "name",
-          width: 2,
-        },
-        {
-          name: "Статус заказа",
-          code: "stat",
-          width: 1,
-          sortable: true,
-          value: "status",
-        },
-        {
-          name: "Ответственные",
-          code: "otv",
-          width: 1,
-        },
-        {
-          name: "Дата создания",
-          code: "date",
-          width: 1,
-          sortable: true,
-          value: "created_at",
-          // isGroup: true,
-        },
-        {
-          name: "Сумма заказа",
-          code: "sum",
-          width: 1,
-        },
-        {
-          name: "Позиции",
-          code: "poz",
-          width: 1,
-        },
-        {
-          name: "Клиент",
-          code: "client",
-          width: 1,
-        },
-        // {
-        //   name: "",
-        //   code: "btns",
-        //   type: 2,
-        // },
-      ],
+      titles: [],
       list: [],
     });
 
@@ -533,6 +489,13 @@ export default {
       }
     };
 
+    const titlesForPreloader = computed(() => {
+      return products.titles.reduce((acc, field) => {
+        if (field.visible) acc.push(field.name);
+        return acc;
+      }, []);
+    });
+
     return {
       selectedProducts,
       allSelectedProducts,
@@ -561,6 +524,7 @@ export default {
       updateList,
       isDataLoading,
       getStatusType,
+      titlesForPreloader,
     };
   },
 };
