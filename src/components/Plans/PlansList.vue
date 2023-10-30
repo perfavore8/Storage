@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8 flex items-center justify-center w-full h-full" v-if="isTest">
+  <div class="p-8 flex items-center justify-center w-full h-full">
     <div
       v-if="!isCountrySelected"
       class="flex flex-row w-full justify-center gap-2"

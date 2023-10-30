@@ -63,7 +63,7 @@
         </span>
       </span>
     </p>
-    <div class="flex flex-row gap-y-1 gap-x-4 items-center mt-6">
+    <div class="flex flex-row gap-y-1 gap-x-4 items-center mt-6" v-if="isTest">
       <a
         @click="item.current || select(item.id, 'buy')"
         v-if="!isRussia && !item.current && item.id !== 3"
