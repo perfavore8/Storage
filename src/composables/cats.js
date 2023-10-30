@@ -6,6 +6,7 @@ export function useCats() {
   const cats = computed(() => store.state.categories.fields_properties);
   const getSubCatsForId = (catId) => {
     const currentCat = cats.value.find((cat) => cat.id === catId);
+    if (currentCat === undefined) return [];
     const res = [];
     currentCat.levels.forEach((id) => {
       if (id === 0) return;

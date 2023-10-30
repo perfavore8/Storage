@@ -189,7 +189,7 @@ export default {
   },
   data() {
     return {
-      selectedCatId: 1,
+      selectedCatId: null,
       edit_data: {},
       selectedProducts: [],
       showArrow: false,
@@ -209,8 +209,9 @@ export default {
     this.$store.commit("open_close_buttons", false);
   },
   async mounted() {
+    await this.$store.dispatch("get_fields_properties");
+    this.setSelectedCatId();
     await Promise.all([
-      this.$store.dispatch("get_fields_properties"),
       this.$store.dispatch(
         "getTableConfig",
         this.selectedWH.value != "whs" ? this.selectedWH.value : ""
@@ -443,6 +444,11 @@ export default {
       };
       this.$store.commit("updateProductsParams", params);
       this.get_products(this.productsParams);
+    },
+    setSelectedCatId() {
+      this.selectedCatId = this.$store.state.categories.fields_properties.find(
+        (cat) => cat.parent_id === 0
+      )?.id;
     },
   },
 };
