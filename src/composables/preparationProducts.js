@@ -68,7 +68,7 @@ export function usePreparationProducts() {
             item.fields?.[field.code] === null
           ) {
             item.fields[field.code] = {
-              cost: "-",
+              cost: 0,
               currency: "RUB",
               is_manager_can_change_nds: false,
               is_nds: false,
@@ -80,7 +80,7 @@ export function usePreparationProducts() {
             item.fields[field.code]?.cost === undefined ||
             item.fields[field.code]?.cost === null
           ) {
-            item.fields[field.code].cost = "-";
+            item.fields[field.code].cost = 0;
           } else {
             item.fields[field.code].cost = Number(item.fields[field.code].cost);
           }

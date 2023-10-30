@@ -94,9 +94,11 @@
                 <span v-else>
                   {{
                     item[0].split(".")[1] == "cost"
-                      ? row.fields?.[item[0].split(".")[0]]?.[
-                          item[0].split(".")[1]
-                        ] +
+                      ? checkIsNull(
+                          row.fields?.[item[0].split(".")[0]]?.[
+                            item[0].split(".")[1]
+                          ]
+                        ) +
                         " " +
                         (row.fields?.[item[0].split(".")[0]]?.currency || "")
                       : item[1].type == 9
@@ -161,12 +163,14 @@ import { nextTick } from "vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppTablePreloader from "./AppTablePreloader.vue";
 import AppImagesCarusel from "./AppImagesCarusel.vue";
+import { useValidate } from "@/composables/validate";
 export default {
   name: "Main_grid",
   setup() {
     const { t } = useLangConfiguration();
+    const { checkIsNull } = useValidate();
 
-    return { t };
+    return { t, checkIsNull };
   },
   components: {
     EditItem,

@@ -63,7 +63,9 @@
             <div class="value" v-else>
               <span v-if="item[0].split('.').length < 2">
                 {{
-                  item[0] === "free_4_reserve" && row.fields[item[0]] == -1
+                  item[1].type === 6
+                    ? row.fields[item[0] + "_string"]
+                    : item[0] === "free_4_reserve" && row.fields[item[0]] == -1
                     ? "&infin;"
                     : item[0] == "category"
                     ? categories[row.fields[item[0]]]
@@ -81,23 +83,19 @@
               <span v-else>
                 {{
                   item[0].split(".")[1] == "cost"
-                    ? row.fields?.[item[0].split(".")[0]]?.[
-                        item[0].split(".")[1]
-                      ] == undefined
-                      ? "0"
-                      : row.fields?.[item[0].split(".")[0]]?.[
+                    ? checkIsNull(
+                        row.fields?.[item[0].split(".")[0]]?.[
                           item[0].split(".")[1]
-                        ] +
-                        " " +
-                        (row.fields?.[item[0].split(".")[0]]?.currency ==
-                          undefined ||
-                        row.fields?.[item[0].split(".")[0]]?.currency == null
-                          ? ""
-                          : row.fields?.[item[0].split(".")[0]]?.currency)
+                        ]
+                      ) +
+                      " " +
+                      (row.fields?.[item[0].split(".")[0]]?.currency || "")
                     : item[1].type == 9
-                    ? !!row.fields?.[item[0].split(".")[0]]?.[
-                        item[0].split(".")[1]
-                      ]
+                    ? Boolean(
+                        row.fields?.[item[0].split(".")[0]]?.[
+                          item[0].split(".")[1]
+                        ]
+                      )
                       ? $t("global.yes")
                       : $t("global.no")
                     : row.fields?.[item[0].split(".")[0]]?.[
@@ -162,6 +160,7 @@ import CardGridCategories from "./CardGridCategories.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppImagesCarusel from "./AppImagesCarusel.vue";
 import { useCats } from "@/composables/cats";
+import { useValidate } from "@/composables/validate";
 
 const { t } = useLangConfiguration();
 
@@ -185,7 +184,9 @@ export default {
   inject: ["isServicePage"],
   emits: {},
   setup() {
-    return { t, ...useCats() };
+    const { checkIsNull } = useValidate();
+
+    return { t, ...useCats(), checkIsNull };
   },
   data() {
     return {

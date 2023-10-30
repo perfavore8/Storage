@@ -24,5 +24,13 @@ export function useValidate() {
     return res.toLocaleString(...params);
   };
 
-  return { validateEmail, formatNumber, dateFormater };
+  const checkIsNull = (val) => {
+    if (val === null || val === undefined) {
+      return "-";
+    } else {
+      return val;
+    }
+  };
+
+  return { validateEmail, formatNumber, dateFormater, checkIsNull };
 }
