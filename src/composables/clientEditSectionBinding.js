@@ -62,6 +62,7 @@ export function useClientBinding(selectedTab) {
           ...store.state[`clients${selectedTab.value.oppositeValue}`]?.list,
         ]?.forEach((item) =>
           this.oppositeList.push({
+            name: item?.fields?.name,
             fields: { name: item?.fields?.name },
             id: item?.id,
             value: item?.id,
