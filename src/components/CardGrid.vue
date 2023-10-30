@@ -53,7 +53,6 @@
             v-if="getAllFieldsInSubCat(selectedCatId).includes(item[1].id)"
           >
             <div class="name">{{ item[1].name }}<span> :</span></div>
-            {{ item[1].id }}
             <div class="value" v-if="item[1].type === 15">
               <AppImagesCarusel
                 :imagesList="row.fields[item[0]]"
