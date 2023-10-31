@@ -69,7 +69,7 @@ export default {
         method: "post",
         data: params,
       });
-      context.dispatch("get_fields_properties", { isUpdate: true });
+      await context.dispatch("get_fields_properties", { isUpdate: true });
 
       return data;
     },
