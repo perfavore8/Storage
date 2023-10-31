@@ -65,7 +65,38 @@
         </div>
       </div>
       <div class="content">
+        <SettingEntitiesCategoriesSkeleton v-if="isLoading">
+          <template #btns>
+            <div
+              class="flex flex-row items-center justify-end gap-1 min-w-[84px] ml-4"
+            >
+              <button
+                disabled
+                class="w-10 h-10 p-1 pointer transition-all overflow-hidden duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-valencia-50 hover:text-valencia-500 rounded-lg inline-flex justify-center items-center"
+              >
+                <span
+                  class="material-icons-round absolute"
+                  style="font-size: 30px; font-weight: bold"
+                >
+                  close
+                </span>
+              </button>
+              <button
+                disabled
+                class="w-10 h-10 p-1 pointer justify-self-end transition-all duration-200 relative bg-slate-50 text-slate-700/70 hover:bg-fruit-salad-100/80 hover:text-fruit-salad-500 rounded-lg inline-flex justify-center items-center"
+              >
+                <span
+                  class="material-icons-round absolute"
+                  style="font-size: 38px; font-weight: 400"
+                >
+                  add
+                </span>
+              </button>
+            </div>
+          </template>
+        </SettingEntitiesCategoriesSkeleton>
         <AppDrag
+          v-else
           :list="copy_fields_properties"
           v-slot="{ element: item }"
           @customMove="(item_id, parent_id) => customMove(item_id, parent_id)"
@@ -164,18 +195,20 @@
 </template>
 <script>
 import ProductsCategoryRemoveModal from "@/components/ProductsCategoryRemoveModal.vue";
-import { ref, watch, nextTick, reactive, onMounted } from "vue";
+import { ref, watch, nextTick, reactive, onMounted, computed } from "vue";
 // import { VueDraggableNext } from "vue-draggable-next";
 import store from "@/store";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { isTest2 } from "@/composables/isTest";
 import { useLockBtnByKey } from "@/composables/lockBtnByKey";
 import AppDrag from "./AppDrag.vue";
+import SettingEntitiesCategoriesSkeleton from "@/components/SettingEntitiesCategoriesSkeleton";
 export default {
   components: {
     ProductsCategoryRemoveModal,
     // draggable: VueDraggableNext,
     AppDrag,
+    SettingEntitiesCategoriesSkeleton,
   },
   setup(props, context) {
     const { t } = useLangConfiguration();
@@ -401,6 +434,8 @@ export default {
       { deep: true }
     );
 
+    const isLoading = computed(() => store.state.categories.isLoading);
+
     return {
       fields_cat_name,
       selected_category_id,
@@ -427,6 +462,7 @@ export default {
       LB,
       IBL,
       customMove,
+      isLoading,
     };
   },
 };
