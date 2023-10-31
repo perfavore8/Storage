@@ -617,10 +617,14 @@ export default {
       // this.getCategoriesW(0),
       this.$store.dispatch("getAllFieldsW"),
       this.$store.dispatch("get_fields_propertiesW"),
-      this.getFields(1),
     ]);
-    // await this.selectCategories(this.categories[0]);
-    handleUnLock();
+    await this.getFields(
+      this.$store.state.widjetCategories.fields_properties.find(
+        (cat) => cat.parent_id === 0
+      )?.id
+    ),
+      // await this.selectCategories(this.categories[0]);
+      handleUnLock();
     this.updateAddedProducts(true);
   },
   watch: {
