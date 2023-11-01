@@ -84,8 +84,6 @@ export function useNewDeal() {
   const saveOrder = async () => {
     await store.dispatch("updateOrder", {});
     toggleSomeChange(false);
-    isOrderGeted.value = false;
-    setNewOrderPromise();
   };
 
   const saveParams = reactive({
