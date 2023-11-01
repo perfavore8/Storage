@@ -167,11 +167,10 @@ export default {
 
     const PRICES = computed(() => {
       const arr = [];
-      props.fields.forEach((field) =>
-        field.type === 11
-          ? arr.push({ name: field.name, value: field.code })
-          : null
-      );
+      props.fields.forEach((field) => {
+        if (field.type === 11 && field?.lead_config?.visible)
+          arr.push({ name: field.name, value: field.code });
+      });
       return arr;
     });
 
