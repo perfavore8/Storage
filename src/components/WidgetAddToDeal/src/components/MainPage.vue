@@ -439,13 +439,8 @@ import { useCats } from "@/composables/cats";
 import { useLockBtn } from "@/composables/lockBtn";
 import AppImagesCarusel from "@/components/AppImagesCarusel.vue";
 
-const {
-  order,
-  getOrderPromise,
-  getOrder,
-  someChange,
-  setWatcherUpdateAddedProducts,
-} = useNewDeal();
+const { order, getOrderPromise, getOrder, setWatcherUpdateAddedProducts } =
+  useNewDeal();
 const { formatNumber } = useValidate();
 
 const { t } = useLangConfiguration();
@@ -478,7 +473,6 @@ export default {
       showSpinner: false,
       useSkeletonCard: false,
       addedProducts: [],
-      routeWatcher: null,
       flip: [],
       isAddedProductsLoading: false,
     };
@@ -602,15 +596,6 @@ export default {
     lockBtn("handle");
     setWatcherUpdateAddedProducts(this.updateAddedProducts);
     this.isAddedProductsLoading = true;
-    this.routeWatcher = this.$router.beforeResolve((to, from, next) => {
-      if (
-        (to.query?.order_id != from.query?.order_id || to.path != from.path) &&
-        from.query?.order_id
-      )
-        this.checkSave();
-
-      next();
-    });
     // this.get_data_categories();
     // this.feel_available_data();
     await Promise.all([
@@ -837,12 +822,6 @@ export default {
       } else {
         this.addedProducts[idx].fields[code] = value;
       }
-    },
-    checkSave() {
-      if (!someChange.value) return;
-      this.$store.dispatch("updateOrder", {
-        positions: this.addedProducts,
-      });
     },
     deleteAddedProduct(idx) {
       this.$store.dispatch("deleteProductW", {

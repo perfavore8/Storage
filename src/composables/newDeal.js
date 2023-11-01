@@ -1,7 +1,6 @@
 import store from "@/store";
 import { onMounted, ref, reactive, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useNotification } from "./notification";
 import { useToggle } from "@vueuse/core";
 import { computed, nextTick } from "vue";
 import { useAddToDealTabs } from "./addToDealTabs";
@@ -56,7 +55,6 @@ const setWatcherUpdateAddedProducts = (func) => {
 };
 
 export function useNewDeal() {
-  const { addNotification } = useNotification();
   const router = useRouter();
   const route = useRoute();
 
@@ -65,12 +63,6 @@ export function useNewDeal() {
     routeWatcher.value = router.afterEach((to, from) => {
       if (!to.query?.order_id) delete newDealParams.id;
       if (to.path !== "/addToDeal" && from.path == "/addToDeal") {
-        if (someChange.value)
-          addNotification(
-            1,
-            "Сохранение заказа ...",
-            `${order.fields?.name} успешно сохранен`
-          );
         toggleSomeChange(false);
         dropOrder();
       }
