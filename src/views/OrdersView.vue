@@ -273,6 +273,11 @@ export default {
     }
   }
 }
+.filters {
+  position: sticky;
+  left: 30px;
+  width: calc(100vw - 70px);
+}
 .grid {
   grid-template-columns: 1fr auto 1fr;
 }
