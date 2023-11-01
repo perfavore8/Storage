@@ -277,6 +277,7 @@ export default {
   position: sticky;
   left: 30px;
   width: calc(100vw - 70px);
+  z-index: 51;
 }
 .grid {
   grid-template-columns: 1fr auto 1fr;
