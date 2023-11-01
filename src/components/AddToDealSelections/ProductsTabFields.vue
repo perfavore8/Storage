@@ -96,7 +96,8 @@ export default {
   props: { total: Object },
   setup(props) {
     const { t } = useLangConfiguration();
-    const { order, toggleSomeChange, isOrederLoaded } = useNewDeal();
+    const { order, toggleSomeChange, isOrederLoaded, saveOrder, someChange } =
+      useNewDeal();
 
     const list = reactive([
       { label: t("newOrder.sum"), value: "price" },
@@ -158,6 +159,7 @@ export default {
       await Promise.all([user_name.getList(), selector.getStatuses()]);
       user_name.setSelected();
       if (!selector.checkSelStat(order.status_id)) selector.setSelected();
+      if (someChange.value) saveOrder();
     });
 
     const user_name = reactive({
