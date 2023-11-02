@@ -720,11 +720,9 @@ export default {
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;
-      const category_id = this.selectedCategories.at(-1)?.id;
       const params = { q: q };
       if (this.selectedWirePerLead.value)
         params.selected_wh = this.selectedWirePerLead.value;
-      if (category_id) params.category_id = category_id;
       await this.$store.dispatch("getProductsAutocompleteW", params);
       const res = this.$store.state.widjetProducts.productsAutocomplete;
       res.map((val) => (val.name = val.label));
