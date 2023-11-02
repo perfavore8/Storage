@@ -644,7 +644,7 @@ export default {
       }
     },
     async changePage(newPage) {
-      this.$store.commit("updateProductsParams2", { page: newPage });
+      this.$store.commit("updateProductsParams2W", { page: newPage });
       window.scrollTo(0, 0);
       await this.getProducts(this.selectedCategories.at(-1)?.id);
     },
@@ -811,7 +811,7 @@ export default {
         res != this.selectedWirePerLead.value ||
         !this.selectedWirePerLead.sources.includes("MP")
       )
-        this.$store.commit("updateSelectedWirePerLead", {
+        this.$store.commit("updateSelectedWirePerLeadW", {
           source: "MP",
           value: res,
         });

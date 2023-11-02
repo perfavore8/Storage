@@ -377,12 +377,12 @@ export default {
       this.filters?.confirmFilters();
     },
     async changeCount(count) {
-      this.$store.commit("updateProductsParams", { per_page: count });
+      this.$store.commit("updateProductsParamsW", { per_page: count });
       this.drop_page();
     },
     changePage(val) {
       const params = { page: val };
-      this.$store.commit("updateProductsParams", params);
+      this.$store.commit("updateProductsParamsW", params);
       this.get_products(this.productsParams);
     },
     async get_products(params) {
@@ -405,7 +405,7 @@ export default {
           order: order,
         },
       };
-      this.$store.commit("updateProductsParams", params);
+      this.$store.commit("updateProductsParamsW", params);
       this.get_products(this.productsParams);
     },
     async closeTableSettings() {
@@ -428,7 +428,7 @@ export default {
         res != this.selectedWirePerLead.value ||
         !this.selectedWirePerLead.sources.includes("MG")
       )
-        this.$store.commit("updateSelectedWirePerLead", {
+        this.$store.commit("updateSelectedWirePerLeadW", {
           source: "MG",
           value: res,
         });

@@ -34,16 +34,16 @@ export default {
   },
   getters: {},
   mutations: {
-    updateDisableAddToDeal(state, value) {
+    updateDisableAddToDealW(state, value) {
       state.disableAddToDeal = value;
     },
-    updateProducts(state, value) {
+    updateProductsW(state, value) {
       state.products = [...value];
     },
-    updateProductsAutocomplete(state, value) {
+    updateProductsAutocompleteW(state, value) {
       state.productsAutocomplete = [...value];
     },
-    updateAllProducts(state, value) {
+    updateAllProductsW(state, value) {
       state.allProducts = [...preparationProducts(value)];
     },
     update_meta(state, value) {
@@ -52,13 +52,13 @@ export default {
     update_meta2(state, value) {
       state.meta2 = { ...value };
     },
-    updateProductsParams(state, params) {
+    updateProductsParamsW(state, params) {
       Object.assign(state.productsParams, params);
     },
-    updateProductsParams2(state, params) {
+    updateProductsParams2W(state, params) {
       Object.assign(state.productsParams2, params);
     },
-    updateSelectedWirePerLead(state, params) {
+    updateSelectedWirePerLeadW(state, params) {
       const noOneSources = state.selectedWirePerLead.sources.length == 0;
       const haveThisSource = state.selectedWirePerLead.sources.includes(
         params.source
@@ -100,7 +100,7 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("updateProductsAutocomplete", json);
+      context.commit("updateProductsAutocompleteW", json);
 
       return json;
     },
@@ -113,7 +113,7 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("updateProducts", json);
+      context.commit("updateProductsW", json);
 
       return json;
     },
@@ -126,7 +126,7 @@ export default {
         },
       });
       const json = await res.json();
-      context.commit("updateProducts", json.data);
+      context.commit("updateProductsW", json.data);
       context.commit("update_meta2", {
         meta: json.meta,
         links: json.links,
@@ -146,7 +146,7 @@ export default {
         body: JSON.stringify(params),
       });
       const json = await res.json();
-      context.commit("updateAllProducts", json.data);
+      context.commit("updateAllProductsW", json.data);
       context.commit("update_meta", {
         links: json.links,
         meta: json.meta,
@@ -170,7 +170,7 @@ export default {
       return json;
     },
     async addProductW(context, params) {
-      context.commit("updateDisableAddToDeal", true);
+      context.commit("updateDisableAddToDealW", true);
       const url = BaseURL + "orders/product/add";
 
       const res = await fetch(url, {
@@ -182,12 +182,12 @@ export default {
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
       const json = await res.json();
-      context.commit("updateDisableAddToDeal", false);
+      context.commit("updateDisableAddToDealW", false);
 
       return json;
     },
     async addProduct2W(context, params) {
-      context.commit("updateDisableAddToDeal", true);
+      context.commit("updateDisableAddToDealW", true);
       const url = BaseURL + "orders/product/add";
 
       const res = await fetch(url, {
@@ -199,12 +199,12 @@ export default {
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
       const json = await res.json();
-      context.commit("updateDisableAddToDeal", false);
+      context.commit("updateDisableAddToDealW", false);
 
       return json;
     },
     async addProduct3W(context, params) {
-      context.commit("updateDisableAddToDeal", true);
+      context.commit("updateDisableAddToDealW", true);
       const url = BaseURL + "orders/product/add";
 
       const json = await fetch(url, {
@@ -215,7 +215,7 @@ export default {
         },
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
-      context.commit("updateDisableAddToDeal", false);
+      context.commit("updateDisableAddToDealW", false);
 
       return json;
     },

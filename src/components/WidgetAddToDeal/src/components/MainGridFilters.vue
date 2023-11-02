@@ -232,7 +232,7 @@ export default {
           }
         });
       this.filter = filter;
-      this.$store.commit("updateProductsParams", { filter: filter, page: 1 });
+      this.$store.commit("updateProductsParamsW", { filter: filter, page: 1 });
       this.$emit("confirm");
     },
     change_filter_value(new_obj, idx) {
