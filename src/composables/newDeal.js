@@ -35,11 +35,15 @@ const setNewOrderPromise = () => {
 };
 setNewOrderPromise();
 
-const getOrder = async () => {
+const getOrder = async (field) => {
   isOrderGeted.value = false;
   const newOrder = await store.dispatch("getOrder");
   if (Array.isArray(newOrder.fields)) newOrder.fields = {};
-  Object.assign(order, newOrder);
+  if (field) {
+    Object.assign(order[field], newOrder[field]);
+  } else {
+    Object.assign(order, newOrder);
+  }
   if (!order.fields) order.fields = {};
   if (!order.fields.name)
     order.fields.name = t("newOrder.newOrderName", { id: newDealParams.id });

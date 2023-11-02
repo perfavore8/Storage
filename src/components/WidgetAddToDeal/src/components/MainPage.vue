@@ -712,7 +712,7 @@ export default {
     },
     async updateAddedProducts(isStart) {
       this.isAddedProductsLoading = true;
-      if (!isStart) await getOrder();
+      if (!isStart) await getOrder("positions");
       await getOrderPromise.value;
       this.addedProducts = [];
       order.positions?.forEach((item) => this.addedProducts.push(item));
