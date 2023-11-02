@@ -25,6 +25,7 @@ export default {
         7: "EditDate",
         8: "EditDateTime",
         9: "EditFlag",
+        11: "EditFloat",
         15: "AppImagesCarusel",
       };
       value.map((field) => (field.component = componentsList[field.type]));

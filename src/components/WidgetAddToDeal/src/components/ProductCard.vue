@@ -71,7 +71,8 @@
           field.component &&
           getAllFieldsInSubCat(
             copyItem.fields?.category || copyItem.product?.fields?.category
-          )?.includes(field.id)
+          )?.includes(field.id) &&
+          field.code !== 'price'
         "
       >
         <component
