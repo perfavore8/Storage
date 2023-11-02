@@ -180,7 +180,6 @@ export default {
         doc_tpl_id: docs.selected.id,
       });
       docs.isGeneration = false;
-      console.log(doc);
       getDocs();
     };
 
