@@ -39,9 +39,10 @@
       </div>
       <div class="pcrow">
         <EditFloat
-          :item="t('widjet.cen')"
+          :item="currentPrice.name"
           :selected_option="copyItem?.price"
           :idx="'price'"
+          :disabled="currentPrice.lead_config.editable < 1"
           @change_value="change_value"
         />
       </div>
@@ -175,6 +176,10 @@ export default {
       return arr;
     });
 
+    const currentPrice = computed(() =>
+      props.fields.find((el) => el.code === props.copyItem?.price_field)
+    );
+
     const WHS = computed(() => {
       const arr = [];
       props.fields.forEach((field) =>
@@ -204,6 +209,7 @@ export default {
       del,
       t,
       getAllFieldsInSubCat,
+      currentPrice,
     };
   },
 };
