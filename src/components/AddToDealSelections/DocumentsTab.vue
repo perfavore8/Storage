@@ -175,7 +175,7 @@ export default {
     const generate = async () => {
       docs.isGeneration = true;
       toggleSomeChange(true);
-      const doc = await store.dispatch("generateOrderDoc", {
+      await store.dispatch("generateOrderDoc", {
         order_id: Number(newDealParams.id),
         doc_tpl_id: docs.selected.id,
       });
