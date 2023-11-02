@@ -4,7 +4,7 @@
       <TableSettings @close="closeTableSettings" v-if="showTableSettings" />
     </transition>
   </Teleport>
-  <div class="wrapper" v-if="!isLoading">
+  <div class="wrapper">
     <MainGridFilters
       ref="filters"
       v-if="all_fields.length && tableConfig != {} && sortedFields.length"
@@ -14,7 +14,13 @@
       @confirm="() => get_products(productsParams)"
     />
     <div class="main">
-      <table class="table" ref="table">
+      <AppTablePreloader
+        class="overflow-scroll"
+        :titles="titlesForPreloader"
+        v-if="showSpinner || isLoading"
+      />
+
+      <table class="table" ref="table" v-else>
         <thead>
           <main-grid-bar
             ref="bar"
@@ -25,106 +31,96 @@
             class="main-grid-bar"
           />
         </thead>
-        <div class="spinner" v-if="showSpinner">
-          <img
-            src="https://warehouse2.salesup.pro/images/spinner.gif"
-            alt="spinner"
-          />
-        </div>
-        <template v-else>
-          <tbody v-if="products.length">
-            <tr class="row" v-for="(row, idx) in products" :key="row.id">
+        <tbody v-if="products.length">
+          <tr class="row" v-for="(row, idx) in products" :key="row.id">
+            <td class="item">
+              <div v-if="row.is_service">
+                <input
+                  v-if="allWhsList?.[idx]?.length"
+                  type="number"
+                  class="sls_input"
+                  style="min-width: 70px"
+                  v-model="allWhsList[idx][0].specialValue"
+                />
+              </div>
+              <div v-else>
+                <AppInputSelect
+                  style="min-width: 70px"
+                  :list="
+                    allWhsList?.[idx]?.filter(
+                      (val) =>
+                        (row.allow_add_with_zero_count || !(val?.count < 1)) &&
+                        (selectedWirePerLead.value
+                          ? val.code == selectedWirePerLead.value
+                          : true)
+                    )
+                  "
+                  :special="true"
+                  :requestDelay="0"
+                  :countLettersReq="0"
+                  :allow_add_with_zero_count="row.allow_add_with_zero_count"
+                  :one_wh_per_lead="row.one_wh_per_lead"
+                  :placeholder="
+                    allWhsList?.[idx]?.reduce(
+                      (sum, wh) => (sum += Number(wh?.specialValue)),
+                      0
+                    )
+                  "
+                  @changeInputValue="(value) => (inputValues[idx] = value)"
+                />
+              </div>
+            </td>
+            <template v-for="item in sortedFields" :key="item">
               <td class="item">
-                <div v-if="row.is_service">
-                  <input
-                    v-if="allWhsList?.[idx]?.length"
-                    type="number"
-                    class="sls_input"
-                    style="min-width: 70px"
-                    v-model="allWhsList[idx][0].specialValue"
-                  />
-                </div>
-                <div v-else>
-                  <AppInputSelect
-                    style="min-width: 70px"
-                    :list="
-                      allWhsList?.[idx]?.filter(
-                        (val) =>
-                          (row.allow_add_with_zero_count ||
-                            !(val?.count < 1)) &&
-                          (selectedWirePerLead.value
-                            ? val.code == selectedWirePerLead.value
-                            : true)
-                      )
-                    "
-                    :special="true"
-                    :requestDelay="0"
-                    :countLettersReq="0"
-                    :allow_add_with_zero_count="row.allow_add_with_zero_count"
-                    :one_wh_per_lead="row.one_wh_per_lead"
-                    :placeholder="
-                      allWhsList?.[idx]?.reduce(
-                        (sum, wh) => (sum += Number(wh?.specialValue)),
-                        0
-                      )
-                    "
-                    @changeInputValue="(value) => (inputValues[idx] = value)"
-                  />
-                </div>
-              </td>
-              <template v-for="item in sortedFields" :key="item">
-                <td class="item">
-                  <span v-if="item[0].split('.').length < 2">
-                    {{
-                      item[0] === "free_4_reserve" && row.fields[item[0]] == -1
-                        ? "&infin;"
-                        : item[0] == "category"
-                        ? categories?.[row.fields?.[item?.[0]]]
-                        : item?.[1]?.type == 9
-                        ? !!row.fields?.[item[0]]
-                          ? $t("global.yes")
-                          : $t("global.no")
-                        : item[0] == "cost_price"
-                        ? row.fields?.[item[0]]
-                          ? Math.round(row.fields?.[item[0]] * 100) / 100
-                          : "0"
-                        : row.fields?.[item[0]]
-                    }}
-                  </span>
-                  <span v-else>
-                    {{
-                      item[0].split(".")[1] == "cost"
-                        ? row.fields?.[item[0].split(".")[0]]?.[
-                            item[0]?.split(".")?.[1]
-                          ] == undefined
-                          ? "0"
-                          : row.fields?.[item[0]?.split(".")?.[0]]?.[
-                              item[0]?.split(".")?.[1]
-                            ] +
-                            " " +
-                            (row.fields?.[item[0]?.split(".")?.[0]]?.currency ==
-                              undefined ||
-                            row.fields?.[item[0]?.split(".")?.[0]]?.currency ==
-                              null
-                              ? ""
-                              : row.fields?.[item[0]?.split(".")?.[0]]
-                                  ?.currency)
-                        : item[1].type == 9
-                        ? !!row.fields?.[item[0]?.split(".")?.[0]]?.[
-                            item[0]?.split(".")?.[1]
-                          ]
-                          ? $t("global.yes")
-                          : $t("global.no")
+                <span v-if="item[0].split('.').length < 2">
+                  {{
+                    item[0] === "free_4_reserve" && row.fields[item[0]] == -1
+                      ? "&infin;"
+                      : item[0] == "category"
+                      ? categories?.[row.fields?.[item?.[0]]]
+                      : item?.[1]?.type == 9
+                      ? !!row.fields?.[item[0]]
+                        ? $t("global.yes")
+                        : $t("global.no")
+                      : item[0] == "cost_price"
+                      ? row.fields?.[item[0]]
+                        ? Math.round(row.fields?.[item[0]] * 100) / 100
+                        : "0"
+                      : row.fields?.[item[0]]
+                  }}
+                </span>
+                <span v-else>
+                  {{
+                    item[0].split(".")[1] == "cost"
+                      ? row.fields?.[item[0].split(".")[0]]?.[
+                          item[0]?.split(".")?.[1]
+                        ] == undefined
+                        ? "0"
                         : row.fields?.[item[0]?.split(".")?.[0]]?.[
                             item[0]?.split(".")?.[1]
-                          ]
-                    }}
-                  </span>
-                </td>
-              </template>
-            </tr>
-          </tbody>
-        </template>
+                          ] +
+                          " " +
+                          (row.fields?.[item[0]?.split(".")?.[0]]?.currency ==
+                            undefined ||
+                          row.fields?.[item[0]?.split(".")?.[0]]?.currency ==
+                            null
+                            ? ""
+                            : row.fields?.[item[0]?.split(".")?.[0]]?.currency)
+                      : item[1].type == 9
+                      ? !!row.fields?.[item[0]?.split(".")?.[0]]?.[
+                          item[0]?.split(".")?.[1]
+                        ]
+                        ? $t("global.yes")
+                        : $t("global.no")
+                      : row.fields?.[item[0]?.split(".")?.[0]]?.[
+                          item[0]?.split(".")?.[1]
+                        ]
+                  }}
+                </span>
+              </td>
+            </template>
+          </tr>
+        </tbody>
       </table>
       <label v-if="products.length == 0" class="text">
         {{ $t("global.nothingFound") }}
@@ -149,6 +145,7 @@ import MainGridFilters from "../components/MainGridFilters.vue";
 import MainGridBar from "../components/MainGridBar.vue";
 import GridBottom from "../components/GridBottom.vue";
 import AppInputSelect from "./AppInputSelect.vue";
+import AppTablePreloader from "@/components/AppTablePreloader.vue";
 export default {
   name: "MainGrid",
   components: {
@@ -157,6 +154,7 @@ export default {
     MainGridBar,
     GridBottom,
     AppInputSelect,
+    AppTablePreloader,
   },
   props: {},
   emits: {
@@ -235,6 +233,12 @@ export default {
       const res = [];
       this.savedAllWhsList.forEach((whs) => res.push(whs[0].product_id));
       return res;
+    },
+    titlesForPreloader() {
+      return Object.values(this.tableConfig).reduce((acc, field) => {
+        if (field.visible) acc.push(field.name);
+        return acc;
+      }, []);
     },
   },
   async activated() {
