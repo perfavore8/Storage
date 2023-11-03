@@ -1,6 +1,18 @@
 <template>
-  <div class="grid" :class="{ blur: isLoading }">
-    <label v-if="archive_list.length == 0" class="text">
+  <div class="grid">
+    <AppTablePreloader :titles="titlesForPreloader" v-if="isLoading">
+      <template #customCellHeadEnd>
+        <td class="head_cell_table_preloader !w-[1%] !pl-[10px]" />
+      </template>
+      <template #customCellEnd>
+        <td class="cell_table_preloader !pl-[10px]">
+          <div class="edit_icon" :title="t('Archive.unArchive')">
+            <span class="material-icons"> ios_share </span>
+          </div>
+        </td>
+      </template>
+    </AppTablePreloader>
+    <label v-else-if="archive_list.length == 0" class="text">
       {{ $t("global.nothingFound") }}
     </label>
     <template v-else>
@@ -100,9 +112,11 @@ import GridBottom from "@/components/GridBottom.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import store from "@/store";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import AppTablePreloader from "./AppTablePreloader.vue";
 export default {
   components: {
     GridBottom,
+    AppTablePreloader,
   },
 
   props: { config: Object },
@@ -126,10 +140,12 @@ export default {
     );
 
     const getConfigData = async () => {
+      isLoading.value = true;
       await Promise.all([
         store.dispatch(props.config.stateListReqName, { is_archive: 1 }),
         store.dispatch(props.config.stateFieldsReqName),
       ]);
+      isLoading.value = false;
     };
 
     const fields = computed(() =>
@@ -144,6 +160,13 @@ export default {
             : -1
         )
     );
+
+    const titlesForPreloader = computed(() => {
+      return Object.values(fields.value).reduce((acc, field) => {
+        acc.push(field.name);
+        return acc;
+      }, []);
+    });
 
     const meta = computed(
       () => store.state[props.config.stateName][props.config.stateMetaName]
@@ -216,6 +239,7 @@ export default {
       changePage,
       unarchive_data,
       t,
+      titlesForPreloader,
     };
   },
 };
@@ -235,6 +259,9 @@ export default {
     .item {
       padding-bottom: 20px !important;
       text-align: center !important;
+    }
+    .item:last-child {
+      width: 1%;
     }
   }
   .row:nth-child(odd) {

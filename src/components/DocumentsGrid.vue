@@ -5,7 +5,8 @@
     >
       {{ $t("Archive.count", { count: total }) }}
     </p>
-    <table class="table" ref="table">
+    <AppTablePreloader :titles="titlesForPreloader" v-if="isLoading" />
+    <table class="table" ref="table" v-else>
       <thead>
         <tr class="bar_row">
           <th
@@ -93,11 +94,18 @@ import GridBottom from "./GridBottom.vue";
 import { useDocuments } from "../composables/documents";
 import { computed, onMounted, reactive } from "vue";
 import store from "@/store";
+import AppTablePreloader from "./AppTablePreloader.vue";
 export default {
-  components: { GridBottom },
+  components: { GridBottom, AppTablePreloader },
   setup() {
-    const { documents, collsCount, getDocuments, total, fillTitlesList } =
-      useDocuments();
+    const {
+      documents,
+      collsCount,
+      getDocuments,
+      total,
+      fillTitlesList,
+      isLoading,
+    } = useDocuments();
     onMounted(() => {
       getDocuments();
       fillTitlesList();
@@ -150,6 +158,14 @@ export default {
       getDocuments();
     };
 
+    const titlesForPreloader = computed(() => {
+      return Object.values(documents.titles).reduce((acc, title) => {
+        if (title.visibleIds ? title.visibleIds?.includes(accountId) : true)
+          acc.push(title.name);
+        return acc;
+      }, []);
+    });
+
     return {
       documents,
       collsCount,
@@ -160,6 +176,8 @@ export default {
       total,
       meta,
       accountId,
+      isLoading,
+      titlesForPreloader,
     };
   },
 };

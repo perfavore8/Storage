@@ -482,11 +482,13 @@ export default {
       this.refFilters?.clearAllFields();
     },
     async getTitile() {
+      const t1 = performance.now();
       this.isLoading = true;
       this.openedRows = [];
       this.title = this.titles[this.reportType.selected.value];
       await this.getReports();
-      this.isLoading = false;
+      const t2 = performance.now();
+      setTimeout(() => (this.isLoading = false), 1250 - (t2 - t1));
     },
     changePage(value) {
       this.newPage = value;

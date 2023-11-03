@@ -8,7 +8,8 @@
       }}
     </p>
   </div>
-  <table class="table" :class="{ blur: openSelectedReportModal || isLoading }">
+  <AppTablePreloader :titles="titlesForPreloader" v-if="isLoading" />
+  <table class="table" :class="{ blur: openSelectedReportModal }" v-else>
     <thead>
       <tr class="row title">
         <td
@@ -127,9 +128,10 @@
 </template>
 
 <script>
+import AppTablePreloader from "./AppTablePreloader.vue";
 import ReportGridModal from "./ReportGridModal.vue";
 export default {
-  components: { ReportGridModal },
+  components: { ReportGridModal, AppTablePreloader },
   props: {
     title: { type: Array, required: true },
     reportsData: { type: Object, required: true },
@@ -186,6 +188,12 @@ export default {
     },
     openSelectedReportModal() {
       return this.selectedReport.value;
+    },
+    titlesForPreloader() {
+      return Object.values(this.title).reduce((acc, field) => {
+        acc.push(field.name);
+        return acc;
+      }, []);
     },
   },
   watch: {

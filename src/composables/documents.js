@@ -1,6 +1,7 @@
 import store from "@/store";
 import { computed, reactive } from "vue";
 import { useLangConfiguration } from "./langConfiguration";
+import { useToggle } from "@vueuse/core";
 
 const { t } = useLangConfiguration();
 
@@ -207,12 +208,16 @@ export function useDocuments() {
     });
   };
 
+  const [isLoading, toggleLoading] = useToggle(false);
+
   const getDocuments = async () => {
+    toggleLoading(true);
     await Promise.all([
       fillStatuses(),
       store.dispatch("getDocuments", store.state.documents.filters),
     ]);
     fillDocuments();
+    toggleLoading(false);
   };
 
   const documentsTitles = computed(() => documents.titles);
@@ -228,5 +233,6 @@ export function useDocuments() {
     total,
     fillTitlesList,
     getAutocompleteList,
+    isLoading,
   };
 }
