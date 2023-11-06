@@ -2,8 +2,11 @@ import store from "@/store";
 import { computed } from "vue";
 import { reactive } from "vue";
 import { useLangConfiguration } from "./langConfiguration";
+import { useSaveLS } from "./saveLS";
 
 const { t } = useLangConfiguration();
+
+const { saveLSParam, getSavedLSParam } = useSaveLS();
 
 const pipelines = reactive({
   selected: {},
@@ -15,6 +18,7 @@ const pipelines = reactive({
   ),
   select: function (option) {
     if (option) this.selected = option;
+    saveLSParam("selectedPipeline", option.value);
   },
   getList: async function (needAll) {
     await this.getNewList();
@@ -38,11 +42,20 @@ const pipelines = reactive({
     if (!item) return;
     this.select(item);
   },
+  dropToSaved: function (handleDrop) {
+    const savedName = getSavedLSParam("selectedPipeline");
+    const item = this.list.find((el) => el.value === savedName);
+    if (!item) {
+      this.dropToDefault(handleDrop);
+      return;
+    }
+    this.select(item);
+  },
 });
 export function useOrdersPipelinesSelect(needAll, handleDrop) {
   const start = async () => {
     await pipelines.getList(needAll);
-    pipelines.dropToDefault(handleDrop);
+    pipelines.dropToSaved(handleDrop);
   };
   const startPromise = start();
 
