@@ -595,9 +595,9 @@ export default {
           list = [val];
         }
         const batchs = list.filter(
-          (val) =>
-            val.fields.name == val.fields.name &&
-            val.fields.article == val.fields.article
+          (value) =>
+            value.fields.name == val.fields.name &&
+            value.fields.article == val.fields.article
         );
         this.currentItemsBatchs[val.fields.article] = batchs;
         this.pushCurrentItem(val, this.selected_field_autocomplete.idx);
