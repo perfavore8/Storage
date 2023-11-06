@@ -89,7 +89,7 @@ export function useStatusesForEntities(stat, setStatuses) {
   setSteps();
 
   const copyName = ref("");
-  const copyReservAndWriteOff = ref([]);
+  const copyReserveAndWriteOff = ref([]);
   const setCopy = () => {
     statuses.list.map((stat) => {
       const copyStatName = stat.name;
@@ -98,7 +98,7 @@ export function useStatusesForEntities(stat, setStatuses) {
       stat.statSortIsChange = computed(() => stat.sort != copyStatSort);
     });
     copyName.value = JSON.parse(JSON.stringify(statuses.name));
-    copyReservAndWriteOff.value = JSON.parse(
+    copyReserveAndWriteOff.value = JSON.parse(
       JSON.stringify([statuses.reservation, statuses.write_off])
     );
   };
@@ -118,7 +118,7 @@ export function useStatusesForEntities(stat, setStatuses) {
   );
   const stepsIsChange = computed(
     () =>
-      JSON.stringify(copyReservAndWriteOff.value) !=
+      JSON.stringify(copyReserveAndWriteOff.value) !=
       JSON.stringify([statuses.reservation, statuses.write_off])
   );
 
