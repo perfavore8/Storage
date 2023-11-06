@@ -241,7 +241,7 @@
 <script>
 import store from "@/store";
 import { useStatusesForEntities } from "@/composables/statusesForEntities";
-import { onMounted, onUnmounted, reactive } from "vue";
+import { computed, onMounted, onUnmounted, reactive } from "vue";
 import AppErrorText from "./AppErrorText.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useUpdateKeys } from "@/composables/updateKeys";
@@ -257,40 +257,66 @@ export default {
       setStatuses();
     });
 
-    const setStatuses = async (isUpdate) => {
+    const setStatuses = async (isUpdate, changedId) => {
       const stats = await store.dispatch("ordersPipelinesList", {
         isUpdate: Boolean(isUpdate),
       });
       stats.forEach((stat) => stat.statuses?.map((s) => (s.value = s.id)));
-      statusesList.length = 0;
-      stats.forEach(
-        (stat) =>
-          stat.value !== -1 &&
-          statusesList.push(useStatusesForEntities(stat, setStatuses))
-      );
+      if (changedId !== undefined) {
+        const newIds = stats.reduce((acc, val) => {
+          acc.push(val.id);
+          return acc;
+        }, []);
+        const oldIds = statusesList.reduce((acc, val) => {
+          acc.push(val.statuses.id);
+          return acc;
+        }, []);
+        const type = computed(
+          () =>
+            String(Number(newIds.includes(changedId))) +
+            String(Number(oldIds.includes(changedId)))
+        );
+        if (type.value === "10") {
+          const item = stats.find((el) => el.id === changedId);
+          statusesList.push(useStatusesForEntities(item, setStatuses));
+        } else if (type.value === "01") {
+          const item = statusesList.find((el) => el.statuses.id === changedId);
+          const idx = statusesList.indexOf(item);
+          if (idx < 0) return;
+          statusesList.splice(idx, 1);
+        } else return;
+      } else {
+        statusesList.length = 0;
+        stats.forEach(
+          (stat) =>
+            stat.value !== -1 &&
+            statusesList.push(useStatusesForEntities(stat, setStatuses))
+        );
+      }
     };
     const statusesList = reactive([]);
     const addStatuses = async () => {
-      await store.dispatch("ordersPipelinesAdd", {
+      const newPip = await store.dispatch("ordersPipelinesAdd", {
         name: t("SettingEntities.entStats.newStatName", {
           count: statusesList.length,
         }),
       });
-      setStatuses();
+      setStatuses(false, newPip.id);
     };
     const removeStatuses = async (id) => {
       const res = await store.dispatch("ordersPipelinesDelete", {
         id: id,
       });
 
-      await setStatuses();
-
       if (res.error) {
         const item = statusesList.find((el) => el.statuses?.id == id);
         if (item && res.error == "There are orders in this pipeline.") {
           item.delErrorText = t("message.OrdersInPipeline");
         }
+        return;
       }
+
+      await setStatuses(false, id);
     };
 
     const { OrderViewKey } = useUpdateKeys();
