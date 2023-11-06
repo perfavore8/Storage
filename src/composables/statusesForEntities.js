@@ -26,6 +26,7 @@ export function useStatusesForEntities(stat, setStatuses) {
       )
     ),
     add: async function () {
+      await saveStatuses();
       await store.dispatch("ordersPipelinesStatusesAdd", {
         pipeline_id: this.id,
         name: t("SettingEntities.entStats.new"),
@@ -34,6 +35,7 @@ export function useStatusesForEntities(stat, setStatuses) {
       await setStatuses(true);
     },
     del: async function (id) {
+      await saveStatuses();
       await store.dispatch("ordersPipelinesStatusesDelete", { id: id });
       await setStatuses(true);
     },
@@ -122,10 +124,10 @@ export function useStatusesForEntities(stat, setStatuses) {
       JSON.stringify([statuses.reservation, statuses.write_off])
   );
 
-  const saveStatuses = () => {
-    if (!nameIsChange.value && !statsIsChange.value) return;
+  const saveStatuses = async () => {
+    if (!statusesIsChange.value) return;
     if (nameIsChange.value)
-      store.dispatch("ordersPipelinesUpdate", {
+      await store.dispatch("ordersPipelinesUpdate", {
         id: statuses.id,
         name: statuses.name,
       });
@@ -147,7 +149,9 @@ export function useStatusesForEntities(stat, setStatuses) {
         }
         params.push(obj);
       });
-      store.dispatch("ordersPipelinesStatusesUpdate", { statuses: params });
+      await store.dispatch("ordersPipelinesStatusesUpdate", {
+        statuses: params,
+      });
     }
     setCopy();
   };
