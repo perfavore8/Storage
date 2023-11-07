@@ -9,55 +9,69 @@
         </button>
       </div>
       <div class="content">
-        <div class="item">
-          <img
-            class="icon"
-            src="@/assets/genezis.jpg"
-            @click="route('genezis')"
-          />
-          <a
-            href=" https://www.amocrm.ru/oauth/?state=%7B%22external_source%22:%22gosklad%22%7D&client_id=d9322b36-0001-4269-bb61-976571e8a51a"
-            target="blank"
-          >
-            <button class="btn btn_dark_blue" :disabled="account?.g_install">
-              {{
-                account?.g_install
-                  ? $t("Integrations.btnInstalled")
-                  : $t("Integrations.btnInstall")
-              }}
-            </button>
-          </a>
-          <small v-if="!account?.g_install">
-            {{ $t("Integrations.oneCText") }}
-          </small>
-          <a @click="route('genezis')">
-            <button class="btn btn_dark_blue" :disabled="!account?.g_install">
-              {{ $t("Integrations.btnSettings") }}
-            </button>
-          </a>
-        </div>
-        <div class="item">
-          <img class="icon" src="@/assets/lo.jpg" />
-          <a
-            href="https://www.amocrm.ru/oauth/?client_id=a4864c29-6b9b-470b-bb0e-9a1c22496087"
-            target="blank"
-            ><button class="btn btn_dark_blue">
-              {{ $t("Integrations.btnInstall") }}
-            </button></a
-          >
-          <small>{{ $t("Integrations.free") }}</small>
-        </div>
-        <div class="item" v-if="false">
-          <img class="icon" src="@/assets/re.jpg" />
-          <a
-            href="https://www.amocrm.ru/oauth/?client_id=47855e7f-c170-44b3-8d95-a3fe357d2cc7"
-            target="blank"
-            ><button class="btn btn_dark_blue">
-              {{ $t("Integrations.btnInstall") }}
-            </button></a
-          >
-          <small>{{ $t("Integrations.free") }}</small>
-        </div>
+        <template v-if="account.install">
+          <div class="item relative">
+            <div class="relative">
+              <img
+                class="icon"
+                src="@/assets/genezis.jpg"
+                @click="route('genezis')"
+              />
+              <img
+                class="absolute -bottom-3 -left-3 rounded-full w-10"
+                src="https://wp.static-cdn-shsp.com/wp-content/uploads/2017/06/amo_fon.png"
+              />
+            </div>
+            <a
+              href=" https://www.amocrm.ru/oauth/?state=%7B%22external_source%22:%22gosklad%22%7D&client_id=d9322b36-0001-4269-bb61-976571e8a51a"
+              target="blank"
+            >
+              <button class="btn btn_dark_blue" :disabled="account?.g_install">
+                {{
+                  account?.g_install
+                    ? $t("Integrations.btnInstalled")
+                    : $t("Integrations.btnInstall")
+                }}
+              </button>
+            </a>
+            <small v-if="!account?.g_install">
+              {{ $t("Integrations.oneCText") }}
+            </small>
+            <a @click="route('genezis')">
+              <button class="btn btn_dark_blue" :disabled="!account?.g_install">
+                {{ $t("Integrations.btnSettings") }}
+              </button>
+            </a>
+          </div>
+          <div class="item">
+            <div class="relative">
+              <img class="icon" src="@/assets/lo.jpg" />
+              <img
+                class="absolute -bottom-3 -left-3 rounded-full w-10"
+                src="https://wp.static-cdn-shsp.com/wp-content/uploads/2017/06/amo_fon.png"
+              />
+            </div>
+            <a
+              href="https://www.amocrm.ru/oauth/?client_id=a4864c29-6b9b-470b-bb0e-9a1c22496087"
+              target="blank"
+              ><button class="btn btn_dark_blue">
+                {{ $t("Integrations.btnInstall") }}
+              </button></a
+            >
+            <small>{{ $t("Integrations.free") }}</small>
+          </div>
+          <div class="item" v-if="false">
+            <img class="icon" src="@/assets/re.jpg" />
+            <a
+              href="https://www.amocrm.ru/oauth/?client_id=47855e7f-c170-44b3-8d95-a3fe357d2cc7"
+              target="blank"
+              ><button class="btn btn_dark_blue">
+                {{ $t("Integrations.btnInstall") }}
+              </button></a
+            >
+            <small>{{ $t("Integrations.free") }}</small>
+          </div>
+        </template>
         <div class="item">
           <img
             class="icon"
