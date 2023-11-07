@@ -63,7 +63,7 @@
             class="icon"
             src="https://wp.static-cdn-shsp.com/wp-content/uploads/2017/06/amo_fon.png"
           />
-          <a :href="urlSutupInAmoCrm" target="blank">
+          <a :href="urlSutupInAmoCrm" target="blank" :inert="account?.install">
             <button class="btn btn_dark_blue" :disabled="account?.install">
               {{
                 account?.install
