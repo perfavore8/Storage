@@ -9,8 +9,8 @@ const { saveLSParam, getSavedLSParam } = useSaveLS();
 const langConfiguration = reactive({
   selected: {},
   list: [
-    { name: "English", value: "en" },
-    { name: "Русский", value: "ru", default: true },
+    { name: "English", value: "en", default: true },
+    { name: "Русский", value: "ru" },
   ],
   select: async function (option, initial) {
     saveLSParam("lang", option.value);
@@ -26,7 +26,7 @@ const langConfiguration = reactive({
     const savedLang = getSavedLSParam("lang");
     const item = this.list.find((el) => el.value === savedLang);
     if (!item) {
-      this.dropToDefault();
+      this.getBrowserLang();
       return;
     }
     this.select(item, true);
@@ -35,6 +35,15 @@ const langConfiguration = reactive({
     const item = this.list.find((el) => el.default);
     if (!item) return;
     this.select(item, true);
+  },
+  getBrowserLang: function () {
+    const lang = (navigator.language || navigator.userLanguage).split("-")[0];
+    const item = this.list.find((el) => el.value === lang);
+    if (item) {
+      this.select(item, true);
+      return;
+    }
+    this.dropToDefault();
   },
 });
 langConfiguration.getSavedlang();
