@@ -4,7 +4,7 @@ import { useNewDeal } from "./newDeal";
 import { ref } from "vue";
 
 export function useDocumentsTabCustomDocs() {
-  const { newDealParams, toggleSomeChange } = useNewDeal();
+  const { newDealParams } = useNewDeal();
 
   const isUpload = ref(false);
 
@@ -15,7 +15,6 @@ export function useDocumentsTabCustomDocs() {
     payload.append("files", files);
     payload.append("order_id", newDealParams.id);
     await store.dispatch("customDocUpload", payload);
-    toggleSomeChange(true);
     isUpload.value = false;
     getCustomDocList();
   };

@@ -123,7 +123,7 @@ export default {
   components: { AppInputSelect },
   setup() {
     const { t } = useLangConfiguration();
-    const { newDealParams, toggleSomeChange } = useNewDeal();
+    const { newDealParams } = useNewDeal();
     const {
       uploadFiles,
       customDocList,
@@ -174,7 +174,6 @@ export default {
 
     const generate = async () => {
       docs.isGeneration = true;
-      toggleSomeChange(true);
       await store.dispatch("generateOrderDoc", {
         order_id: Number(newDealParams.id),
         doc_tpl_id: docs.selected.id,
@@ -184,7 +183,6 @@ export default {
     };
 
     const delDoc = async (docId) => {
-      toggleSomeChange(true);
       await store.dispatch("deleteOrderDoc", {
         order_id: newDealParams.id,
         doc_id: docId,
