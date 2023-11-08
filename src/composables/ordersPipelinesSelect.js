@@ -11,6 +11,10 @@ const { saveLSParam, getSavedLSParam } = useSaveLS();
 const pipelines = reactive({
   selected: {},
   list: [],
+  listWithAll: computed(() => [
+    { name: t("global.all"), value: -1, id: -1 },
+    ...pipelines.list,
+  ]),
   allStatuses: computed(() =>
     pipelines.list.flatMap((item) => [
       ...(Array.isArray(item.statuses) ? item.statuses : []),
@@ -20,16 +24,8 @@ const pipelines = reactive({
     if (option) this.selected = option;
     saveLSParam("selectedPipeline", option.value);
   },
-  getList: async function (needAll) {
+  getList: async function () {
     await this.getNewList();
-    if (needAll === true && this.list[0].value !== -1)
-      this.list.unshift({ name: t("global.all"), value: -1, id: -1 });
-    if (needAll === false && this.list[0].value === -1) {
-      this.list.shift();
-      if (this.selected.value !== -1) return;
-      this.selected = {};
-      this.dropToDefault();
-    }
   },
   getNewList: async function () {
     const list = await store.dispatch("ordersPipelinesList");
@@ -52,9 +48,9 @@ const pipelines = reactive({
     this.select(item);
   },
 });
-export function useOrdersPipelinesSelect(needAll, handleDrop) {
+export function useOrdersPipelinesSelect(handleDrop) {
   const start = async () => {
-    await pipelines.getList(needAll);
+    await pipelines.getList();
     pipelines.dropToSaved(handleDrop);
   };
   const startPromise = start();

@@ -207,7 +207,7 @@ export default {
       store.commit("updateOrdersFilters", params);
       getOrders();
     };
-    const { pipelines } = useOrdersPipelinesSelect(true);
+    const { pipelines } = useOrdersPipelinesSelect();
     const getOrders = async () => {
       const params1 = {};
       if (pipelines.selected.id !== -1)
