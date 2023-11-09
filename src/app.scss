@@ -337,3 +337,15 @@ input.input:disabled {
 .link {
   @apply font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline focus:outline-offset-4;
 }
+.change_red.change_red.change_red.change_red {
+  @apply text-rose-700 bg-rose-50 border border-rose-600/20 disabled:bg-rose-50 transition-all;
+}
+.change_green.change_green.change_green.change_green {
+  @apply text-green-700 bg-green-50 border border-green-600/20 disabled:bg-green-50 transition-all;
+}
+.change_red{
+  @apply px-3 rounded-md
+}
+.change_green{
+  @apply px-3 rounded-md
+}
