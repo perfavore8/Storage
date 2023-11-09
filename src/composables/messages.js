@@ -540,7 +540,7 @@ export const messages = {
         corrH:
           "Setting up the correspondences of the fields of amoCRM products and the properties of products on the GoSklad",
         corrT:
-          "Specifying the comparison fields is necessary in order to search for duplicates of goods using these fields in the process of synchronizing the amoCRM and GoSklad lists that were added manually. If no fields are specified, products will be added without searching for duplicates",
+          "Specifying the comparison fields is necessary in order to search for duplicates of goods in these fields during the synchronization of the amoCRM and GoSkald lists that were added manually. If no fields are specified, products will be added without searching for duplicates. If you are configuring the binding of product groups from amoCRM and product categories in GoSklad, you need to make sure that the list of groups matches the list of categories.",
         amoName: "Name of the amoCRM product field",
         goName: "Name of the product field on GoSklad",
         comparison: {
@@ -1625,7 +1625,7 @@ export const messages = {
         corrH:
           "Настройка соответствий полей amoCRM-товаров и свойств товаров на GoСклад",
         corrT:
-          "Указание полей сравнения нужно для того, чтобы по этим полям искать дубли товаров в процессе синхронизации списков товаров amoCRM и GoСклад, которые были добавлены вручную. Если не будет указано ни одного поля, товары будут добавляться без поиска дублей",
+          "Указание полей сравнения нужно для того, чтобы по этим полям искать дубли товаров в процессе синхронизации списков товаров amoCRM и GoСклад, которые были добавлены вручную. Если не будет указано ни одного поля, товары будут добавляться без поиска дублей. Если настраивается привязка групп товаров из amoCRM и категорий товаров в GoSklad нужно убедиться, что список групп соответствует списку категорий.",
         amoName: "Имя поля amoCRM-товара",
         goName: "Имя поля товара на GoСклад",
         comparison: {
