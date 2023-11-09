@@ -65,10 +65,10 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid #5f676d;
 }
 .btn_grey:disabled {
-  background-color: #6c757d80 !important;
+  background-color: #6c757d80;
 }
 .btn_blue {
-  color: #fff !important;
+  color: #fff;
   background-color: #41a0da;
 }
 .btn_blue:hover {
@@ -79,7 +79,7 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid #2685c0;
 }
 .btn_blue:disabled {
-  background-color: #0d6efd80 !important;
+  background-color: #0d6efd80;
 }
 .btn_dark_blue {
   color: #fff;
@@ -93,7 +93,7 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid #1b3546d9;
 }
 .btn_dark_blue:disabled {
-  background-color: #1b354680 !important;
+  background-color: #1b354680;
 }
 .btn_light_dark_blue {
   color: #fff;
@@ -107,7 +107,7 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid #3b6691;
 }
 .btn_light_dark_blue:disabled {
-  background-color: hsl(210, 42%, 30%, 0.5) !important;
+  background-color: hsl(210, 42%, 30%, 0.5);
 }
 .btn_tempest {
   color: #fff;
@@ -121,7 +121,7 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid rgb(55, 94, 134);
 }
 .btn_light_dark_blue:disabled {
-  background-color: rgba(55, 94, 134, 0.5) !important;
+  background-color: rgba(55, 94, 134, 0.5);
 }
 .btn_pink {
   background: #ea9197;
@@ -134,7 +134,7 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid rgb(226, 101, 109);
 }
 .btn_pink:disabled {
-  background-color: #ea919780 !important;
+  background-color: #ea919780;
 }
 .btn_rusty_red {
   color: white;
@@ -148,7 +148,7 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid rgb(153, 71, 41);
 }
 .btn_rusty_red:disabled {
-  background-color: rgba(153, 71, 41, 0.5) !important;
+  background-color: rgba(153, 71, 41, 0.5);
 }
 .btn_green {
   background: #4e964d;
@@ -161,7 +161,7 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid rgb(105, 177, 104);
 }
 .btn_green:disabled {
-  background-color: #4e964d80 !important;
+  background-color: #4e964d80;
 }
 .btn_yellow {
   background-color: #ffca2c;
@@ -174,10 +174,10 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid rgb(255, 191, 0);
 }
 .btn_yellow:disabled {
-  background-color: #ffca2c80 !important;
+  background-color: #ffca2c80;
 }
-.btn_light_yellow {
-  color: #000 !important;
+button.btn_light_yellow {
+  color: #000;
   background-color: #ffeab2;
 }
 .btn_light_yellow:hover {
@@ -188,13 +188,13 @@ $vv: calc(1vh + 1vw);
   outline: 1px solid #ffd45c;
 }
 .btn_light_yellow:disabled {
-  background-color: hsl(44, 100%, 75%, 0.5) !important;
+  background-color: hsl(44, 100%, 75%, 0.5);
 }
-.btn:disabled {
-  cursor: default !important;
+button.btn:disabled {
+  cursor: default;
 }
-.btn:disabled:hover {
-  box-shadow: none !important;
+button.btn:disabled:hover {
+  box-shadow: none;
 }
 .checkbox {
   position: absolute;
@@ -236,8 +236,8 @@ $vv: calc(1vh + 1vw);
   background-color: #75757591;
   border-color: #75757591;
 }
-.checkbox:disabled {
-  background-color: #e9ecef !important;
+input.checkbox:disabled {
+  background-color: #e9ecef;
 }
 .input {
   width: 100%;
@@ -251,9 +251,9 @@ $vv: calc(1vh + 1vw);
   transition: all 0.2s ease-in-out;
   @include font(400, 16px);
 }
-.input:disabled {
+input.input:disabled {
   color: #212529;
-  background-color: #e9ecef !important;
+  background-color: #e9ecef;
 }
 .input:focus {
   color: #212529;
