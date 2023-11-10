@@ -26,6 +26,7 @@
         @load="() => (sizeWindow === 'f' ? images.load() : images.startLoad())"
       />
       <div
+        v-if="sizeWindow !== 'f'"
         class="hidden group-hover/img:block absolute z-[110] top-1/2 -translate-y-1/2 p-8 ring-1 ring-slate-500/50 rounded-xl bg-white"
         :class="[
           `${float}-0`,
@@ -74,7 +75,7 @@
 </template>
 
 <script>
-import { reactive, ref, watch } from "vue";
+import { nextTick, reactive, ref, watch } from "vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppImagesCaruselPreloader from "./AppImagesCaruselPreloader.vue";
 export default {
@@ -110,7 +111,7 @@ export default {
         this.startLoading = false;
       },
       load: function () {
-        this.isLoading = false;
+        nextTick(() => (this.isLoading = false));
       },
       next: function (length) {
         let next = this.selectedIdx + 1;
@@ -130,14 +131,31 @@ export default {
       () => images.selectedIdx,
       () => (images.isLoading = true)
     );
+    const timer = ref(null);
     watch(
       () => images.isLoading,
-      () => setTimeout(() => (images.isLoading = false), 5000),
+      () => {
+        if (!images.isLoading) {
+          clearTimeout(timer.value);
+          return;
+        }
+        timer.value = setTimeout(() => (images.isLoading = false), 5000);
+      },
       { immediate: true }
     );
+    const timerStart = ref(null);
     watch(
       () => images.startLoading,
-      () => setTimeout(() => (images.startLoading = false), 5000),
+      () => {
+        if (!images.startLoading) {
+          clearTimeout(timerStart.value);
+          return;
+        }
+        timerStart.value = setTimeout(
+          () => (images.startLoading = false),
+          5000
+        );
+      },
       { immediate: true }
     );
 
