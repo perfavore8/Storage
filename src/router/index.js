@@ -92,6 +92,11 @@ const routes = [
     name: "usersConfiguration",
     component: () => import("../views/UsersConfigurationView.vue"),
   },
+  {
+    path: "/publicOrder",
+    name: "publicOrder",
+    component: () => import("../views/PublicOrder.vue"),
+  },
 ];
 
 const router = createRouter({
