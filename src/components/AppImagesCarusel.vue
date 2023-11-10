@@ -1,10 +1,19 @@
 <template>
   <div>
     <label v-if="item">{{ item }}:</label>
-    <div class="group/img relative w-fit h-fit" v-if="imagesList?.length">
+    <div
+      class="group/img relative h-fit"
+      :class="[sizeWindow === 'f' ? 'w-full' : 'w-fit']"
+      v-if="imagesList?.length"
+      :ref="(el) => (sizeWindow === 'f' ? (refComp = el) : null)"
+    >
       <img
         :src="imagesList[images.selectedIdx]"
-        class="h-14 w-14 rounded-md"
+        class="rounded-md parentImg"
+        :class="{
+          'w-full h-auto': sizeWindow === 'f',
+          'h-14 w-14': sizeWindow !== 'f',
+        }"
         :alt="t('ostatki.error')"
       />
       <div
@@ -14,48 +23,52 @@
           {
             'h-40 w-40': sizeWindow === 'm',
             'h-52 w-52': sizeWindow === 'l',
+            'group-hover/img:hidden': sizeWindow === 'f',
           },
         ]"
+        :ref="(el) => (sizeWindow === 'f' ? null : (refComp = el))"
       >
         <img
           :src="imagesList[images.selectedIdx]"
           class="w-full h-full rounded-xl"
           :alt="t('ostatki.error')"
         />
-        <div
-          v-if="imagesList.length > 1"
-          class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
-        >
-          <button class="h-full" @click="images.pref(imagesList.length)">
-            <span class="material-icons-outlined"> navigate_before </span>
-          </button>
-          <button class="h-full" @click="images.next(imagesList.length)">
-            <span class="material-icons-outlined"> navigate_next </span>
-          </button>
-        </div>
-        <div
-          class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
-        >
-          <span>
-            {{ images.selectedIdx + 1 + " / " + imagesList.length }}
-          </span>
-        </div>
       </div>
     </div>
   </div>
+  <Teleport :to="refComp" v-if="refComp !== null">
+    <div
+      v-if="imagesList.length > 1"
+      class="absolute left-0 top-1/2 -translate-y-1/2 w-full flex flex-row justify-between p-1 h-full bg-transparent"
+    >
+      <button class="h-full" @click="images.pref(imagesList.length)">
+        <span class="material-icons-outlined"> navigate_before </span>
+      </button>
+      <button class="h-full" @click="images.next(imagesList.length)">
+        <span class="material-icons-outlined"> navigate_next </span>
+      </button>
+    </div>
+    <div
+      class="absolute bottom-2 left-1/2 -translate-x-1/2 font-medium text-slate-700/70"
+    >
+      <span>
+        {{ images.selectedIdx + 1 + " / " + imagesList.length }}
+      </span>
+    </div>
+  </Teleport>
 </template>
 
 <script>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   props: {
-    imagesList: Array,
+    imagesList: { type: Array, default: () => [] },
     sizeWindow: {
       type: String,
       required: false,
       default: () => "l",
-      validator: (value) => ["m", "l"].includes(value),
+      validator: (value) => ["m", "l", "f"].includes(value),
     },
     float: {
       type: String,
@@ -86,7 +99,9 @@ export default {
       },
     });
 
-    return { images, t };
+    const refComp = ref(null);
+
+    return { images, t, refComp };
   },
 };
 </script>
