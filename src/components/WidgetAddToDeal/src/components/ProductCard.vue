@@ -184,7 +184,7 @@ export default {
       const arr = [];
       props.fields.forEach((field) =>
         field.type === 13 &&
-        Boolean(field.lead_config?.editable) &&
+        Boolean(field.lead_config?.visible) &&
         field.code !== "whs"
           ? arr.push({ name: field.name, value: field.code })
           : null
