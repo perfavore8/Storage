@@ -74,7 +74,8 @@
                       :class="{
                         not_valid:
                           (row.article === '' || row.article === undefined) &&
-                          try_accept,
+                          try_accept &&
+                          row.new,
                       }"
                       :title="
                         (row.article === '' || row.article === undefined) &&
@@ -113,7 +114,8 @@
                       :class="{
                         not_valid:
                           (row.name === '' || row.name === undefined) &&
-                          try_accept,
+                          try_accept &&
+                          row.new,
                       }"
                       :title="
                         (row.name === '' || row.name === undefined) &&
@@ -222,7 +224,8 @@
                         not_valid:
                           (row.cost_price === '' ||
                             row.cost_price === undefined) &&
-                          try_accept,
+                          try_accept &&
+                          (row.new || row.newBatch),
                       }"
                       :title="
                         (row.cost_price === '' ||
@@ -472,6 +475,7 @@ export default {
         const isService = item.type.value == 2;
         let list2 = [];
         isService ? (list2 = list[1]) : (list2 = list[0]);
+        if (!item.new) return;
         list2.forEach((field) => {
           const fields = field.split(".");
           if (fields[1]) {
