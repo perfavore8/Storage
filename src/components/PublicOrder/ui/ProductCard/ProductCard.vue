@@ -2,7 +2,7 @@
   <ProductCardPreloader v-if="isLoading" />
   <div
     v-else
-    class="max-w-sm h-fit bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    class="max-w-sm h-fit max-h-[700px] overflow-scroll bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
     <AppImagesCarusel
       class="imgCarusel"
@@ -93,7 +93,7 @@ import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
 import AppImagesCarusel from "@/components/AppImagesCarusel.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useProductCard } from "./productCardModel";
-import ProductCardPreloader from "../ProductCardPreloader/ProductCardPreloader.vue";
+import { ProductCardPreloader } from "../ProductCardPreloader";
 export default {
   components: {
     EditInteger,

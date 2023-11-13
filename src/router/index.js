@@ -95,7 +95,7 @@ const routes = [
   {
     path: "/publicOrder",
     name: "publicOrder",
-    component: () => import("../views/PublicOrder.vue"),
+    component: () => import("../views/AddToDealView.vue"),
   },
 ];
 

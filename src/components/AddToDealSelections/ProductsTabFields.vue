@@ -1,6 +1,7 @@
 <template>
   <div
-    class="flex flex-col gap-4 justify-center items-center sticky top-[142px] w-full mx-auto"
+    class="flex flex-col gap-4 justify-center items-center top-[142px] w-full mx-auto"
+    :class="{ sticky: !isPublicOrder }"
   >
     <h2 class="font-semibold text-gray-700 w-full text-start">
       {{ $t("newOrder.dan") }}
@@ -91,6 +92,7 @@ import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppInputSelect from "../AppInputSelect.vue";
 import router from "@/router";
 import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
+import { isPublicOrder } from "@/components/PublicOrder";
 export default {
   components: { SelectorVue, AppInputSelect },
   props: { total: Object },
@@ -203,6 +205,7 @@ export default {
       toggleSomeChange,
       dateFormater,
       config,
+      isPublicOrder,
     };
   },
 };

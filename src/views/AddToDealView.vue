@@ -4,6 +4,7 @@
       <button
         class="bg-slate-400 bg-opacity-90 p-2 h-fit w-fit rounded-xl absolute left-0 hover:shadow-sm hover:drop-shadow-md outline-none focus-visible:drop-shadow-md"
         @click="back()"
+        v-if="!isPublicOrder"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -42,6 +43,7 @@
         :list="tabs.list"
         :selected="tabs.selected"
         @select="(option) => tabs.select(option)"
+        v-if="!isPublicOrder"
       />
     </div>
     <div class="content mt-4">
@@ -61,6 +63,7 @@ import ClientTab from "@/components/AddToDealSelections/ClientTab.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import { useAddToDealTabs } from "@/composables/addToDealTabs";
+import { isPublicOrder } from "@/components/PublicOrder";
 export default {
   components: {
     ProductsTab,
@@ -78,7 +81,7 @@ export default {
       add();
     });
 
-    return { tabs, back, saveParams };
+    return { tabs, back, saveParams, isPublicOrder };
   },
 };
 </script>

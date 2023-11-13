@@ -3,20 +3,47 @@
     <div class="container1">
       <div class="header"></div>
       <div class="content">
-        <div class="flex flex-col">
-          <ProductCard
-            v-for="(product, idx) in addedProducts"
-            :key="product.id"
-            :fields="fields"
-            :copyItem="product"
-            @change_value="(...args) => change_value(idx, ...args)"
-            @del="() => deleteAddedProduct(idx)"
-          />
+        <div
+          class="flex"
+          :class="[
+            isPublicOrder
+              ? 'flex-row flex-wrap w-full justify-center gap-4'
+              : 'flex-col',
+          ]"
+        >
+          <template v-if="isPublicOrder">
+            <PublicProductCard
+              v-for="(product, idx) in addedProducts"
+              :key="product.id"
+              :fields="fields"
+              :copyItem="product"
+              @change_value="(...args) => change_value(idx, ...args)"
+              @del="() => deleteAddedProduct(idx)"
+            />
+          </template>
+          <template v-else>
+            <ProductCard
+              v-for="(product, idx) in addedProducts"
+              :key="product.id"
+              :fields="fields"
+              :copyItem="product"
+              @change_value="(...args) => change_value(idx, ...args)"
+              @del="() => deleteAddedProduct(idx)"
+            />
+          </template>
           <template v-if="isAddedProductsLoading && !addedProducts.length">
-            <ProductCardSkeleton v-for="i in 3" :key="i" />
+            <div
+              v-if="isPublicOrder"
+              class="flex flex-row flex-wrap w-full justify-center gap-4"
+            >
+              <ProductCardPreloader v-for="i in 3" :key="i" />
+            </div>
+            <template v-else>
+              <ProductCardSkeleton v-for="i in 3" :key="i" />
+            </template>
           </template>
         </div>
-        <div class="top">
+        <div class="top mt-4">
           <AppInputSelect
             :list="search.list"
             :value="search.value"
@@ -438,6 +465,11 @@ import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useCats } from "@/composables/cats";
 import { useLockBtn } from "@/composables/lockBtn";
 import AppImagesCarusel from "@/components/AppImagesCarusel.vue";
+import {
+  ProductCardPreloader,
+  ProductCard as PublicProductCard,
+  isPublicOrder,
+} from "@/components/PublicOrder";
 
 const { order, getOrderPromise, getOrder, setWatcherUpdateAddedProducts } =
   useNewDeal();
@@ -455,9 +487,11 @@ export default {
     ProductCard,
     ProductCardSkeleton,
     AppImagesCarusel,
+    PublicProductCard,
+    ProductCardPreloader,
   },
   setup() {
-    return { t, ...useCats(), isLockedShowCards };
+    return { t, ...useCats(), isLockedShowCards, isPublicOrder };
   },
   data() {
     return {

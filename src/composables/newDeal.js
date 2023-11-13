@@ -64,12 +64,10 @@ export function useNewDeal() {
 
   onMounted(() => {
     if (routeWatcher.value) return;
-    routeWatcher.value = router.afterEach((to, from) => {
+    routeWatcher.value = router.afterEach((to) => {
       if (!to.query?.order_id) delete newDealParams.id;
-      if (to.path !== "/addToDeal" && from.path == "/addToDeal") {
-        toggleSomeChange(false);
-        dropOrder();
-      }
+      toggleSomeChange(false);
+      dropOrder();
     });
   });
 
