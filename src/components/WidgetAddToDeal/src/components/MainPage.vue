@@ -2,16 +2,16 @@
   <div class="app" :class="{ short: show_filters }">
     <div class="container1">
       <div class="header"></div>
-      <div class="content">
+      <div class="content flex flex-col">
         <div
           class="flex"
           :class="[
-            isPublicOrder
-              ? 'flex-row flex-wrap w-full justify-center gap-4'
+            isPublicOrder && displayTypeIsCard
+              ? 'flex-row flex-wrap w-full justify-start gap-4 order-2 mt-4'
               : 'flex-col',
           ]"
         >
-          <template v-if="isPublicOrder">
+          <template v-if="isPublicOrder && displayTypeIsCard">
             <PublicProductCard
               v-for="(product, idx) in addedProducts"
               :key="product.id"
@@ -33,8 +33,8 @@
           </template>
           <template v-if="isAddedProductsLoading && !addedProducts.length">
             <div
-              v-if="isPublicOrder"
-              class="flex flex-row flex-wrap w-full justify-center gap-4"
+              v-if="isPublicOrder && displayTypeIsCard"
+              class="flex flex-row flex-wrap w-full justify-start gap-4"
             >
               <ProductCardPreloader v-for="i in 3" :key="i" />
             </div>
@@ -43,7 +43,7 @@
             </template>
           </template>
         </div>
-        <div class="top mt-4">
+        <div class="top">
           <AppInputSelect
             :list="search.list"
             :value="search.value"
@@ -54,6 +54,7 @@
             @select="(value) => addToLeadAutocomplete(value.id)"
           />
           <div class="btns">
+            <DisplayTypeToggle v-if="isPublicOrder" />
             <input
               type="checkbox"
               class="sls_checkbox"
@@ -469,6 +470,8 @@ import {
   ProductCardPreloader,
   ProductCard as PublicProductCard,
   isPublicOrder,
+  useDisplayType,
+  DisplayTypeToggle,
 } from "@/components/PublicOrder";
 
 const { order, getOrderPromise, getOrder, setWatcherUpdateAddedProducts } =
@@ -489,9 +492,16 @@ export default {
     AppImagesCarusel,
     PublicProductCard,
     ProductCardPreloader,
+    DisplayTypeToggle,
   },
   setup() {
-    return { t, ...useCats(), isLockedShowCards, isPublicOrder };
+    return {
+      t,
+      ...useCats(),
+      isLockedShowCards,
+      isPublicOrder,
+      ...useDisplayType(),
+    };
   },
   data() {
     return {

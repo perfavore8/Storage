@@ -3,11 +3,15 @@
     class="flex flex-col gap-4 justify-center items-center top-[142px] w-full mx-auto"
     :class="{ sticky: !isPublicOrder }"
   >
-    <h2 class="font-semibold text-gray-700 w-full text-start">
+    <h2
+      class="font-semibold text-gray-700 w-full text-start"
+      v-if="!isPublicOrder"
+    >
       {{ $t("newOrder.dan") }}
     </h2>
     <div
-      class="min-w-[40%] w-full text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
+      class="min-w-[40%] text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
+      :class="[isPublicOrder ? 'w-fit mr-auto' : 'w-full']"
     >
       <div class="flex flex-col pb-3 items-start w-full">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">

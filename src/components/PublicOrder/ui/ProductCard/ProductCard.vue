@@ -2,79 +2,80 @@
   <ProductCardPreloader v-if="isLoading" />
   <div
     v-else
-    class="max-w-sm h-fit max-h-[700px] overflow-scroll bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    class="max-w-sm h-fit max-h-[700px] relative bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
-    <AppImagesCarusel
-      class="imgCarusel"
-      :imagesList="IMAGES"
-      :sizeWindow="'f'"
-    />
-    <div class="p-5">
-      <h5
-        class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-      >
-        {{ copyItem?.title }}
-      </h5>
-      <template v-for="field in fields" :key="field.id">
-        <div
-          class="pcrow"
-          v-if="
-            field.lead_config.visible > 0 &&
-            field.component &&
-            allFieldsInSubCat?.includes(field.id) &&
-            field.code !== 'price' &&
-            field.type !== 15
-          "
+    <div class="overflow-scroll w-full h-full max-h-[700px] rounded-lg">
+      <AppImagesCarusel
+        class="imgCarusel"
+        :imagesList="IMAGES"
+        :sizeWindow="'f'"
+      />
+      <div class="p-5">
+        <h5
+          class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
         >
-          <component
-            :is="field.component"
-            :item="field.type == 5 || field.type == 6 ? field : field.name"
-            :selected_option="
-              copyItem?.[field.code]
-                ? copyItem?.[field.code]
-                : copyItem?.fields?.[field.code]
+          {{ copyItem?.title }}
+        </h5>
+        <template v-for="field in fields" :key="field.id">
+          <div
+            class="pcrow"
+            v-if="
+              field.lead_config.visible > 0 &&
+              field.component &&
+              allFieldsInSubCat?.includes(field.id) &&
+              field.code !== 'price' &&
+              field.type !== 15
             "
-            :idx="field.code"
-            :disabled="field.lead_config.editable < 1"
-            @change_value="change_value"
-            :imagesList="copyItem.product?.fields[field.code] || []"
-            :sizeWindow="'l'"
-            :float="'left'"
+          >
+            <component
+              :is="field.component"
+              :item="field.type == 5 || field.type == 6 ? field : field.name"
+              :selected_option="
+                copyItem?.[field.code]
+                  ? copyItem?.[field.code]
+                  : copyItem?.fields?.[field.code]
+              "
+              :idx="field.code"
+              :disabled="field.lead_config.editable < 1"
+              @change_value="change_value"
+              :imagesList="copyItem.product?.fields[field.code] || []"
+              :sizeWindow="'l'"
+              :float="'left'"
+            />
+          </div>
+        </template>
+        <div class="pcrow">
+          <EditSelector
+            :item="{ name: t('widjet.cenT'), data: PRICES }"
+            :selected_option="copyItem?.price_field"
+            :idx="'price_field'"
+            @change_value="(value, code, value2) => change_value(value2, code)"
           />
         </div>
-      </template>
-      <div class="pcrow">
-        <EditSelector
-          :item="{ name: t('widjet.cenT'), data: PRICES }"
-          :selected_option="copyItem?.price_field"
-          :idx="'price_field'"
-          @change_value="(value, code, value2) => change_value(value2, code)"
-        />
-      </div>
-      <div class="pcrow">
-        <EditFloat
-          :item="currentPrice.name"
-          :selected_option="copyItem?.price"
-          :idx="'price'"
-          :disabled="currentPrice.lead_config.editable < 1"
-          @change_value="change_value"
-        />
-      </div>
-      <div class="pcrow">
-        <EditFloat
-          :item="t('widjet.col')"
-          :selected_option="copyItem?.count"
-          :idx="'count'"
-          :max="copyItem?.['available-count']"
-          @change_value="change_value"
-        />
-      </div>
-      <div
-        class="flex flex-row justify-end gap-2 cursor-pointer focus:ring-1 focus:ring-red-200"
-        @click="del()"
-      >
-        <span class="material-icons-outlined text-red-600"> delete </span>
-        <span>{{ $t("widjet.del") }}</span>
+        <div class="pcrow">
+          <EditFloat
+            :item="currentPrice.name"
+            :selected_option="copyItem?.price"
+            :idx="'price'"
+            :disabled="currentPrice.lead_config.editable < 1"
+            @change_value="change_value"
+          />
+        </div>
+        <div class="pcrow">
+          <EditFloat
+            :item="t('widjet.col')"
+            :selected_option="copyItem?.count"
+            :idx="'count'"
+            :max="copyItem?.['available-count']"
+            @change_value="change_value"
+          />
+        </div>
+        <div
+          class="absolute left-2 bottom-2 btn max-h-[34px] pointer-events-auto inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          @click="del()"
+        >
+          <span>{{ $t("widjet.del2") }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -94,6 +95,7 @@ import AppImagesCarusel from "@/components/AppImagesCarusel.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useProductCard } from "./productCardModel";
 import { ProductCardPreloader } from "../ProductCardPreloader";
+import { useNewDeal } from "@/composables/newDeal";
 export default {
   components: {
     EditInteger,
@@ -112,12 +114,21 @@ export default {
     fields: { type: Array, required: true },
     copyItem: { type: Object, required: true },
   },
-  setup(props) {
+  setup(props, context) {
     const { t } = useLangConfiguration();
+
+    const { toggleSomeChange } = useNewDeal();
+
+    const del = () => context.emit("del");
+    const change_value = (value, code) => (
+      context.emit("change_value", value, code), toggleSomeChange(true)
+    );
 
     return {
       t,
       ...useProductCard(props.copyItem, props.fields),
+      del,
+      change_value,
     };
   },
 };

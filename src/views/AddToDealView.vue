@@ -35,7 +35,11 @@
             <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
             <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
           </template>
-          <template v-else> {{ $t("global.save") }} </template>
+          <template v-else>
+            {{
+              isPublicOrder ? $t("newOrder.confirmOrder") : $t("global.save")
+            }}
+          </template>
         </button>
       </transition>
       <AppRadioBtnsGroupUnderlined

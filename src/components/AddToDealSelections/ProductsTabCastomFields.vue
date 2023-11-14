@@ -2,7 +2,8 @@
   <div class="flex flex-col gap-4 justify-center items-center w-full">
     <h2 class="font-semibold text-gray-700 w-full text-start h-6"></h2>
     <div
-      class="min-w-[40%] w-full text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
+      class="min-w-[40%] text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
+      :class="[isPublicOrder ? 'w-fit mr-auto' : 'w-full']"
     >
       <template v-for="field in fields" :key="field.id">
         <div
@@ -35,6 +36,7 @@ import EditFlag from "@/components/EditItemSelections/EditFlag.vue";
 import { computed, onMounted, reactive } from "vue";
 import store from "@/store";
 import { useNewDeal } from "@/composables/newDeal";
+import { isPublicOrder } from "../PublicOrder";
 export default {
   components: {
     EditInteger,
@@ -69,7 +71,7 @@ export default {
 
     const dontShowCodes = reactive(["name", "created_at", "updated_at"]);
 
-    return { fields, order, change_value, dontShowCodes };
+    return { fields, order, change_value, dontShowCodes, isPublicOrder };
   },
 };
 </script>

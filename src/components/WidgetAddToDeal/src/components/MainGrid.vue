@@ -248,6 +248,7 @@ export default {
   },
   async activated() {
     this.isLoading = true;
+    document.body.style.overflowY = "hidden";
     await Promise.all([
       this.$store.dispatch("getTableConfigW", {
         code: "widget",
@@ -258,7 +259,9 @@ export default {
     ]);
     this.isLoading = false;
   },
-  deactivated() {},
+  deactivated() {
+    document.body.style.overflowY = "auto";
+  },
   watch: {
     products: {
       handler: function () {
