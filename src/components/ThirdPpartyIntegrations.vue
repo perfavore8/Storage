@@ -120,7 +120,7 @@ export default {
     const close = () => store.commit("openCloseThirdPpartyIntegrations", false);
 
     const urlSutupInAmoCrm = encodeURI(
-      `https://www.amocrm.ru/oauth/?state={"external_source":"gs", "user_id":${user.value?.id}}&client_id=5cd3ee16-5f4c-4b3f-828f-9f575bcaeb2e`
+      `https://www.amocrm.ru/oauth/?state={"external_source":"gs", "user_id":${user.value?.id}, "account_id:${account.value?.id}"}&client_id=5cd3ee16-5f4c-4b3f-828f-9f575bcaeb2e`
     );
 
     const amoTest = computed(() => store.state.account?.account?.id == 454);
