@@ -21,22 +21,31 @@
           />
         </svg>
       </button>
-      <transition name="side">
-        <button
-          class="fixed bottom-10 left-[10%] btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
-          @click="saveParams.save()"
-          v-if="saveParams.needSave"
-          :disabled="saveParams.isSaving"
-        >
-          <template v-if="saveParams.isSaving">
-            {{ $t("newOrder.saving") }}
-            <span class="animate-pulse ml-1">.</span>
-            <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
-            <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
-          </template>
-          <template v-else> {{ $t("global.save") }} </template>
+      <div class="fixed bottom-10 left-[10%] flex flex-row gap-2 items-center">
+        <button class="btn btn_grey" @click="archivate()" v-if="isTest">
+          {{ $t("ostatki.arch") }}
         </button>
-      </transition>
+        <transition name="side">
+          <button
+            class="btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
+            @click="saveParams.save()"
+            v-if="saveParams.needSave"
+            :disabled="saveParams.isSaving"
+          >
+            <template v-if="saveParams.isSaving">
+              {{ $t("newOrder.saving") }}
+              <span class="animate-pulse ml-1">.</span>
+              <span class="animate-pulse" style="animation-delay: 0.667s"
+                >.</span
+              >
+              <span class="animate-pulse" style="animation-delay: 1.333s"
+                >.</span
+              >
+            </template>
+            <template v-else> {{ $t("global.save") }} </template>
+          </button>
+        </transition>
+      </div>
       <AppRadioBtnsGroupUnderlined
         class="w-4/5"
         :list="tabs.list"
@@ -61,6 +70,10 @@ import ClientTab from "@/components/AddToDealSelections/ClientTab.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import { useAddToDealTabs } from "@/composables/addToDealTabs";
+import store from "@/store";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useNotification } from "@/composables/notification";
+import { isTest } from "@/composables/isTest";
 export default {
   components: {
     ProductsTab,
@@ -69,8 +82,10 @@ export default {
     AppRadioBtnsGroupUnderlined,
   },
   setup() {
-    const { add, saveParams } = useNewDeal();
+    const { add, saveParams, order } = useNewDeal();
     const { tabs } = useAddToDealTabs();
+    const { t } = useLangConfiguration();
+    const { addNotification } = useNotification();
 
     const back = () => router.push("/");
 
@@ -78,7 +93,17 @@ export default {
       add();
     });
 
-    return { tabs, back, saveParams };
+    const archivate = async () => {
+      const res = await store.dispatch("deleteOrder", { order_id: order.id });
+      if (res.error) {
+        addNotification(3, t("HomeMenu.err"), res.error);
+      } else {
+        addNotification(1, t("newOrder.acrh"), "");
+        back();
+      }
+    };
+
+    return { tabs, back, saveParams, archivate, isTest };
   },
 };
 </script>
