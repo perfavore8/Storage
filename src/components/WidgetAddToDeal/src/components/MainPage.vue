@@ -7,8 +7,9 @@
           class="flex"
           :class="[
             isPublicOrder && displayTypeIsCard
-              ? 'flex-row flex-wrap w-full justify-start gap-4 order-2 mt-4'
+              ? 'flex-row flex-wrap w-full justify-start gap-4 mt-4'
               : 'flex-col',
+            isPublicOrder && 'order-2',
           ]"
         >
           <template v-if="isPublicOrder && displayTypeIsCard">
