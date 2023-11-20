@@ -4,7 +4,7 @@
     v-else
     class="max-w-sm h-fit max-h-[700px] relative bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
-    <div class="overflow-scroll w-full h-full max-h-[700px] rounded-lg">
+    <div class="overflow-y-scroll w-full h-full max-h-[700px] rounded-lg">
       <AppImagesCarusel
         class="imgCarusel"
         :imagesList="IMAGES"
