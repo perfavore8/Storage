@@ -4,16 +4,20 @@
     :class="{ sticky: !isPublicOrder }"
   >
     <h2
-      class="font-semibold text-gray-700 w-full text-start"
-      v-if="!isPublicOrder"
+      class="font-semibold text-gray-700 w-full"
+      :class="[isPublicOrder ? 'text-center font-bold text-xl' : 'text-start']"
     >
-      {{ $t("newOrder.dan") }}
+      {{ isPublicOrder ? order.fields.name : $t("newOrder.dan") }}
     </h2>
     <div
       class="min-w-[40%] text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
-      :class="[isPublicOrder ? 'w-fit mr-auto' : 'w-full']"
+      :class="[
+        isPublicOrder
+          ? 'w-full mr-auto grid grid-cols-1 md:grid-cols-2 gap-2 items-start'
+          : 'w-full',
+      ]"
     >
-      <div class="flex flex-col pb-3 items-start w-full">
+      <div class="flex flex-col pb-3 items-start w-full" v-if="!isPublicOrder">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ $t("newOrder.name") }}
         </div>
@@ -39,7 +43,8 @@
       </div>
       <div
         class="flex flex-col pb-3 items-start w-full"
-        v-for="item in list"
+        :class="[isPublicOrder && idx === 0 && 'md:!border-t-0']"
+        v-for="(item, idx) in list"
         :key="item.label"
       >
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">

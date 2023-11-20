@@ -3,12 +3,21 @@
     <h2 class="font-semibold text-gray-700 w-full text-start h-6"></h2>
     <div
       class="min-w-[40%] text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
-      :class="[isPublicOrder ? 'w-fit mr-auto' : 'w-full']"
+      :class="[
+        isPublicOrder
+          ? 'w-fit mr-auto grid grid-cols-1 md:grid-cols-2 gap-2 items-start'
+          : 'w-full',
+      ]"
     >
-      <template v-for="field in fields" :key="field.id">
+      <template
+        v-for="(field, idx) in fields.filter(
+          (field) => field.component && !dontShowCodes.includes(field.code)
+        )"
+        :key="field.id"
+      >
         <div
           class="row pb-3"
-          v-if="field.component && !dontShowCodes.includes(field.code)"
+          :class="[isPublicOrder && idx === 1 && 'md:!border-t-0']"
         >
           <component
             :is="field.component"
