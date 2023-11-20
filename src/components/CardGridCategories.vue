@@ -43,33 +43,30 @@
               {{ cat.name }}
             </div>
           </div>
-          <template v-if="isTest">
-            <template v-if="!newImagesShow">
-              <div class="sls_row" v-if="!cat.img_url" />
-              <div
-                v-if="cat.img_url"
-                class="w-full h-full bg-black/30 absolute left-0 top-0 z-10"
-              />
-              <img
-                v-if="cat.img_url"
-                :src="cat.img_url"
-                class="aspect-auto w-3/4 z-[3] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 transition-all duration-300 group-hover/card:scale-[0.6]"
-              />
-              <img
-                v-if="cat.img_url"
-                :src="cat.img_url"
-                class="aspect-auto w-3/4 z-[2] blur2 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 transition-all duration-300 group-hover/card:scale-[0.6]"
-              />
-            </template>
-            <template v-else>
-              <img
-                v-if="cat.img_url"
-                :src="cat.img_url"
-                class="aspect-auto h-4/5 ring-2 rounded-md ring-slate-500/50 z-[3] absolute top-0 translate-y-[10%] left-0 -translate-x-5 transition-all duration-300 group-hover/card:h-[100%] group-hover/card:translate-y-0 group-hover/card:translate-x-0"
-              />
-            </template>
+          <template v-if="!newImagesShow">
+            <div class="sls_row" v-if="!cat.img_url" />
+            <div
+              v-if="cat.img_url"
+              class="w-full h-full bg-black/30 absolute left-0 top-0 z-10"
+            />
+            <img
+              v-if="cat.img_url"
+              :src="cat.img_url"
+              class="aspect-auto w-3/4 z-[3] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 transition-all duration-300 group-hover/card:scale-[0.6]"
+            />
+            <img
+              v-if="cat.img_url"
+              :src="cat.img_url"
+              class="aspect-auto w-3/4 z-[2] blur2 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 transition-all duration-300 group-hover/card:scale-[0.6]"
+            />
           </template>
-          <div class="sls_row" v-else />
+          <template v-else>
+            <img
+              v-if="cat.img_url"
+              :src="cat.img_url"
+              class="aspect-auto h-4/5 ring-2 rounded-md ring-slate-500/50 z-[3] absolute top-0 translate-y-[10%] left-0 -translate-x-5 transition-all duration-300 group-hover/card:h-[100%] group-hover/card:translate-y-0 group-hover/card:translate-x-0"
+            />
+          </template>
         </div>
       </div>
     </div>
@@ -78,7 +75,6 @@
 
 <script>
 import { computed, onMounted, reactive } from "vue";
-import { isTest } from "@/composables/isTest";
 import store from "@/store";
 export default {
   emits: { selectCat: null },
@@ -109,7 +105,7 @@ export default {
 
     const newImagesShow = true;
 
-    return { categories, isTest, newImagesShow };
+    return { categories, newImagesShow };
   },
 };
 </script>
