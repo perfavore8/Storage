@@ -967,6 +967,7 @@ export const messages = {
       documents: "Documents",
       client: "Client",
       arch: "Order has been successfully archived",
+      logoLinkText: "Works for",
     },
     widjet: {
       placeholder: "Adding (searching the warehouse by name or article)...",
@@ -2060,6 +2061,7 @@ export const messages = {
       documents: "Документы",
       client: "Клиент",
       arch: "Заказ успешно архивирован",
+      logoLinkText: "Работает на",
     },
     widjet: {
       placeholder: "Добавление (поиск на складе по названию или артикулу)...",

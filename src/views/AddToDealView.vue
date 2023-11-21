@@ -22,6 +22,19 @@
           />
         </svg>
       </button>
+      <div class="fixed top-3 left-[10%] flex flex-row gap-2 items-center">
+        <a
+          href="https://gosklad.com/"
+          target="_blank"
+          class="flex flex-row gap-4 items-center"
+        >
+          {{ $t("newOrder.logoLinkText") }}
+          <img
+            src="@/assets/logo_en_transparent.png"
+            alt="GoSkald"
+            class="w-24"
+        /></a>
+      </div>
       <div class="fixed bottom-10 left-[10%] flex flex-row gap-2 items-center">
         <transition name="side">
           <button
@@ -36,7 +49,7 @@
           <button
             class="btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
             @click="saveParams.save()"
-            v-if="saveParams.needSave"
+            v-if="saveParams.needSave || isPublicOrder"
             :disabled="saveParams.isSaving"
           >
             <template v-if="saveParams.isSaving">

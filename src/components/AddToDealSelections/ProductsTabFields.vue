@@ -1,11 +1,11 @@
 <template>
   <div
-    class="flex flex-col gap-4 justify-center items-center top-[142px] w-full mx-auto"
+    class="flex flex-col gap-4 justify-center items-center top-[142px] w-full mx-auto mt-4"
     :class="[isPublicOrder ? 'public' : 'sticky privat']"
   >
     <h2
       class="font-semibold text-gray-700 w-full"
-      :class="[isPublicOrder ? 'text-center font-bold text-xl' : 'text-start']"
+      :class="[isPublicOrder ? 'text-center font-bold text-2xl' : 'text-start']"
     >
       {{ isPublicOrder ? order.fields.name : $t("newOrder.dan") }}
     </h2>

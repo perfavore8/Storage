@@ -72,7 +72,7 @@
           />
         </div>
         <div
-          class="absolute left-2 bottom-2 btn max-h-[34px] pointer-events-auto inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          class="absolute right-4 bottom-2 btn max-h-[34px] pointer-events-auto inline-flex whitespace-nowrap w-fit rounded-md text-[0.8125rem] font-medium leading-5 text-white bg-red-600 hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
           @click="del()"
         >
           <span>{{ $t("widjet.del2") }}</span>
