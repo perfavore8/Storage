@@ -27,7 +27,7 @@
           <button
             class="btn btn_grey"
             @click="archivate()"
-            v-if="isTest && !isClosedStep && isOrderGeted"
+            v-if="isTest && !isClosedStep && isOrderGeted && !isPublicOrder"
           >
             {{ $t("ostatki.arch") }}
           </button>
@@ -87,6 +87,7 @@ import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useNotification } from "@/composables/notification";
 import { isTest } from "@/composables/isTest";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
+import { isPublicOrder } from "@/components/PublicOrder";
 export default {
   components: {
     ProductsTab,
@@ -130,6 +131,7 @@ export default {
       isTest,
       isClosedStep,
       isOrderGeted,
+      isPublicOrder,
     };
   },
 };
