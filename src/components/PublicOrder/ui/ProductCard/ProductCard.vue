@@ -36,7 +36,7 @@
                   : copyItem?.fields?.[field.code]
               "
               :idx="field.code"
-              :disabled="field.lead_config.editable < 1"
+              :disabled="field.lead_config.editable < 1 || isPublicOrder"
               @change_value="change_value"
               :imagesList="copyItem.product?.fields[field.code] || []"
               :sizeWindow="'l'"
@@ -49,6 +49,7 @@
             :item="{ name: t('widjet.cenT'), data: PRICES }"
             :selected_option="copyItem?.price_field"
             :idx="'price_field'"
+            :disabled="isPublicOrder"
             @change_value="(value, code, value2) => change_value(value2, code)"
           />
         </div>
@@ -57,7 +58,7 @@
             :item="currentPrice.name"
             :selected_option="copyItem?.price"
             :idx="'price'"
-            :disabled="currentPrice.lead_config.editable < 1"
+            :disabled="currentPrice.lead_config.editable < 1 || isPublicOrder"
             @change_value="change_value"
           />
         </div>
@@ -96,6 +97,7 @@ import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useProductCard } from "./productCardModel";
 import { ProductCardPreloader } from "../ProductCardPreloader";
 import { useNewDeal } from "@/composables/newDeal";
+import { isPublicOrder } from "../../model";
 export default {
   components: {
     EditInteger,
@@ -129,6 +131,7 @@ export default {
       ...useProductCard(props.copyItem, props.fields),
       del,
       change_value,
+      isPublicOrder,
     };
   },
 };

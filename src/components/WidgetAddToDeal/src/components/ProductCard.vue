@@ -34,6 +34,7 @@
           :item="{ name: t('widjet.cenT'), data: PRICES }"
           :selected_option="copyItem?.price_field"
           :idx="'price_field'"
+          :disabled="isPublicOrder"
           @change_value="(value, code, value2) => change_value(value2, code)"
         />
       </div>
@@ -42,7 +43,7 @@
           :item="currentPrice.name"
           :selected_option="copyItem?.price"
           :idx="'price'"
-          :disabled="currentPrice.lead_config.editable < 1"
+          :disabled="currentPrice.lead_config.editable < 1 || isPublicOrder"
           @change_value="change_value"
         />
       </div>
@@ -51,6 +52,7 @@
           :item="{ name: t('widjet.sk2'), data: WHS }"
           :selected_option="copyItem?.wh_field"
           :idx="'wh_field'"
+          :disabled="isPublicOrder"
           @change_value="(value, code, value2) => change_value(value2, code)"
         />
       </div>
@@ -85,7 +87,7 @@
               : copyItem?.fields?.[field.code]
           "
           :idx="field.code"
-          :disabled="field.lead_config.editable < 1"
+          :disabled="field.lead_config.editable < 1 || isPublicOrder"
           @change_value="change_value"
           :imagesList="copyItem.product?.fields[field.code]"
           :sizeWindow="'l'"
@@ -125,6 +127,7 @@ import { useAddToDealTabs } from "@/composables/addToDealTabs";
 import { useNewDeal } from "@/composables/newDeal";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useCats } from "@/composables/cats";
+import { isPublicOrder } from "@/components/PublicOrder";
 export default {
   components: {
     EditInteger,
@@ -210,6 +213,7 @@ export default {
       t,
       getAllFieldsInSubCat,
       currentPrice,
+      isPublicOrder,
     };
   },
 };

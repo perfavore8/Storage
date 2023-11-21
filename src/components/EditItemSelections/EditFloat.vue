@@ -32,6 +32,10 @@ export default {
       type: Number,
       required: true,
     },
+    max: {
+      type: Number,
+      required: false,
+    },
     disabled: {
       type: Boolean,
       required: false,
@@ -55,6 +59,8 @@ export default {
     copy_selected_option() {
       if (this.selected_option == this.copy_selected_option) return;
       // this.copy_selected_option = `${this.copy_selected_option}`;
+      if (this.copy_selected_option > this.max)
+        this.copy_selected_option = this.max;
       this.option_select(this.copy_selected_option);
     },
   },

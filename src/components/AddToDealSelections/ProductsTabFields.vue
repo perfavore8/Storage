@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex flex-col gap-4 justify-center items-center top-[142px] w-full mx-auto"
-    :class="{ sticky: !isPublicOrder }"
+    :class="[isPublicOrder ? 'public' : 'sticky privat']"
   >
     <h2
       class="font-semibold text-gray-700 w-full"
@@ -17,7 +17,7 @@
           : 'w-full',
       ]"
     >
-      <div class="flex flex-col pb-3 items-start w-full" v-if="!isPublicOrder">
+      <div class="item" v-if="!isPublicOrder">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ $t("newOrder.name") }}
         </div>
@@ -28,11 +28,15 @@
           @input="toggleSomeChange(true)"
         />
       </div>
-      <div class="flex flex-col pb-3 items-start w-full">
+      <div class="item">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ $t("newOrder.stat") }}
         </div>
+        <div class="text-base font-medium" v-if="isPublicOrder">
+          {{ selector.selected?.name }}
+        </div>
         <AppInputSelect
+          v-else
           :selected="selector.selected"
           :list="selector.list"
           :haveStackedOpgroup="true"
@@ -42,7 +46,7 @@
         />
       </div>
       <div
-        class="flex flex-col pb-3 items-start w-full"
+        class="item"
         :class="[isPublicOrder && idx === 0 && 'md:!border-t-0']"
         v-for="(item, idx) in list"
         :key="item.label"
@@ -51,7 +55,11 @@
           {{ item.label }}
         </div>
         <template v-if="item.component">
+          <div class="text-base font-medium" v-if="isPublicOrder">
+            {{ user_name.selected?.name }}
+          </div>
           <component
+            v-else
             :is="item.component"
             :selected_option="user_name.selected"
             :options_props="user_name.list"
@@ -59,10 +67,21 @@
           />
         </template>
         <div class="text-base font-medium" v-else>
+          <template v-if="item.value === 'price' && isPublicOrder">
+            {{
+              checkIsNull(order.custom_price)
+                ? total?.[item.value]
+                : order.custom_price
+            }}
+          </template>
           <input
             type="text"
             class="input"
-            v-if="item.value === 'price' && config?.manual_budget_editing"
+            v-else-if="
+              item.value === 'price' &&
+              config?.manual_budget_editing &&
+              !isPublicOrder
+            "
             v-model="order.custom_price"
             :placeholder="total?.[item.value]"
             @change="toggleSomeChange(true)"
@@ -72,7 +91,7 @@
           </template>
         </div>
       </div>
-      <div class="flex flex-col pb-3 items-start w-full">
+      <div class="item">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ $t("newOrder.soz") }}
         </div>
@@ -80,7 +99,7 @@
           {{ dateFormater(order.created_at) }}
         </div>
       </div>
-      <div class="flex flex-col pb-3 items-start w-full">
+      <div class="item" v-if="!isPublicOrder">
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ $t("newOrder.izm") }}
         </div>
@@ -102,6 +121,7 @@ import AppInputSelect from "../AppInputSelect.vue";
 import router from "@/router";
 import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
 import { isPublicOrder } from "@/components/PublicOrder";
+import { useValidate } from "@/composables/validate";
 export default {
   components: { SelectorVue, AppInputSelect },
   props: { total: Object },
@@ -109,6 +129,7 @@ export default {
     const { t } = useLangConfiguration();
     const { order, toggleSomeChange, isOrederLoaded, saveOrder, someChange } =
       useNewDeal();
+    const { checkIsNull } = useValidate();
 
     const list = reactive([
       { label: t("newOrder.sum"), value: "price" },
@@ -215,6 +236,7 @@ export default {
       dateFormater,
       config,
       isPublicOrder,
+      checkIsNull,
     };
   },
 };
@@ -222,4 +244,17 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+.item {
+  @apply flex;
+}
+.public {
+  .item {
+    @apply flex-row justify-between pt-3 items-start w-11/12;
+  }
+}
+.privat {
+  .item {
+    @apply flex-col pb-3 items-start w-full;
+  }
+}
 </style>

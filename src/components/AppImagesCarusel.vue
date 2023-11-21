@@ -2,7 +2,7 @@
   <div>
     <label v-if="item">{{ item }}:</label>
     <div
-      class="group/img relative h-fit"
+      class="group/img relative h-fit flex justify-center items-center aspect-video"
       :class="[sizeWindow === 'f' ? 'w-full' : 'w-fit']"
       v-if="imagesList?.length"
       :ref="(el) => (sizeWindow === 'f' ? (refComp = el) : null)"
@@ -23,6 +23,7 @@
           'h-14 w-14': sizeWindow !== 'f',
         }"
         :alt="t('ostatki.error')"
+        onerror="this.style.display='none'"
         @load="() => (sizeWindow === 'f' ? images.load() : images.startLoad())"
       />
       <div
@@ -164,4 +165,18 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+img[alt]:after {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  text-align: center;
+  content: attr(alt);
+}
+</style>
