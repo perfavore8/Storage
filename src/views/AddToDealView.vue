@@ -82,6 +82,11 @@ import ClientTab from "@/components/AddToDealSelections/ClientTab.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import { useAddToDealTabs } from "@/composables/addToDealTabs";
+import store from "@/store";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+import { useNotification } from "@/composables/notification";
+import { isTest } from "@/composables/isTest";
+import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 export default {
   components: {
     ProductsTab,
@@ -102,7 +107,30 @@ export default {
       add();
     });
 
-    return { tabs, back, saveParams };
+    const isClosedStep = computed(
+      () =>
+        !!pipelines.allStatuses.find((el) => el.value == order.status_id)?.type
+    );
+
+    const archivate = async () => {
+      const res = await store.dispatch("deleteOrder", { order_id: order.id });
+      if (res.error) {
+        addNotification(3, t("HomeMenu.err"), res.error);
+      } else {
+        addNotification(1, t("newOrder.acrh"), "");
+        back();
+      }
+    };
+
+    return {
+      tabs,
+      back,
+      saveParams,
+      archivate,
+      isTest,
+      isClosedStep,
+      isOrderGeted,
+    };
   },
 };
 </script>
