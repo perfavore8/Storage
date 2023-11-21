@@ -19,6 +19,13 @@ export function useSearchFiltersConfig() {
       hasDifferentSources: true,
       sources: [
         {
+          code: "amo",
+          title: "",
+          getFieldsUrl: `getAmoFields`,
+          stateName: "orders",
+          stateFieldsName: "amoFields",
+        },
+        {
           code: "orders",
           title: t("search.orders"),
           getFieldsUrl: `getOrdersFields`,

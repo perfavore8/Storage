@@ -22,26 +22,41 @@
           />
         </svg>
       </button>
-      <transition name="side">
-        <button
-          class="fixed bottom-10 left-[10%] btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
-          @click="saveParams.save()"
-          v-if="saveParams.needSave"
-          :disabled="saveParams.isSaving"
-        >
-          <template v-if="saveParams.isSaving">
-            {{ $t("newOrder.saving") }}
-            <span class="animate-pulse ml-1">.</span>
-            <span class="animate-pulse" style="animation-delay: 0.667s">.</span>
-            <span class="animate-pulse" style="animation-delay: 1.333s">.</span>
-          </template>
-          <template v-else>
-            {{
-              isPublicOrder ? $t("newOrder.confirmOrder") : $t("global.save")
-            }}
-          </template>
-        </button>
-      </transition>
+      <div class="fixed bottom-10 left-[10%] flex flex-row gap-2 items-center">
+        <transition name="side">
+          <button
+            class="btn btn_grey"
+            @click="archivate()"
+            v-if="isTest && !isClosedStep && isOrderGeted"
+          >
+            {{ $t("ostatki.arch") }}
+          </button>
+        </transition>
+        <transition name="side">
+          <button
+            class="btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
+            @click="saveParams.save()"
+            v-if="saveParams.needSave"
+            :disabled="saveParams.isSaving"
+          >
+            <template v-if="saveParams.isSaving">
+              {{ $t("newOrder.saving") }}
+              <span class="animate-pulse ml-1">.</span>
+              <span class="animate-pulse" style="animation-delay: 0.667s"
+                >.</span
+              >
+              <span class="animate-pulse" style="animation-delay: 1.333s"
+                >.</span
+              >
+            </template>
+            <template v-else>
+              {{
+                isPublicOrder ? $t("newOrder.confirmOrder") : $t("global.save")
+              }}
+            </template>
+          </button>
+        </transition>
+      </div>
       <AppRadioBtnsGroupUnderlined
         class="w-4/5"
         :list="tabs.list"
@@ -59,7 +74,7 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import router from "@/router";
 import ProductsTab from "@/components/AddToDealSelections/ProductsTab.vue";
 import DocumentsTab from "@/components/AddToDealSelections/DocumentsTab.vue";
@@ -67,7 +82,6 @@ import ClientTab from "@/components/AddToDealSelections/ClientTab.vue";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import { useNewDeal } from "@/composables/newDeal";
 import { useAddToDealTabs } from "@/composables/addToDealTabs";
-import { isPublicOrder } from "@/components/PublicOrder";
 export default {
   components: {
     ProductsTab,
@@ -76,8 +90,11 @@ export default {
     AppRadioBtnsGroupUnderlined,
   },
   setup() {
-    const { add, saveParams } = useNewDeal();
+    const { add, saveParams, order, isOrderGeted } = useNewDeal();
     const { tabs } = useAddToDealTabs();
+    const { t } = useLangConfiguration();
+    const { addNotification } = useNotification();
+    const { pipelines } = useOrdersPipelinesSelect();
 
     const back = () => router.push("/");
 
@@ -85,7 +102,7 @@ export default {
       add();
     });
 
-    return { tabs, back, saveParams, isPublicOrder };
+    return { tabs, back, saveParams };
   },
 };
 </script>

@@ -19,6 +19,7 @@ export default {
     tableConfig: {},
     kanBanTableConfig: {},
     pipelines: [],
+    amoFields: [],
   },
   getters: {
     preporatedTableConfig(state) {
@@ -82,6 +83,21 @@ export default {
       };
       value.map((field) => (field.component = componentsList[field.type]));
       state.fields = [...value];
+    },
+    updateOrdersAmoFields(state, value) {
+      const componentsList = {
+        1: "EditInteger",
+        2: "EditFloat",
+        3: "EditString",
+        4: "EditText",
+        5: "EditSelector",
+        6: "EditMultiSelector",
+        7: "EditDate",
+        8: "EditDateTime",
+        9: "EditFlag",
+      };
+      value.map((field) => (field.component = componentsList[field.type]));
+      state.amoFields = [...value];
     },
   },
   actions: {
@@ -357,6 +373,23 @@ export default {
         method: "post",
         data: params,
       });
+    },
+
+    async getAmoFields(context) {
+      context.commit("updateOrdersAmoFields", [
+        {
+          id: 3112984729835623,
+          is_system: 1,
+          is_virtual: 0,
+          name: "ID Сделки amoCRM",
+          code: "lead_id",
+          type: 3,
+          config: {
+            sort: 1,
+          },
+          data: [],
+        },
+      ]);
     },
   },
 };
