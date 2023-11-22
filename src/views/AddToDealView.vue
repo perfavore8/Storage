@@ -22,7 +22,10 @@
           />
         </svg>
       </button>
-      <div class="fixed top-3 left-[10%] flex flex-row gap-2 items-center">
+      <div
+        class="fixed top-3 left-[10%] flex flex-row gap-2 items-center"
+        v-if="isPublicOrder"
+      >
         <a
           href="https://gosklad.com/"
           target="_blank"

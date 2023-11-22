@@ -89,6 +89,44 @@
               </div>
             </th>
           </template>
+          <template v-if="isTest">
+            <th
+              class="item item_icon title"
+              v-if="selectedTab.havePublicOrderConfig"
+            >
+              <div class="w-min mx-auto">
+                <div
+                  class="flex items-center relative"
+                  @mouseenter="toolTips.publicOrderVisibility = true"
+                  @mouseleave="toolTips.publicOrderVisibility = false"
+                >
+                  <span class="text-black opacity-50">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="26"
+                      height="26"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm6 8H7m6-3H7m4-3H7"
+                      />
+                    </svg>
+                  </span>
+                  <div
+                    class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                    v-if="toolTips.publicOrderVisibility"
+                  >
+                    {{ $t("SettingEntities.table.PubOrdVisible") }}
+                  </div>
+                </div>
+              </div>
+            </th>
+          </template>
           <template v-if="isTest2">
             <th
               class="item item_icon title"
@@ -247,6 +285,22 @@
               <label :for="idx + 'nd'"></label>
             </td>
           </template>
+          <template v-if="isTest">
+            <td
+              class="box item text-lg"
+              v-if="selectedTab.havePublicOrderConfig"
+            >
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="idx + 'pov'"
+                :disabled="row.lead_config.public_order_visible.disabled"
+                v-model="row.lead_config.public_order_visible.value"
+                @change="row.changeLeadConfig == true"
+              />
+              <label :for="idx + 'pov'"></label>
+            </td>
+          </template>
           <template v-if="isTest2">
             <td
               class="box item text-lg relative"
@@ -399,6 +453,23 @@
               <label :for="idx + 'n3'"></label>
             </td>
           </template>
+          <template v-if="isTest">
+            <td
+              class="box item text-lg"
+              v-if="selectedTab.havePublicOrderConfig"
+            >
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="idx + 'n4'"
+                :disabled="
+                  new_fields[idx].lead_config.public_order_visible.disabled
+                "
+                v-model="new_fields[idx].lead_config.public_order_visible.value"
+              />
+              <label :for="idx + 'n4'"></label>
+            </td>
+          </template>
           <template v-if="isTest2">
             <td
               class="box item text-lg relative"
@@ -472,6 +543,7 @@ export default {
       title: false,
       content_copy: false,
       categories: false,
+      publicOrderVisibility: false,
     });
     const copy_fields = reactive([]);
     const new_fields = reactive([]);
@@ -530,12 +602,17 @@ export default {
           visible: { disabled: false, value: false },
           editable: { disabled: false, value: false },
           title_visible: { disabled: false, value: false },
+          public_order_visible: { disabled: false, value: false },
         },
         config: {
           double_in_new_bath: { disabled: false, value: false },
         },
       };
-      if (!selectedTab.value.haveLeadConfig) delete item.lead_config;
+      if (
+        !selectedTab.value.haveLeadConfig &&
+        !selectedTab.value.havePublicOrderConfig
+      )
+        delete item.lead_config;
       new_fields.push(item);
     };
     const add_new = async (item, idx) => {
@@ -614,12 +691,20 @@ export default {
         if (val != null) {
           params[val] = {};
           if (val == "lead_config") {
-            params[val].visible = Number(copy_fields[idx][val].visible.value);
-            params[val].editable = Number(copy_fields[idx][val].editable.value);
-            params[val].title_visible = Number(
-              copy_fields[idx][val].title_visible.value
-            );
-            params[val].title_sort = copy_fields[idx][val].title_sort;
+            if (selectedTab.value.haveLeadConfig) {
+              params[val].visible = Number(copy_fields[idx][val].visible.value);
+              params[val].editable = Number(
+                copy_fields[idx][val].editable.value
+              );
+              params[val].title_visible = Number(
+                copy_fields[idx][val].title_visible.value
+              );
+              params[val].title_sort = copy_fields[idx][val].title_sort;
+            }
+            if (selectedTab.value.havePublicOrderConfig)
+              params[val].public_order_visible = Number(
+                copy_fields[idx][val].public_order_visible.value
+              );
           } else if (val == "config") {
             params[val] = copy_fields[idx][val];
             if (copy_fields[idx][val].double_in_new_bath)
@@ -689,6 +774,17 @@ export default {
             value: double_in_new_bath > 0,
           };
         }
+        if (selectedTab.value.havePublicOrderConfig) {
+          const public_order_visible =
+            val.lead_config?.public_order_visible === undefined
+              ? 0
+              : val.lead_config?.public_order_visible;
+          if (val.lead_config === undefined) val.lead_config = {};
+          val.lead_config.public_order_visible = {
+            disabled: public_order_visible == -1 || public_order_visible == 2,
+            value: public_order_visible > 0,
+          };
+        }
       });
       copy_fields.map((val, idx) => {
         val["nameError"] = false;
@@ -718,6 +814,17 @@ export default {
           val.config.double_in_new_bath = {
             disabled: double_in_new_bath == -1 || double_in_new_bath == 2,
             value: double_in_new_bath > 0,
+          };
+        }
+        if (selectedTab.value.havePublicOrderConfig) {
+          const public_order_visible =
+            val.lead_config?.public_order_visible === undefined
+              ? 0
+              : val.lead_config?.public_order_visible;
+          if (val.lead_config === undefined) val.lead_config = {};
+          val.lead_config.public_order_visible = {
+            disabled: public_order_visible == -1 || public_order_visible == 2,
+            value: public_order_visible > 0,
           };
         }
       });
@@ -991,6 +1098,7 @@ export default {
     }
     .item_icon {
       text-align: center;
+      width: 1%;
       min-width: 60px;
       max-width: 60px;
     }

@@ -22,6 +22,7 @@ export function useEntitiesTabs() {
         haveStatuses: true,
         haveSort: true,
         haveVirtual: true,
+        havePublicOrderConfig: true,
       },
       {
         name: t("SettingEntities.tabs.company"),
@@ -64,6 +65,7 @@ export function useEntitiesTabs() {
         haveFieldsProperties: true,
         haveCategories: true,
         haveSort: true,
+        havePublicOrderConfig: true,
       },
     ],
     select: function (option) {

@@ -11,7 +11,12 @@
     >
       <template
         v-for="(field, idx) in fields.filter(
-          (field) => field.component && !dontShowCodes.includes(field.code)
+          (field) =>
+            field.component &&
+            !dontShowCodes.includes(field.code) &&
+            (isPublicOrder
+              ? Boolean(field.lead_config?.public_order_visible) > 0
+              : true)
         )"
         :key="field.id"
       >

@@ -70,7 +70,9 @@
         v-for="field in fields"
         :key="field.id"
         v-show="
-          field.lead_config.visible > 0 &&
+          (isPublicOrder
+            ? field.lead_config.public_order_visible > 0
+            : field.lead_config.visible > 0) &&
           field.component &&
           getAllFieldsInSubCat(
             copyItem.fields?.category || copyItem.product?.fields?.category

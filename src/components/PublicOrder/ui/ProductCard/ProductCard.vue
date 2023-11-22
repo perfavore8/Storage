@@ -2,7 +2,7 @@
   <ProductCardPreloader v-if="isLoading" />
   <div
     v-else
-    class="max-w-sm h-fit max-h-[700px] relative bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    class="max-w-sm h-auto max-h-[700px] relative bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
     <div class="overflow-y-scroll w-full h-full max-h-[700px] rounded-lg">
       <AppImagesCarusel
@@ -20,7 +20,9 @@
           <div
             class="pcrow"
             v-if="
-              field.lead_config.visible > 0 &&
+              (isPublicOrder
+                ? field.lead_config.public_order_visible > 0
+                : field.lead_config.visible > 0) &&
               field.component &&
               allFieldsInSubCat?.includes(field.id) &&
               field.code !== 'price' &&
