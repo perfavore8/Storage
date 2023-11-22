@@ -35,7 +35,10 @@
             class="w-24"
         /></a>
       </div>
-      <div class="fixed bottom-10 left-[10%] flex flex-row gap-2 items-center">
+      <div
+        class="fixed flex flex-row gap-2 items-center"
+        :class="[isPublicOrder ? 'top-2 right-2' : 'bottom-10 left-[10%]']"
+      >
         <transition name="side">
           <button
             class="btn btn_grey"
@@ -45,7 +48,7 @@
             {{ $t("ostatki.arch") }}
           </button>
         </transition>
-        <transition name="side">
+        <transition :name="isPublicOrder ? 'side2' : 'side'">
           <button
             class="btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
             @click="saveParams.save()"
@@ -177,12 +180,19 @@ export default {
   }
 }
 .side-enter-active,
-.side-leave-active {
-  transition: all 0.3s ease;
+.side-leave-active,
+.side2-enter-active,
+.side2-leave-active {
+  transition: all 0.3s ease-out;
 }
 .side-enter-from,
 .side-leave-to {
   opacity: 0.5;
   transform: translateY(calc(100% + 46px));
+}
+.side2-enter-from,
+.side2-leave-to {
+  opacity: 0.5;
+  transform: translateX(calc(100% + 46px));
 }
 </style>
