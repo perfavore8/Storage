@@ -92,7 +92,7 @@
           <template v-if="isTest">
             <th
               class="item item_icon title"
-              v-if="selectedTab.havePublicOrderConfig"
+              v-if="selectedTab.havePublicOrderConfig && isTest"
             >
               <div class="w-min mx-auto">
                 <div
@@ -288,7 +288,7 @@
           <template v-if="isTest">
             <td
               class="box item text-lg"
-              v-if="selectedTab.havePublicOrderConfig"
+              v-if="selectedTab.havePublicOrderConfig && isTest"
             >
               <input
                 type="checkbox"
@@ -456,7 +456,7 @@
           <template v-if="isTest">
             <td
               class="box item text-lg"
-              v-if="selectedTab.havePublicOrderConfig"
+              v-if="selectedTab.havePublicOrderConfig && isTest"
             >
               <input
                 type="checkbox"
