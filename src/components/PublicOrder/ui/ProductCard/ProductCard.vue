@@ -10,7 +10,7 @@
         :imagesList="IMAGES"
         :sizeWindow="'f'"
       />
-      <div class="p-5">
+      <div class="p-5 pb-2 mb-[62px]">
         <h5
           class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
         >
@@ -64,22 +64,26 @@
             @change_value="change_value"
           />
         </div>
-        <div class="pcrow">
-          <EditFloat
-            :item="t('widjet.col')"
-            :selected_option="copyItem?.count"
-            :idx="'count'"
-            :max="copyItem?.['available-count']"
-            @change_value="change_value"
-          />
-        </div>
-        <div
-          class="absolute right-4 bottom-2 btn max-h-[34px] pointer-events-auto inline-flex whitespace-nowrap w-fit rounded-md text-[0.8125rem] font-medium leading-5 text-white bg-red-600 hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
-          @click="del()"
-        >
-          <span>{{ $t("widjet.del2") }}</span>
-        </div>
       </div>
+    </div>
+    <div
+      class="absolute bottom-0 w left-0 px-5 pt-2 pb-5 bg-white grid grid-cols-2 items-end justify-items-end row gap-2"
+    >
+      <div class="pcrow !mb-0 count">
+        <EditFloat
+          :item="t('widjet.col')"
+          :selected_option="copyItem?.count"
+          :idx="'count'"
+          :max="copyItem?.['available-count']"
+          @change_value="change_value"
+        />
+      </div>
+      <button
+        class="btn max-h-[34px] pointer-events-auto inline-flex whitespace-nowrap w-full justify-center items-center rounded-md text-[0.8125rem] font-medium leading-5 text-white bg-red-600 hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+        @click="del()"
+      >
+        <span>{{ $t("widjet.del2") }}</span>
+      </button>
     </div>
   </div>
 </template>
@@ -181,5 +185,14 @@ export default {
 :deep(.parentImg) {
   border-radius: 0;
   @apply rounded-t-lg max-h-[215px] object-contain;
+}
+
+.count {
+  :deep(label) {
+    display: none;
+  }
+}
+.w {
+  width: calc(100% - 8px);
 }
 </style>

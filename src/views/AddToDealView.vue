@@ -40,7 +40,7 @@
       </div>
       <div
         class="fixed flex flex-row gap-2 items-center"
-        :class="[isPublicOrder ? 'top-2 right-2' : 'bottom-10 left-[10%]']"
+        :class="[isPublicOrder ? 'top-2 right-[10%]' : 'bottom-10 left-[10%]']"
       >
         <transition name="side">
           <button
