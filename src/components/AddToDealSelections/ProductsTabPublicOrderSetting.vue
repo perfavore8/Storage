@@ -69,7 +69,7 @@ export default {
       password: "",
     });
 
-    const confirm = () => console.log(123);
+    const confirm = () => console.log(123) || togglePublicOrderSettings(false);
 
     return {
       showPublicOrderSettings,
