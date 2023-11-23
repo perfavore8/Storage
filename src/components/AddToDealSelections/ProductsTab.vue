@@ -11,7 +11,10 @@
       :total="total"
       :class="[isPublicOrder ? 'order-1' : 'order-1']"
     />
-    <ProductsTabCastomFields :class="[isPublicOrder ? 'order-3' : 'order-2']" />
+    <div :class="[isPublicOrder ? 'order-3' : 'order-2']">
+      <ProductsTabPublicOrderSetting v-if="!isPublicOrder && isTest" />
+      <ProductsTabCastomFields />
+    </div>
     <div
       class="w-full cont px-1 h-full rounded-xl bg-slate-50 shadow-xl shadow-slate-100"
       :class="[isPublicOrder ? 'order-2' : 'order-3']"
@@ -31,15 +34,22 @@
 import MainPage from "../WidgetAddToDeal/src/components/MainPage.vue";
 import ProductsTabFields from "./ProductsTabFields.vue";
 import ProductsTabCastomFields from "./ProductsTabCastomFields.vue";
+import ProductsTabPublicOrderSetting from "./ProductsTabPublicOrderSetting.vue";
 import { isPublicOrder } from "@/components/PublicOrder";
 import { computed, ref } from "vue";
+import { isTest } from "@/composables/isTest";
 export default {
-  components: { MainPage, ProductsTabFields, ProductsTabCastomFields },
+  components: {
+    MainPage,
+    ProductsTabFields,
+    ProductsTabCastomFields,
+    ProductsTabPublicOrderSetting,
+  },
   setup() {
     const widjet = ref(null);
     const total = computed(() => widjet.value?.total);
 
-    return { widjet, total, isPublicOrder };
+    return { widjet, total, isPublicOrder, isTest };
   },
 };
 </script>

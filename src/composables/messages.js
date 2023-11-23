@@ -969,6 +969,10 @@ export const messages = {
       client: "Client",
       arch: "Order has been successfully archived",
       logoLinkText: "Works for",
+      makePublic: "Make an order public",
+      change: "Editing an order by a client",
+      search: "Product Search",
+      password: "Password",
     },
     widjet: {
       placeholder: "Adding (searching the warehouse by name or article)...",
@@ -2064,6 +2068,10 @@ export const messages = {
       client: "Клиент",
       arch: "Заказ успешно архивирован",
       logoLinkText: "Работает на",
+      makePublic: "Сделать заказ публичным",
+      change: "Редактирование заказа клиентом",
+      search: "Поиск товаров",
+      password: "Пароль",
     },
     widjet: {
       placeholder: "Добавление (поиск на складе по названию или артикулу)...",

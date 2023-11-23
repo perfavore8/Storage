@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col gap-4 justify-center items-center w-full">
-    <h2 class="font-semibold text-gray-700 w-full text-start h-6"></h2>
+  <div class="flex flex-col gap-4 justify-center items-center w-full mt-5">
+    <!-- <h2 class="font-semibold text-gray-700 w-full text-start h-6"></h2> -->
     <div
       class="min-w-[40%] text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
       :class="[
