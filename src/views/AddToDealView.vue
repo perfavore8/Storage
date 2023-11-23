@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <div class="header">
+    <div class="header" :class="{ '!pt-10': isPublicOrder }">
       <button
         class="bg-slate-400 bg-opacity-90 p-2 h-fit w-fit rounded-xl absolute left-0 hover:shadow-sm hover:drop-shadow-md outline-none focus-visible:drop-shadow-md"
         @click="back()"
@@ -23,7 +23,7 @@
         </svg>
       </button>
       <div
-        class="fixed top-3 left-[10%] flex flex-row gap-2 items-center"
+        class="fixed top-4 left-[10%] flex flex-row gap-2 items-center"
         v-if="isPublicOrder"
       >
         <a
@@ -40,7 +40,7 @@
       </div>
       <div
         class="fixed flex flex-row gap-2 items-center"
-        :class="[isPublicOrder ? 'top-2 right-[10%]' : 'bottom-10 left-[10%]']"
+        :class="[isPublicOrder ? 'top-4 right-[10%]' : 'bottom-10 left-[10%]']"
       >
         <transition name="side">
           <button
@@ -51,6 +51,13 @@
             {{ $t("ostatki.arch") }}
           </button>
         </transition>
+        <template v-if="isPublicOrder">
+          <transition name="side2">
+            <button class="btn btn_light_dark_blue">
+              {{ $t("newOrder.pay") }}
+            </button>
+          </transition>
+        </template>
         <transition :name="isPublicOrder ? 'side2' : 'side'">
           <button
             class="btn pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"

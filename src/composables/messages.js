@@ -973,6 +973,7 @@ export const messages = {
       change: "Editing an order by a client",
       search: "Product Search",
       password: "Password",
+      pay: "Pay",
     },
     widjet: {
       placeholder: "Adding (searching the warehouse by name or article)...",
@@ -2072,6 +2073,7 @@ export const messages = {
       change: "Редактирование заказа клиентом",
       search: "Поиск товаров",
       password: "Пароль",
+      pay: "Оплатить",
     },
     widjet: {
       placeholder: "Добавление (поиск на складе по названию или артикулу)...",
