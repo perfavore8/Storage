@@ -153,10 +153,16 @@ export default {
     const { toggleSomeChange } = useNewDeal();
     const { getAllFieldsInSubCat } = useCats();
 
-    const change_value = (value, code) => (
-      context.emit("change_value", value, code), toggleSomeChange(true)
-    );
-
+    const change_value = (value, code) => {
+      if (code === "price_field")
+        context.emit(
+          "change_value",
+          props.copyItem?.product?.fields[value]?.cost,
+          "price"
+        );
+      context.emit("change_value", value, code);
+      toggleSomeChange(true);
+    };
     const target = ref(null);
     const { y: targetY } = useElementBounding(target);
     onClickOutside(target, () => {
