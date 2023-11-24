@@ -65,6 +65,7 @@ export function useNewDeal() {
   onMounted(() => {
     if (routeWatcher.value) return;
     routeWatcher.value = router.afterEach((to) => {
+      if (to.params?.isNew) return;
       if (!to.query?.order_id) delete newDealParams.id;
       toggleSomeChange(false);
       dropOrder();

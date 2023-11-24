@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app px-2 sm:px-[30px]">
     <div class="header" :class="{ '!pt-10': isPublicOrder }">
       <button
         class="bg-slate-400 bg-opacity-90 p-2 h-fit w-fit rounded-xl absolute left-0 hover:shadow-sm hover:drop-shadow-md outline-none focus-visible:drop-shadow-md"
@@ -169,7 +169,6 @@ export default {
   width: calc(100vw - 8px);
   min-height: 100vh;
   height: 100%;
-  padding: 0 30px;
 
   display: flex;
   flex-direction: column;
