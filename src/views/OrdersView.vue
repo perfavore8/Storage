@@ -146,6 +146,7 @@ export default {
         params: {
           pipelineId:
             pipelines.selected.id === -1 ? null : pipelines.selected.id,
+          isNew: true,
         },
       });
 

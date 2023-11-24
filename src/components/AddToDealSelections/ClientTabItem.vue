@@ -1,6 +1,6 @@
 <template>
   <li
-    class="flex justify-between max-w-xl px-6 py-5 rounded-xl w-full transition-all relative mt-1 h-full"
+    class="flex flex-col items-start sm:flex-row justify-between max-w-xl p-2 sm:px-6 sm:py-5 rounded-xl w-full transition-all relative mt-1 h-full"
     :class="{
       'bg-slate-100': show,
       'cursor-pointer, hover:bg-slate-50 opacity-80': !alwaysShow,
@@ -53,10 +53,12 @@
           v-for="field in fields"
           :key="field.code"
         >
-          <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
+          <div
+            class="mb-1 text-gray-500 md:text-base dark:text-gray-400 text-left"
+          >
             {{ field.name }}
           </div>
-          <div class="text-base font-medium">
+          <div class="text-base font-medium text-left">
             {{ item?.fields?.[field.code] }}
           </div>
         </div>
@@ -64,7 +66,7 @@
     </template>
     <button
       v-if="alwaysShow || show"
-      class="btn absolute top-5 right-4 bg-transparent focus-visible:underline focus-visible:underline-offset-4 hover:underline hover:underline-offset-4"
+      class="btn absolute -top-2 sm:top-5 right-0 sm:right-4 bg-transparent focus-visible:underline focus-visible:underline-offset-4 hover:underline hover:underline-offset-4"
       @click="item?.isUnLink ? link() : unLink()"
     >
       {{ item?.isUnLink ? "Привязать" : " Отвязать" }}

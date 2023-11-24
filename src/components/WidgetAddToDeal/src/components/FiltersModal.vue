@@ -1,8 +1,10 @@
 <template>
   <div class="app_modal">
     <div class="sls_backdrop_with_filter" @click="close()" />
-    <div class="sls_container">
-      <div class="sls_header">
+    <div class="sls_container w-full sm:w-[90%] mt-0 mx-auto sm:mt-7">
+      <div
+        class="sls_header flex-col sm:flex-row justify-between pl-3 pr-9 pt-2.5 sm:px-[50px]"
+      >
         <div class="saved">
           <div v-for="(whs, idx) in savedAllWhsList" :key="whs" class="item">
             {{ whs[0].product_name }} :
@@ -12,6 +14,7 @@
               width="24"
               height="24"
               viewBox="0 0 24 24"
+              class="shrink-0"
               @click="deleteSavedAllWhsList(idx)"
             >
               <path
@@ -22,7 +25,7 @@
           </div>
         </div>
         <button
-          class="sls_btn btn2"
+          class="sls_btn btn2 my-2 sm:my-0"
           @click="accepMainGridRef()"
           v-if="savedAllWhsList.length"
         >
@@ -44,7 +47,7 @@
           </svg>
         </button>
       </div>
-      <div class="sls_content">
+      <div class="sls_content px-3 pt-4 sm:px-[50px]">
         <keep-alive>
           <main-grid
             @changeSavedAllWhsList="changeSavedAllWhsList"
@@ -124,12 +127,12 @@ export default {
   .sls_container {
     position: relative;
     z-index: 200;
-    width: 90%;
+    // width: 90%;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.3rem;
-    margin: 30px auto;
+    // margin: 30px auto;
     outline: 0;
     box-shadow: 0 0 7px 6px rgb(206 212 218 / 50%);
     text-align: left;
@@ -137,9 +140,11 @@ export default {
     flex-direction: column;
     .sls_header {
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      padding: 10px 50px;
+      // flex-direction: row;
+      // justify-content: space-between;
+      position: relative;
+      min-height: 48px;
+      // padding: 10px 50px;
       @include font(500, 20px);
       border-bottom: 2px solid #dee2e6;
       .saved {
@@ -170,7 +175,10 @@ export default {
         justify-content: center;
         transition: all 0.15s ease-out;
         margin: 0;
-        margin-right: -10px;
+        // margin-right: -10px;
+        position: absolute;
+        top: 6px;
+        right: 6px;
       }
       .exit:hover {
         transform: rotate(90deg);
@@ -178,7 +186,7 @@ export default {
     }
     .sls_content {
       @include font(400, 16px);
-      padding: 15px 50px;
+      // padding: 15px 50px;
       border-bottom: 2px solid #dee2e6;
       display: flex;
       flex-direction: column;

@@ -44,8 +44,9 @@ html {
   min-height: 100vh;
 }
 *::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  // width: 8px;
+  // height: 8px;
+  @apply w-0 h-0 sm:w-2 sm:h-2;
 }
 
 *::-webkit-scrollbar-thumb {

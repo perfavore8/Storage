@@ -15,10 +15,11 @@
       <AppPaginator :page="page" @changePage="changePage" />
     </template>
     <template v-if="showSelector">
-      <ImportStuffSelector
+      <AppInputSelect
         class="count"
-        :options_props="count_values"
-        :selected_option="{ name: count, value: count }"
+        :list="count_values"
+        :selected="{ name: count, value: count }"
+        :SelectedInTitle="true"
         @select="change_count"
       />
     </template>
@@ -26,11 +27,11 @@
 </template>
 
 <script>
-import ImportStuffSelector from "./ImportStuffSelector.vue";
+import AppInputSelect from "./AppInputSelect.vue";
 import AppPaginator from "./AppPaginator.vue";
 export default {
   components: {
-    ImportStuffSelector,
+    AppInputSelect,
     AppPaginator,
   },
   props: {
@@ -155,6 +156,10 @@ export default {
   .count {
     margin-left: 7px;
     width: fit-content;
+    width: 48px;
+  }
+  .count:deep(.list) {
+    width: min-content;
   }
 }
 </style>

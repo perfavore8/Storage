@@ -21,9 +21,9 @@
     </a>
   </div>
   <div v-else>
-    <header class="flex flex-row items-center justify-evenly">
+    <header class="flex flex-row items-center justify-evenly flex-wrap gap-2">
       <AppInputSelect
-        class="w-1/2"
+        class="w-full sm:w-1/2"
         :list="docs.list"
         :selected="docs.selected"
         :countLettersReq="0"
@@ -33,9 +33,9 @@
         @changeInputValue="(val) => (docs.value = val)"
         @select="(option) => docs.select(option)"
       />
-      <div class="flex flex-row gap-4 items-center">
+      <div class="flex flex-row gap-4 items-center w-full">
         <button
-          class="btn pointer-events-auto relative inline-flex transition-all rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          class="btn w-full sm:w-auto items-center justify-center pointer-events-auto relative inline-flex transition-all rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
           @click="generate()"
           :disabled="docs.selected.value === -1"
         >
@@ -49,7 +49,7 @@
         </button>
         <label
           for="xlsx"
-          class="btn pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+          class="btn w-full sm:w-auto items-center justify-center pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <template v-if="isUpload">
             {{ $t("newOrder.z") }}
@@ -67,8 +67,48 @@
         />
       </div>
     </header>
-    <div class="mt-10">
-      <table class="bg-white divide-y divide-gray-300 w-3/4 mx-auto">
+    <div class="mt-10 flex justify-center">
+      <div
+        class="block sm:hidden bg-white divide-y divide-gray-300 min-w-[80%] space-y-1"
+      >
+        <div
+          class="flex flex-col items-start w-full"
+          v-for="item in [...docsList, ...customDocList]"
+          :key="item.id"
+        >
+          <h4 class="text-lg font-medium">{{ item.name }}</h4>
+          <div class="flex flex-row gap-4 items-center justify-between w-full">
+            <span>{{ item.created_at }}</span>
+            <span>{{ item.user_name }}</span>
+          </div>
+          <div class="flex flex-row gap-4 items-center justify-between w-full">
+            <a
+              class="btn !h-auto !p-1 w-full sm:w-auto items-center justify-center pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+              target="blank"
+              :href="item.open_url"
+              v-if="item.open_url"
+            >
+              {{ $t("newOrder.o") }}
+            </a>
+            <a
+              class="btn !h-auto !p-1 w-full sm:w-auto items-center justify-center pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+              target="blank"
+              :href="item.download_url"
+            >
+              {{ $t("newOrder.d") }}
+            </a>
+            <button
+              class="w-fit h-fit p-2 rounded-lg flex justify-center items-center focus:outline-2 focus:-outline-offset-4 focus:outline-slate-600 active:brightness-125"
+              @click="
+                item.isCustom ? deleteCustomDoc(item.id) : delDoc(item.id)
+              "
+            >
+              <span class="material-icons-outlined text-red-600"> delete </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <table class="hidden sm:block bg-white divide-y divide-gray-300 w-3/4">
         <tr v-for="item in [...docsList, ...customDocList]" :key="item.id">
           <td class="cell main">
             <span>{{ item.name }}</span>

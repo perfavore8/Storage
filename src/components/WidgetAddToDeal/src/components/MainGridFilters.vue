@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper flex flex-col sm:flex-row items-start justify-between">
     <div class="filters">
       <div class="item">
         <selector-vue
@@ -69,7 +69,7 @@
         </div>
       </template>
     </div>
-    <div class="accept_btn">
+    <div class="accept_btn self-center sm:self-auto">
       <button @click="confirmFilters()" class="btn2 sls_btn">
         {{ $t("global.apply2") }}
       </button>
@@ -320,10 +320,6 @@ export default {
   box-sizing: border-box;
 }
 .wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: start;
   margin-bottom: 12px;
 }
 .filters {

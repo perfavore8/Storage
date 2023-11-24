@@ -8,12 +8,20 @@
       <div class="modal-header">
         <div class="head-text">{{ $t("tableSet.name") }}</div>
       </div>
+      <div class="modal-footer sm:hidden">
+        <btns-save-close @close="close" @save="save" />
+      </div>
       <div class="modal-body">
         <div class="text">
           <small class="small-text">{{ $t("tableSet.sm") }}</small>
         </div>
-        <draggable class="dragArea" :list="list" @change="changeData">
-          <div class="item" v-for="item in list" :key="item">
+        <draggable
+          class="dragArea"
+          :list="list"
+          @change="changeData"
+          :handle="isSm ? '.handle' : null"
+        >
+          <div class="item sm:cursor-move" v-for="item in list" :key="item">
             <input
               type="checkbox"
               v-model="item.visible"
@@ -23,6 +31,12 @@
             />
             <label :for="item.code"></label>
             {{ item.name }}
+            <span
+              v-if="isSm"
+              class="material-icons-outlined handle ml-auto cursor-move"
+            >
+              reorder
+            </span>
           </div>
         </draggable>
       </div>
@@ -47,6 +61,7 @@ export default {
   data() {
     return {
       list: [],
+      isSm: false,
     };
   },
   computed: {
@@ -55,6 +70,8 @@ export default {
     },
   },
   async mounted() {
+    this.checkIsSm();
+    window.addEventListener("resize", this.checkIsSm);
     await this.$store.dispatch("getTableConfigW", {
       code: "widget",
     });
@@ -69,7 +86,13 @@ export default {
       if (item.visible === 0) item.visible = false;
     });
   },
+  unmounted() {
+    window.removeEventListener("resize", this.checkIsSm);
+  },
   methods: {
+    checkIsSm() {
+      this.isSm = window.innerWidth < 640;
+    },
     async save() {
       this.list.map((val, idx) => (val.sort = idx + 1));
       const params = {
@@ -100,6 +123,9 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
+  display: flex;
+  align-items: start;
+  justify-content: center;
 }
 .backdrop_with_filter {
   z-index: 249;
@@ -110,13 +136,11 @@ export default {
   display: flex;
   flex-direction: column;
   margin: auto;
-  position: absolute;
-  top: 1.75rem;
-  left: calc(50% - 233px);
+  margin-top: 1.75rem;
   height: auto;
   max-height: calc(100vh - 3.5rem);
   max-width: 600px;
-  min-width: 500px;
+  min-width: 300px;
   overflow-y: clip;
 
   background-color: #fff;
@@ -153,7 +177,6 @@ export default {
   display: flex;
   align-items: center;
   padding: 8px 16px;
-  cursor: grab;
   @include font(400, 1rem, 1.5);
   color: #212529;
   text-decoration: none;

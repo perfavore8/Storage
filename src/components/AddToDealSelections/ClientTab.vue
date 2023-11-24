@@ -1,9 +1,9 @@
 <template>
   <div
-    class="grid grid-cols-2 justify-items-center items-start w-4/5 mx-auto gap-10 mt-4"
+    class="grid grid-cols-2 justify-items-center items-start w-full sm:w-4/5 mx-auto gap-2 sm:gap-10 mt-4"
   >
     <AppInputSelect
-      class="w-1/2 mx-auto"
+      class="w-full sm:w-1/2 mx-auto"
       v-for="autocomplete in autocompleteList"
       :key="autocomplete.id"
       :placeholder="autocomplete.placeholder"
@@ -18,7 +18,9 @@
       :key="col"
       class="w-full flex flex-col items-center"
     >
-      <h2 class="font-semibold text-gray-700 w-full text-center my-2">
+      <h2
+        class="font-semibold text-gray-700 text-lg sm:text-base w-full text-center my-2"
+      >
         {{ col.name }}
       </h2>
       <template v-for="item in col.items" :key="item?.id">

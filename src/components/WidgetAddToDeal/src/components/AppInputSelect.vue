@@ -44,7 +44,7 @@
       <div class="backdrop" @click="closeList()" />
       <transition-group name="list">
         <template v-if="list.length">
-          <ul class="list top" ref="listRef">
+          <ul class="list top w-[93%] sm:w-fit" ref="listRef">
             <li
               class="item"
               :class="{ selected: item.value === selected?.value }"
@@ -197,8 +197,10 @@ export default {
     watch(titleIsVisible, () => {
       if (titleIsVisible.value) {
         window.addEventListener("scroll", calcListPosition);
+        window.addEventListener("resize", calcListPosition);
       } else {
         window.removeEventListener("scroll", calcListPosition);
+        window.removeEventListener("resize", calcListPosition);
       }
     });
 
@@ -309,11 +311,11 @@ export default {
       justify-content: center;
       box-sizing: border-box;
       cursor: pointer;
-      height: 40px;
+      // height: 40px;
       width: 100%;
       padding: 6px 12px;
       transition: background-color 0.15s ease-out;
-      white-space: nowrap;
+      // white-space: nowrap;
       border-top: 1px solid #ced4da7d;
     }
     .item:hover {

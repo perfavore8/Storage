@@ -1,11 +1,11 @@
 <template>
   <div
     class="flex flex-col gap-4 justify-center items-center top-[142px] w-full mx-auto mt-4"
-    :class="[isPublicOrder ? 'public' : 'sticky privat']"
+    :class="[isPublicOrder ? 'public' : 'sm:sticky privat']"
   >
     <h2
       class="font-semibold text-gray-700 w-full"
-      :class="[isPublicOrder ? 'text-center font-bold text-2xl' : 'text-start']"
+      :class="[isPublicOrder ? 'text-center font-bold text-3xl' : 'text-start']"
     >
       {{ isPublicOrder ? order.fields.name : $t("newOrder.dan") }}
     </h2>
@@ -249,7 +249,7 @@ export default {
 }
 .public {
   .item {
-    @apply flex-row justify-between pt-3 items-start w-11/12;
+    @apply flex-row justify-between pt-3 items-start sm:w-11/12;
   }
 }
 .privat {

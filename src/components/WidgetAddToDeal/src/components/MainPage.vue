@@ -690,7 +690,6 @@ export default {
     },
     async changePage(newPage) {
       this.$store.commit("updateProductsParams2W", { page: newPage });
-      window.scrollTo(0, 0);
       await this.getProducts(this.selectedCategories.at(-1)?.id);
     },
     dropPage() {
@@ -911,11 +910,11 @@ export default {
           display: flex;
           flex-direction: row;
           align-items: center;
-          gap: 15px;
+          // gap: 15px;
+          @apply gap-2 sm:gap-4;
           .sls_checkbox + label::before {
             width: 32px;
             height: 32px;
-            margin-left: 17px;
             border: none;
             transition: all 0.15s ease-ount;
             filter: contrast(0.5);
@@ -924,6 +923,7 @@ export default {
               "https://www.svgrepo.com/show/510838/arrow-up-sm.svg",
               100%
             );
+            @apply m-0 sm:ml-[17px] sm:mr-2;
           }
           .sls_checkbox:checked + label::before {
             border-color: transparent;
@@ -1461,6 +1461,9 @@ export default {
           .input-select:deep(.item) {
             justify-content: flex-start;
             gap: 8px;
+          }
+          .input-select:deep(.list) {
+            @apply w-4/5 sm:w-fit;
           }
           .input {
             width: calc(100% - 12px);
