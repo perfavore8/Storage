@@ -165,8 +165,11 @@ export default {
     });
 
     const updateList = async () => {
-      await setTitles();
-      await Promise.all([store.dispatch("get_account"), getOrders()]);
+      await Promise.all([
+        setTitles(),
+        store.dispatch("get_account"),
+        getOrders(),
+      ]);
     };
 
     const collsCount = computed(() => products.titles.length);
