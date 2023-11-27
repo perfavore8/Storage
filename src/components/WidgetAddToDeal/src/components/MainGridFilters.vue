@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper flex flex-col sm:flex-row items-start justify-between">
+  <div class="wrapper flex flex-col md:flex-row items-start justify-between">
     <div class="filters">
       <div class="item">
         <selector-vue

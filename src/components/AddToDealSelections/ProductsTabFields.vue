@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex flex-col gap-4 justify-center items-center top-[142px] w-full mx-auto mt-4"
-    :class="[isPublicOrder ? 'public' : 'sm:sticky privat']"
+    :class="[isPublicOrder ? 'public' : 'md:sticky privat']"
   >
     <h2
       class="font-semibold text-gray-700 w-full"

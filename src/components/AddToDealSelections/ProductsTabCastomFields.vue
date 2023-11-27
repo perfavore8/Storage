@@ -5,8 +5,8 @@
       class="min-w-[40%] text-gray-900 flex flex-col divide-y divide-gray-200 dark:text-white dark:divide-gray-700"
       :class="[
         isPublicOrder
-          ? 'w-full mr-auto grid grid-cols-1 md:grid-cols-2 gap-2 items-start'
-          : 'w-fit',
+          ? 'w-full mr-auto grid grid-cols-1 sm:grid-cols-2 gap-2 items-start'
+          : 'w-full md:w-fit',
       ]"
     >
       <template
@@ -21,7 +21,7 @@
         :key="field.id"
       >
         <div
-          class="row !w-11/12 pb-3"
+          class="row pb-3"
           :class="[
             isPublicOrder && idx === 1 && 'md:!border-t-0',
             { 'w-11/12': isPublicOrder },

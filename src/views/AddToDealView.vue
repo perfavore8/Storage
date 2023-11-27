@@ -1,5 +1,5 @@
 <template>
-  <div class="app px-2 sm:px-[30px] mb-[52px] sm:mb-0">
+  <div class="app px-2 lg:px-[30px] mb-[52px] sm:mb-0">
     <div
       class="header !pb-1 sm:pb-5"
       :class="[
@@ -33,7 +33,7 @@
       >
         <div class="relative">
           <div
-            class="absolute sm:fixed -top-3 -translate-y-full sm:translate-y-0 sm:top-4 right-0 sm:right-[10%] flex flex-row gap-2 items-center justify-center"
+            class="absolute sm:fixed -top-3 -translate-y-full sm:translate-y-0 sm:top-auto sm:bottom-4 right-0 sm:right-4 lg:right-[10%] flex flex-row gap-2 items-center justify-center"
             v-if="isPublicOrder"
           >
             <a

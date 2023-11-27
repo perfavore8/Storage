@@ -1,10 +1,10 @@
 <template>
   <div
-    class="gap-10 mx-auto sm:w-4/5"
+    class="gap-10 mx-auto lg:w-4/5"
     :class="[
       isPublicOrder
         ? 'flex flex-col items-center'
-        : 'flex flex-col items-center sm:grid sm:grid-cols-3 sm:justify-items-start sm:items-start',
+        : 'flex flex-col items-center md:grid md:grid-cols-3 md:justify-items-start md:items-start',
     ]"
   >
     <ProductsTabFields
@@ -12,14 +12,15 @@
       :class="[isPublicOrder ? 'order-1 px-1 sm:px-0' : 'order-1']"
     />
     <div
-      :class="[isPublicOrder ? 'order-3 px-1 sm:px-0' : 'order-3 sm:order-2']"
+      class="w-full"
+      :class="[isPublicOrder ? 'order-3 px-1 sm:px-0' : 'order-3 md:order-2']"
     >
       <ProductsTabPublicOrderSetting v-if="!isPublicOrder && isTest" />
       <ProductsTabCastomFields />
     </div>
     <div
       class="w-full cont px-1 h-full rounded-xl bg-slate-50 shadow-xl shadow-slate-100"
-      :class="[isPublicOrder ? 'order-2' : 'order-2 sm:order-3']"
+      :class="[isPublicOrder ? 'order-2' : 'order-2 md:order-3']"
     >
       <h2
         class="font-semibold text-gray-700 mb-10 w-full text-start"

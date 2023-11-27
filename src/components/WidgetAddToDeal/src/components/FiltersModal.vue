@@ -1,9 +1,11 @@
 <template>
   <div class="app_modal">
     <div class="sls_backdrop_with_filter" @click="close()" />
-    <div class="sls_container w-full sm:w-[90%] mt-0 mx-auto sm:mt-7">
+    <div
+      class="sls_container w-full sm:w-[95%] sm:mt-2 md:w-[90%] mt-0 mx-auto md:mt-7"
+    >
       <div
-        class="sls_header flex-col sm:flex-row justify-between pl-3 pr-9 pt-2.5 sm:px-[50px]"
+        class="sls_header flex-col md:flex-row justify-between pl-3 pr-9 pt-2.5 md:px-[50px]"
       >
         <div class="saved">
           <div v-for="(whs, idx) in savedAllWhsList" :key="whs" class="item">
@@ -25,7 +27,7 @@
           </div>
         </div>
         <button
-          class="sls_btn btn2 my-2 sm:my-0"
+          class="sls_btn btn2 my-2 md:my-0"
           @click="accepMainGridRef()"
           v-if="savedAllWhsList.length"
         >
@@ -47,7 +49,7 @@
           </svg>
         </button>
       </div>
-      <div class="sls_content px-3 pt-4 sm:px-[50px]">
+      <div class="sls_content px-3 pt-4 md:px-[50px]">
         <keep-alive>
           <main-grid
             @changeSavedAllWhsList="changeSavedAllWhsList"

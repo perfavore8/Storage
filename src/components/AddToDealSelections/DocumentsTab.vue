@@ -33,7 +33,7 @@
         @changeInputValue="(val) => (docs.value = val)"
         @select="(option) => docs.select(option)"
       />
-      <div class="flex flex-row gap-4 items-center w-full">
+      <div class="flex flex-row gap-4 items-center w-full sm:w-auto">
         <button
           class="btn w-full sm:w-auto items-center justify-center pointer-events-auto relative inline-flex transition-all rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
           @click="generate()"
@@ -67,9 +67,9 @@
         />
       </div>
     </header>
-    <div class="mt-10 flex justify-center">
+    <div class="mt-10 flex justify-center items-center">
       <div
-        class="block sm:hidden bg-white divide-y divide-gray-300 min-w-[80%] space-y-1"
+        class="block md:hidden bg-white divide-y divide-gray-300 min-w-[80%] w-full space-y-1"
       >
         <div
           class="flex flex-col items-start w-full"
@@ -83,7 +83,7 @@
           </div>
           <div class="flex flex-row gap-4 items-center justify-between w-full">
             <a
-              class="btn !h-auto !p-1 w-full sm:w-auto items-center justify-center pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+              class="btn !h-auto !p-1 w-full md:w-auto items-center justify-center pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
               target="blank"
               :href="item.open_url"
               v-if="item.open_url"
@@ -91,7 +91,7 @@
               {{ $t("newOrder.o") }}
             </a>
             <a
-              class="btn !h-auto !p-1 w-full sm:w-auto items-center justify-center pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
+              class="btn !h-auto !p-1 w-full md:w-auto items-center justify-center pointer-events-auto relative inline-flex rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
               target="blank"
               :href="item.download_url"
             >
@@ -108,7 +108,9 @@
           </div>
         </div>
       </div>
-      <table class="hidden sm:block bg-white divide-y divide-gray-300 w-3/4">
+      <table
+        class="hidden md:block bg-white divide-y divide-gray-300 md:w-fit lg:w-3/4"
+      >
         <tr v-for="item in [...docsList, ...customDocList]" :key="item.id">
           <td class="cell main">
             <span>{{ item.name }}</span>
