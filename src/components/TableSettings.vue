@@ -1,18 +1,30 @@
 <template>
   <div class="modal">
     <div class="backdrop_with_filter" @click="close()" />
-    <div class="wrapper">
+    <div class="wrapper mx-auto mt-2 md:mt-7">
       <div class="modal-header">
         <div class="head-text">
           <slot name="header">{{ $t("tableSet.name") }}</slot>
         </div>
       </div>
+      <div class="modal-footer sm:hidden">
+        <btns-save-close @close="close" @save="save" />
+      </div>
       <div class="modal-body">
         <div class="text">
           <small class="small-text">{{ $t("tableSet.sm") }}</small>
         </div>
-        <draggable class="dragArea" :list="list" @end="() => sort()">
-          <div class="item" v-for="item in list" :key="item.name">
+        <draggable
+          class="dragArea"
+          :list="list"
+          @end="() => sort()"
+          :handle="isMobile ? '.handle' : null"
+        >
+          <div
+            class="item sm:cursor-move"
+            v-for="item in list"
+            :key="item.name"
+          >
             <input
               type="checkbox"
               v-model="item.visible.value"
@@ -26,6 +38,12 @@
             />
             <label :for="item.code"></label>
             {{ item.name }}
+            <span
+              v-if="isMobile"
+              class="material-icons-outlined handle ml-auto cursor-move text-slate-500"
+            >
+              reorder
+            </span>
           </div>
         </draggable>
       </div>
@@ -42,6 +60,7 @@ import { VueDraggableNext } from "vue-draggable-next";
 import { computed, onMounted, ref } from "vue";
 import store from "@/store";
 import { useTableSettingsConfig } from "@/composables/tableSettingsConfig";
+import { useCheckMobile } from "@/composables/checkMobile";
 export default {
   components: {
     draggable: VueDraggableNext,
@@ -173,6 +192,7 @@ export default {
       close,
       currentCountSelected,
       sort,
+      ...useCheckMobile(),
     };
   },
 };
@@ -188,6 +208,9 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
+  display: flex;
+  align-items: start;
+  justify-content: center;
 }
 .backdrop_with_filter {
   z-index: 199;
@@ -197,14 +220,10 @@ export default {
   box-shadow: 0 0 7px 6px rgb(206 212 218 / 50%);
   display: flex;
   flex-direction: column;
-  margin: auto;
-  position: absolute;
-  top: 1.75rem;
-  left: calc(50% - 233px);
   height: auto;
-  max-height: calc(100vh - 3.5rem);
+  max-height: calc(100vh - 5rem);
   max-width: 600px;
-  min-width: 500px;
+  min-width: 300px;
   overflow-y: clip;
 
   background-color: #fff;

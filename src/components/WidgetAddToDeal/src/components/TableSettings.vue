@@ -4,7 +4,7 @@
       class="backdrop_with_filter sls_backdrop_with_filter"
       @click="close()"
     />
-    <div class="wrapper">
+    <div class="wrapper mx-auto mt-2 md:mt-7">
       <div class="modal-header">
         <div class="head-text">{{ $t("tableSet.name") }}</div>
       </div>
@@ -19,7 +19,7 @@
           class="dragArea"
           :list="list"
           @change="changeData"
-          :handle="isSm ? '.handle' : null"
+          :handle="isMobile ? '.handle' : null"
         >
           <div class="item sm:cursor-move" v-for="item in list" :key="item">
             <input
@@ -32,7 +32,7 @@
             <label :for="item.code"></label>
             {{ item.name }}
             <span
-              v-if="isSm"
+              v-if="isMobile"
               class="material-icons-outlined handle ml-auto cursor-move"
             >
               reorder
@@ -51,6 +51,7 @@
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 // import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
+import { useCheckMobile } from "@/composables/checkMobile";
 export default {
   components: {
     draggable: VueDraggableNext,
@@ -58,10 +59,12 @@ export default {
   },
   props: {},
   emits: {},
+  setup() {
+    return { ...useCheckMobile() };
+  },
   data() {
     return {
       list: [],
-      isSm: false,
     };
   },
   computed: {
@@ -70,8 +73,6 @@ export default {
     },
   },
   async mounted() {
-    this.checkIsSm();
-    window.addEventListener("resize", this.checkIsSm);
     await this.$store.dispatch("getTableConfigW", {
       code: "widget",
     });
@@ -86,13 +87,7 @@ export default {
       if (item.visible === 0) item.visible = false;
     });
   },
-  unmounted() {
-    window.removeEventListener("resize", this.checkIsSm);
-  },
   methods: {
-    checkIsSm() {
-      this.isSm = window.innerWidth < 640;
-    },
     async save() {
       this.list.map((val, idx) => (val.sort = idx + 1));
       const params = {
@@ -135,10 +130,8 @@ export default {
   box-shadow: 0 0 7px 6px rgb(206 212 218 / 50%);
   display: flex;
   flex-direction: column;
-  margin: auto;
-  margin-top: 1.75rem;
   height: auto;
-  max-height: calc(100vh - 3.5rem);
+  max-height: calc(100vh - 5rem);
   max-width: 600px;
   min-width: 300px;
   overflow-y: clip;

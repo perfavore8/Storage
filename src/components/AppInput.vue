@@ -33,6 +33,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .text {
-  margin: 0 3px;
+  // margin: 0 3px;
 }
 </style>

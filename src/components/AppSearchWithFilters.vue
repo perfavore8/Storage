@@ -17,7 +17,7 @@
     </div>
     <div
       v-show="showFilters"
-      class="absolute top-full mt-2 border border-slate-200 bg-white bg-opacity-80 backdrop-blur-md shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-full max-w-[150%] min-w-[550px] max-h-[75vh] overflow-y-scroll flex flex-col gap-8"
+      class="absolute top-full mt-2 border border-slate-200 bg-white shadow-lg shadow-shark-100 left-1/2 -translate-x-1/2 p-4 rounded-lg w-full max-w-[150%] sm:min-w-[550px] max-h-[75vh] overflow-y-scroll flex flex-col gap-8"
     >
       <BtnsSaveClose
         :show_close="false"
@@ -42,7 +42,7 @@
         >
           {{ source.title }}
         </h2>
-        <div class="filters pt-2">
+        <div class="filters grid-cols-1 sm:grid-cols-2 pt-2">
           <div>
             <SearchFiltersGroup
               :filters="
@@ -101,7 +101,7 @@ import SearchFiltersGroup from "./SearchFiltersGroup.vue";
 import AppInput from "./AppInput.vue";
 import { useToggle, onClickOutside } from "@vueuse/core";
 import { useSearchFilters } from "@/composables/searchFilters";
-import { computed, ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useClientsTabs } from "@/composables/clientsTabs";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
@@ -123,6 +123,12 @@ export default {
     onClickOutside(target, () => toggleFilters(false));
 
     const [showFilters, toggleFilters] = useToggle();
+
+    watchEffect(() =>
+      showFilters.value
+        ? (document.body.style.overflowY = "hidden")
+        : (document.body.style.overflowY = "auto")
+    );
 
     const {
       searchValue,
@@ -189,7 +195,6 @@ export default {
 @import "@/app.scss";
 .filters {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   justify-items: stretch;
   align-items: start;
   gap: 24px;

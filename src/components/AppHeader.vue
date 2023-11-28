@@ -1,7 +1,7 @@
 <template>
-  <header>
+  <header class="z-[46]">
     <NavBar />
-    <HomeMenu />
+    <HomeMenu class="z-[46]" />
   </header>
   <HomeModals :selectedWH="selectedWH" />
 </template>
@@ -24,5 +24,6 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 </style>

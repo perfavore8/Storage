@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-fit mt-20 pb-10 mx-auto text-left overflow-x-scroll max-w-[95vw] limit_height"
+    class="w-fit mt-12 pb-2 md:mt-20 md:pb-10 mx-auto text-left overflow-x-scroll max-w-[95vw] limit_height"
     :class="{ blur: isDataLoading }"
   >
     <div class="w-full flex flex-row gap-2">
@@ -38,21 +38,34 @@
             class="flex flex-col gap-2 h-full p-2 pt-0 overflow-y-scroll max-h-[87vh] min-h-[20px]"
             :list="column.res.data"
             group="people"
+            :handle="isMobile ? '.handle' : null"
             :item-key="id"
             :ref="(ref) => (column.ref = ref)"
           >
             <template #item="{ element, index }">
               <div
-                class="p-2 rounded-md cursor-move bg-white flex flex-col gap-1"
+                class="p-2 rounded-md bg-white flex flex-col gap-1 relative"
                 :class="{
                   collapse:
                     index > column.lastVisibleElIdx + 5 ||
                     index < column.lastVisibleElIdx - 10,
+                  'cursor-move': !isMobile,
+                  'pt-5': isMobile,
                 }"
                 :ref="(ref) => (element.visible.ref = ref)"
                 @dragend="() => move()"
                 @dragstart="() => saveDragEl(element)"
               >
+                <div
+                  class="absolute top-0 left-0 w-full bg-transparent flex justify-center items-center handle"
+                >
+                  <span
+                    v-if="isMobile"
+                    class="material-icons-outlined cursor-move text-slate-500"
+                  >
+                    drag_handle
+                  </span>
+                </div>
                 <div class="card-header flex flex-row justify-between">
                   <a
                     target="_self"
@@ -123,6 +136,7 @@ import store from "@/store";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import router from "@/router";
 import { useValidate } from "@/composables/validate";
+import { useCheckMobile } from "@/composables/checkMobile";
 export default {
   components: {
     draggable,
@@ -300,6 +314,7 @@ export default {
       routeToOrder,
       emitParams,
       formatNumber,
+      ...useCheckMobile(),
     };
   },
 };

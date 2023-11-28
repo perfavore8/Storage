@@ -69,7 +69,7 @@
     </header>
     <div class="mt-10 flex justify-center items-center">
       <div
-        class="block md:hidden bg-white divide-y divide-gray-300 min-w-[80%] w-full space-y-1"
+        class="block whidden bg-white divide-y divide-gray-300 min-w-[80%] w-full space-y-1"
       >
         <div
           class="flex flex-col items-start w-full"

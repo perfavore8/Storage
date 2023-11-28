@@ -1,5 +1,5 @@
 <template>
-  <div class="menu">
+  <div class="menu !static md:!relative">
     <div class="ref ref_center">
       <button
         class="ref_2_logo btn"
@@ -97,7 +97,10 @@
         </transition>
       </template>
     </div>
-    <div class="ref" v-if="!(isTest2 && !currentSetSettings?.app?.settingsBtn)">
+    <div
+      class="ref !static md:!relative"
+      v-if="!(isTest2 && !currentSetSettings?.app?.settingsBtn)"
+    >
       <button
         class="settings_btn"
         :class="{ settings_btn_rotate: show_settings }"
@@ -109,7 +112,10 @@
       <template v-if="show_settings">
         <div class="backdrop" @click="close_settings()" />
         <transition name="modal">
-          <div class="modal_settings" @click="close_settings()">
+          <div
+            class="modal_settings !w-full md:!w-[358px] !top-12 md:!top-[200%]"
+            @click="close_settings()"
+          >
             <a>
               <div class="modal_container" @click="open_edit_stuff()">
                 {{ $t("HomeMenu.settings.general") }}

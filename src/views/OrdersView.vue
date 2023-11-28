@@ -1,6 +1,8 @@
 <template>
   <div class="app">
-    <div class="header">
+    <div
+      class="header pt-[20px] bg-white pb-3 px-2 md:px-[30px] static w-full md:w-[calc(100vw-20px)] md:sticky max-w-[100vw] md:max-w-none"
+    >
       <AppHeader
         :selectedWH="{
           name: t('orders.ors'),
@@ -10,49 +12,71 @@
         }"
       />
     </div>
-    <div class="wrapper" :key="OrderViewKey">
+    <div
+      class="wrapper mt-4 md:mt-[80px] px-2 md:px-[30px] max-w-[100vw] md:max-w-none"
+      :key="OrderViewKey"
+    >
       <div
-        class="filters w-full flex justify-between items-center relative"
+        class="filters md:sticky md:left-[30px] w-[calc(100vw-16px)] md:w-[calc(100vw-70px)] flex flex-col md:flex-row justify-between items-center relative gap-2"
         v-if="isTest2"
       >
-        <div class="flex flex-row items-center gap-2 h-fit basis-1/3">
-          <button class="cursor-pointer h-7" @click="displayType.selectNext()">
-            <transition name="modal" mode="out-in" :duration="100">
-              <span
-                class="material-icons-round !font-semibold !text-[28px] !text-[#757575] select-none"
-                :key="displayType.selected.name"
-              >
-                {{ displayType.nextItem.icon }}
-              </span>
-            </transition>
-          </button>
-          <OrdersKanbanPipelineSelect
-            :key="displayType.selected.name"
-            :needAll="displayType.selected.name === 'grid'"
-          />
-          <div class="flex items-center" v-if="isMain || isTest2">
+        <div
+          class="flex flex-row flex-wrap sm:flex-nowrap items-center gap-2 h-fit basis-1/3 order-2 md:order-1"
+        >
+          <div class="flex flex-row items-center gap-2 w-full">
+            <button
+              class="cursor-pointer h-7"
+              @click="displayType.selectNext()"
+            >
+              <transition name="modal" mode="out-in" :duration="100">
+                <span
+                  class="material-icons-round !font-semibold !text-[28px] !text-[#757575] select-none"
+                  :key="displayType.selected.name"
+                >
+                  {{ displayType.nextItem.icon }}
+                </span>
+              </transition>
+            </button>
+            <OrdersKanbanPipelineSelect
+              class="w-full"
+              :key="displayType.selected.name"
+              :needAll="displayType.selected.name === 'grid'"
+            />
+          </div>
+          <div class="flex items-center w-full" v-if="isMain || isTest2">
             <input
               type="checkbox"
               id="hideFinalSteps"
               class="checkbox"
               v-model="hideFinalSteps"
             />
-            <label for="hideFinalSteps">{{ $t("orders.hfs") }}</label>
+            <label for="hideFinalSteps" class="whitespace-pre-wrap">{{
+              $t("orders.hfs")
+            }}</label>
           </div>
+          <button
+            class="btn btn_dark_blue md:hidden whitespace-nowrap w-full"
+            @click="addToDeal()"
+          >
+            {{ $t("orders.cre") }}
+          </button>
         </div>
         <AppSearchWithFilters
-          class="grow basis-1/3"
+          class="grow basis-1/3 order-1 md:order-2 w-full"
           :setOfInstructions="'orders'"
           :key="selectedTabComp"
           @emitParams="emitParams"
         />
-        <div class="basis-1/3 flex justify-end">
-          <button class="btn btn_dark_blue" @click="addToDeal()">
+        <div class="basis-1/3 flex justify-end order-3">
+          <button
+            class="btn btn_dark_blue hidden md:block"
+            @click="addToDeal()"
+          >
             {{ $t("orders.cre") }}
           </button>
         </div>
         <div
-          class="absolute top-[70px] right-0 flex flex-row gap-3 items-center"
+          class="absolute -bottom-[42px] right-0 flex flex-row gap-3 items-center"
         >
           <button
             class="sync_icon btn"
@@ -81,7 +105,7 @@
           </div>
         </div>
         <div
-          class="absolute top-[90px] left-0 flex flex-row gap-3 items-center"
+          class="absolute -bottom-[42px] left-0 flex flex-row gap-3 items-center"
           v-if="displayType.selected.name === 'grid'"
         >
           {{ $t("orders.sd") }} {{ grid?.meta?.meta?.total || 0 }} |
@@ -257,14 +281,10 @@ export default {
   text-align: center;
 }
 .header {
-  margin-top: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  position: sticky;
-  padding: 0 30px;
   left: 0;
-  width: calc(100vw - 20px);
   z-index: 51;
   &_left {
     .header_row {
@@ -275,17 +295,13 @@ export default {
   }
 }
 .filters {
-  position: sticky;
-  left: 30px;
-  width: calc(100vw - 70px);
   z-index: 50;
 }
 .grid {
   grid-template-columns: 1fr auto 1fr;
 }
 .wrapper {
-  margin-top: 80px;
-  padding: 0 30px;
+  display: block;
 }
 .modal-enter-active,
 .modal-leave-active {
