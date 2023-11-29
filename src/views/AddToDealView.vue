@@ -28,14 +28,22 @@
           />
         </svg>
       </button>
+      <div class="fixed top-4 left-[10%] hidden sm:block">
+        <transition name="side2">
+          <AvailablePublicOrdersList />
+        </transition>
+      </div>
       <div
         class="fixed sm:static bottom-0 left-0 w-full sm:w-auto flex flex-col gap-2 p-2 sm:p-0 bg-white shadow-md shadow-black rounded-t-lg"
       >
         <div class="relative">
           <div
-            class="absolute sm:fixed -top-3 -translate-y-full sm:translate-y-0 sm:top-auto sm:bottom-4 right-0 sm:right-4 lg:right-[10%] flex flex-row gap-2 items-center justify-center"
+            class="w-full absolute sm:fixed -top-3 -translate-y-full sm:translate-y-0 sm:top-auto sm:bottom-4 right-0 sm:right-4 lg:right-[10%] flex flex-row gap-2 items-center justify-between sm:w-fit"
             v-if="isPublicOrder"
           >
+            <transition name="side2">
+              <AvailablePublicOrdersList class="sm:hidden" />
+            </transition>
             <a
               href="https://gosklad.com/"
               target="_blank"
@@ -118,7 +126,7 @@
 </template>
 
 <script>
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import router from "@/router";
 import ProductsTab from "@/components/AddToDealSelections/ProductsTab.vue";
 import DocumentsTab from "@/components/AddToDealSelections/DocumentsTab.vue";
@@ -132,12 +140,14 @@ import { useNotification } from "@/composables/notification";
 import { isTest } from "@/composables/isTest";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import { isPublicOrder } from "@/components/PublicOrder";
+import { AvailablePublicOrdersList } from "@/components/PublicOrder";
 export default {
   components: {
     ProductsTab,
     DocumentsTab,
     ClientTab,
     AppRadioBtnsGroupUnderlined,
+    AvailablePublicOrdersList,
   },
   setup() {
     const { add, saveParams, order, isOrderGeted } = useNewDeal();
@@ -148,9 +158,7 @@ export default {
 
     const back = () => router.push("/");
 
-    onMounted(async () => {
-      add();
-    });
+    add();
 
     const isClosedStep = computed(
       () =>

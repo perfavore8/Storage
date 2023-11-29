@@ -50,6 +50,7 @@
         :class="[isPublicOrder && idx === 0 && 'md:!border-t-0']"
         v-for="(item, idx) in list"
         :key="item.label"
+        v-show="!(isPublicOrder && notForPublic.includes(item.value))"
       >
         <div class="mb-1 text-gray-500 md:text-base dark:text-gray-400">
           {{ item.label }}
@@ -141,6 +142,8 @@ export default {
         component: "SelectorVue",
       },
     ]);
+
+    const notForPublic = ["prib", "cost_price"];
 
     const selector = reactive({
       selected: computed(() =>
@@ -237,6 +240,7 @@ export default {
       config,
       isPublicOrder,
       checkIsNull,
+      notForPublic,
     };
   },
 };

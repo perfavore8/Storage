@@ -974,6 +974,10 @@ export const messages = {
       search: "Product Search",
       password: "Password",
       pay: "Pay",
+      myOrders: "My orders",
+      ordersList: "List of orders",
+      docs: "Documents",
+      login: "Login",
     },
     widjet: {
       placeholder: "Adding (searching the warehouse by name or article)...",
@@ -2074,6 +2078,10 @@ export const messages = {
       search: "Поиск товаров",
       password: "Пароль",
       pay: "Оплатить",
+      myOrders: "Мои заказы",
+      ordersList: "Список заказов",
+      docs: "Документы",
+      login: "Логин",
     },
     widjet: {
       placeholder: "Добавление (поиск на складе по названию или артикулу)...",

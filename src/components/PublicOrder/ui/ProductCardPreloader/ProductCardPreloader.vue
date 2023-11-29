@@ -1,6 +1,6 @@
 <template>
   <div
-    class="max-w-sm w-96 h-fit bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    class="max-w-sm h-fit bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
     <AppImagesCaruselPreloader :square="false" class="!rounded-lg" />
     <div class="p-5">

@@ -31,6 +31,7 @@
       <main-page ref="widjet" />
     </div>
   </div>
+  <DocumentsTab v-if="isPublicOrder" class="my-10 mx-auto lg:w-4/5" />
 </template>
 
 <script>
@@ -41,12 +42,14 @@ import ProductsTabPublicOrderSetting from "./ProductsTabPublicOrderSetting.vue";
 import { isPublicOrder } from "@/components/PublicOrder";
 import { computed, ref } from "vue";
 import { isTest } from "@/composables/isTest";
+import DocumentsTab from "./DocumentsTab.vue";
 export default {
   components: {
     MainPage,
     ProductsTabFields,
     ProductsTabCastomFields,
     ProductsTabPublicOrderSetting,
+    DocumentsTab,
   },
   setup() {
     const widjet = ref(null);

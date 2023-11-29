@@ -4,11 +4,10 @@
       <div class="header"></div>
       <div class="content flex flex-col">
         <div
-          class="flex"
           :class="[
             isPublicOrder && displayTypeIsCard
-              ? 'flex-row flex-wrap w-full justify-start gap-4 mt-4'
-              : 'flex-col',
+              ? 'custom_grid w-full gap-4 mt-4'
+              : 'flex flex-col',
             isPublicOrder && 'order-2',
           ]"
         >
@@ -33,12 +32,9 @@
             />
           </template>
           <template v-if="isAddedProductsLoading && !addedProducts.length">
-            <div
-              v-if="isPublicOrder && displayTypeIsCard"
-              class="flex flex-row flex-wrap w-full justify-start gap-4"
-            >
+            <template v-if="isPublicOrder && displayTypeIsCard">
               <ProductCardPreloader v-for="i in 3" :key="i" />
-            </div>
+            </template>
             <template v-else>
               <ProductCardSkeleton v-for="i in 3" :key="i" />
             </template>
@@ -1502,6 +1498,10 @@ export default {
       }
     }
   }
+}
+.custom_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 .disable {
   pointer-events: none;

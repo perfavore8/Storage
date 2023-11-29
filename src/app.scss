@@ -190,6 +190,31 @@ button.btn_light_yellow {
 .btn_light_yellow:disabled {
   background-color: hsl(44, 100%, 75%, 0.5);
 }
+.btn_white {
+  @extend .btn;
+  @apply w-full
+      sm:w-auto
+      items-center
+      justify-center
+      pointer-events-auto
+      relative
+      inline-flex
+      rounded-md
+      bg-white
+      text-base
+      font-medium
+      leading-5
+      text-slate-700
+      shadow-sm
+      ring-1
+      ring-slate-700/10
+      hover:bg-slate-50
+      hover:text-slate-900
+      hover:disabled:bg-white
+      disabled:opacity-30
+      disabled:cursor-not-allowed;
+}
+
 button.btn:disabled {
   cursor: default;
 }
@@ -343,9 +368,9 @@ input.input:disabled {
 .change_green.change_green.change_green.change_green {
   @apply text-green-700 bg-green-50 border border-green-600/20 disabled:bg-green-50 transition-all;
 }
-.change_red{
-  @apply px-3 rounded-md
+.change_red {
+  @apply px-3 rounded-md;
 }
-.change_green{
-  @apply px-3 rounded-md
+.change_green {
+  @apply px-3 rounded-md;
 }
