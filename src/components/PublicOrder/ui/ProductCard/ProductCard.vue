@@ -2,7 +2,7 @@
   <ProductCardPreloader v-if="isLoading" />
   <div
     v-else
-    class="max-w-sm h-auto max-h-[700px] relative bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    class="max-w-sm w-full h-auto max-h-[700px] relative bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
     <div class="overflow-y-scroll w-full h-full max-h-[700px] rounded-lg">
       <AppImagesCarusel
@@ -185,6 +185,9 @@ export default {
 :deep(.parentImg) {
   border-radius: 0;
   @apply rounded-t-lg max-h-[215px] object-contain;
+}
+:deep(.v-select) {
+  width: 100%;
 }
 
 .count {
