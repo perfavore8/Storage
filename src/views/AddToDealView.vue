@@ -28,7 +28,7 @@
           />
         </svg>
       </button>
-      <div class="fixed top-4 left-[10%] hidden sm:block">
+      <div class="fixed top-4 left-[10%] hidden sm:block" v-if="isPublicOrder">
         <transition name="side2">
           <AvailablePublicOrdersList />
         </transition>

@@ -582,6 +582,16 @@ export default {
     });
     const types = computed(() => {
       const arr = [];
+      const exceptions = ["12", "16", "17", "18"];
+      Object.entries(
+        store.state[selectedTab.value.storeName]?.[selectedTab.value.typesName]
+      ).forEach(([key, value]) => {
+        if (!exceptions.includes(key)) arr.push({ name: value, value: key });
+      });
+      return arr;
+    });
+    const allTypes = computed(() => {
+      const arr = [];
       Object.entries(
         store.state[selectedTab.value.storeName]?.[selectedTab.value.typesName]
       ).forEach(([key, value]) => {
@@ -862,7 +872,7 @@ export default {
     };
 
     const search_type = (id) => {
-      return types.value.find((val) => val.value == id);
+      return allTypes.value.find((val) => val.value == id);
     };
     const delete_new_field = (idx) => {
       new_fields.splice(idx, 1);
