@@ -37,7 +37,7 @@
                 v-for="order in list.filter((el) => el.active)"
                 :key="order.id"
                 @click="follow(order.id), toggleModal(false)"
-                class="w-full px-4 py-2 bg-slate-100 rounded-lg cursor-pointer"
+                class="w-full h-auto px-4 py-2 bg-slate-100 rounded-lg cursor-pointer"
               >
                 {{ order.name }}
               </li>
@@ -51,6 +51,13 @@
                 {{ order.name }}
               </li>
             </ul>
+            <div
+              class="p-4 py-3 md:py-4 md:p-5 flex items-center gap-4 text-slate-800 border-t rounded-t dark:border-gray-600 dark:text-white"
+            >
+              <h5 class="text-slate-900 text-lg font-semibold">Всего</h5>
+              <span>6 заказов</span>
+              <span>21000р</span>
+            </div>
           </div>
         </div>
       </transition>
