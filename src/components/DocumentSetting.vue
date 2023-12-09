@@ -91,7 +91,12 @@
             <table class="table">
               <thead>
                 <tr class="row title">
-                  <td class="item" v-for="tit in title" :key="tit">
+                  <td
+                    class="item"
+                    v-for="(tit, idx) in title"
+                    v-show="idx < title.length - 1 || isTest"
+                    :key="tit"
+                  >
                     {{ tit }}
                   </td>
                   <td class="item"></td>
@@ -131,6 +136,7 @@ import DocumentSettingDocRow from "@/components/DocumentSettingDocRow.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppTablePreloader from "./AppTablePreloader.vue";
+import { isTest } from "@/composables/isTest";
 
 const { t } = useLangConfiguration();
 
@@ -143,7 +149,7 @@ export default {
     AppTablePreloader,
   },
   setup() {
-    return { t };
+    return { t, isTest };
   },
   data() {
     return {
@@ -154,6 +160,7 @@ export default {
         t("DocumentSetting.titles.temp"),
         t("DocumentSetting.titles.typeTemp"),
         t("DocumentSetting.titles.typeDown"),
+        t("DocumentSetting.titles.POVisible"),
       ],
       lead_fields_options: [],
       lead_fields: { name: t("global.notSelected"), value: 1 },

@@ -331,6 +331,9 @@ export const messages = {
       zeroCount: "Allow adding goods with zero balance to order",
       oneWh: "Products in a order from only one warehouse",
       manualBudjet: "Allow manual editing of the order sum",
+      publicOrder: {
+        header: "Pubic orders",
+      },
       stepsRes: {
         header: "Stages of products reservation from the warehouse",
         text: "Attention! Within one pipeline, the reserving stage should be before the write-off stage. If the reservation stage is not selected, then the reservation will take place at the moment the item is added to the deal.",
@@ -424,6 +427,7 @@ export const messages = {
         temp: "Template",
         typeTemp: "Template type",
         typeDown: "Download type",
+        POVisible: "Visibility in public order",
       },
       autoGen: "Google authorization",
       addNew: {
@@ -970,13 +974,14 @@ export const messages = {
       arch: "Order has been successfully archived",
       logoLinkText: "Works for",
       makePublic: "Make an order public",
+      followPublic: "Go to the public order",
       change: "Editing an order by a client",
       search: "Product Search",
       password: "Password",
       pay: "Pay",
       myOrders: "My orders",
       ordersList: "List of orders",
-      docs: "Documents",
+      docs: "Visibility in public order",
       login: "Login",
     },
     widjet: {
@@ -1435,6 +1440,9 @@ export const messages = {
       zeroCount: "Разрешать добавлять в заказы товар с нулевым остатком",
       oneWh: "Товары в заказы только из одного склада",
       manualBudjet: "Разрешать ручное редактирование суммы заказа",
+      publicOrder: {
+        header: "Публичные заказы",
+      },
       stepsRes: {
         header: "Этапы резервирования товаров со склада",
         text: "Внимание! В рамках одной воронки этап резерирования должен быть раньше этапа списания. Если этап презервирования не выбран, то резерирование будет происходить в момент добавления товара в сделку.",
@@ -1528,6 +1536,7 @@ export const messages = {
         temp: "Шаблон",
         typeTemp: "Тип шаблона",
         typeDown: "Тип для скачивания",
+        POVisible: "Видимость в публичном заказе",
       },
       autoGen: "Авторизация Google",
       addNew: {
@@ -2074,13 +2083,14 @@ export const messages = {
       arch: "Заказ успешно архивирован",
       logoLinkText: "Работает на",
       makePublic: "Сделать заказ публичным",
+      followPublic: "Перейти к публичному заказу",
       change: "Редактирование заказа клиентом",
       search: "Поиск товаров",
       password: "Пароль",
       pay: "Оплатить",
       myOrders: "Мои заказы",
       ordersList: "Список заказов",
-      docs: "Документы",
+      docs: "Видимость в публичном заказе",
       login: "Логин",
     },
     widjet: {

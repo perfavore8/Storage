@@ -53,7 +53,7 @@
                   {{ $t("EditStuff.oneWh") }}
                 </label>
               </div>
-              <div class="permit" v-if="isTest2">
+              <div class="permit">
                 <input
                   type="checkbox"
                   class="checkbox"
@@ -67,100 +67,31 @@
             </div>
           </div>
         </div>
-        <div class="content" v-if="!isTest2">
-          <h6>{{ $t("EditStuff.stepsRes.header") }}</h6>
-          <div class="small">
-            {{ $t("EditStuff.stepsRes.text") }}
-          </div>
-          <div class="mt-4">
-            <input
-              type="checkbox"
-              class="checkbox"
-              id="lock_reserved_products_edit"
-              v-model="lock_reserved_products_edit"
-            />
-            <label for="lock_reserved_products_edit">
-              {{ $t("EditStuff.stepsRes.blockRes") }}
-            </label>
-          </div>
-          <div class="steps">
-            <div
-              class="label_input"
-              v-for="item in copyPipelinesListV2"
-              :key="item"
-            >
-              <label>
-                {{ $t("EditStuff.stepsRes.hopper", { name: item?.name }) }}
-              </label>
-              <AppMultiSelect
-                :list="[{ name: 'Все', value: 'all' }, ...item?.statuses]"
-                :placeholder="
-                  t('EditStuff.stepsRes.placeholder', {
-                    count: item?.statuses.filter(
-                      (val) => val.selected && val.value !== 'all'
-                    ).length,
-                  })
-                "
-                @select="
-                  (event) =>
-                    optionSelectSteps(event, item?.value, 'reserve_off')
-                "
-              />
-            </div>
-          </div>
-          <h6>{{ $t("EditStuff.stepsWO.header") }}</h6>
-          <div class="small">
-            {{ $t("EditStuff.stepsWO.text") }}
-          </div>
-          <div class="steps">
-            <div
-              class="label_input"
-              v-for="item in copyPipelinesListV2"
-              :key="item"
-            >
-              <label>{{
-                $t("EditStuff.stepsWO.hopper", { name: item?.name })
-              }}</label>
-              <SelectorVue
-                :options_props="[
-                  { name: t('global.notSelected'), value: -1 },
-                  ...item?.statuses,
-                ]"
-                @select="
-                  (event) => optionSelectSteps(event, item?.value, 'write_off')
-                "
-                :selected_option="item.selectedWriteOff"
-              />
-            </div>
-          </div>
-          <h6>{{ $t("EditStuff.dealBinding.header") }}</h6>
-          <div class="steps">
-            <div class="label_input">
-              <label>{{ $t("EditStuff.dealBinding.budget") }}</label>
+        <div class="content" v-if="isTest">
+          <h6>{{ $t("EditStuff.publicOrder.header") }}</h6>
+          <div class="mt-4 flex flex-col gap-2.5">
+            <div class="row" v-if="copyConfing.public_order">
               <input
                 type="checkbox"
                 class="checkbox"
-                id="not_fill_budget"
-                v-model="not_fill_budget"
+                id="change"
+                v-model="copyConfing.public_order.change"
               />
-              <label for="not_fill_budget"></label>
+              <label for="change">{{ $t("newOrder.change") }}</label>
             </div>
             <div
-              class="label_input"
-              v-for="(item, idx) in leadsDeals"
-              :key="item"
+              class="row"
+              v-if="
+                copyConfing.public_order && copyConfing.public_order?.change
+              "
             >
-              <label>
-                {{ $t("EditStuff.dealBinding.field", { name: item?.name }) }}
-                <span v-if="idx >= 2">{{
-                  $t("EditStuff.dealBinding.number")
-                }}</span>
-              </label>
-              <SelectorVue
-                :options_props="leadsDealsList"
-                @select="(event) => optionSelectLeadsDeals(event, item?.code)"
-                :selected_option="item?.selected"
+              <input
+                type="checkbox"
+                class="checkbox"
+                id="search"
+                v-model="copyConfing.public_order.search"
               />
+              <label for="search">{{ $t("newOrder.search") }}</label>
             </div>
           </div>
         </div>
@@ -174,22 +105,16 @@
   </div>
 </template>
 <script>
-import { isTest2 } from "@/composables/isTest";
-import SelectorVue from "@/components/SelectorVue";
-import AppMultiSelect from "./AppMultiSelect.vue";
+import { isTest } from "@/composables/isTest";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 const { t } = useLangConfiguration();
 
 export default {
   setup() {
-    return { t, isTest2 };
+    return { t, isTest };
   },
-  components: {
-    SelectorVue,
-    BtnsSaveClose,
-    AppMultiSelect,
-  },
+  components: { BtnsSaveClose },
   data() {
     return {
       copyConfing: {
@@ -247,6 +172,8 @@ export default {
       JSON.stringify(this.$store.state.account.account.config)
     );
     if (!this.copyConfing.reserve_off_v2) this.copyConfing.reserve_off_v2 = [];
+    if (!this.copyConfing.public_order)
+      this.copyConfing.public_order = { change: true, search: false };
     this.not_fill_budget = Boolean(this.copyConfing?.not_fill_budget);
     this.lock_reserved_products_edit = Boolean(
       this.copyConfing?.lock_reserved_products_edit
@@ -504,38 +431,15 @@ export default {
       }
       .content {
         @include font(400, 16px);
+        .row {
+          @apply flex flex-row items-center gap-2;
+        }
         h6 {
           @include font(500, 16px);
           margin: 36px 0;
         }
         .small {
           @include font(400, 14px);
-        }
-        .steps {
-          display: flex;
-          flex-direction: column;
-          border: 1px solid #c9c9c9;
-          border-radius: 4px;
-          margin-top: 30px;
-          padding: 10px;
-          .label_input {
-            display: flex;
-            flex-direction: row;
-            padding: 10px;
-            label {
-              width: 40%;
-            }
-            .v-select {
-              width: 50%;
-              margin-right: 24px;
-              :deep(.title) {
-                width: 100%;
-              }
-              :deep(.options) {
-                text-align: left;
-              }
-            }
-          }
         }
       }
       .footer {

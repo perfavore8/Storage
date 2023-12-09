@@ -2,42 +2,15 @@
   <div>
     <button
       class="btn order-1 max-h-[34px] pointer-events-auto relative inline-flex whitespace-nowrap w-fit rounded-md bg-white text-[0.8125rem] font-medium leading-5 text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:text-slate-900 hover:disabled:bg-white disabled:opacity-30 disabled:cursor-not-allowed"
-      @click="togglePublicOrderSettings(true)"
+      @click="confirmed ? follow() : togglePublicOrderSettings(true)"
     >
-      {{ $t("newOrder.makePublic") }}
+      {{ confirmed ? $t("newOrder.followPublic") : $t("newOrder.makePublic") }}
     </button>
     <transition name="fade">
       <div
         v-if="showPublicOrderSettings"
         class="flex flex-col gap-4 items-start my-5 p-3 ring-1 ring-slate-500/20 rounded-lg origin-top"
       >
-        <div class="row">
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="change"
-            v-model="form.change"
-          />
-          <label for="change">{{ $t("newOrder.change") }}</label>
-        </div>
-        <div class="row" v-if="form.change">
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="search"
-            v-model="form.search"
-          />
-          <label for="search">{{ $t("newOrder.search") }}</label>
-        </div>
-        <div class="row" v-if="form.change">
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="docs"
-            v-model="form.docs"
-          />
-          <label for="docs">{{ $t("newOrder.docs") }}</label>
-        </div>
         <div class="row">
           <span>{{ $t("newOrder.login") }}</span>
           <input
@@ -76,7 +49,9 @@
 </template>
 
 <script>
+import router from "@/router";
 import { useToggle } from "@vueuse/core";
+import { ref } from "vue";
 import { reactive } from "vue";
 export default {
   setup() {
@@ -91,13 +66,26 @@ export default {
       login: "",
     });
 
-    const confirm = () => console.log(123) || togglePublicOrderSettings(false);
+    const follow = () =>
+      router.push({
+        path: "/publicOrder",
+        query: router.currentRoute.value.query,
+      });
+
+    const confirmed = ref(false);
+
+    const confirm = () => {
+      confirmed.value = true;
+      togglePublicOrderSettings(false);
+    };
 
     return {
       showPublicOrderSettings,
       togglePublicOrderSettings,
       form,
       confirm,
+      confirmed,
+      follow,
     };
   },
 };
