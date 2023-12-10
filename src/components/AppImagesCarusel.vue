@@ -23,7 +23,6 @@
           'h-14 w-14': sizeWindow !== 'f',
         }"
         :alt="t('ostatki.error')"
-        onerror="this.style.display='none'"
         @load="() => (sizeWindow === 'f' ? images.load() : images.startLoad())"
       />
       <div
