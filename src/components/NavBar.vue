@@ -26,23 +26,24 @@
       class="btns flex flex-col md:flex-row w-full sm:w-full md:w-full gap-2 justify-start fixed left-0 top-0 md:static h-fit md:bg-transparent p-4 md:p-0 md:border-none z-50 mt-12 font-medium border border-gray-100 rounded-lg bg-gray-50 md:mt-0 md:border-0 dark:bg-gray-800 dark:border-gray-700"
       :class="[isShow ? 'flex' : 'hidden md:flex']"
     >
-      <button
-        class="btns_btn py-2 px-3 md:px-2 md:py-0.5 text-lg text-gray-900 hover:bg-gray-100 md:hover:text-[#396f93] md:hover:border-[#396f93] md:bg-transparent md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white dark:border-gray-700 md:text-[#1b3546] rounded border-[#1b3546] md:border"
-        :class="{ selected_catalog: $route.path === '/' + page.value }"
-        @click="route(page.value)"
-        v-for="page in catalog"
-        v-show="
-          !(page.isTest && !isTest2) &&
-          !(page.isProduction && isTest2) &&
-          !(page.isAdmin && !isAdmin) &&
-          !page.hideId?.includes(accountId)
-        "
-        :disabled="isNavBarDisabled"
-        :key="page"
-        :style="{ order: isTest2 ? page.testOrder : 'unset' }"
-      >
-        {{ page.name }}
-      </button>
+      <template v-for="page in catalog" :key="page">
+        <button
+          class="btns_btn py-2 px-3 md:px-2 md:py-0.5 text-lg text-gray-900 hover:bg-gray-100 md:hover:text-[#396f93] md:hover:border-[#396f93] md:bg-transparent md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white dark:border-gray-700 md:text-[#1b3546] rounded border-[#1b3546] md:border"
+          :class="{ selected_catalog: $route.path === '/' + page.value }"
+          @click="route(page.value)"
+          v-show="
+            !(page.isTest && !isTest2) &&
+            !(page.isProduction && isTest2) &&
+            !(page.isAdmin && !isAdmin) &&
+            !page.hideId?.includes(accountId)
+          "
+          v-if="!currentExeptions.pages[page.value]?.deny"
+          :disabled="isNavBarDisabled"
+          :style="{ order: isTest2 ? page.testOrder : 'unset' }"
+        >
+          {{ page.name }}
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -53,6 +54,7 @@ import store from "@/store";
 import router from "@/router";
 import { isTest2 } from "@/composables/isTest";
 import { onClickOutside, useToggle } from "@vueuse/core";
+import { currentExeptions } from "@/composables/exceptions";
 
 const accountId = computed(() => store.state.account?.account?.id);
 const isAdmin = computed(() =>
