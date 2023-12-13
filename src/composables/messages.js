@@ -208,6 +208,8 @@ export const messages = {
       analytics: "Analytics",
       archive: "Archive",
       clients: "Customers",
+      deals: "Deals",
+      objects: "Facilities",
     },
     HomeMenu: {
       selectLengPlaceholder: "Language selection",
@@ -912,6 +914,7 @@ export const messages = {
       per: "Transfer of goods",
       new: "New",
       osn: "Main warehouse",
+      allObj: "All facilities",
       tip: "Type",
       cat2: "Category",
       op: "Description",
@@ -1317,6 +1320,8 @@ export const messages = {
       analytics: "Аналитика",
       archive: "Архив",
       clients: "Клиенты",
+      deals: "Сделки",
+      objects: "Объекты",
     },
     HomeMenu: {
       selectLengPlaceholder: "Выбор языка",
@@ -2021,6 +2026,7 @@ export const messages = {
       per: "Перенос товаров",
       new: "Новая",
       osn: "Основной склад",
+      allObj: "Все объекты",
       tip: "Тип",
       cat2: "Категория",
       op: "Описание",

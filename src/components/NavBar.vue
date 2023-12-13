@@ -49,12 +49,15 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect } from "@vue/runtime-core";
 import store from "@/store";
 import router from "@/router";
 import { isTest2 } from "@/composables/isTest";
 import { onClickOutside, useToggle } from "@vueuse/core";
 import { currentExeptions } from "@/composables/exceptions";
+import { reactive, computed, ref, watchEffect } from "vue";
+import { useLangConfiguration } from "@/composables/langConfiguration";
+
+const { t } = useLangConfiguration();
 
 const accountId = computed(() => store.state.account?.account?.id);
 const isAdmin = computed(() =>
@@ -62,7 +65,47 @@ const isAdmin = computed(() =>
     ? true
     : store.state.account?.user?.isAdmin
 );
-const catalog = computed(() => store.state.data.catalog);
+const catalog = reactive([
+  {
+    name: currentExeptions.value?.names?.orders_deals
+      ? t("NavBar.deals")
+      : t("NavBar.orders"),
+    value: "orders",
+    isTest: false,
+    hideId: [148],
+    testOrder: 1,
+  },
+  {
+    name: t("NavBar.documents"),
+    value: "documents",
+    isTest: false,
+    testOrder: 4,
+  },
+  {
+    name: currentExeptions.value?.names?.remnants_objects
+      ? t("NavBar.objects")
+      : t("NavBar.remnants"),
+    value: "remnants",
+    testOrder: 2,
+  },
+  {
+    name: t("NavBar.analytics"),
+    value: "analytics",
+    isAdmin: true,
+    testOrder: 5,
+  },
+  {
+    name: t("NavBar.archive"),
+    value: "archive",
+    isProduction: true,
+  },
+  {
+    name: t("NavBar.clients"),
+    value: "clients",
+    isTest: true,
+    testOrder: 3,
+  },
+]);
 const isNavBarDisabled = computed(() => store.state.data.isNavBarDisabled);
 const route = (page_name) => {
   toggleShow(false);

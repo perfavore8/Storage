@@ -145,6 +145,7 @@ import { mapGetters } from "vuex";
 import { computed } from "vue";
 import { isTest } from "@/composables/isTest";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { currentExeptions } from "@/composables/exceptions";
 
 const { t } = useLangConfiguration();
 
@@ -174,7 +175,14 @@ export default {
       is_in_wh: true,
       paginatedData: [],
       paginatedParams: [],
-      selectedWH: { name: t("ostatki.allwhs"), value: "whs" },
+      selectedWH: currentExeptions.value?.remnants?.mainWhSelected
+        ? {
+            name: currentExeptions.value?.names?.mainWhs_allObjects
+              ? t("ostatki.allObj")
+              : t("ostatki.osn"),
+            value: "wh",
+          }
+        : { name: t("ostatki.allwhs"), value: "whs" },
       isGrid: false,
       currentItems: [],
       isUpdateProducts: false,
