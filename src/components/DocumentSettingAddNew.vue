@@ -68,6 +68,15 @@
             :selected_option="export_type"
           />
         </div>
+        <div class="label_input" v-if="isTest">
+          <input
+            type="checkbox"
+            class="checkbox"
+            id="PODocs"
+            v-model="publicOrderVisible"
+          />
+          <label for="PODocs">{{ $t("newOrder.docs") }}</label>
+        </div>
       </div>
       <div class="footer">
         <btns-save-close @close="close_modal" @save="save" />
@@ -81,6 +90,7 @@ import SelectorVue from "@/components/SelectorVue.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { isTest } from "@/composables/isTest";
 
 const { t } = useLangConfiguration();
 
@@ -107,7 +117,7 @@ export default {
   },
   emits: { close: null },
   setup() {
-    return { t };
+    return { t, isTest };
   },
   data() {
     return {
@@ -119,6 +129,7 @@ export default {
       try_accept: false,
       name: "",
       file: "",
+      publicOrderVisible: false,
       copyPipelinesList: [],
       status_id: { name: t("global.notSelected"), value: "1" },
       url_field: { name: t("global.notSelected"), value: "1" },
@@ -199,6 +210,7 @@ export default {
           status_id: this.status_id.value,
           url_field: this.url_field.value,
         };
+        if (isTest) new_doc.public_order_visible = this.publicOrderVisible;
         // if (new_doc.status_id == "-1" || new_doc.status_id == "1")
         //   delete new_doc.status_id;
         if (Object.keys(this.cur_doc).length > 0) {
@@ -231,6 +243,7 @@ export default {
       if (Object.keys(this.cur_doc).length > 0) {
         this.name = this.cur_doc.name;
         this.file = this.cur_doc.file;
+        if (isTest) this.publicOrderVisible = this.cur_doc.public_order_visible;
         const serch_selected_item = (options, name, value, isSpecial) => {
           let obj = { name: t("global.notSelected"), value: "-1" };
           options.forEach((val) => {

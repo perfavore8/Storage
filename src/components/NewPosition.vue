@@ -385,6 +385,7 @@
 import ImportStuffSelector from "@/components/ImportStuffSelector.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { currentExeptions } from "@/composables/exceptions";
 
 const { t } = useLangConfiguration();
 
@@ -562,7 +563,12 @@ export default {
         description: "",
         batch_category: { name: t("ostatki.new"), value: -1 },
         batch: "",
-        wh: { name: t("ostatki.osn"), value: "wh" },
+        wh: {
+          name: currentExeptions.value?.names?.mainWhs_allObjects
+            ? t("ostatki.allObj")
+            : t("ostatki.osn"),
+          value: "wh",
+        },
         count: 0,
         units: { name: t("global.notSelected"), value: -1 },
         cost_price: 0,
@@ -618,7 +624,12 @@ export default {
         batch_category: { name: "", value: -2 },
         batch_category_options: [{ name: t("ostatki.new"), value: -1 }],
         batch: val.fields.batch,
-        wh: { name: t("ostatki.osn"), value: "wh" },
+        wh: {
+          name: currentExeptions.value?.names?.mainWhs_allObjects
+            ? t("ostatki.allObj")
+            : t("ostatki.osn"),
+          value: "wh",
+        },
         count: 0,
         units: {
           ...this.units_options.find((value) => value.name == val.fields.units),

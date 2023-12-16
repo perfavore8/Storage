@@ -9,6 +9,9 @@
     </td>
     <td class="item">{{ doc.type }}</td>
     <td class="item">{{ doc.export_type }}</td>
+    <td class="item" v-if="isTest">
+      {{ doc.public_order_visible ? $t("global.yes") : $t("global.no") }}
+    </td>
     <td class="item">
       <div class="btns">
         <button class="btn_edit" @click="open_edit(doc)">
@@ -27,6 +30,7 @@
 </template>
 
 <script>
+import { isTest } from "@/composables/isTest";
 import { useLockBtnByKey } from "@/composables/lockBtnByKey";
 export default {
   props: {
@@ -38,7 +42,7 @@ export default {
   emits: { open_edit: null, delete_cur_doc: null },
   setup() {
     const { lockBtn: LB, isBtnLocked: IBL } = useLockBtnByKey();
-    return { LB, IBL };
+    return { LB, IBL, isTest };
   },
   methods: {
     open_edit(doc) {

@@ -9,7 +9,11 @@
         <AppRadioBtnsGroupUnderlined
           v-if="!isChartsView"
           class="w-full"
-          :list="reportType.list"
+          :list="
+            reportType.list.filter(
+              (type) => !currentExeptions.analytics.tabs[type.value]?.deny
+            )
+          "
           :selected="reportType.selected"
           @select="changeReportType"
         />
@@ -123,6 +127,7 @@ import { isTest } from "@/composables/isTest";
 import AppRadioBtnsGroupUnderlined from "@/components/AppRadioBtnsGroupUnderlined.vue";
 import AppRadioBtnsGroup from "@/components/AppRadioBtnsGroup.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { currentExeptions } from "@/composables/exceptions";
 
 const { t } = useLangConfiguration();
 
@@ -140,7 +145,7 @@ export default {
     AppRadioBtnsGroup,
   },
   setup() {
-    return { isTest };
+    return { isTest, currentExeptions };
   },
   data() {
     return {
@@ -163,6 +168,12 @@ export default {
             value2: "movement",
           },
         ],
+        dropToDefault: () =>
+          this.changeReportType(
+            this.reportType.list.filter(
+              (type) => !currentExeptions.value.analytics.tabs[type.value]?.deny
+            )[0]
+          ),
       },
       titles: {
         customers: [
@@ -331,6 +342,9 @@ export default {
     this.getAnalyticsLastGroupBy();
     this.getTitile();
     this.$store.dispatch("get_account");
+  },
+  mounted() {
+    this.reportType.dropToDefault();
   },
   methods: {
     getPageFromLink(link) {

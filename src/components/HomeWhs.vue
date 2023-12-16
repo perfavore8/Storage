@@ -34,6 +34,7 @@ import { ref } from "@vue/reactivity";
 import store from "@/store";
 import { computed, watch } from "@vue/runtime-core";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { currentExeptions } from "@/composables/exceptions";
 export default {
   components: { AppInputSelect },
   props: {
@@ -57,11 +58,23 @@ export default {
       const { system, custom } = store.state.account.account.whs2;
 
       system.forEach((wh) => {
-        systemWhs.value.push({ name: wh.name, value: wh.code });
+        if (
+          wh.code === "wh" &&
+          currentExeptions.value?.names?.mainWhs_allObjects
+        )
+          wh.name = t("ostatki.allObj");
+        if (currentExeptions.value?.remnants?.hideAllWhs && wh.code === "whs") {
+          customWhs.value.push({ name: wh.name, value: wh.code });
+        } else {
+          systemWhs.value.push({ name: wh.name, value: wh.code });
+        }
         whs.value.push({ name: wh.name, value: wh.code });
       });
-
-      systemWhs.value.push({ name: t("ostatki.ysls"), value: "services" });
+      if (currentExeptions.value?.remnants?.hideService) {
+        customWhs.value.push({ name: t("ostatki.ysls"), value: "services" });
+      } else {
+        systemWhs.value.push({ name: t("ostatki.ysls"), value: "services" });
+      }
       whs.value.push({ name: t("ostatki.ysls"), value: "services" });
 
       custom.forEach((wh) => {
