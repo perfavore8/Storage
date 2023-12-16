@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkstorage"]=self["webpackChunkstorage"]||[]).push([[302],{4302:function(a,n,e){e.r(n),e.d(n,{default:function(){return v}});var t=e(3396);const r=a=>((0,t.dD)("data-v-3bdf5b0a"),a=a(),(0,t.Cn)(),a),s={class:"view"},u=r((()=>(0,t._)("h1",null,"Склад не установен",-1))),c=[u];function d(a,n,e,r,u,d){return(0,t.wg)(),(0,t.iD)("div",s,c)}var f={},o=e(89);const i=(0,o.Z)(f,[["render",d],["__scopeId","data-v-3bdf5b0a"]]);var v=i}}]);
+//# sourceMappingURL=302.dcc67d38.js.map
