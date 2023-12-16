@@ -97,6 +97,16 @@ const routes = [
     name: "publicOrder",
     component: () => import("../views/AddToDealView.vue"),
   },
+  {
+    path: "/AvailablePublicOrderList",
+    name: "AvailablePublicOrderList",
+    component: () => import("../views/AvailablePublicOrderList.vue"),
+  },
+  {
+    path: "/publicOrderAuth",
+    name: "CheckPublicOrderAuth",
+    component: () => import("../views/CheckPublicOrderAuth.vue"),
+  },
 ];
 
 const router = createRouter({

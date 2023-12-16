@@ -1,11 +1,11 @@
 import { ProductCardPreloader } from "./ProductCardPreloader";
 import { ProductCard } from "./ProductCard";
 import { DisplayTypeToggle } from "./DisplayTypeToggle";
-import { AvailablePublicOrdersList } from "./AvailablePublicOrdersList";
+import { AvailablePublicOrderButton } from "./AvailablePublicOrderButton";
 
 export {
   ProductCardPreloader,
   ProductCard,
   DisplayTypeToggle,
-  AvailablePublicOrdersList,
+  AvailablePublicOrderButton,
 };

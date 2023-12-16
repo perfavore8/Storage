@@ -30,7 +30,7 @@
       </button>
       <div class="fixed top-4 left-[10%] hidden sm:block" v-if="isPublicOrder">
         <transition name="side2">
-          <AvailablePublicOrdersList />
+          <AvailablePublicOrderButton />
         </transition>
       </div>
       <div
@@ -42,7 +42,7 @@
             v-if="isPublicOrder"
           >
             <transition name="side2">
-              <AvailablePublicOrdersList class="sm:hidden" />
+              <AvailablePublicOrderButton class="sm:hidden" />
             </transition>
             <a
               href="https://gosklad.com/"
@@ -140,14 +140,15 @@ import { useNotification } from "@/composables/notification";
 import { isTest } from "@/composables/isTest";
 import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import { isPublicOrder } from "@/components/PublicOrder";
-import { AvailablePublicOrdersList } from "@/components/PublicOrder";
+import { AvailablePublicOrderButton } from "@/components/PublicOrder";
+import { useCheckPublicOrderAuth } from "@/composables/checkPOAuth";
 export default {
   components: {
     ProductsTab,
     DocumentsTab,
     ClientTab,
     AppRadioBtnsGroupUnderlined,
-    AvailablePublicOrdersList,
+    AvailablePublicOrderButton,
   },
   setup() {
     const { add, saveParams, order, isOrderGeted } = useNewDeal();
@@ -155,6 +156,7 @@ export default {
     const { t } = useLangConfiguration();
     const { addNotification } = useNotification();
     const { pipelines } = useOrdersPipelinesSelect();
+    useCheckPublicOrderAuth();
 
     const back = () => router.push("/");
 
