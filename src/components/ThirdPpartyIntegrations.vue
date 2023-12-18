@@ -9,7 +9,7 @@
         </button>
       </div>
       <div class="content">
-        <template v-if="account.install">
+        <template v-if="account.install && inFrame">
           <div class="item relative">
             <div class="relative">
               <img
@@ -105,6 +105,7 @@
 import { computed } from "vue";
 import store from "@/store";
 import { useRouter } from "vue-router";
+import { inFrame } from "@/composables/checkInFrame";
 export default {
   setup() {
     const router = useRouter();
@@ -125,7 +126,7 @@ export default {
 
     const amoTest = computed(() => store.state.account?.account?.id == 454);
 
-    return { oneC, account, route, close, urlSutupInAmoCrm, amoTest };
+    return { oneC, account, route, close, urlSutupInAmoCrm, amoTest, inFrame };
   },
 };
 </script>
