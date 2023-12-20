@@ -9,7 +9,7 @@
         </button>
       </div>
       <div class="content">
-        <template v-if="account.install && inFrame">
+        <template v-if="account.install">
           <div class="item relative">
             <div class="relative">
               <img
