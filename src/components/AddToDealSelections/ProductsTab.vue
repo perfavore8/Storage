@@ -15,7 +15,6 @@
       class="w-full"
       :class="[isPublicOrder ? 'order-3 px-1 sm:px-0' : 'order-3 md:order-2']"
     >
-      <ProductsTabPublicOrderSetting v-if="!isPublicOrder && isTest" />
       <ProductsTabCastomFields />
     </div>
     <div
@@ -38,7 +37,6 @@
 import MainPage from "../WidgetAddToDeal/src/components/MainPage.vue";
 import ProductsTabFields from "./ProductsTabFields.vue";
 import ProductsTabCastomFields from "./ProductsTabCastomFields.vue";
-import ProductsTabPublicOrderSetting from "./ProductsTabPublicOrderSetting.vue";
 import { isPublicOrder } from "@/components/PublicOrder";
 import { computed, ref } from "vue";
 import { isTest } from "@/composables/isTest";
@@ -48,7 +46,6 @@ export default {
     MainPage,
     ProductsTabFields,
     ProductsTabCastomFields,
-    ProductsTabPublicOrderSetting,
     DocumentsTab,
   },
   setup() {

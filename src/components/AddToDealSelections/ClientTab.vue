@@ -29,8 +29,13 @@
           :fields="col.fields"
           :placeholders="col.placeholders"
           :alwaysShow="col.items.length === 1"
+          :have_public_order="
+            order?.[col.publicOrderFieldForSave] == item.id ||
+            order?.[col.publicOrderFieldForSave]?.includes(item.id)
+          "
           @unLink="() => unLink(item, col)"
           @link="() => link(item, col.code)"
+          @togglePublicOrder="(val) => togglePublicOrder(item, val, col)"
           v-show="item"
         />
       </template>
@@ -73,6 +78,7 @@ export default {
         ),
         placeholderForSearch: t("newOrder.kompP"),
         orderFieldForSave: "company_id",
+        publicOrderFieldForSave: "public_company_id",
         placeholders: {
           title: "name",
           subTitle: "signatory",
@@ -102,6 +108,7 @@ export default {
         ),
         placeholderForSearch: t("newOrder.contP"),
         orderFieldForSave: "contacts_id",
+        publicOrderFieldForSave: "public_contacts_id",
         orderFieldSource: "contacts",
         isMultiSave: true,
         placeholders: {
@@ -152,10 +159,27 @@ export default {
       getOrder();
     };
 
+    const togglePublicOrder = async (item, val, params) => {
+      if (params.isMultiSave && val) {
+        if (!order[params.publicOrderFieldForSave])
+          order[params.publicOrderFieldForSave] = [];
+        order[params.publicOrderFieldForSave].push(item.id);
+      } else if (params.isMultiSave && !val) {
+        order[params.publicOrderFieldForSave].splice(
+          order[params.publicOrderFieldForSave].indexOf(item.id),
+          1
+        );
+      } else {
+        order[params.publicOrderFieldForSave] = val ? item.id : null;
+      }
+      await saveOrder();
+      getOrder();
+    };
+
     const link = (item, colCode) =>
       autocompleteList.find((el) => el.code === colCode).select(item);
 
-    return { list, autocompleteList, unLink, link };
+    return { list, autocompleteList, unLink, link, togglePublicOrder };
   },
 };
 </script>

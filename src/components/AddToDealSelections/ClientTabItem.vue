@@ -62,6 +62,73 @@
             {{ item?.fields?.[field.code] }}
           </div>
         </div>
+        <div
+          class="flex flex-row justify-between items-center pt-2"
+          @click.stop=""
+          v-if="!item?.isUnLink"
+        >
+          <input
+            type="checkbox"
+            class="checkbox"
+            :id="item.id"
+            v-model="havePublicOrder"
+          />
+          <label :for="item.id">Публичный заказ</label>
+          <div class="flex flex-row gap-2 items-center" v-if="!havePublicOrder">
+            <button
+              class="p-2 bg-slate-400/90 rounded-xl text-white"
+              @click="copyLink(123)"
+            >
+              <transition name="opacity" mode="out-in">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 16 16"
+                  v-if="copied"
+                >
+                  <path
+                    fill="currentColor"
+                    fill-rule="evenodd"
+                    d="M13.488 3.43a.75.75 0 0 1 .081 1.058l-6 7a.75.75 0 0 1-1.1.042l-3.5-3.5A.75.75 0 0 1 4.03 6.97l2.928 2.927l5.473-6.385a.75.75 0 0 1 1.057-.081Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  v-else
+                >
+                  <path
+                    fill="currentColor"
+                    d="M9 3.25A5.75 5.75 0 0 0 3.25 9v7.107a.75.75 0 0 0 1.5 0V9A4.25 4.25 0 0 1 9 4.75h7.013a.75.75 0 0 0 0-1.5z"
+                  />
+                  <path
+                    fill="currentColor"
+                    fill-rule="evenodd"
+                    d="M18.403 6.793a44.372 44.372 0 0 0-9.806 0a2.011 2.011 0 0 0-1.774 1.76a42.581 42.581 0 0 0 0 9.894a2.01 2.01 0 0 0 1.774 1.76c3.241.362 6.565.362 9.806 0a2.01 2.01 0 0 0 1.774-1.76a42.579 42.579 0 0 0 0-9.894a2.011 2.011 0 0 0-1.774-1.76M8.764 8.284c3.13-.35 6.342-.35 9.472 0a.51.51 0 0 1 .45.444a40.95 40.95 0 0 1 0 9.544a.51.51 0 0 1-.45.444c-3.13.35-6.342.35-9.472 0a.511.511 0 0 1-.45-.444a40.95 40.95 0 0 1 0-9.544a.511.511 0 0 1 .45-.444"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </transition>
+            </button>
+            <!-- <button class="p-2 bg-slate-400/90 rounded-xl text-white" @click="follow()">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 1024 1024"
+              >
+                <path
+                  fill="currentColor"
+                  d="M574 665.4a8.03 8.03 0 0 0-11.3 0L446.5 781.6c-53.8 53.8-144.6 59.5-204 0c-59.5-59.5-53.8-150.2 0-204l116.2-116.2c3.1-3.1 3.1-8.2 0-11.3l-39.8-39.8a8.03 8.03 0 0 0-11.3 0L191.4 526.5c-84.6 84.6-84.6 221.5 0 306s221.5 84.6 306 0l116.2-116.2c3.1-3.1 3.1-8.2 0-11.3zm258.6-474c-84.6-84.6-221.5-84.6-306 0L410.3 307.6a8.03 8.03 0 0 0 0 11.3l39.7 39.7c3.1 3.1 8.2 3.1 11.3 0l116.2-116.2c53.8-53.8 144.6-59.5 204 0c59.5 59.5 53.8 150.2 0 204L665.3 562.6a8.03 8.03 0 0 0 0 11.3l39.8 39.8c3.1 3.1 8.2 3.1 11.3 0l116.2-116.2c84.5-84.6 84.5-221.5 0-306.1M610.1 372.3a8.03 8.03 0 0 0-11.3 0L372.3 598.7a8.03 8.03 0 0 0 0 11.3l39.6 39.6c3.1 3.1 8.2 3.1 11.3 0l226.4-226.4c3.1-3.1 3.1-8.2 0-11.3z"
+                />
+              </svg>
+            </button> -->
+          </div>
+        </div>
       </div>
     </template>
     <button
@@ -75,14 +142,16 @@
 </template>
 
 <script>
-import { useToggle } from "@vueuse/core";
+import { useClipboard, useToggle } from "@vueuse/core";
 import { useClients } from "@/composables/clients";
+import { computed } from "vue";
 export default {
   props: {
     item: Object,
     placeholders: Object,
     fields: Array,
     alwaysShow: Boolean,
+    have_public_order: Boolean,
   },
   emits: ["unLink", "link"],
   setup(props, context) {
@@ -93,7 +162,31 @@ export default {
     const unLink = () => context.emit("unLink");
     const link = () => context.emit("link");
 
-    return { show, toggle, getColor, unLink, link };
+    const havePublicOrder = computed({
+      get: () => props.have_public_order,
+      set: (val) => context.emit("togglePublicOrder", val),
+    });
+
+    const { copy } = useClipboard();
+
+    const [copied, toggleCopied] = useToggle(false);
+
+    const copyLink = async () => {
+      await copy(props.item?.publicLink);
+      toggleCopied(true);
+      setTimeout(() => toggleCopied(false), 3000);
+    };
+
+    return {
+      show,
+      toggle,
+      getColor,
+      unLink,
+      link,
+      havePublicOrder,
+      copyLink,
+      copied,
+    };
   },
 };
 </script>

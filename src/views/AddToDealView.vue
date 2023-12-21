@@ -28,10 +28,16 @@
           />
         </svg>
       </button>
-      <div class="fixed top-4 left-[10%] hidden sm:block" v-if="isPublicOrder">
+      <div
+        class="fixed top-4 left-[10%] hidden sm:flex flex-row items-center gap-2"
+        v-if="isPublicOrder"
+      >
         <transition name="side2">
           <AvailablePublicOrderButton />
         </transition>
+        <router-link :to="'/PublicOrderProfile'">
+          <button class="btn_white">Профиль</button>
+        </router-link>
       </div>
       <div
         class="fixed sm:static bottom-0 left-0 w-full sm:w-auto flex flex-col gap-2 p-2 sm:p-0 bg-white shadow-md shadow-black rounded-t-lg"
@@ -44,6 +50,23 @@
             <transition name="side2">
               <AvailablePublicOrderButton class="sm:hidden" />
             </transition>
+            <router-link :to="'/PublicOrderProfile'">
+              <button
+                class="rounded-lg bg-slate-400 bg-opacity-90 text-slate-100 h-9 aspect-square flex justify-center items-center p-1 sm:!hidden"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2m0 7c2.67 0 8 1.33 8 4v3H4v-3c0-2.67 5.33-4 8-4m0 1.9c-2.97 0-6.1 1.46-6.1 2.1v1.1h12.2V17c0-.64-3.13-2.1-6.1-2.1"
+                  />
+                </svg>
+              </button>
+            </router-link>
             <a
               href="https://gosklad.com/"
               target="_blank"
@@ -117,7 +140,7 @@
         v-if="!isPublicOrder"
       />
     </div>
-    <div class="content sm:mt-4">
+    <div class="content sm:mt-4 mb-20">
       <keep-alive>
         <component :is="tabs.selected.code" />
       </keep-alive>

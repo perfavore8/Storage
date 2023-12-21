@@ -98,7 +98,7 @@ const routes = [
     component: () => import("../views/AddToDealView.vue"),
   },
   {
-    path: "/AvailablePublicOrderList",
+    path: "/availablePublicOrderList",
     name: "AvailablePublicOrderList",
     component: () => import("../views/AvailablePublicOrderList.vue"),
   },
@@ -106,6 +106,11 @@ const routes = [
     path: "/publicOrderAuth",
     name: "CheckPublicOrderAuth",
     component: () => import("../views/CheckPublicOrderAuth.vue"),
+  },
+  {
+    path: "/publicOrderProfile",
+    name: "PublicOrderProfile",
+    component: () => import("../views/PublicOrderProfile.vue"),
   },
 ];
 

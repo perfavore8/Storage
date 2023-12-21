@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link :to="'/AvailablePublicOrderList'">
+    <router-link :to="'/availablePublicOrderList'">
       <button class="btn_white whitespace-nowrap auto z-[47]">
         {{ $t("newOrder.myOrders") }}
       </button>
