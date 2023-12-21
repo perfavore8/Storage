@@ -67,7 +67,22 @@
               <label :for="row.id"></label>
             </td>
             <template v-for="item in sortedFields" :key="item">
-              <td class="item" v-if="item[1].type === 15">
+              <td
+                class="item"
+                v-if="
+                  item[0].split('.')[1] === 'reserve' &&
+                  item[0].split('.')[0] !== 'whs'
+                "
+              >
+                <a
+                  class="link"
+                  @click="followOrdersList(row.id, item[0].split('.')[0])"
+                  >{{
+                    row.fields?.[item[0].split(".")[0]]?.[item[0].split(".")[1]]
+                  }}</a
+                >
+              </td>
+              <td class="item" v-else-if="item[1].type === 15">
                 <AppImagesCarusel :imagesList="row.fields[item[0]]" />
               </td>
               <td class="item" v-else>
@@ -425,6 +440,17 @@ export default {
       };
       this.$store.commit("updateProductsParams", params);
       this.get_products(this.productsParams);
+    },
+    followOrdersList(id, whCode) {
+      this.$store.commit("updateOrdersFilters", {
+        filter: {
+          product: {
+            wh: { compare: "=", query: whCode },
+            product_id: { compare: "=", query: id },
+          },
+        },
+      });
+      this.$router.push("orders");
     },
   },
 };
