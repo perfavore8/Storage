@@ -67,13 +67,7 @@
               <label :for="row.id"></label>
             </td>
             <template v-for="item in sortedFields" :key="item">
-              <td
-                class="item"
-                v-if="
-                  item[0].split('.')[1] === 'reserve' &&
-                  item[0].split('.')[0] !== 'whs'
-                "
-              >
+              <td class="item" v-if="item[0].split('.')[1] === 'reserve'">
                 <a
                   class="link"
                   @click="followOrdersList(row.id, item[0].split('.')[0])"
