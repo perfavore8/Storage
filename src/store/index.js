@@ -17,6 +17,11 @@ import auth from "./modules/auth";
 import data from "./modules/data";
 import user from "./modules/user";
 import profile from "./modules/profile";
+import POAuth from "./publicOrder/auth";
+import POCDoc from "./publicOrder/customDoc";
+import PODoc from "./publicOrder/doc";
+import POOrder from "./publicOrder/order";
+import POToken from "./publicOrder/token";
 
 export default createStore({
   modules: {
@@ -38,5 +43,10 @@ export default createStore({
     data,
     user,
     profile,
+    POAuth,
+    POCDoc,
+    PODoc,
+    POOrder,
+    POToken,
   },
 });

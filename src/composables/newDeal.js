@@ -5,6 +5,7 @@ import { useToggle } from "@vueuse/core";
 import { computed, nextTick } from "vue";
 import { useAddToDealTabs } from "./addToDealTabs";
 import { useLangConfiguration } from "./langConfiguration";
+import { isPublicOrder } from "@/components/PublicOrder";
 
 const { tabs } = useAddToDealTabs();
 const { t } = useLangConfiguration();
@@ -37,7 +38,9 @@ setNewOrderPromise();
 
 const getOrder = async (field) => {
   isOrderGeted.value = false;
-  const newOrder = await store.dispatch("getOrder");
+  const newOrder = await store.dispatch(
+    isPublicOrder.value ? "POOrder" : "getOrder"
+  );
   if (Array.isArray(newOrder.fields)) newOrder.fields = {};
   if (field) {
     Object.assign(order[field], newOrder[field]);
@@ -85,7 +88,10 @@ export function useNewDeal() {
   const isOrederLoaded = computed(() => Boolean(order.id));
 
   const saveOrder = async () => {
-    await store.dispatch("updateOrder", {});
+    await store.dispatch(
+      isPublicOrder.value ? "POOrderUpdate" : "updateOrder",
+      {}
+    );
     toggleSomeChange(false);
   };
 

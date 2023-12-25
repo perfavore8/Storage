@@ -4,6 +4,7 @@ import { useSaveLS } from "./saveLS";
 import { createI18n } from "vue-i18n";
 import { messages } from "@/composables/messages";
 import { ApiReqFunc } from "./ApiReqFunc";
+import { savedToken } from "./BaseURL";
 
 const { saveLSParam, getSavedLSParam } = useSaveLS();
 const langConfiguration = reactive({
@@ -15,11 +16,12 @@ const langConfiguration = reactive({
   select: async function (option, initial) {
     saveLSParam("lang", option.value);
     this.selected = option;
-    await ApiReqFunc({
-      method: "post",
-      url: "account/user/update",
-      data: { lang: this.selected.value },
-    });
+    if (savedToken)
+      await ApiReqFunc({
+        method: "post",
+        url: "account/user/update",
+        data: { lang: this.selected.value },
+      });
     if (!initial) router.go(0);
   },
   getSavedlang: function () {

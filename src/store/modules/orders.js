@@ -3,6 +3,7 @@ import { ApiReqFunc } from "@/composables/ApiReqFunc";
 import { usePreparationOrders } from "@/composables/preporationOrders";
 const { newDealParams, order } = useNewDeal();
 import { isTest2 } from "@/composables/isTest";
+import { savedToken } from "@/composables/BaseURL";
 
 const { preparationOrder } = usePreparationOrders();
 
@@ -254,6 +255,7 @@ export default {
     },
 
     async ordersPipelinesList(context, params) {
+      if (!savedToken) return;
       if (!params?.isUpdate && context.state.pipelines.length)
         return context.state.pipelines;
       delete params?.isUpdate;

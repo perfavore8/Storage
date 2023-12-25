@@ -160,6 +160,7 @@ import { useNewDeal } from "@/composables/newDeal";
 import { useDocumentsTabCustomDocs } from "@/composables/documentsTabCustomDocs";
 import router from "@/router";
 import { useLangConfiguration } from "@/composables/langConfiguration";
+import { isPublicOrder } from "../PublicOrder";
 
 export default {
   components: { AppInputSelect },
@@ -179,7 +180,9 @@ export default {
     );
 
     onMounted(() => {
-      store.dispatch("get_documents_v3");
+      store.dispatch(
+        isPublicOrder.value ? "PODocTemplates" : "get_documents_v3"
+      );
       getDocs();
       getCustomDocList();
     });
@@ -189,9 +192,12 @@ export default {
       docsList.length = 0;
       Object.assign(
         docsList,
-        await store.dispatch("getOrderDocList", {
-          order_id: Number(newDealParams.id),
-        })
+        await store.dispatch(
+          isPublicOrder.value ? "PODocList" : "getOrderDocList",
+          {
+            order_id: Number(newDealParams.id),
+          }
+        )
       );
     };
 
@@ -200,7 +206,9 @@ export default {
       selected: { name: "", value: -1 },
       isGeneration: false,
       list: computed(() => {
-        const templates = store.state.documents.templates;
+        const templates = isPublicOrder.value
+          ? store.state.PODoc.templates
+          : store.state.documents.templates;
         templates?.map((val) => {
           val.value = val.id;
         });
@@ -216,19 +224,25 @@ export default {
 
     const generate = async () => {
       docs.isGeneration = true;
-      await store.dispatch("generateOrderDoc", {
-        order_id: Number(newDealParams.id),
-        doc_tpl_id: docs.selected.id,
-      });
+      await store.dispatch(
+        isPublicOrder.value ? "PODocGenerate" : "generateOrderDoc",
+        {
+          order_id: Number(newDealParams.id),
+          doc_tpl_id: docs.selected.id,
+        }
+      );
       docs.isGeneration = false;
       getDocs();
     };
 
     const delDoc = async (docId) => {
-      await store.dispatch("deleteOrderDoc", {
-        order_id: newDealParams.id,
-        doc_id: docId,
-      });
+      await store.dispatch(
+        isPublicOrder.value ? "PODocDelete" : "deleteOrderDoc",
+        {
+          order_id: newDealParams.id,
+          doc_id: docId,
+        }
+      );
       getDocs();
     };
 

@@ -1,4 +1,5 @@
 import { ApiReqFunc } from "@/composables/ApiReqFunc";
+import { savedToken } from "@/composables/BaseURL";
 export default {
   state: {
     fields_properties: [],
@@ -23,6 +24,7 @@ export default {
   },
   actions: {
     async get_fields_properties(context, params) {
+      if (!savedToken) return;
       context.commit("updateIsLoadingCats", true);
       if (context.getPromise !== null) {
         await context.getPromise;

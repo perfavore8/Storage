@@ -25,6 +25,7 @@
       </h2>
       <template v-for="item in col.items" :key="item?.id">
         <ClientTabItem
+          :code="col.code2"
           :item="item"
           :fields="col.fields"
           :placeholders="col.placeholders"
@@ -70,6 +71,7 @@ export default {
       {
         name: t("newOrder.komp"),
         code: "Company",
+        code2: "company",
         getFieldsUrl: "getClientsCompanyFields",
         getAutocompeteUrl: "getClientsCompanyAutocomplete",
         fields: computed(() => store.state.clientsCompany.fields),
@@ -89,6 +91,7 @@ export default {
       {
         name: t("newOrder.cont"),
         code: "Contacts",
+        code2: "contact",
         getFieldsUrl: "getClientsContactsFields",
         getAutocompeteUrl: "getClientsContactsAutocomplete",
         fields: computed(() => store.state.clientsContacts.fields),

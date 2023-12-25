@@ -65,7 +65,7 @@
         <div
           class="flex flex-row justify-between items-center pt-2"
           @click.stop=""
-          v-if="!item?.isUnLink"
+          v-if="!item?.isUnLink && isTest"
         >
           <input
             type="checkbox"
@@ -77,7 +77,7 @@
           <div class="flex flex-row gap-2 items-center" v-if="!havePublicOrder">
             <button
               class="p-2 bg-slate-400/90 rounded-xl text-white"
-              @click="copyLink(123)"
+              @click="copyLink()"
             >
               <transition name="opacity" mode="out-in">
                 <svg
@@ -145,6 +145,9 @@
 import { useClipboard, useToggle } from "@vueuse/core";
 import { useClients } from "@/composables/clients";
 import { computed } from "vue";
+import { isTest } from "@/composables/isTest";
+import store from "@/store";
+import { useNewDeal } from "@/composables/newDeal";
 export default {
   props: {
     item: Object,
@@ -152,10 +155,12 @@ export default {
     fields: Array,
     alwaysShow: Boolean,
     have_public_order: Boolean,
+    code: String,
   },
   emits: ["unLink", "link"],
   setup(props, context) {
     const { getColor } = useClients();
+    const { order } = useNewDeal();
 
     const [show, toggle] = useToggle(false);
 
@@ -172,7 +177,16 @@ export default {
     const [copied, toggleCopied] = useToggle(false);
 
     const copyLink = async () => {
-      await copy(props.item?.publicLink);
+      const token = await store.dispatch("getPublicToken", {
+        client_type: props.code,
+        client_id: props.item.id,
+      });
+      await copy(
+        "app.gosklad.ru/#/publicOrder?order_id=" +
+          order.id +
+          "&potoken=" +
+          token
+      );
       toggleCopied(true);
       setTimeout(() => toggleCopied(false), 3000);
     };
@@ -186,6 +200,7 @@ export default {
       havePublicOrder,
       copyLink,
       copied,
+      isTest,
     };
   },
 };

@@ -28,7 +28,7 @@ const pipelines = reactive({
     await this.getNewList();
   },
   getNewList: async function () {
-    const list = await store.dispatch("ordersPipelinesList");
+    const list = (await store.dispatch("ordersPipelinesList")) || [];
     list.map((el) => (el.value = el.id));
     this.list = list;
   },

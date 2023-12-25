@@ -710,9 +710,12 @@ export default {
       this.products.forEach(() => this.inputValues.push(""));
     },
     async addToLeadAutocomplete(id) {
-      await this.$store.dispatch("addProductW", {
-        product_id: id,
-      });
+      await this.$store.dispatch(
+        isPublicOrder.value ? "POOrderPositionAdd" : "addProductW",
+        {
+          product_id: id,
+        }
+      );
       this.updateProductsList();
       this.updateAddedProducts();
     },
@@ -721,10 +724,13 @@ export default {
       const idx = this.products.indexOf(product);
 
       if (await product.is_service) {
-        await this.$store.dispatch("addProduct2W", {
-          product_id: id,
-          count: this.allWhsList[idx][0].specialValue,
-        });
+        await this.$store.dispatch(
+          isPublicOrder.value ? "POOrderPositionAdd" : "addProduct2W",
+          {
+            product_id: id,
+            count: this.allWhsList[idx][0].specialValue,
+          }
+        );
       } else {
         const arr = [];
         this.allWhsList[idx].forEach((wh) => {
@@ -733,7 +739,12 @@ export default {
               product_id: [id, wh.code].join("%%%"),
               count: wh.specialValue,
             };
-            arr.push(this.$store.dispatch("addProduct3W", params));
+            arr.push(
+              this.$store.dispatch(
+                isPublicOrder.value ? "POOrderPositionAdd" : "addProduct3W",
+                params
+              )
+            );
           }
         });
         await Promise.all(arr);
@@ -862,9 +873,12 @@ export default {
       }
     },
     deleteAddedProduct(idx) {
-      this.$store.dispatch("deleteProductW", {
-        product_id: this.addedProducts[idx].id,
-      });
+      this.$store.dispatch(
+        isPublicOrder.value ? "POOrderPositionDelete" : "deleteProductW",
+        {
+          product_id: this.addedProducts[idx].id,
+        }
+      );
       this.addedProducts.splice(idx, 1);
     },
   },

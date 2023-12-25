@@ -150,6 +150,7 @@ import GridBottom from "../components/GridBottom.vue";
 import AppInputSelect from "./AppInputSelect.vue";
 import AppTablePreloader from "@/components/AppTablePreloader.vue";
 import AppImagesCarusel from "@/components/AppImagesCarusel.vue";
+import { isPublicOrder } from "@/components/PublicOrder";
 export default {
   name: "MainGrid",
   components: {
@@ -289,7 +290,12 @@ export default {
                 : wh.product_id + "%%%" + wh.code,
               count: wh.specialValue,
             };
-            arr.push(this.$store.dispatch("addProduct3W", params));
+            arr.push(
+              this.$store.dispatch(
+                isPublicOrder.value ? "POOrderPositionAdd" : "addProduct3W",
+                params
+              )
+            );
           }
         });
       });

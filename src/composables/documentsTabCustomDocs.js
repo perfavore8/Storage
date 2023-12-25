@@ -2,6 +2,7 @@ import store from "@/store";
 import { reactive } from "vue";
 import { useNewDeal } from "./newDeal";
 import { ref } from "vue";
+import { isPublicOrder } from "@/components/PublicOrder";
 
 export function useDocumentsTabCustomDocs() {
   const { newDealParams } = useNewDeal();
@@ -14,7 +15,10 @@ export function useDocumentsTabCustomDocs() {
     const payload = new FormData();
     payload.append("files", files);
     payload.append("order_id", newDealParams.id);
-    await store.dispatch("customDocUpload", payload);
+    await store.dispatch(
+      isPublicOrder.value ? "POCustomDocUpload" : "customDocUpload",
+      payload
+    );
     isUpload.value = false;
     getCustomDocList();
   };
@@ -24,15 +28,21 @@ export function useDocumentsTabCustomDocs() {
     customDocList.length = 0;
     Object.assign(
       customDocList,
-      await store.dispatch("customDocList", { order_id: newDealParams.id })
+      await store.dispatch(
+        isPublicOrder.value ? "POCustomDocList" : "customDocList",
+        { order_id: newDealParams.id }
+      )
     );
     customDocList.map((doc) => (doc.isCustom = true));
   };
   const deleteCustomDoc = async (docId) => {
-    await store.dispatch("customDocDelete", {
-      order_id: newDealParams.id,
-      doc_id: docId,
-    });
+    await store.dispatch(
+      isPublicOrder.value ? "POCustomDocDelete" : "customDocDelete",
+      {
+        order_id: newDealParams.id,
+        doc_id: docId,
+      }
+    );
     getCustomDocList();
   };
 

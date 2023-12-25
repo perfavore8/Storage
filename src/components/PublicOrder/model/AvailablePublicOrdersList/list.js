@@ -3,12 +3,12 @@ import { computed } from "vue";
 
 export function useList() {
   const getList = async () => {
-    // await store.dispatch("getAvailablePublicOrdersList");
+    await store.dispatch("POOrderList");
   };
 
   const list = computed(
     () =>
-      store.state.orders.AvailablePublicOrdersList || [
+      store.state.POOrder.AvailablePublicOrdersList || [
         {
           id: 1,
           name: "Заказ 1 - 1000р - Менеджер 1 Заказ 1 - 1000р - Менеджер 1 Заказ 1 - 1000р - Менеджер 1 - 01.10.2021 - 05.10.2021",

@@ -5,6 +5,8 @@ import axios from "axios";
 import router from "@/router";
 const { isDev } = useCheckDevMode();
 
+export const BaseURL = "https://api.gosklad.ru/v1/";
+
 function findGetParameter(parameterName) {
   let result = null,
     tmp = [];
@@ -20,12 +22,27 @@ function findGetParameter(parameterName) {
 
 export const TokenName = "TOKEN";
 
+const POToken = location.hash.split("potoken=")[1];
 if (location.search) {
   localStorage.setItem(TokenName, JSON.stringify(findGetParameter("token")));
   location.replace(location.href.replace(location.search, ""));
 }
+if (POToken) {
+  const poinstance = axios.create({
+    baseURL: BaseURL,
+    headers: { Authorization: "Beared " + POToken },
+  });
 
-let savedToken = "";
+  poinstance({
+    url: "public-order/token/get",
+    params: { public_token: POToken },
+  }).then(({ data }) => {
+    localStorage.setItem(TokenName, JSON.stringify(data));
+    location.replace(location.href.replace(location.search, ""));
+  });
+}
+
+export let savedToken = "";
 export const getCachedToken = () => {
   savedToken = JSON.parse(localStorage.getItem(TokenName));
 };
@@ -65,7 +82,6 @@ export function useRedirectToAuth() {
   };
 }
 
-export const BaseURL = "https://api.gosklad.ru/v1/";
 export let TOKEN = "Bearer " + (findGetParameter("token") || savedToken);
 export const getTOKEN = () =>
   "Bearer " + (findGetParameter("token") || savedToken);
