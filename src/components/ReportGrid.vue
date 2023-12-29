@@ -51,47 +51,51 @@
             :key="tit"
             :class="{ center: tit.type }"
           >
-            <span
-              v-if="
-                !tit.type &&
-                (reportType === 'customers' || tit?.code != 'leads')
-              "
-            >
-              {{ report[tit?.code] }}
-            </span>
-            <div
-              v-if="!tit.type && tit?.code == 'leads' && reportType === 'sales'"
-            >
-              <template v-for="(lead, lidx) in report[tit?.code]" :key="lead">
-                <a
-                  class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
-                  target="black"
-                  :href="
-                    'https://' +
-                    accountSubdomain +
-                    '.amocrm.ru/leads/detail/' +
-                    lead
-                  "
-                >
-                  {{ lead }}
-                </a>
-                <span>{{
-                  lidx < report[tit?.code].length - 1 ? ", " : ""
-                }}</span>
-              </template>
-            </div>
-            <button
-              class="btn"
-              v-if="tit.type"
-              v-show="report[tit?.code]"
-              @click="report[tit?.code].value = !report[tit?.code]?.value"
-            >
-              {{
-                report[tit?.code]?.value
-                  ? $t("Analytics.reportGrid.hide")
-                  : $t("Analytics.reportGrid.show")
-              }}
-            </button>
+            <slot :name="'item_' + tit.code" :title="tit" :item="report">
+              <span
+                v-if="
+                  !tit.type &&
+                  (reportType === 'customers' || tit?.code != 'leads')
+                "
+              >
+                {{ report[tit?.code] }}
+              </span>
+              <div
+                v-if="
+                  !tit.type && tit?.code == 'leads' && reportType === 'sales'
+                "
+              >
+                <template v-for="(lead, lidx) in report[tit?.code]" :key="lead">
+                  <a
+                    class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
+                    target="black"
+                    :href="
+                      'https://' +
+                      accountSubdomain +
+                      '.amocrm.ru/leads/detail/' +
+                      lead
+                    "
+                  >
+                    {{ lead }}
+                  </a>
+                  <span>{{
+                    lidx < report[tit?.code].length - 1 ? ", " : ""
+                  }}</span>
+                </template>
+              </div>
+              <button
+                class="btn"
+                v-if="tit.type"
+                v-show="report[tit?.code]"
+                @click="report[tit?.code].value = !report[tit?.code]?.value"
+              >
+                {{
+                  report[tit?.code]?.value
+                    ? $t("Analytics.reportGrid.hide")
+                    : $t("Analytics.reportGrid.show")
+                }}
+              </button>
+            </slot>
           </td>
         </tr>
         <tr

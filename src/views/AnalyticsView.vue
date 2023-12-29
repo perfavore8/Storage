@@ -80,7 +80,37 @@
           @updateSelectedReport="updateSelectedReport"
           @sort="sort"
           ref="grid"
-        />
+        >
+          <template
+            #item_title="{ title: tit, item: report }"
+            v-if="reportType.selected.value === 'stuffMove'"
+          >
+            <span
+              v-if="
+                !tit?.type &&
+                (reportType.selected.value === 'customers' ||
+                  tit?.code != 'leads')
+              "
+            >
+              <a
+                class="underline text-[#8cb4ff] decoration-[#3f3f3faf] underline-offset-2 hover:no-underline"
+                target="black"
+                v-if="report.amo_lead_id && accountSubdomain"
+                :href="
+                  'https://' +
+                  accountSubdomain +
+                  '.amocrm.ru/leads/detail/' +
+                  report.amo_lead_id
+                "
+              >
+                {{ report?.[tit?.code] }}
+              </a>
+              <template v-else>
+                {{ report?.[tit?.code] }}
+              </template>
+            </span>
+          </template>
+        </ReportGrid>
         <GridBottom
           :page="page"
           :show="reports.data?.length != 0"
@@ -336,6 +366,9 @@ export default {
         };
       }
       return obj;
+    },
+    accountSubdomain() {
+      return this.$store.state.account.account.subdomain;
     },
   },
   created() {
