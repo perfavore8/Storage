@@ -17,11 +17,13 @@ const exceptions = {
     hideAllWhs: ["678"],
     hideService: ["678"],
     mainWhSelected: ["678"],
+    hideMainWhs: ["464"],
   },
   names: {
     orders_deals: ["678"],
     remnants_objects: ["678"],
     mainWhs_allObjects: ["678"],
+    service_menu: ["464"],
   },
 };
 

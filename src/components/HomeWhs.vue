@@ -59,6 +59,11 @@ export default {
 
       system.forEach((wh) => {
         if (
+          currentExeptions.value?.remnants?.hideMainWhs &&
+          (wh.code === "wh" || wh.code === "whs")
+        )
+          return;
+        if (
           wh.code === "wh" &&
           currentExeptions.value?.names?.mainWhs_allObjects
         )
@@ -70,12 +75,18 @@ export default {
         }
         whs.value.push({ name: wh.name, value: wh.code });
       });
+      const services = {
+        name: currentExeptions.value?.names?.service_menu
+          ? t("ostatki.menu")
+          : t("ostatki.ysls"),
+        value: "services",
+      };
       if (currentExeptions.value?.remnants?.hideService) {
-        customWhs.value.push({ name: t("ostatki.ysls"), value: "services" });
+        customWhs.value.push(services);
       } else {
-        systemWhs.value.push({ name: t("ostatki.ysls"), value: "services" });
+        systemWhs.value.push(services);
       }
-      whs.value.push({ name: t("ostatki.ysls"), value: "services" });
+      whs.value.push(services);
 
       custom.forEach((wh) => {
         customWhs.value.push({ name: wh.name, value: wh.code });
