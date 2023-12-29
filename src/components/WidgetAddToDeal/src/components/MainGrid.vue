@@ -36,7 +36,7 @@
             <td class="item">
               <div v-if="row.is_service">
                 <input
-                  v-if="allWhsList?.[idx]"
+                  v-if="allWhsList?.[idx].length"
                   type="number"
                   class="sls_input"
                   style="min-width: 70px"
