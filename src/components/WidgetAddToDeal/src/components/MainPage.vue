@@ -368,7 +368,7 @@
                                     ? null
                                     : (
                                         product.is_service
-                                          ? !allWhsList[idx][0].specialValue
+                                          ? !allWhsList[idx][0]?.specialValue
                                           : allWhsList?.[idx]?.reduce(
                                               (sum, wh) =>
                                                 (sum += Number(
@@ -384,7 +384,7 @@
                                 btn_del_disabled: disableAddToDeal
                                   ? true
                                   : product.is_service
-                                  ? !allWhsList[idx][0].specialValue
+                                  ? !allWhsList[idx][0]?.specialValue
                                   : allWhsList?.[idx]?.reduce(
                                       (sum, wh) =>
                                         (sum += Number(wh?.specialValue)),
@@ -551,7 +551,7 @@ export default {
     savedAllWhsList() {
       const list = this.allWhsList.filter((whs) => {
         const total = whs.reduce(
-          (sum, wh) => (sum += Number(wh.specialValue)),
+          (sum, wh) => (sum += Number(wh?.specialValue)),
           0
         );
         return total;
@@ -695,13 +695,23 @@ export default {
       const res = [];
 
       this.products.forEach((product) => {
-        const copyArr = product.whs?.map((a) => ({ ...a }));
-        copyArr.map((wh) => {
-          wh.name = wh.name + "   |   " + wh.count;
-          wh.value = wh.code;
-          wh.specialValue = null;
-        });
-        res.push(copyArr);
+        if (product.is_service) {
+          res.push([
+            {
+              name: "Основной склад   |   0",
+              value: "wh",
+              specialValue: null,
+            },
+          ]);
+        } else {
+          const copyArr = product.whs?.map((a) => ({ ...a }));
+          copyArr.map((wh) => {
+            wh.name = wh.name + "   |   " + wh.count;
+            wh.value = wh.code;
+            wh.specialValue = null;
+          });
+          res.push(copyArr);
+        }
       });
 
       this.allWhsList = res;
@@ -727,14 +737,14 @@ export default {
         await this.$store.dispatch(
           isPublicOrder.value ? "POOrderPositionAdd" : "addProduct2W",
           {
-            product_id: id,
-            count: this.allWhsList[idx][0].specialValue,
+            product_id: `${id}%%%`,
+            count: this.allWhsList[idx][0]?.specialValue,
           }
         );
       } else {
         const arr = [];
         this.allWhsList[idx].forEach((wh) => {
-          if (wh.specialValue) {
+          if (wh?.specialValue) {
             const params = {
               product_id: [id, wh.code].join("%%%"),
               count: wh.specialValue,

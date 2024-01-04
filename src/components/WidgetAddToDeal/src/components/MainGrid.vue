@@ -36,7 +36,7 @@
             <td class="item">
               <div v-if="row.is_service">
                 <input
-                  v-if="allWhsList?.[idx].length"
+                  v-if="allWhsList?.[idx]?.length"
                   type="number"
                   class="sls_input"
                   style="min-width: 70px"
@@ -324,7 +324,7 @@ export default {
                 name: "Основной склад   |   0",
                 value: "wh",
                 specialValue: null,
-                product_id: String(product.id),
+                product_id: `${product.id}%%%`,
                 is_service: product.is_service,
                 product_name: product.fields?.name,
               },
