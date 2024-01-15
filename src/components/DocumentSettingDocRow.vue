@@ -10,7 +10,7 @@
     <td class="item">{{ doc.type }}</td>
     <td class="item">{{ doc.export_type }}</td>
     <td class="item" v-if="isTest">
-      {{ doc.public_order_visible ? $t("global.yes") : $t("global.no") }}
+      {{ doc.is_public ? $t("global.yes") : $t("global.no") }}
     </td>
     <td class="item">
       <div class="btns">

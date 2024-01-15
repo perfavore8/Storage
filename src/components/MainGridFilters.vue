@@ -2,7 +2,11 @@
   <transition name="mdl1">
     <tr class="filters" v-show="show_filter">
       <transition-group name="mdl">
-        <th class="item" key="b1" v-if="!oneC"></th>
+        <th
+          class="item"
+          key="b1"
+          v-if="!oneC && currentSetSettingsInFolder.editItem"
+        ></th>
         <template v-for="(filter, idx) in filtersValue" :key="idx">
           <th class="item" v-show="show_filter">
             <template v-if="filter.table_config?.filtered">
@@ -62,6 +66,7 @@ import FilterFlag from "@/components/FiltersSelections/FilterFlag.vue";
 import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
+import { useRoleSettings } from "@/composables/roleSettings";
 export default {
   props: {
     fields: {
@@ -88,6 +93,11 @@ export default {
     FilterList,
     FilterDate,
     FilterFlag,
+  },
+  setup() {
+    const { currentSetSettingsInFolder } = useRoleSettings("products");
+
+    return { currentSetSettingsInFolder };
   },
   data() {
     return {

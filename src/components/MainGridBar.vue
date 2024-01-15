@@ -1,6 +1,9 @@
 <template>
   <tr class="bar_row">
-    <th class="bar_item item" v-if="!oneC">
+    <th
+      class="bar_item item"
+      v-if="!oneC && currentSetSettingsInFolder.editItem"
+    >
       <input
         type="checkbox"
         class="checkbox"

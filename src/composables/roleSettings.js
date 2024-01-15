@@ -20,6 +20,7 @@ export function useRoleSettings(folder) {
       },
       products: {
         tableSettingsBtn: 1,
+        editItem: 1,
       },
     },
     user: {
@@ -36,6 +37,7 @@ export function useRoleSettings(folder) {
       },
       products: {
         tableSettingsBtn: 1,
+        editItem: 0,
       },
     },
   });

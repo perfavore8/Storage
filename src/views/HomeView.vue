@@ -100,7 +100,7 @@
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
-            v-if="!oneC"
+            v-if="!oneC && currentSetSettingsInFolder.editItem"
           >
             {{ $t("ostatki.newPoz") }}
           </button>
@@ -146,6 +146,7 @@ import { computed } from "vue";
 import { isTest } from "@/composables/isTest";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { currentExeptions } from "@/composables/exceptions";
+import { useRoleSettings } from "@/composables/roleSettings";
 
 const { t } = useLangConfiguration();
 
@@ -168,7 +169,8 @@ export default {
     };
   },
   setup() {
-    return { t, isTest };
+    const { currentSetSettingsInFolder } = useRoleSettings("products");
+    return { t, isTest, currentSetSettingsInFolder };
   },
   data() {
     return {

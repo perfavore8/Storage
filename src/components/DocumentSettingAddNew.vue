@@ -210,7 +210,7 @@ export default {
           status_id: this.status_id.value,
           url_field: this.url_field.value,
         };
-        if (isTest) new_doc.public_order_visible = this.publicOrderVisible;
+        if (isTest) new_doc.is_public = this.publicOrderVisible;
         // if (new_doc.status_id == "-1" || new_doc.status_id == "1")
         //   delete new_doc.status_id;
         if (Object.keys(this.cur_doc).length > 0) {
@@ -243,7 +243,7 @@ export default {
       if (Object.keys(this.cur_doc).length > 0) {
         this.name = this.cur_doc.name;
         this.file = this.cur_doc.file;
-        if (isTest) this.publicOrderVisible = this.cur_doc.public_order_visible;
+        if (isTest) this.publicOrderVisible = this.cur_doc.is_public;
         const serch_selected_item = (options, name, value, isSpecial) => {
           let obj = { name: t("global.notSelected"), value: "-1" };
           options.forEach((val) => {

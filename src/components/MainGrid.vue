@@ -55,7 +55,10 @@
         </thead>
         <tbody v-if="products.length">
           <tr class="row" v-for="(row, idx) in products" :key="row.id">
-            <td class="item" v-if="!oneC">
+            <td
+              class="item"
+              v-if="!oneC && currentSetSettingsInFolder.editItem"
+            >
               <input
                 type="checkbox"
                 class="checkbox"
@@ -138,6 +141,7 @@
                 class="edit_icon"
                 @click="open_edit_modal(row)"
                 :title="t('ostatki.changePoz')"
+                v-if="currentSetSettingsInFolder.editItem"
               ></div>
             </td>
           </tr>
@@ -173,13 +177,15 @@ import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppTablePreloader from "./AppTablePreloader.vue";
 import AppImagesCarusel from "./AppImagesCarusel.vue";
 import { useValidate } from "@/composables/validate";
+import { useRoleSettings } from "@/composables/roleSettings";
 export default {
   name: "Main_grid",
   setup() {
     const { t } = useLangConfiguration();
     const { checkIsNull } = useValidate();
+    const { currentSetSettingsInFolder } = useRoleSettings("products");
 
-    return { t, checkIsNull };
+    return { t, checkIsNull, currentSetSettingsInFolder };
   },
   components: {
     EditItem,
