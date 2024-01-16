@@ -1,7 +1,14 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { haveAnyTOKEN, useRedirectToAuth } from "@/composables/BaseURL";
+import {
+  POToken,
+  haveAnyTOKEN,
+  isPOTokenGetted,
+  useRedirectToAuth,
+} from "@/composables/BaseURL";
 import store from "../store";
 import { useCheckDevMode } from "@/composables/checkDevMode";
+import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
+import { computed } from "vue";
 
 const { isDev } = useCheckDevMode();
 const { isTokenFail } = useRedirectToAuth();
@@ -121,7 +128,11 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (!haveAnyTOKEN() && to.path !== "/authorization") {
+  console.log(3);
+  if (POToken && !isPOTokenGetted.value)
+    await waitForNonAsyncFunction(computed(() => isPOTokenGetted.value));
+  console.log(4);
+  if (!POToken && !haveAnyTOKEN() && to.path !== "/authorization") {
     next("/authorization");
     return;
   }
@@ -147,6 +158,7 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
+  if (POToken) next();
   await store.dispatch("get_account");
 
   const account = store.state.account?.account;
@@ -170,7 +182,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.path == "/") {
-    if (account.id == 148) {
+    if (account?.id == 148) {
       next("/documents");
       return;
     } else {

@@ -22,36 +22,48 @@ function findGetParameter(parameterName) {
 
 export const TokenName = "TOKEN";
 
-const POToken = location.hash.split("potoken=")[1];
+export const POToken = location.hash.split("potoken=")[1];
+export const isPOTokenGetted = ref(false);
 if (location.search) {
   localStorage.setItem(TokenName, JSON.stringify(findGetParameter("token")));
   location.replace(location.href.replace(location.search, ""));
 }
 if (POToken) {
+  console.log(1);
+  localStorage.setItem(TokenName, JSON.stringify(""));
   const poinstance = axios.create({
     baseURL: BaseURL,
-    headers: { Authorization: "Beared " + POToken },
+    // headers: { Authorization: "Beared " + POToken },
   });
 
   poinstance({
     url: "public-order/token/get",
     params: { public_token: POToken },
   }).then(({ data }) => {
-    localStorage.setItem(TokenName, JSON.stringify(data));
+    console.log(2);
+    if (!data.token) return;
+    savedToken = data.token;
+    localStorage.setItem(TokenName, JSON.stringify(data.token));
     location.replace(location.href.replace(location.search, ""));
+    getCachedToken();
+    createInstance();
+    isPOTokenGetted.value = true;
   });
 }
 
 export let savedToken = "";
 export const getCachedToken = () => {
-  savedToken = JSON.parse(localStorage.getItem(TokenName));
+  const val = localStorage.getItem(TokenName);
+  if (val === "undefinded") return;
+  savedToken = JSON.parse(val);
 };
-getCachedToken();
+if (!POToken) getCachedToken();
 
 const isTokenFail = ref(false);
 
 export function useRedirectToAuth() {
   const checkPath = async () => {
+    if (POToken) return;
     if (
       !haveAnyTOKEN() &&
       router.currentRoute.value.path !== "/authorization"
@@ -95,4 +107,4 @@ export const createInstance = () =>
     baseURL: BaseURL,
     headers: { Authorization: getTOKEN() },
   }));
-createInstance();
+if (!POToken) createInstance();
