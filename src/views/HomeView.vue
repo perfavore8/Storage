@@ -100,7 +100,9 @@
           <button
             class="button button_4 smallBtn"
             @click="open_close_new_position(true)"
-            v-if="!oneC && currentSetSettingsInFolder.editItem"
+            v-if="
+              !oneC && (currentSetSettingsInFolder.editItem || editing_remains)
+            "
           >
             {{ $t("ostatki.newPoz") }}
           </button>
@@ -147,6 +149,7 @@ import { isTest } from "@/composables/isTest";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { currentExeptions } from "@/composables/exceptions";
 import { useRoleSettings } from "@/composables/roleSettings";
+import store from "@/store";
 
 const { t } = useLangConfiguration();
 
@@ -170,7 +173,9 @@ export default {
   },
   setup() {
     const { currentSetSettingsInFolder } = useRoleSettings("products");
-    return { t, isTest, currentSetSettingsInFolder };
+    const user = computed(() => store.state.account.user);
+    const editing_remains = computed(() => user.value.editing_remains);
+    return { t, isTest, currentSetSettingsInFolder, editing_remains };
   },
   data() {
     return {
