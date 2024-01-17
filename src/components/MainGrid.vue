@@ -57,7 +57,9 @@
           <tr class="row" v-for="(row, idx) in products" :key="row.id">
             <td
               class="item"
-              v-if="!oneC && currentSetSettingsInFolder.editItem"
+              v-if="
+                !oneC && (currentSetSettingsInFolder.editItem || change_remains)
+              "
             >
               <input
                 type="checkbox"
@@ -141,7 +143,7 @@
                 class="edit_icon"
                 @click="open_edit_modal(row)"
                 :title="t('ostatki.changePoz')"
-                v-if="currentSetSettingsInFolder.editItem"
+                v-if="currentSetSettingsInFolder.editItem || editing_remains"
               ></div>
             </td>
           </tr>
@@ -178,6 +180,8 @@ import AppTablePreloader from "./AppTablePreloader.vue";
 import AppImagesCarusel from "./AppImagesCarusel.vue";
 import { useValidate } from "@/composables/validate";
 import { useRoleSettings } from "@/composables/roleSettings";
+import store from "@/store";
+import { computed } from "vue";
 export default {
   name: "Main_grid",
   setup() {
@@ -185,7 +189,17 @@ export default {
     const { checkIsNull } = useValidate();
     const { currentSetSettingsInFolder } = useRoleSettings("products");
 
-    return { t, checkIsNull, currentSetSettingsInFolder };
+    const user = computed(() => store.state.account.user);
+    const editing_remains = computed(() => user.value.editing_remains);
+    const change_remains = computed(() => user.value.change_remains);
+
+    return {
+      t,
+      checkIsNull,
+      currentSetSettingsInFolder,
+      editing_remains,
+      change_remains,
+    };
   },
   components: {
     EditItem,

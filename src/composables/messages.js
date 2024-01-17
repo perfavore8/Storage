@@ -279,6 +279,8 @@ export const messages = {
       editUser: {
         header: "Editing a user",
         activity: "Activity",
+        editing_remains: "Editing product",
+        change_remains: "Arrival / Write-off / Movement of goods",
         admin: "Admin",
       },
       newUser: {
@@ -1398,6 +1400,8 @@ export const messages = {
       editUser: {
         header: "Редактирование пользователя",
         activity: "Активность",
+        editing_remains: "Редактирование товара",
+        change_remains: "Приход / Списание / Перемещение товаров",
         admin: "Админ",
       },
       newUser: {

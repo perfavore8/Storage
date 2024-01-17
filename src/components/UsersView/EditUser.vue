@@ -40,6 +40,28 @@
             />
             <label for="role_admin"></label>
           </div>
+          <span>{{ $t("AccountSettings.editUser.editing_remains") }}</span>
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              v-model="copyUser.editing_remains"
+              name="editing_remains"
+              id="editing_remains"
+              class="checkbox"
+            />
+            <label for="editing_remains"></label>
+          </div>
+          <span>{{ $t("AccountSettings.editUser.change_remains") }}</span>
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              v-model="copyUser.change_remains"
+              name="change_remains"
+              id="change_remains"
+              class="checkbox"
+            />
+            <label for="change_remains"></label>
+          </div>
         </form>
       </div>
       <div class="footer flex flex-row justify-end gap-4">
@@ -65,12 +87,16 @@ export default {
   setup(props, context) {
     const copyUser = reactive({ ...props.user });
     copyUser.isActive = Boolean(copyUser.is_active);
+    copyUser.editing_remains = Boolean(copyUser.editing_remains);
+    copyUser.change_remains = Boolean(copyUser.change_remains);
 
     const close = () => context.emit("close");
 
     const submit = () => {
       context.emit("submit", {
         is_active: Number(copyUser.isActive),
+        editing_remains: Number(copyUser.editing_remains),
+        change_remains: Number(copyUser.change_remains),
         role: copyUser.role,
       });
       close();

@@ -29,7 +29,6 @@ if (location.search) {
   location.replace(location.href.replace(location.search, ""));
 }
 if (POToken) {
-  console.log(1);
   localStorage.setItem(TokenName, JSON.stringify(""));
   const poinstance = axios.create({
     baseURL: BaseURL,
@@ -40,7 +39,6 @@ if (POToken) {
     url: "public-order/token/get",
     params: { public_token: POToken },
   }).then(({ data }) => {
-    console.log(2);
     if (!data.token) return;
     savedToken = data.token;
     localStorage.setItem(TokenName, JSON.stringify(data.token));

@@ -2,7 +2,7 @@
   <tr class="bar_row">
     <th
       class="bar_item item"
-      v-if="!oneC && currentSetSettingsInFolder.editItem"
+      v-if="!oneC && (currentSetSettingsInFolder.editItem || change_remains)"
     >
       <input
         type="checkbox"
@@ -177,6 +177,9 @@ export default {
       store.commit("open_table_settings");
     };
 
+    const user = computed(() => store.state.account.user);
+    const change_remains = computed(() => user.value.change_remains);
+
     return {
       order,
       sort,
@@ -193,6 +196,7 @@ export default {
       openTableSettings,
       dropOrder,
       currentSetSettingsInFolder,
+      change_remains,
       t,
     };
   },

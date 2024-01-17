@@ -128,10 +128,8 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  console.log(3);
   if (POToken && !isPOTokenGetted.value)
     await waitForNonAsyncFunction(computed(() => isPOTokenGetted.value));
-  console.log(4);
   if (!POToken && !haveAnyTOKEN() && to.path !== "/authorization") {
     next("/authorization");
     return;

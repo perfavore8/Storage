@@ -5,7 +5,9 @@
         <th
           class="item"
           key="b1"
-          v-if="!oneC && currentSetSettingsInFolder.editItem"
+          v-if="
+            !oneC && (currentSetSettingsInFolder.editItem || change_remains)
+          "
         ></th>
         <template v-for="(filter, idx) in filtersValue" :key="idx">
           <th class="item" v-show="show_filter">
@@ -67,6 +69,7 @@ import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
 import { mapGetters } from "vuex";
 import { computed } from "vue";
 import { useRoleSettings } from "@/composables/roleSettings";
+import store from "@/store";
 export default {
   props: {
     fields: {
@@ -97,7 +100,10 @@ export default {
   setup() {
     const { currentSetSettingsInFolder } = useRoleSettings("products");
 
-    return { currentSetSettingsInFolder };
+    const user = computed(() => store.state.account.user);
+    const change_remains = computed(() => user.value.change_remains);
+
+    return { currentSetSettingsInFolder, change_remains };
   },
   data() {
     return {

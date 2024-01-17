@@ -249,6 +249,8 @@ export default {
           id: this.selected.id,
           is_active: newFields.is_active,
           role: newFields.role,
+          editing_remains: newFields.editing_remains,
+          change_remains: newFields.change_remains,
         });
         setUsers();
       },
