@@ -101,7 +101,7 @@ export default {
     const { currentSetSettingsInFolder } = useRoleSettings("products");
 
     const user = computed(() => store.state.account.user);
-    const change_remains = computed(() => user.value.change_remains);
+    const change_remains = computed(() => user.value.config.change_remains);
 
     return { currentSetSettingsInFolder, change_remains };
   },

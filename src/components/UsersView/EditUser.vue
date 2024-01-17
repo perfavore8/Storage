@@ -87,8 +87,8 @@ export default {
   setup(props, context) {
     const copyUser = reactive({ ...props.user });
     copyUser.isActive = Boolean(copyUser.is_active);
-    copyUser.editing_remains = Boolean(copyUser.editing_remains);
-    copyUser.change_remains = Boolean(copyUser.change_remains);
+    copyUser.editing_remains = Boolean(copyUser.config.editing_remains);
+    copyUser.change_remains = Boolean(copyUser.config.change_remains);
 
     const close = () => context.emit("close");
 

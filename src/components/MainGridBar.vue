@@ -178,7 +178,7 @@ export default {
     };
 
     const user = computed(() => store.state.account.user);
-    const change_remains = computed(() => user.value.change_remains);
+    const change_remains = computed(() => user.value.config.change_remains);
 
     return {
       order,

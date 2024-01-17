@@ -174,7 +174,7 @@ export default {
   setup() {
     const { currentSetSettingsInFolder } = useRoleSettings("products");
     const user = computed(() => store.state.account.user);
-    const editing_remains = computed(() => user.value.editing_remains);
+    const editing_remains = computed(() => user.value.config.editing_remains);
     return { t, isTest, currentSetSettingsInFolder, editing_remains };
   },
   data() {
