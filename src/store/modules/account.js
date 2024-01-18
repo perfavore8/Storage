@@ -1,3 +1,4 @@
+import { isPublicOrder } from "@/components/PublicOrder";
 import { ApiReqFunc } from "@/composables/ApiReqFunc";
 export default {
   state: {
@@ -52,7 +53,7 @@ export default {
   actions: {
     async get_account(context) {
       const { data } = await ApiReqFunc({
-        url: "account/config",
+        url: isPublicOrder.value ? "public-order/config" : "account/config",
       });
       context.commit("update_account", data.account);
       context.commit("update_user", data.user);

@@ -156,8 +156,11 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
-  if (POToken) next();
-  await store.dispatch("get_account");
+  if (POToken) {
+    next();
+    return;
+  }
+  // await store.dispatch("get_account");
 
   const account = store.state.account?.account;
   // if (!account?.install && to.path != "/Error_is_not_installed") {

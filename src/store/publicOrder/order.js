@@ -1,4 +1,6 @@
 import { ApiReqFunc } from "@/composables/ApiReqFunc";
+import { useNewDeal } from "@/composables/newDeal";
+const { newDealParams } = useNewDeal();
 
 export default {
   state: {
@@ -31,7 +33,7 @@ export default {
     async POOrder(context, params) {
       const { data } = await ApiReqFunc({
         url: "public-order/order",
-        params: params,
+        params: { ...params, order_id: newDealParams.id },
       });
 
       return data;

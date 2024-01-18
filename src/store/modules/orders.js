@@ -4,6 +4,7 @@ import { usePreparationOrders } from "@/composables/preporationOrders";
 const { newDealParams, order } = useNewDeal();
 import { isTest2 } from "@/composables/isTest";
 import { savedToken } from "@/composables/BaseURL";
+import { isPublicOrder } from "@/components/PublicOrder";
 
 const { preparationOrder } = usePreparationOrders();
 
@@ -121,14 +122,18 @@ export default {
 
     async getOrdersTypes(context) {
       const { data } = await ApiReqFunc({
-        url: "orders/field/types",
+        url: isPublicOrder.value
+          ? "public-order/fields/types"
+          : "orders/field/types",
       });
       context.commit("updateOrdersTypes", data);
     },
 
     async getOrdersFields(context) {
       const { data } = await ApiReqFunc({
-        url: "orders/field/list",
+        url: isPublicOrder.value
+          ? "public-order/fields/list"
+          : "orders/field/list",
       });
       context.commit("updateOrdersFields", data);
     },
@@ -260,7 +265,9 @@ export default {
         return context.state.pipelines;
       delete params?.isUpdate;
       const { data } = await ApiReqFunc({
-        url: "orders/pipelines/list",
+        url: isPublicOrder.value
+          ? "public-order/pipelines"
+          : "orders/pipelines/list",
         params: params,
       });
       context.commit("updatePipelines", data);

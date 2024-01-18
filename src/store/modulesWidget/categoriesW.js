@@ -1,3 +1,4 @@
+import { isPublicOrder } from "@/components/PublicOrder";
 import { usePreparationQueryParams } from "@/components/WidgetAddToDeal/src/composables/preparationQueryParams";
 import { getTOKEN, BaseURL } from "@/composables/BaseURL";
 const { preparation_params } = usePreparationQueryParams();
@@ -35,7 +36,11 @@ export default {
       return json;
     },
     async get_fields_propertiesW(context, params) {
-      const url = BaseURL + "orders/category/list";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/categories/list"
+          : "orders/category/list");
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
