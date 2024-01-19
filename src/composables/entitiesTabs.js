@@ -23,6 +23,7 @@ export function useEntitiesTabs() {
         haveSort: true,
         haveVirtual: true,
         havePublicOrderConfig: true,
+        publicOrderConfigField: "config",
       },
       {
         name: t("SettingEntities.tabs.company"),
@@ -66,6 +67,7 @@ export function useEntitiesTabs() {
         haveCategories: true,
         haveSort: true,
         havePublicOrderConfig: true,
+        publicOrderConfigField: "lead_config",
       },
     ],
     select: function (option) {

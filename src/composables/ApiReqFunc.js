@@ -1,14 +1,16 @@
-import { instance, useRedirectToAuth } from "@/composables/BaseURL";
+import { instance, poinstance, useRedirectToAuth } from "@/composables/BaseURL";
 import { useNotification } from "./notification";
 import { useLangConfiguration } from "./langConfiguration";
 const { t } = useLangConfiguration();
 
-export async function ApiReqFunc(config) {
+export async function ApiReqFunc(config, isPOInstance) {
   const { redirectToErrorPage } = useRedirectToAuth();
   const { addNotification } = useNotification();
 
   try {
-    const response = await instance(config);
+    let response = null;
+    response = isPOInstance ? poinstance(config) : instance(config);
+    await response;
 
     return response;
   } catch (error) {

@@ -30,10 +30,7 @@
           :fields="col.fields"
           :placeholders="col.placeholders"
           :alwaysShow="col.items.length === 1"
-          :have_public_order="
-            order?.[col.publicOrderFieldForSave] == item.id ||
-            order?.[col.publicOrderFieldForSave]?.includes(item.id)
-          "
+          :have_public_order="item.enabled"
           @unLink="() => unLink(item, col)"
           @link="() => link(item, col.code)"
           @togglePublicOrder="(val) => togglePublicOrder(item, val, col)"
@@ -163,19 +160,12 @@ export default {
     };
 
     const togglePublicOrder = async (item, val, params) => {
-      if (params.isMultiSave && val) {
-        if (!order[params.publicOrderFieldForSave])
-          order[params.publicOrderFieldForSave] = [];
-        order[params.publicOrderFieldForSave].push(item.id);
-      } else if (params.isMultiSave && !val) {
-        order[params.publicOrderFieldForSave].splice(
-          order[params.publicOrderFieldForSave].indexOf(item.id),
-          1
-        );
-      } else {
-        order[params.publicOrderFieldForSave] = val ? item.id : null;
-      }
-      await saveOrder();
+      await store.dispatch("clientUpdate", {
+        client_type: params.code2,
+        client_id: item.id,
+        order_id: order.id,
+        enabled: Number(val),
+      });
       getOrder();
     };
 

@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import {
   POToken,
+  POTokenName,
   haveAnyTOKEN,
   isPOTokenGetted,
   useRedirectToAuth,
@@ -9,7 +10,9 @@ import store from "../store";
 import { useCheckDevMode } from "@/composables/checkDevMode";
 import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
 import { computed } from "vue";
+import { useSaveLS } from "@/composables/saveLS";
 
+const { getSavedLSParam } = useSaveLS();
 const { isDev } = useCheckDevMode();
 const { isTokenFail } = useRedirectToAuth();
 
@@ -128,8 +131,21 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (POToken && !isPOTokenGetted.value)
+  if (POToken && !isPOTokenGetted.value && to.path === "/publicOrder")
     await waitForNonAsyncFunction(computed(() => isPOTokenGetted.value));
+  if (
+    (!POToken || !getSavedLSParam(POTokenName)) &&
+    isPOTokenGetted.value &&
+    (to.path === "/publicOrder" || to.path === "/publicOrderAuth")
+  ) {
+    if (to.path === "/publicOrderAuth") {
+      next();
+      return;
+    }
+    next("/publicOrderAuth");
+    return;
+  }
+  console.log(132);
   if (!POToken && !haveAnyTOKEN() && to.path !== "/authorization") {
     next("/authorization");
     return;
@@ -155,14 +171,13 @@ router.beforeEach(async (to, from, next) => {
     next("/");
     return;
   }
-
-  if (POToken) {
+  if (POToken && to.path === "/publicOrder") {
     next();
     return;
   }
-  // await store.dispatch("get_account");
 
   const account = store.state.account?.account;
+  if (!account?.id) await store.dispatch("get_account");
   // if (!account?.install && to.path != "/Error_is_not_installed") {
   //   next("/Error_is_not_installed");
   //   return;

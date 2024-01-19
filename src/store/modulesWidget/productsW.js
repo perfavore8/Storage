@@ -1,7 +1,8 @@
 import { usePreparationQueryParams } from "@/components/WidgetAddToDeal/src/composables/preparationQueryParams";
-import { getTOKEN, BaseURL } from "@/composables/BaseURL";
+import { getTOKEN, BaseURL, getPOTOKEN } from "@/composables/BaseURL";
 import { usePreparationProducts } from "@/components/WidgetAddToDeal/src/composables/preparationProducts";
 import { useNewDeal } from "@/composables/newDeal";
+import { isPublicOrder } from "@/components/PublicOrder";
 const { preparationProducts } = usePreparationProducts();
 const { preparation_params } = usePreparationQueryParams();
 const { newDealParams } = useNewDeal();
@@ -92,11 +93,15 @@ export default {
   },
   actions: {
     async getProductsAutocompleteW(context, params) {
-      const url = BaseURL + "orders/get-products-autocomplete";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/get-products-autocomplete"
+          : "orders/get-products-autocomplete");
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();
@@ -105,11 +110,13 @@ export default {
       return json;
     },
     async getProductsW(context, params) {
-      const url = BaseURL + "orders/products";
+      const url =
+        BaseURL +
+        (isPublicOrder.value ? "public-order/products" : "orders/products");
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();
@@ -118,11 +125,15 @@ export default {
       return json;
     },
     async getProducts2W(context, params) {
-      const url = BaseURL + "orders/products-v2";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/products-v2"
+          : "orders/products-v2");
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();
@@ -135,12 +146,16 @@ export default {
       return json;
     },
     async getAllProductsW(context, params) {
-      const url = BaseURL + "orders/products/filtered";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/products/filtered"
+          : "orders/products/filtered");
 
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
@@ -155,12 +170,16 @@ export default {
       return json;
     },
     async deleteProductW(context, params) {
-      const url = BaseURL + "orders/product/delete";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/position/delete"
+          : "orders/product/delete");
 
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
@@ -171,12 +190,16 @@ export default {
     },
     async addProductW(context, params) {
       context.commit("updateDisableAddToDealW", true);
-      const url = BaseURL + "orders/product/add";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/position/add"
+          : "orders/product/add");
 
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
@@ -188,12 +211,16 @@ export default {
     },
     async addProduct2W(context, params) {
       context.commit("updateDisableAddToDealW", true);
-      const url = BaseURL + "orders/product/add";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/position/add"
+          : "orders/product/add");
 
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),
@@ -205,12 +232,16 @@ export default {
     },
     async addProduct3W(context, params) {
       context.commit("updateDisableAddToDealW", true);
-      const url = BaseURL + "orders/product/add";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/position/add"
+          : "orders/product/add");
 
       const json = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...params, order_id: newDealParams.id }),

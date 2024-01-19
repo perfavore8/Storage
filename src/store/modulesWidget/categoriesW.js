@@ -1,6 +1,6 @@
 import { isPublicOrder } from "@/components/PublicOrder";
 import { usePreparationQueryParams } from "@/components/WidgetAddToDeal/src/composables/preparationQueryParams";
-import { getTOKEN, BaseURL } from "@/composables/BaseURL";
+import { getTOKEN, BaseURL, getPOTOKEN } from "@/composables/BaseURL";
 const { preparation_params } = usePreparationQueryParams();
 
 export default {
@@ -23,11 +23,13 @@ export default {
   },
   actions: {
     async getCategoriesW(context, params) {
-      const url = BaseURL + "orders/categories";
+      const url =
+        BaseURL +
+        (isPublicOrder.value ? "public-order/categories" : "orders/categories");
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();
@@ -44,7 +46,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();
@@ -53,11 +55,15 @@ export default {
       return json;
     },
     async get_fields_properties2W(context, params) {
-      const url = BaseURL + "orders/categories/list";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/categories/list"
+          : "orders/categories/list");
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();

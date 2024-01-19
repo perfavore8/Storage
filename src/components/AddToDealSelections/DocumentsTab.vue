@@ -1,5 +1,8 @@
 <template>
-  <div v-if="!isGoogleAuth" class="flex flex-row w-full justify-center gap-2">
+  <div
+    v-if="!isGoogleAuth && !order?.is_google_auth"
+    class="flex flex-row w-full justify-center gap-2"
+  >
     <h1 class="text-xl text-slate-900">
       {{ $t("newOrder.auth") }}
     </h1>
@@ -166,7 +169,7 @@ export default {
   components: { AppInputSelect },
   setup() {
     const { t } = useLangConfiguration();
-    const { newDealParams } = useNewDeal();
+    const { newDealParams, order } = useNewDeal();
     const {
       uploadFiles,
       customDocList,
@@ -176,7 +179,7 @@ export default {
     } = useDocumentsTabCustomDocs();
 
     const isGoogleAuth = computed(() =>
-      Boolean(store.state.account.account?.is_google_auth)
+      Boolean(store.state.account?.account?.is_google_auth)
     );
 
     onMounted(() => {
@@ -263,6 +266,7 @@ export default {
       isUpload,
       isGoogleAuth,
       routeToGoogleAuth,
+      order,
       t,
     };
   },

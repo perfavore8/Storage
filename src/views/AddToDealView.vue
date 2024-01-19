@@ -141,9 +141,9 @@
       />
     </div>
     <div class="content sm:mt-4 mb-20">
-      <keep-alive>
-        <component :is="tabs.selected.code" />
-      </keep-alive>
+      <!-- <keep-alive> -->
+      <component :is="tabs.selected.code" />
+      <!-- </keep-alive> -->
     </div>
   </div>
 </template>
@@ -180,6 +180,12 @@ export default {
     const { addNotification } = useNotification();
     const { pipelines } = useOrdersPipelinesSelect();
     useCheckPublicOrderAuth();
+    location.replace(
+      location.href.replace(
+        "&potoken=" + location.href.split("&potoken=")[1],
+        ""
+      )
+    );
 
     const back = () => router.push("/");
 

@@ -294,8 +294,14 @@
                 type="checkbox"
                 class="checkbox"
                 :id="idx + 'pov'"
-                :disabled="row.lead_config.public_order_visible.disabled"
-                v-model="row.lead_config.public_order_visible.value"
+                :disabled="
+                  row[selectedTab.publicOrderConfigField].public_order_visible
+                    .disabled
+                "
+                v-model="
+                  row[selectedTab.publicOrderConfigField].public_order_visible
+                    .value
+                "
                 @change="row.changeLeadConfig == true"
               />
               <label :for="idx + 'pov'"></label>
@@ -463,9 +469,13 @@
                 class="checkbox"
                 :id="idx + 'n4'"
                 :disabled="
-                  new_fields[idx].lead_config.public_order_visible.disabled
+                  new_fields[idx][selectedTab.publicOrderConfigField]
+                    .public_order_visible.disabled
                 "
-                v-model="new_fields[idx].lead_config.public_order_visible.value"
+                v-model="
+                  new_fields[idx][selectedTab.publicOrderConfigField]
+                    .public_order_visible.value
+                "
               />
               <label :for="idx + 'n4'"></label>
             </td>
@@ -612,11 +622,14 @@ export default {
           visible: { disabled: false, value: false },
           editable: { disabled: false, value: false },
           title_visible: { disabled: false, value: false },
-          public_order_visible: { disabled: false, value: false },
         },
         config: {
           double_in_new_bath: { disabled: false, value: false },
         },
+      };
+      item[selectedTab.value.publicOrderConfigField].public_order_visible = {
+        disabled: false,
+        value: false,
       };
       if (
         !selectedTab.value.haveLeadConfig &&
@@ -713,7 +726,8 @@ export default {
             }
             if (selectedTab.value.havePublicOrderConfig)
               params[val].public_order_visible = Number(
-                copy_fields[idx][val].public_order_visible.value
+                copy_fields[idx][selectedTab.value.publicOrderConfigField]
+                  .public_order_visible.value
               );
           } else if (val == "config") {
             params[val] = copy_fields[idx][val];
@@ -726,12 +740,18 @@ export default {
               params[val].sort = copy_fields[idx][val].sort;
               params[val].table = copy_fields[idx][val].table;
             }
+            if (selectedTab.value.havePublicOrderConfig)
+              params[val].public_order_visible = Number(
+                copy_fields[idx][selectedTab.value.publicOrderConfigField]
+                  .public_order_visible.value
+              );
           } else {
             params[val] = copy_fields[idx][val];
           }
         }
       });
       if (copy_fields[idx]?.is_system) delete params?.name;
+      console.log(params);
       const error = await store.dispatch(selectedTab.value.updateName, params);
       const nameError = error?.error == "This field name exist.";
 
@@ -786,11 +806,14 @@ export default {
         }
         if (selectedTab.value.havePublicOrderConfig) {
           const public_order_visible =
-            val.lead_config?.public_order_visible === undefined
+            val[selectedTab.value.publicOrderConfigField]
+              ?.public_order_visible === undefined
               ? 0
-              : val.lead_config?.public_order_visible;
-          if (val.lead_config === undefined) val.lead_config = {};
-          val.lead_config.public_order_visible = {
+              : val[selectedTab.value.publicOrderConfigField]
+                  ?.public_order_visible;
+          if (val[selectedTab.value.publicOrderConfigField] === undefined)
+            val[selectedTab.value.publicOrderConfigField] = {};
+          val[selectedTab.value.publicOrderConfigField].public_order_visible = {
             disabled: public_order_visible == -1 || public_order_visible == 2,
             value: public_order_visible > 0,
           };
@@ -828,11 +851,14 @@ export default {
         }
         if (selectedTab.value.havePublicOrderConfig) {
           const public_order_visible =
-            val.lead_config?.public_order_visible === undefined
+            val[selectedTab.value.publicOrderConfigField]
+              ?.public_order_visible === undefined
               ? 0
-              : val.lead_config?.public_order_visible;
-          if (val.lead_config === undefined) val.lead_config = {};
-          val.lead_config.public_order_visible = {
+              : val[selectedTab.value.publicOrderConfigField]
+                  ?.public_order_visible;
+          if (val[selectedTab.value.publicOrderConfigField] === undefined)
+            val[selectedTab.value.publicOrderConfigField] = {};
+          val[selectedTab.value.publicOrderConfigField].public_order_visible = {
             disabled: public_order_visible == -1 || public_order_visible == 2,
             value: public_order_visible > 0,
           };

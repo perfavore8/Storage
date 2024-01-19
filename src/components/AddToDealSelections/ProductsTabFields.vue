@@ -155,7 +155,7 @@ export default {
           ? store.state.orders.pipelines
           : await store.dispatch("ordersPipelinesList", {});
         const list = [];
-        stats.map((stat) => {
+        stats?.map((stat) => {
           if (stat.value === -1) return;
           stat.value = "optgroup";
           list.push(stat);
@@ -176,7 +176,7 @@ export default {
             el.value === "optgroup"
         );
         const idx = this.list.indexOf(catItem);
-        order.status_id = this.list[idx + 1].id;
+        order.status_id = this.list[idx + 1]?.id;
       },
       checkSelStat: function (id) {
         const ids = [];
@@ -205,6 +205,7 @@ export default {
       ),
       list: [],
       getList: async function () {
+        if (isPublicOrder.value) return;
         const res = await store.dispatch("getUsersList");
         this.list = [];
         res.forEach((user) => this.list.push({ ...user, value: user.name }));

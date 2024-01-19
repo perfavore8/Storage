@@ -11,10 +11,6 @@
         <div class="mb-1 h-4 preloader w-1/3" />
         <div class="mb-3.5 h-8 preloader !rounded-md" />
       </template>
-      <div class="flex flex-row justify-end gap-2">
-        <span class="material-icons-outlined text-red-600"> delete </span>
-        <span>{{ $t("widjet.del") }}</span>
-      </div>
     </div>
   </div>
 </template>

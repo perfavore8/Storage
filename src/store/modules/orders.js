@@ -121,20 +121,26 @@ export default {
     },
 
     async getOrdersTypes(context) {
-      const { data } = await ApiReqFunc({
-        url: isPublicOrder.value
-          ? "public-order/fields/types"
-          : "orders/field/types",
-      });
+      const { data } = await ApiReqFunc(
+        {
+          url: isPublicOrder.value
+            ? "public-order/fields/types"
+            : "orders/field/types",
+        },
+        isPublicOrder.value
+      );
       context.commit("updateOrdersTypes", data);
     },
 
     async getOrdersFields(context) {
-      const { data } = await ApiReqFunc({
-        url: isPublicOrder.value
-          ? "public-order/fields/list"
-          : "orders/field/list",
-      });
+      const { data } = await ApiReqFunc(
+        {
+          url: isPublicOrder.value
+            ? "public-order/fields/list"
+            : "orders/field/list",
+        },
+        isPublicOrder.value
+      );
       context.commit("updateOrdersFields", data);
     },
     async addOrdersField(context, params) {
@@ -264,12 +270,15 @@ export default {
       if (!params?.isUpdate && context.state.pipelines.length)
         return context.state.pipelines;
       delete params?.isUpdate;
-      const { data } = await ApiReqFunc({
-        url: isPublicOrder.value
-          ? "public-order/pipelines"
-          : "orders/pipelines/list",
-        params: params,
-      });
+      const { data } = await ApiReqFunc(
+        {
+          url: isPublicOrder.value
+            ? "public-order/pipelines"
+            : "orders/pipelines/list",
+          params: params,
+        },
+        isPublicOrder.value
+      );
       context.commit("updatePipelines", data);
 
       return data;

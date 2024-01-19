@@ -1,6 +1,6 @@
 import { isPublicOrder } from "@/components/PublicOrder";
 import { usePreparationQueryParams } from "@/components/WidgetAddToDeal/src/composables/preparationQueryParams";
-import { getTOKEN, BaseURL } from "@/composables/BaseURL";
+import { getTOKEN, BaseURL, getPOTOKEN } from "@/composables/BaseURL";
 const { preparation_params } = usePreparationQueryParams();
 
 export default {
@@ -54,7 +54,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();
@@ -69,7 +69,7 @@ export default {
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();
@@ -78,11 +78,15 @@ export default {
       return json;
     },
     async getTableConfigW(context, params) {
-      const url = BaseURL + "orders/products/filtered/config";
+      const url =
+        BaseURL +
+        (isPublicOrder.value
+          ? "public-order/products/filtered/config"
+          : "orders/products/filtered/config");
 
       const res = await fetch(url + preparation_params(params), {
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
         },
       });
       const json = await res.json();
@@ -96,7 +100,7 @@ export default {
       await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: getTOKEN(),
+          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(params),

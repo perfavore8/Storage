@@ -74,7 +74,7 @@
             v-model="havePublicOrder"
           />
           <label :for="item.id">Публичный заказ</label>
-          <div class="flex flex-row gap-2 items-center" v-if="!havePublicOrder">
+          <div class="flex flex-row gap-2 items-center" v-if="havePublicOrder">
             <button
               class="p-2 bg-slate-400/90 rounded-xl text-white"
               @click="copyLink()"
@@ -168,7 +168,7 @@ export default {
     const link = () => context.emit("link");
 
     const havePublicOrder = computed({
-      get: () => props.have_public_order,
+      get: () => Boolean(props.have_public_order),
       set: (val) => context.emit("togglePublicOrder", val),
     });
 

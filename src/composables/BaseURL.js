@@ -3,6 +3,7 @@ import { inFrame } from "./checkInFrame";
 import { ref } from "vue";
 import axios from "axios";
 import router from "@/router";
+import { useSaveLS } from "./saveLS";
 const { isDev } = useCheckDevMode();
 
 export const BaseURL = "https://api.gosklad.ru/v1/";
@@ -20,36 +21,20 @@ function findGetParameter(parameterName) {
   return result;
 }
 
+export let savedToken = "";
+export let POToken = location.hash.split("potoken=")[1];
 export const TokenName = "TOKEN";
-
-export const POToken = location.hash.split("potoken=")[1];
+export const POTokenName = "POTOKEN";
 export const isPOTokenGetted = ref(false);
+export let POsavedToken = JSON.parse(localStorage.getItem(POTokenName)) || "";
+export const getPOTOKEN = () => "Bearer " + POsavedToken;
 if (location.search) {
   localStorage.setItem(TokenName, JSON.stringify(findGetParameter("token")));
   location.replace(location.href.replace(location.search, ""));
 }
-if (POToken) {
-  localStorage.setItem(TokenName, JSON.stringify(""));
-  const poinstance = axios.create({
-    baseURL: BaseURL,
-    // headers: { Authorization: "Beared " + POToken },
-  });
+const { saveLSParam } = useSaveLS();
+saveLSParam("POAuth", Boolean(POToken));
 
-  poinstance({
-    url: "public-order/token/get",
-    params: { public_token: POToken },
-  }).then(({ data }) => {
-    if (!data.token) return;
-    savedToken = data.token;
-    localStorage.setItem(TokenName, JSON.stringify(data.token));
-    location.replace(location.href.replace(location.search, ""));
-    getCachedToken();
-    createInstance();
-    isPOTokenGetted.value = true;
-  });
-}
-
-export let savedToken = "";
 export const getCachedToken = () => {
   const val = localStorage.getItem(TokenName);
   if (val === "undefinded") return;
@@ -96,13 +81,48 @@ export let TOKEN = "Bearer " + (findGetParameter("token") || savedToken);
 export const getTOKEN = () =>
   "Bearer " + (findGetParameter("token") || savedToken);
 export const haveAnyTOKEN = () =>
-  Boolean(findGetParameter("token") || savedToken);
+  Boolean(findGetParameter("token") || savedToken || POsavedToken);
 
 export let instance = null;
-
-export const createInstance = () =>
+export const createInstance = (token) =>
   (instance = axios.create({
     baseURL: BaseURL,
-    headers: { Authorization: getTOKEN() },
+    headers: { Authorization: token || getTOKEN() },
   }));
 if (!POToken) createInstance();
+
+export let poinstance = null;
+export const createPOInstance = (token) =>
+  (poinstance = axios.create({
+    baseURL: BaseURL,
+    headers: { Authorization: token || getPOTOKEN() },
+  }));
+const qwe = () => {
+  POToken = true;
+  createPOInstance(getPOTOKEN());
+  isPOTokenGetted.value = true;
+};
+
+if (POToken) {
+  const poinstance2 = axios.create({
+    baseURL: BaseURL,
+    // headers: { Authorization: "Beared " + POToken },
+  });
+
+  poinstance2({
+    url: "public-order/token/get",
+    params: { public_token: POToken },
+  }).then(({ data }) => {
+    if (!data.token) return;
+    POsavedToken = data.token;
+    localStorage.setItem(POTokenName, JSON.stringify(data.token));
+    location.replace(
+      location.href.replace(
+        "&potoken=" + location.href.split("&potoken=")[1],
+        ""
+      )
+    );
+    delete router.currentRoute.value.query.potoken;
+    qwe();
+  });
+} else qwe();
