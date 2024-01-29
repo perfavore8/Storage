@@ -15,7 +15,7 @@
             field.component &&
             !dontShowCodes.includes(field.code) &&
             (isPublicOrder
-              ? Boolean(field.lead_config?.public_order_visible) > 0
+              ? Boolean(field.config?.public_order_visible) > 0
               : true)
         )"
         :key="field.id"
@@ -32,6 +32,7 @@
             :item="field.type == 5 || field.type == 6 ? field : field.name"
             :selected_option="order?.fields?.[field.code]"
             :idx="field.code"
+            :disabled="isPublicOrder"
             @change_value="change_value"
           />
         </div>

@@ -1,6 +1,7 @@
 import { instance, poinstance, useRedirectToAuth } from "@/composables/BaseURL";
 import { useNotification } from "./notification";
 import { useLangConfiguration } from "./langConfiguration";
+import { isPublicOrder } from "@/components/PublicOrder";
 const { t } = useLangConfiguration();
 
 export async function ApiReqFunc(config, isPOInstance) {
@@ -9,7 +10,10 @@ export async function ApiReqFunc(config, isPOInstance) {
 
   try {
     let response = null;
-    response = isPOInstance ? poinstance(config) : instance(config);
+    response =
+      isPOInstance || isPublicOrder.value
+        ? poinstance(config)
+        : instance(config);
     await response;
 
     return response;

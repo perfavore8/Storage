@@ -1,3 +1,4 @@
+import router from "@/router";
 import store from "@/store";
 import { computed } from "vue";
 
@@ -43,7 +44,10 @@ export function useList() {
   );
 
   const follow = (id) => {
-    console.log(id);
+    router.push({
+      path: "/publicOrder",
+      query: { order_id: id },
+    });
   };
 
   return { getList, list, follow };

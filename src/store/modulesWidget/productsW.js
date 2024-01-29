@@ -99,11 +99,14 @@ export default {
           ? "public-order/get-products-autocomplete"
           : "orders/get-products-autocomplete");
 
-      const res = await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
-        },
-      });
+      const res = await fetch(
+        url + preparation_params({ ...params, leadId: newDealParams.id }),
+        {
+          headers: {
+            Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
+          },
+        }
+      );
       const json = await res.json();
       context.commit("updateProductsAutocompleteW", json);
 
@@ -114,11 +117,14 @@ export default {
         BaseURL +
         (isPublicOrder.value ? "public-order/products" : "orders/products");
 
-      const res = await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
-        },
-      });
+      const res = await fetch(
+        url + preparation_params({ ...params, order_id: newDealParams.id }),
+        {
+          headers: {
+            Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
+          },
+        }
+      );
       const json = await res.json();
       context.commit("updateProductsW", json);
 
@@ -131,11 +137,14 @@ export default {
           ? "public-order/products-v2"
           : "orders/products-v2");
 
-      const res = await fetch(url + preparation_params(params), {
-        headers: {
-          Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
-        },
-      });
+      const res = await fetch(
+        url + preparation_params({ ...params, order_id: newDealParams.id }),
+        {
+          headers: {
+            Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
+          },
+        }
+      );
       const json = await res.json();
       context.commit("updateProductsW", json.data);
       context.commit("update_meta2", {
@@ -158,7 +167,7 @@ export default {
           Authorization: isPublicOrder.value ? getPOTOKEN() : getTOKEN(),
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(params),
+        body: JSON.stringify({ ...params, order_id: newDealParams.id }),
       });
       const json = await res.json();
       context.commit("updateAllProductsW", json.data);

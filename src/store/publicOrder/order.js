@@ -1,24 +1,24 @@
 import { ApiReqFunc } from "@/composables/ApiReqFunc";
 import { useNewDeal } from "@/composables/newDeal";
-const { newDealParams } = useNewDeal();
+const { newDealParams, order } = useNewDeal();
 
 export default {
   state: {
     AvailablePublicOrdersList: [],
   },
-  getters: {
+  getters: {},
+  mutations: {
     updateAvailablePublicOrdersList(state, val) {
       state.AvailablePublicOrdersList = val || [];
     },
   },
-  mutations: {},
   actions: {
     async POOrderPositionAdd(context, params) {
       const { data } = await ApiReqFunc(
         {
           url: "public-order/order/position/add",
           method: "post",
-          data: params,
+          data: { ...params, order_id: newDealParams.id },
         },
         true
       );
@@ -29,7 +29,7 @@ export default {
       const { data } = await ApiReqFunc(
         {
           url: "public-order/order/position/delete",
-          params: params,
+          params: { ...params, order_id: newDealParams.id },
         },
         true
       );
@@ -48,11 +48,12 @@ export default {
       return data;
     },
     async POOrderUpdate(context, params) {
+      const copy = { positions: order.positions };
       const { data } = await ApiReqFunc(
         {
           url: "public-order/update",
           method: "post",
-          data: params,
+          data: { ...params, ...copy, order_id: Number(newDealParams.id) },
         },
         true
       );

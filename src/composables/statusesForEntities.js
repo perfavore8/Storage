@@ -12,7 +12,7 @@ export function useStatusesForEntities(stat, setStatuses) {
     isNew: !stat.is_system,
     list: stat.statuses,
     reservation: [],
-    write_off: 2,
+    write_off: null,
     resIdx: computed(() =>
       statuses.list.indexOf(
         [...statuses.list]
@@ -76,9 +76,9 @@ export function useStatusesForEntities(stat, setStatuses) {
     },
   });
 
-  const systemsStatuses = statuses.list.filter((stat) => stat.is_system);
-  statuses.reservation.push(systemsStatuses[0]?.id);
-  statuses.write_off = systemsStatuses[1]?.id;
+  // const systemsStatuses = statuses.list.filter((stat) => stat.is_system);
+  // statuses.reservation.push(systemsStatuses[0]?.id);
+  // statuses.write_off = systemsStatuses[1]?.id;
 
   const setSteps = () => {
     const reservation = [];

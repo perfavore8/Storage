@@ -4,6 +4,7 @@ import { ref } from "vue";
 import axios from "axios";
 import router from "@/router";
 import { useSaveLS } from "./saveLS";
+import { isPublicOrder } from "@/components/PublicOrder";
 const { isDev } = useCheckDevMode();
 
 export const BaseURL = "https://api.gosklad.ru/v1/";
@@ -27,7 +28,7 @@ export const TokenName = "TOKEN";
 export const POTokenName = "POTOKEN";
 export const isPOTokenGetted = ref(false);
 export let POsavedToken = JSON.parse(localStorage.getItem(POTokenName)) || "";
-export const getPOTOKEN = () => "Bearer " + POsavedToken;
+export const getPOTOKEN = () => (POsavedToken ? "Bearer " + POsavedToken : "");
 if (location.search) {
   localStorage.setItem(TokenName, JSON.stringify(findGetParameter("token")));
   location.replace(location.href.replace(location.search, ""));
@@ -45,8 +46,8 @@ if (!POToken) getCachedToken();
 const isTokenFail = ref(false);
 
 export function useRedirectToAuth() {
-  const checkPath = async () => {
-    if (POToken) return;
+  const checkPath = async (force) => {
+    if (POToken && !force) return;
     if (
       !haveAnyTOKEN() &&
       router.currentRoute.value.path !== "/authorization"
@@ -63,6 +64,12 @@ export function useRedirectToAuth() {
     if (inFrame) {
       router.push("/Error_token_not_valid");
     } else {
+      if (isPublicOrder.value) {
+        POsavedToken = "";
+        createPOInstance();
+        router.push("/publicOrderAuth");
+        return;
+      }
       savedToken = "";
       createInstance();
       router.push("/authorization");

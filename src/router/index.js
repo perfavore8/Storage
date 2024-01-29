@@ -11,6 +11,7 @@ import { useCheckDevMode } from "@/composables/checkDevMode";
 import { waitForNonAsyncFunction } from "@/composables/waitForNonAsyncFunction";
 import { computed } from "vue";
 import { useSaveLS } from "@/composables/saveLS";
+import { POLIST } from "@/components/PublicOrder";
 
 const { getSavedLSParam } = useSaveLS();
 const { isDev } = useCheckDevMode();
@@ -136,6 +137,7 @@ router.beforeEach(async (to, from, next) => {
   if (
     (!POToken || !getSavedLSParam(POTokenName)) &&
     isPOTokenGetted.value &&
+    POLIST.includes(to.path) &&
     (to.path === "/publicOrder" || to.path === "/publicOrderAuth")
   ) {
     if (to.path === "/publicOrderAuth") {
@@ -145,8 +147,12 @@ router.beforeEach(async (to, from, next) => {
     next("/publicOrderAuth");
     return;
   }
-  console.log(132);
-  if (!POToken && !haveAnyTOKEN() && to.path !== "/authorization") {
+  if (
+    !POToken &&
+    !POLIST.includes(to.path) &&
+    !haveAnyTOKEN() &&
+    to.path !== "/authorization"
+  ) {
     next("/authorization");
     return;
   }
@@ -171,7 +177,11 @@ router.beforeEach(async (to, from, next) => {
     next("/");
     return;
   }
-  if (POToken && to.path === "/publicOrder") {
+  if (POToken && POLIST.includes(to.path) && to.path === "/publicOrder") {
+    next();
+    return;
+  }
+  if (POToken && POLIST.includes(to.path)) {
     next();
     return;
   }

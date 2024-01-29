@@ -561,7 +561,7 @@ export default {
           });
           if (res.success) {
             getCachedToken();
-            checkPath();
+            checkPath(true);
           }
         }
         if (!res.success) toggleFailAuth(true);

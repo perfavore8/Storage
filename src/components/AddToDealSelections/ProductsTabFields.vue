@@ -57,7 +57,7 @@
         </div>
         <template v-if="item.component">
           <div class="text-base font-medium" v-if="isPublicOrder">
-            {{ user_name.selected?.name }}
+            {{ user_name.selected?.name || order.user }}
           </div>
           <component
             v-else

@@ -1,10 +1,9 @@
 import router from "@/router";
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import { useSaveLS } from "./saveLS";
 import { createI18n } from "vue-i18n";
 import { messages } from "@/composables/messages";
-import { ApiReqFunc } from "./ApiReqFunc";
-import { savedToken } from "./BaseURL";
+// import { ApiReqFunc } from "./ApiReqFunc";
 
 const { saveLSParam, getSavedLSParam } = useSaveLS();
 const langConfiguration = reactive({
@@ -13,15 +12,18 @@ const langConfiguration = reactive({
     { name: "English", value: "en", default: true },
     { name: "Русский", value: "ru" },
   ],
-  select: async function (option, initial) {
+  select: async function (option, initial, save) {
     saveLSParam("lang", option.value);
     this.selected = option;
-    if (savedToken)
-      await ApiReqFunc({
-        method: "post",
-        url: "account/user/update",
-        data: { lang: this.selected.value },
-      });
+    if (save) {
+      const { instance, savedToken } = require("./BaseURL");
+      if (savedToken)
+        await instance({
+          method: "post",
+          url: "account/user/update",
+          data: { lang: this.selected.value },
+        });
+    }
     if (!initial) router.go(0);
   },
   getSavedlang: function () {
@@ -48,7 +50,10 @@ const langConfiguration = reactive({
     this.dropToDefault();
   },
 });
+
 langConfiguration.getSavedlang();
+
+let getted = false;
 
 const i18n = createI18n({
   locale: langConfiguration.selected.value, // set locale
@@ -62,5 +67,10 @@ const t = (...args) => i18n.global.t(...args);
 const tc = (...args) => i18n.global.tc(...args);
 
 export function useLangConfiguration() {
+  onMounted(() => {
+    if (getted) return;
+    langConfiguration.select(langConfiguration.selected, true, true);
+    getted = true;
+  });
   return { langConfiguration, i18n, t, tc };
 }

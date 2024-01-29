@@ -14,6 +14,7 @@
           <div class="relative">
             <input
               autocomplete="off"
+              v-model="form.login"
               type="text"
               class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
               :placeholder="t('newOrder.el')"
@@ -27,6 +28,7 @@
           <div class="relative">
             <input
               type="password"
+              v-model="form.password"
               autocomplete="off"
               class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
               :placeholder="t('newOrder.ep')"
@@ -50,14 +52,27 @@
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useSaveLS } from "@/composables/saveLS";
 import router from "@/router";
+import store from "@/store";
+import { reactive } from "vue";
 
 const { saveLSParam } = useSaveLS();
 
 const { t } = useLangConfiguration();
 
-const submit = () => {
+const form = reactive({
+  password: "",
+  login: "",
+});
+
+const submit = async () => {
+  const res = await store.dispatch("POLogin", {
+    login: form.login,
+    pass: form.password,
+  });
+  if (!res.success) return;
   saveLSParam("POAuth", true);
-  router.go(-1);
+  saveLSParam("POROKEN", res.access_token);
+  router.push("/availablePublicOrderList");
 };
 </script>
 

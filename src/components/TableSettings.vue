@@ -204,7 +204,8 @@ export default {
   width: 100%;
   min-height: 100vh;
   min-width: 100vw;
-  position: absolute;
+  position: fixed;
+  z-index: 9999;
   top: 0;
   left: 0;
   background: transparent;

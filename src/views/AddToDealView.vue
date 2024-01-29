@@ -1,11 +1,8 @@
 <template>
   <div class="app px-2 lg:px-[30px] mb-[52px] sm:mb-0">
     <div
-      class="header !pb-1 sm:pb-5"
-      :class="[
-        isPublicOrder ? 'bg-transparent' : 'bg-white',
-        { '!p-0 sm:py-5 sm:!pt-10': isPublicOrder },
-      ]"
+      class="sticky top-0 z-[48] flex flex-row items-center justify-between flex-wrap pb-1 sm:pb-5 bg-white"
+      :class="[isPublicOrder ? 'p-0 sm:py-5 lg:px-[10%] gap-2' : 'py-5']"
     >
       <button
         class="bg-slate-400 bg-opacity-90 p-2 h-fit w-fit rounded-xl absolute left-0 hover:shadow-sm hover:drop-shadow-md outline-none focus-visible:drop-shadow-md"
@@ -29,107 +26,90 @@
         </svg>
       </button>
       <div
-        class="fixed top-4 left-[10%] hidden sm:flex flex-row items-center gap-2"
+        class="flex flex-row items-center gap-2 w-full sm:w-auto"
         v-if="isPublicOrder"
       >
         <transition name="side2">
-          <AvailablePublicOrderButton />
+          <AvailablePublicOrderButton class="w-full sm:w-auto" />
         </transition>
-        <router-link :to="'/PublicOrderProfile'">
-          <button class="btn_white">Профиль</button>
+        <router-link :to="'/PublicOrderProfile'" class="w-full sm:w-auto">
+          <button class="btn_white">
+            {{ $t("newOrder.poprofile") }}
+          </button>
         </router-link>
+        <button class="btn btn_white" @click="logout()" v-if="isPublicOrder">
+          {{ $t("newOrder.logout") }}
+        </button>
       </div>
-      <div
-        class="fixed sm:static bottom-0 left-0 w-full sm:w-auto flex flex-col gap-2 p-2 sm:p-0 bg-white shadow-md shadow-black rounded-t-lg"
+      <h1
+        class="text-gray-700 text-center font-bold text-3xl inline-flex w-fit"
       >
-        <div class="relative">
-          <div
-            class="w-full absolute sm:fixed -top-3 -translate-y-full sm:translate-y-0 sm:top-auto sm:bottom-4 right-0 sm:right-4 lg:right-[10%] flex flex-row gap-2 items-center justify-between sm:w-fit"
-            v-if="isPublicOrder"
-          >
-            <transition name="side2">
-              <AvailablePublicOrderButton class="sm:hidden" />
-            </transition>
-            <router-link :to="'/PublicOrderProfile'">
-              <button
-                class="rounded-lg bg-slate-400 bg-opacity-90 text-slate-100 h-9 aspect-square flex justify-center items-center p-1 sm:!hidden"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2m0 7c2.67 0 8 1.33 8 4v3H4v-3c0-2.67 5.33-4 8-4m0 1.9c-2.97 0-6.1 1.46-6.1 2.1v1.1h12.2V17c0-.64-3.13-2.1-6.1-2.1"
-                  />
-                </svg>
-              </button>
-            </router-link>
-            <a
-              href="https://gosklad.com/"
-              target="_blank"
-              class="flex flex-row gap-4 items-center"
+        {{ order?.account_name }}
+      </h1>
+      <div
+        class="bottom-0 left-0 w-full sm:w-auto flex flex-row flex-wrap justify-end gap-2 p-2 sm:p-0 bg-white rounded-t-lg"
+        :class="[isPublicOrder ? '' : 'fixed sm:static shadow-md shadow-black']"
+      >
+        <a
+          v-if="isPublicOrder"
+          href="https://gosklad.com/"
+          target="_blank"
+          class="flex flex-row gap-4 items-center"
+        >
+          {{ $t("newOrder.logoLinkText") }}
+          <img
+            src="@/assets/logo_en_transparent.png"
+            alt="GoSkald"
+            class="w-24"
+        /></a>
+        <div
+          class="static flex flex-row gap-2 items-center w-full sm:w-auto"
+          :class="[isPublicOrder ? 'static' : ' sm:fixed bottom-10 left-[10%]']"
+        >
+          <transition name="side">
+            <button
+              class="btn btn_grey w-full sm:w-auto flex items-center justify-center"
+              @click="archivate()"
+              v-if="isTest && !isClosedStep && isOrderGeted && !isPublicOrder"
             >
-              {{ $t("newOrder.logoLinkText") }}
-              <img
-                src="@/assets/logo_en_transparent.png"
-                alt="GoSkald"
-                class="w-24"
-            /></a>
-          </div>
-          <div
-            class="static sm:fixed flex flex-row gap-2 items-center w-full sm:w-auto"
-            :class="[
-              isPublicOrder ? 'top-4 right-[10%]' : 'bottom-10 left-[10%]',
-            ]"
-          >
-            <transition name="side">
+              {{ $t("ostatki.arch") }}
+            </button>
+          </transition>
+          <template v-if="isPublicOrder && false">
+            <transition name="side2">
               <button
-                class="btn btn_grey w-full sm:w-auto flex items-center justify-center"
-                @click="archivate()"
-                v-if="isTest && !isClosedStep && isOrderGeted && !isPublicOrder"
+                class="btn btn_light_dark_blue w-full sm:w-auto flex items-center justify-center"
               >
-                {{ $t("ostatki.arch") }}
+                {{ $t("newOrder.pay") }}
               </button>
             </transition>
-            <template v-if="isPublicOrder">
-              <transition name="side2">
-                <button
-                  class="btn btn_light_dark_blue w-full sm:w-auto flex items-center justify-center"
+          </template>
+          <transition :name="isPublicOrder ? 'side2' : 'side'">
+            <button
+              class="btn w-full sm:w-auto items-center justify-center whitespace-nowrap pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
+              @click="saveParams.save()"
+              v-if="saveParams.needSave || isPublicOrder"
+              :disabled="saveParams.isSaving"
+            >
+              <template v-if="saveParams.isSaving">
+                {{ $t("newOrder.saving") }}
+                <span class="animate-pulse ml-1">.</span>
+                <span class="animate-pulse" style="animation-delay: 0.667s"
+                  >.</span
                 >
-                  {{ $t("newOrder.pay") }}
-                </button>
-              </transition>
-            </template>
-            <transition :name="isPublicOrder ? 'side2' : 'side'">
-              <button
-                class="btn w-full sm:w-auto items-center justify-center whitespace-nowrap pointer-events-auto inline-flex transition-all rounded-md bg-blue-500 text-[0.8125rem] font-medium leading-5 text-slate-100 shadow-sm ring-1 ring-slate-700/10 hover:bg-blue-600 hover:text-white hover:disabled:bg-blue-500/70 disabled:bg-blue-500/70 disabled:opacity-30 disabled:cursor-not-allowed"
-                @click="saveParams.save()"
-                v-if="saveParams.needSave || isPublicOrder"
-                :disabled="saveParams.isSaving"
-              >
-                <template v-if="saveParams.isSaving">
-                  {{ $t("newOrder.saving") }}
-                  <span class="animate-pulse ml-1">.</span>
-                  <span class="animate-pulse" style="animation-delay: 0.667s"
-                    >.</span
-                  >
-                  <span class="animate-pulse" style="animation-delay: 1.333s"
-                    >.</span
-                  >
-                </template>
-                <template v-else>
-                  {{
-                    isPublicOrder
-                      ? $t("newOrder.confirmOrder")
-                      : $t("global.save")
-                  }}
-                </template>
-              </button>
-            </transition>
-          </div>
+                <span class="animate-pulse" style="animation-delay: 1.333s"
+                  >.</span
+                >
+              </template>
+              <template v-else>
+                {{
+                  isPublicOrder
+                    ? $t("newOrder.confirmOrder")
+                    : $t("global.save")
+                }}
+              </template>
+            </button>
+          </transition>
         </div>
       </div>
       <AppRadioBtnsGroupUnderlined
@@ -141,9 +121,9 @@
       />
     </div>
     <div class="content sm:mt-4 mb-20">
-      <!-- <keep-alive> -->
-      <component :is="tabs.selected.code" />
-      <!-- </keep-alive> -->
+      <keep-alive>
+        <component :is="tabs.selected.code" />
+      </keep-alive>
     </div>
   </div>
 </template>
@@ -165,6 +145,7 @@ import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import { isPublicOrder } from "@/components/PublicOrder";
 import { AvailablePublicOrderButton } from "@/components/PublicOrder";
 import { useCheckPublicOrderAuth } from "@/composables/checkPOAuth";
+import { POTokenName, useRedirectToAuth } from "@/composables/BaseURL";
 export default {
   components: {
     ProductsTab,
@@ -205,6 +186,11 @@ export default {
         back();
       }
     };
+    const { redirectToErrorPage } = useRedirectToAuth();
+    const logout = () => {
+      localStorage.setItem(POTokenName, JSON.stringify(""));
+      redirectToErrorPage();
+    };
 
     return {
       tabs,
@@ -215,6 +201,7 @@ export default {
       isClosedStep,
       isOrderGeted,
       isPublicOrder,
+      logout,
     };
   },
 };
@@ -232,18 +219,6 @@ export default {
   flex-direction: column;
   gap: 20px;
   text-align: center;
-
-  .header {
-    position: sticky;
-    top: 0;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    z-index: 48;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
 }
 .side-enter-active,
 .side-leave-active,

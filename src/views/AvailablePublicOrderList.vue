@@ -34,21 +34,33 @@
           class="text-sm font-medium w-full sm:w-fit flex flex-col gap-2 p-2 text-gray-900 dark:bg-gray-700 dark:text-white max-h-[500px] overflow-y-auto"
         >
           <li
-            v-for="order in list.filter((el) => el.active)"
+            v-for="order in list.filter((el) => el.pivot.enabled)"
             :key="order.id"
             @click="follow(order.id)"
             class="w-full px-4 py-2 bg-slate-100 rounded-lg cursor-pointer"
           >
-            {{ order.name }}
+            {{
+              `${order.fields?.name} - ${order.budget}р - ${
+                order.user || ""
+              } - ${dateFormater(order.created_at)} - ${dateFormater(
+                order.updated_at
+              )}`
+            }}
           </li>
           <div class="w-full h-4"></div>
           <li
-            v-for="order in list.filter((el) => !el.active)"
+            v-for="order in list.filter((el) => !el.pivot.enabled)"
             :key="order.id"
             @click="follow(order.id)"
             class="w-full px-4 py-2 bg-slate-100 rounded-lg cursor-pointer opacity-75"
           >
-            {{ order.name }}
+            {{
+              `${order.fields?.name} - ${order.budget}р - ${
+                order.user || ""
+              } - ${dateFormater(order.created_at)} - ${dateFormater(
+                order.updated_at
+              )}`
+            }}
           </li>
         </ul>
       </div>
@@ -58,11 +70,13 @@
 
 <script setup>
 import { useList } from "@/components/PublicOrder";
+import { useValidate } from "@/composables/validate";
 import router from "@/router";
 const { getList, list, follow } = useList();
 
 const back = () => router.go(-1);
 getList();
+const { dateFormater } = useValidate();
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,3 +1,4 @@
+import { isPublicOrder } from "@/components/PublicOrder";
 import { ApiReqFunc } from "@/composables/ApiReqFunc";
 import { savedToken } from "@/composables/BaseURL";
 export default {
@@ -36,7 +37,9 @@ export default {
       }
       delete params?.isUpdate;
       const promise = ApiReqFunc({
-        url: "category/list",
+        url: isPublicOrder.value
+          ? "public-order/categories/list"
+          : "category/list",
       });
       context.commit("updatePromise", promise);
       const { data } = await promise;
