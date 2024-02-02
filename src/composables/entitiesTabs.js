@@ -23,6 +23,7 @@ export function useEntitiesTabs() {
         haveSort: true,
         haveVirtual: true,
         havePublicOrderConfig: true,
+        havePublicOrderConfigEdit: true,
         publicOrderConfigField: "config",
       },
       {

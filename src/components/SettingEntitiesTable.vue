@@ -92,7 +92,7 @@
           <template v-if="isTest">
             <th
               class="item item_icon title"
-              v-if="selectedTab.havePublicOrderConfig && isTest"
+              v-if="selectedTab.havePublicOrderConfig"
             >
               <div class="w-min mx-auto">
                 <div
@@ -122,6 +122,41 @@
                     v-if="toolTips.publicOrderVisibility"
                   >
                     {{ $t("SettingEntities.table.PubOrdVisible") }}
+                  </div>
+                </div>
+              </div>
+            </th>
+            <th
+              class="item item_icon title"
+              v-if="
+                selectedTab.havePublicOrderConfig &&
+                selectedTab.havePublicOrderConfigEdit
+              "
+            >
+              <div class="w-min mx-auto">
+                <div
+                  class="flex items-center relative"
+                  @mouseenter="toolTips.publicOrderEditable = true"
+                  @mouseleave="toolTips.publicOrderEditable = false"
+                >
+                  <span class="text-black opacity-50">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M13.409 2.513a3.75 3.75 0 0 0-2.818 0l-7.498 3.04A1.75 1.75 0 0 0 2 7.175v9.653a1.75 1.75 0 0 0 1.093 1.621l7.498 3.04c.14.057.284.105.428.145c.01-.075.025-.15.044-.226l.458-1.83c.162-.648.497-1.24.97-1.712l.26-.26v-6.84L20.5 7.773v3.235a3.294 3.294 0 0 1 1.5.253V7.175a1.75 1.75 0 0 0-1.093-1.622zm-2.254 1.39a2.25 2.25 0 0 1 1.69 0l6.593 2.673l-2.67 1.03L9.241 4.68zM7.215 5.5l7.477 2.908l-2.69 1.039L4.59 6.565zM3.5 7.75l7.75 3.014v9.371a2.129 2.129 0 0 1-.095-.036l-7.499-3.04a.25.25 0 0 1-.156-.232zm15.6 4.92l-5.903 5.903a2.686 2.686 0 0 0-.706 1.247l-.458 1.831a1.087 1.087 0 0 0 1.319 1.318l1.83-.457a2.686 2.686 0 0 0 1.248-.707l5.902-5.902A2.286 2.286 0 0 0 19.1 12.67"
+                      />
+                    </svg>
+                  </span>
+                  <div
+                    class="absolute top-[120%] bg-slate-700 text-slate-100 text-xs p-2 rounded-md z-10"
+                    v-if="toolTips.publicOrderEditable"
+                  >
+                    {{ $t("SettingEntities.table.PubOrdEdit") }}
                   </div>
                 </div>
               </div>
@@ -288,7 +323,7 @@
           <template v-if="isTest">
             <td
               class="box item text-lg"
-              v-if="selectedTab.havePublicOrderConfig && isTest"
+              v-if="selectedTab.havePublicOrderConfig"
             >
               <input
                 type="checkbox"
@@ -305,6 +340,29 @@
                 @change="row.changeLeadConfig == true"
               />
               <label :for="idx + 'pov'"></label>
+            </td>
+            <td
+              class="box item text-lg"
+              v-if="
+                selectedTab.havePublicOrderConfig &&
+                selectedTab.havePublicOrderConfigEdit
+              "
+            >
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="idx + 'pove'"
+                :disabled="
+                  row[selectedTab.publicOrderConfigField].public_order_editable
+                    .disabled
+                "
+                v-model="
+                  row[selectedTab.publicOrderConfigField].public_order_editable
+                    .value
+                "
+                @change="row.changeLeadConfig == true"
+              />
+              <label :for="idx + 'pove'"></label>
             </td>
           </template>
           <template v-if="isTest2">
@@ -462,7 +520,7 @@
           <template v-if="isTest">
             <td
               class="box item text-lg"
-              v-if="selectedTab.havePublicOrderConfig && isTest"
+              v-if="selectedTab.havePublicOrderConfig"
             >
               <input
                 type="checkbox"
@@ -478,6 +536,28 @@
                 "
               />
               <label :for="idx + 'n4'"></label>
+            </td>
+            <td
+              class="box item text-lg"
+              v-if="
+                selectedTab.havePublicOrderConfig &&
+                selectedTab.havePublicOrderConfigEdit
+              "
+            >
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="idx + 'n4e'"
+                :disabled="
+                  new_fields[idx][selectedTab.publicOrderConfigField]
+                    .public_order_editable.disabled
+                "
+                v-model="
+                  new_fields[idx][selectedTab.publicOrderConfigField]
+                    .public_order_editable.value
+                "
+              />
+              <label :for="idx + 'n4e'"></label>
             </td>
           </template>
           <template v-if="isTest2">
@@ -729,6 +809,14 @@ export default {
                 copy_fields[idx][selectedTab.value.publicOrderConfigField]
                   .public_order_visible.value
               );
+            if (
+              selectedTab.value.havePublicOrderConfig &&
+              selectedTab.value.havePublicOrderConfigEdit
+            )
+              params[val].public_order_editable = Number(
+                copy_fields[idx][selectedTab.value.publicOrderConfigField]
+                  .public_order_editable.value
+              );
           } else if (val == "config") {
             params[val] = copy_fields[idx][val];
             if (copy_fields[idx][val].double_in_new_bath)
@@ -745,13 +833,20 @@ export default {
                 copy_fields[idx][selectedTab.value.publicOrderConfigField]
                   .public_order_visible.value
               );
+            if (
+              selectedTab.value.havePublicOrderConfig &&
+              selectedTab.value.havePublicOrderConfigEdit
+            )
+              params[val].public_order_editable = Number(
+                copy_fields[idx][selectedTab.value.publicOrderConfigField]
+                  .public_order_editable.value
+              );
           } else {
             params[val] = copy_fields[idx][val];
           }
         }
       });
       if (copy_fields[idx]?.is_system) delete params?.name;
-      console.log(params);
       const error = await store.dispatch(selectedTab.value.updateName, params);
       const nameError = error?.error == "This field name exist.";
 
@@ -767,6 +862,7 @@ export default {
             )
         );
       }
+      get_fields();
     };
     const get_fields = async () => {
       is_loading.value = true;
@@ -817,6 +913,23 @@ export default {
             disabled: public_order_visible == -1 || public_order_visible == 2,
             value: public_order_visible > 0,
           };
+          if (selectedTab.value.havePublicOrderConfigEdit) {
+            const public_order_editable =
+              val[selectedTab.value.publicOrderConfigField]
+                ?.public_order_editable === undefined
+                ? 0
+                : val[selectedTab.value.publicOrderConfigField]
+                    ?.public_order_editable;
+            if (val[selectedTab.value.publicOrderConfigField] === undefined)
+              val[selectedTab.value.publicOrderConfigField] = {};
+            val[
+              selectedTab.value.publicOrderConfigField
+            ].public_order_editable = {
+              disabled:
+                public_order_editable == -1 || public_order_editable == 2,
+              value: public_order_editable > 0,
+            };
+          }
         }
       });
       copy_fields.map((val, idx) => {
@@ -862,6 +975,23 @@ export default {
             disabled: public_order_visible == -1 || public_order_visible == 2,
             value: public_order_visible > 0,
           };
+          if (selectedTab.value.havePublicOrderConfigEdit) {
+            const public_order_editable =
+              val[selectedTab.value.publicOrderConfigField]
+                ?.public_order_editable === undefined
+                ? 0
+                : val[selectedTab.value.publicOrderConfigField]
+                    ?.public_order_editable;
+            if (val[selectedTab.value.publicOrderConfigField] === undefined)
+              val[selectedTab.value.publicOrderConfigField] = {};
+            val[
+              selectedTab.value.publicOrderConfigField
+            ].public_order_editable = {
+              disabled:
+                public_order_editable == -1 || public_order_editable == 2,
+              value: public_order_editable > 0,
+            };
+          }
         }
       });
       is_loading.value = false;

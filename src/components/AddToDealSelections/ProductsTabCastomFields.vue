@@ -32,7 +32,7 @@
             :item="field.type == 5 || field.type == 6 ? field : field.name"
             :selected_option="order?.fields?.[field.code]"
             :idx="field.code"
-            :disabled="isPublicOrder"
+            :disabled="isPublicOrder && !field.config?.public_order_editable"
             @change_value="change_value"
           />
         </div>

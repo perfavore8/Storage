@@ -182,6 +182,8 @@ import { useValidate } from "@/composables/validate";
 import { useRoleSettings } from "@/composables/roleSettings";
 import store from "@/store";
 import { computed } from "vue";
+import { useSaveLS } from "@/composables/saveLS";
+const { saveLSParam } = useSaveLS();
 export default {
   name: "Main_grid",
   setup() {
@@ -456,6 +458,7 @@ export default {
       this.get_products(this.productsParams);
     },
     followOrdersList(id, whCode) {
+      saveLSParam("selectedPipeline", -1);
       this.$store.commit("updateOrdersFilters", {
         filter: {
           product: {

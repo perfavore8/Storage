@@ -40,7 +40,7 @@ const pipelines = reactive({
   },
   dropToSaved: function (handleDrop) {
     const savedName = getSavedLSParam("selectedPipeline");
-    const item = this.list.find((el) => el.value === savedName);
+    const item = this.listWithAll.find((el) => el.value === savedName);
     if (!item) {
       this.dropToDefault(handleDrop);
       return;
