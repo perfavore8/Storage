@@ -545,9 +545,11 @@ export default {
     batch_categories: {
       handler() {
         this.new_items.map((item) => {
-          item.batch_category?.value === -1
-            ? ((item.newBatch = true), (item.batch = ""))
-            : (item.newBatch = false);
+          if (item.batch_category?.value === -1) {
+            if (item.newBatch) return;
+            item.newBatch = true;
+            item.batch = "";
+          } else item.newBatch = false;
         });
       },
       deep: true,

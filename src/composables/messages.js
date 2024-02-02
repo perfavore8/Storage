@@ -876,7 +876,7 @@ export const messages = {
     },
     ostatki: {
       inWH: "Only positive balances",
-      newPoz: "New item",
+      newPoz: "Add",
       syncT: "Update the list",
       settingsT: "Table setup",
       allwhs: "All warehouses",
@@ -2000,7 +2000,7 @@ export const messages = {
     },
     ostatki: {
       inWH: "Только положительные остатки",
-      newPoz: "Новая позиция",
+      newPoz: "Добавить",
       syncT: "Обновить список",
       settingsT: "Настройка таблицы",
       allwhs: "Все склады",

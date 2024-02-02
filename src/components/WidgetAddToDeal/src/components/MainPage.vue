@@ -307,6 +307,13 @@
                                     </div>
                                   </div>
                                 </template>
+                                <template
+                                  v-else-if="
+                                    field.code === 'batch' &&
+                                    product?.is_service
+                                  "
+                                >
+                                </template>
                                 <div class="sls_row" v-else>
                                   <div class="name">{{ field.name }}:</div>
                                   <div class="value">
