@@ -277,6 +277,11 @@ export default {
             type: 0,
           },
           {
+            name: t("Analytics.titles.movement.sum"),
+            code: "sum",
+            type: 0,
+          },
+          {
             name: t("Analytics.titles.movement.initial_warehouse"),
             code: "initial_warehouse",
             type: 0,
@@ -552,9 +557,10 @@ export default {
       this.getTitile();
     },
     round(number) {
-      number = Number(number);
+      number = Number(number) || 0;
       return (
-        Math.round(number * 100) / 100 + (this.isMDLAccount ? " MDL" : " р.")
+        Math.round(number * 100) / 100 +
+        (this.isMDLAccount ? " MDL" : t("global.currency"))
       );
     },
     capitalize(string) {
@@ -600,6 +606,7 @@ export default {
       if (type == "stuffMove") {
         this.reports.data.map((val) => {
           val.event_type = this.reports.types[val.event_type].name;
+          val.sum = this.round(val.quantity * val.cost_price);
         });
       }
     },

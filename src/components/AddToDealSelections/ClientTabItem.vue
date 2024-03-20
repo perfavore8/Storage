@@ -65,7 +65,7 @@
         <div
           class="flex flex-row justify-between items-center pt-2"
           @click.stop=""
-          v-if="!item?.isUnLink && isTest"
+          v-if="!item?.isUnLink && (isTest || isTest3)"
         >
           <input
             type="checkbox"
@@ -73,7 +73,7 @@
             :id="item.id"
             v-model="havePublicOrder"
           />
-          <label :for="item.id">Публичный заказ</label>
+          <label :for="item.id">{{ $t("orders.po") }}</label>
           <div class="flex flex-row gap-2 items-center" v-if="havePublicOrder">
             <button
               class="p-2 bg-slate-400/90 rounded-xl text-white"
@@ -136,7 +136,7 @@
       class="btn absolute -top-2 sm:top-5 right-0 sm:right-4 bg-transparent focus-visible:underline focus-visible:underline-offset-4 hover:underline hover:underline-offset-4"
       @click="item?.isUnLink ? link() : unLink()"
     >
-      {{ item?.isUnLink ? "Привязать" : " Отвязать" }}
+      {{ item?.isUnLink ? t("orders.link") : t("orders.unlink") }}
     </button>
   </li>
 </template>
@@ -145,9 +145,10 @@
 import { useClipboard, useToggle } from "@vueuse/core";
 import { useClients } from "@/composables/clients";
 import { computed } from "vue";
-import { isTest } from "@/composables/isTest";
+import { isTest, isTest3 } from "@/composables/isTest";
 import store from "@/store";
 import { useNewDeal } from "@/composables/newDeal";
+import { useLangConfiguration } from "@/composables/langConfiguration";
 export default {
   props: {
     item: Object,
@@ -191,6 +192,8 @@ export default {
       setTimeout(() => toggleCopied(false), 3000);
     };
 
+    const { t } = useLangConfiguration();
+
     return {
       show,
       toggle,
@@ -201,6 +204,8 @@ export default {
       copyLink,
       copied,
       isTest,
+      isTest3,
+      t,
     };
   },
 };

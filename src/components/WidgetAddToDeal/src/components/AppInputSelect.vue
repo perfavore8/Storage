@@ -58,7 +58,7 @@
                 class="sls_input"
                 v-model="item.specialValue"
                 style="width: 100px; min-width: 1%"
-                placeholder="введите кол-во"
+                :placeholder="t('global.enter')"
                 @click.stop=""
               />
               {{ item.name }}
@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { useLangConfiguration } from "@/composables/langConfiguration";
 import { ref } from "@vue/reactivity";
 import { nextTick, watch } from "@vue/runtime-core";
 import { useElementVisibility } from "@vueuse/core";
@@ -204,6 +205,8 @@ export default {
       }
     });
 
+    const { t } = useLangConfiguration();
+
     return {
       inputValue,
       showList,
@@ -218,6 +221,7 @@ export default {
       optionsBottom,
       listRef,
       titleIsVisible,
+      t,
     };
   },
 };

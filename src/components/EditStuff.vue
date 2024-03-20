@@ -67,7 +67,7 @@
             </div>
           </div>
         </div>
-        <div class="content" v-if="isTest">
+        <div class="content" v-if="isTest || isTest3">
           <h6>{{ $t("EditStuff.publicOrder.header") }}</h6>
           <div class="mt-4 flex flex-col gap-2.5">
             <div class="row" v-if="copyConfing.public_order">
@@ -105,14 +105,14 @@
   </div>
 </template>
 <script>
-import { isTest } from "@/composables/isTest";
+import { isTest, isTest3 } from "@/composables/isTest";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 const { t } = useLangConfiguration();
 
 export default {
   setup() {
-    return { t, isTest };
+    return { t, isTest, isTest3 };
   },
   components: { BtnsSaveClose },
   data() {

@@ -315,6 +315,7 @@ export default {
       this.updateProducts();
     },
     async archive_data() {
+      this.$store.commit("updateArchived", true);
       const params = {
         products: [],
       };
@@ -323,6 +324,7 @@ export default {
         params.products.push(val.item);
       });
       await this.$store.dispatch("update_product", params);
+      this.$store.commit("updateArchived", false);
       const currentPage = this.$store.state.products.meta.meta.current_page;
       this.isGrid
         ? this.ref_card?.changePage(currentPage)
@@ -337,6 +339,7 @@ export default {
       this.currentItems = [];
     },
     open_close_new_position(value) {
+      this.dropCurrentItems();
       this.$store.commit("open_close_new_position", value);
     },
     openTableSettings() {

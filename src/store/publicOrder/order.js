@@ -51,7 +51,7 @@ export default {
       const copy = { positions: order.positions };
       const { data } = await ApiReqFunc(
         {
-          url: "public-order/update",
+          url: "public-order/order/update",
           method: "post",
           data: { ...params, ...copy, order_id: Number(newDealParams.id) },
         },

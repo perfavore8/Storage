@@ -125,7 +125,8 @@ export default {
   async mounted() {
     await this.$store.dispatch("get_fields_properties");
     this.get_categories_options();
-    await waitForNonAsyncFunction(computed(() => this.fields.length));
+    if (!this.fields.length)
+      await waitForNonAsyncFunction(computed(() => this.fields.length));
     this.feelFilters();
   },
   watch: {

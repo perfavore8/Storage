@@ -30,7 +30,8 @@
             </h2>
             <small class="text-slate-700">
               ({{ $t("orders.sd") }} {{ column?.res?.meta?.total }} |
-              {{ formatNumber(column?.res?.meta?.sum) }} ₽)
+              {{ formatNumber(column?.res?.meta?.sum) }}
+              {{ isTest3 ? "$" : "₽" }})
             </small>
           </div>
           <draggable
@@ -103,7 +104,8 @@
                   class="card-futter flex flex-row justify-between items-center"
                 >
                   <span>
-                    {{ formatNumber(element.sum || element.budget || 0) }} ₽
+                    {{ formatNumber(element.sum || element.budget || 0) }}
+                    {{ isTest3 ? "$" : "₽" }}
                   </span>
                   <div class="img_wrapper">
                     <img
@@ -137,6 +139,7 @@ import { useOrdersPipelinesSelect } from "@/composables/ordersPipelinesSelect";
 import router from "@/router";
 import { useValidate } from "@/composables/validate";
 import { useCheckMobile } from "@/composables/checkMobile";
+import { isTest3 } from "@/composables/isTest";
 export default {
   components: {
     draggable,
@@ -314,6 +317,7 @@ export default {
       routeToOrder,
       emitParams,
       formatNumber,
+      isTest3,
       ...useCheckMobile(),
     };
   },

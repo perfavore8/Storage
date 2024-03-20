@@ -68,7 +68,7 @@
             :selected_option="export_type"
           />
         </div>
-        <div class="label_input" v-if="isTest">
+        <div class="label_input" v-if="isTest || isTest3">
           <input
             type="checkbox"
             class="checkbox"
@@ -90,7 +90,7 @@ import SelectorVue from "@/components/SelectorVue.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { nextTick } from "@vue/runtime-core";
 import { useLangConfiguration } from "@/composables/langConfiguration";
-import { isTest } from "@/composables/isTest";
+import { isTest, isTest3 } from "@/composables/isTest";
 
 const { t } = useLangConfiguration();
 
@@ -117,7 +117,7 @@ export default {
   },
   emits: { close: null },
   setup() {
-    return { t, isTest };
+    return { t, isTest, isTest3 };
   },
   data() {
     return {
@@ -210,7 +210,7 @@ export default {
           status_id: this.status_id.value,
           url_field: this.url_field.value,
         };
-        if (isTest) new_doc.is_public = this.publicOrderVisible;
+        if (isTest || isTest3) new_doc.is_public = this.publicOrderVisible;
         // if (new_doc.status_id == "-1" || new_doc.status_id == "1")
         //   delete new_doc.status_id;
         if (Object.keys(this.cur_doc).length > 0) {
@@ -243,7 +243,7 @@ export default {
       if (Object.keys(this.cur_doc).length > 0) {
         this.name = this.cur_doc.name;
         this.file = this.cur_doc.file;
-        if (isTest) this.publicOrderVisible = this.cur_doc.is_public;
+        if (isTest || isTest3) this.publicOrderVisible = this.cur_doc.is_public;
         const serch_selected_item = (options, name, value, isSpecial) => {
           let obj = { name: t("global.notSelected"), value: "-1" };
           options.forEach((val) => {

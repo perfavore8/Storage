@@ -8,3 +8,4 @@ export const isTest = computed(() =>
   accountIds.includes(store.state.account?.account?.id)
 );
 export const isTest2 = computed(() => true);
+export const isTest3 = computed(() => store.state.account?.account?.id === 886);

@@ -138,7 +138,7 @@
               <AppDelBtnAccept
                 :btnClass="'!p-2 rounded-full !text-gray-500 disabled:!text-gray-300 hover:!text-red-500 transition-colors duration-300 bg-transparent'"
                 :dropDownClass="'right-full mr-2 !mb-0 !-bottom-1/2'"
-                :disabled="currentUserId !== mainUserId"
+                :disabled="!isAdmin"
                 @confirm="() => unLinkUser(user.id)"
               >
                 <template #label>
@@ -268,6 +268,7 @@ export default {
 
     const mainUserId = computed(() => users.find((user) => user.is_main)?.id);
     const currentUserId = computed(() => store.state.account.user?.id);
+    const isAdmin = computed(() => store.state.account.user?.role === "admin");
 
     return {
       page,
@@ -285,6 +286,7 @@ export default {
       isTest2,
       t,
       setUsers,
+      isAdmin,
     };
   },
 };

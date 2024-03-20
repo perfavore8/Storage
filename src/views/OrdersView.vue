@@ -60,6 +60,13 @@
           >
             {{ $t("orders.cre") }}
           </button>
+          <button
+            class="btn btn_white md:!hidden whitespace-nowrap w-full"
+            v-if="needShowDownload"
+            @click="download()"
+          >
+            {{ $t("orders.exp") }}
+          </button>
         </div>
         <AppSearchWithFilters
           class="grow basis-1/3 order-1 md:order-2 w-full"
@@ -67,7 +74,14 @@
           :key="selectedTabComp"
           @emitParams="emitParams"
         />
-        <div class="basis-1/3 flex justify-end order-3">
+        <div class="basis-1/3 flex justify-end order-3 gap-2">
+          <button
+            class="btn btn_white !hidden md:!block"
+            v-if="needShowDownload"
+            @click="download()"
+          >
+            {{ $t("orders.exp") }}
+          </button>
           <button
             class="btn btn_dark_blue hidden md:block"
             @click="addToDeal()"
@@ -120,6 +134,9 @@
           ref="grid"
           :key="displayType.selected.name"
           :hideFinalSteps="hideFinalSteps"
+          :flag="flag"
+          @updateNeedShowDownload="(v) => (needShowDownload = v)"
+          @updateDlParams="(v) => (dlParams = v)"
         />
       </transition>
     </div>
@@ -146,6 +163,7 @@ import { usePreparationOrders } from "@/composables/preporationOrders";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { useValidate } from "@/composables/validate";
 import { useUpdateKeys } from "@/composables/updateKeys";
+import { useNotification } from "@/composables/notification";
 export default {
   components: {
     AppHeader,
@@ -252,6 +270,17 @@ export default {
     };
     saveHideFinalSteps();
 
+    const { addNotification } = useNotification();
+
+    const needShowDownload = ref(false);
+    const dlParams = ref({});
+    const download = () => {
+      store.dispatch("downloadOrders", dlParams.value);
+      addNotification(0, t("ostatki.taskH"), t("ostatki.taskT"));
+      flag.value = !flag.value;
+    };
+    const flag = ref(false);
+
     return {
       addToDeal,
       isTest2,
@@ -265,6 +294,10 @@ export default {
       currentSetSettingsInFolder,
       formatNumber,
       OrderViewKey,
+      needShowDownload,
+      dlParams,
+      flag,
+      download,
       t,
     };
   },

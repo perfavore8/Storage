@@ -5,6 +5,7 @@
     :list="langConfiguration.list"
     :floatRight="floatRight"
     @select="(op) => langConfiguration.select(op)"
+    v-if="!isTest3"
   >
     <template #title>
       <div class="ref_2_logo">
@@ -27,6 +28,7 @@
 <script>
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppInputSelect from "./AppInputSelect.vue";
+import { isTest3 } from "@/composables/isTest";
 
 export default {
   components: { AppInputSelect },
@@ -34,7 +36,7 @@ export default {
     floatRight: { type: Boolean, required: false, default: () => false },
   },
   setup() {
-    return { ...useLangConfiguration() };
+    return { ...useLangConfiguration(), isTest3 };
   },
 };
 </script>

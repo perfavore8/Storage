@@ -4,6 +4,15 @@
     <table class="table relative" ref="table" v-else>
       <thead>
         <tr class="bar_row">
+          <th class="bar_item item">
+            <input
+              type="checkbox"
+              class="checkbox"
+              id="all"
+              v-model="allSelected"
+            />
+            <label for="all"></label>
+          </th>
           <th
             class="bar_item item"
             :class="{ cursor_pointer: title.sortable }"
@@ -38,8 +47,19 @@
         </tr>
       </thead>
       <tbody v-if="products.list.length">
-        <template v-for="row in products.list" :key="row">
+        <template v-for="(row, idx) in products.list" :key="row">
           <tr class="row">
+            <td class="item">
+              <input
+                type="checkbox"
+                class="checkbox"
+                :id="row.id + 'checkbox'"
+                v-if="selected[idx] != undefined"
+                v-model="selected[idx].value"
+                @change="selected[idx].item = row"
+              />
+              <label :for="row.id + 'checkbox'"></label>
+            </td>
             <template v-for="title in products.titles" :key="title">
               <td
                 class="item"
@@ -136,7 +156,7 @@
 
 <script>
 import GridBottom from "@/components/GridBottom.vue";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { isTest2 } from "@/composables/isTest";
 import store from "@/store";
 import { useRouter } from "vue-router";
@@ -148,7 +168,8 @@ export default {
     GridBottom,
     AppTablePreloader,
   },
-  setup() {
+  props: ["flag"],
+  setup(props, context) {
     const router = useRouter();
     const maxCount = ref(10);
     const sorting = reactive({
@@ -219,6 +240,7 @@ export default {
         ...params1,
         ...params.value,
       });
+      setSelected();
     };
     const sort = (code) => {
       if (sorting.order_by != code.split(/_(.*)/s)[1]) {
@@ -261,6 +283,46 @@ export default {
       }, []);
     });
 
+    const selected = ref([]);
+    const setSelected = () => {
+      selected.value = [];
+      for (let i = 0; i < products.list.length; i++)
+        selected.value.push({ value: false, item: {} });
+      allSelected.value = false;
+    };
+    const selectedIds = computed(() =>
+      selected.value.filter((el) => el.value).map((el) => el.item.id)
+    );
+
+    watch(
+      () => selected.value.some((el) => el?.value),
+      (v) => context.emit("updateNeedShowDownload", v)
+    );
+
+    watch(
+      () => [selectedIds.value, params.value],
+      () => {
+        const p = {
+          ...params.value,
+          leads_id: selectedIds.value,
+        };
+        context.emit("updateDlParams", p);
+      }
+    );
+
+    watch(
+      () => props.flag,
+      () => setSelected()
+    );
+
+    const allSelected = ref(false);
+    watch(allSelected, () => {
+      selected.value.map((product, idx) => {
+        product.value = allSelected.value;
+        product.item = allSelected.value ? products.list[idx] : {};
+      });
+    });
+
     return {
       maxCount,
       sorting,
@@ -280,6 +342,8 @@ export default {
       updateList,
       isDataLoading,
       titlesForPreloader,
+      selected,
+      allSelected,
     };
   },
 };
@@ -287,6 +351,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+
 .img {
   object-fit: cover;
   width: 46px;
@@ -295,6 +360,7 @@ export default {
   border-radius: 50%;
   object-fit: scale-down;
 }
+
 .handle_cross {
   width: 100%;
   height: 100%;
@@ -303,6 +369,7 @@ export default {
   left: 0;
   @include bg_image("@/assets/handle_cross2.svg", 65%);
 }
+
 .stat {
   width: max-content;
   display: flex;
@@ -310,13 +377,16 @@ export default {
   align-items: center;
   @include font(500, 16px);
   gap: 8px;
+
   .img_wrapper {
     position: relative;
     // z-index: -1;
   }
 }
+
 .bar_row {
   height: 66px;
+
   .item {
     padding: 10px;
     padding-left: 15px;
@@ -326,12 +396,14 @@ export default {
     text-align: start;
     min-width: 50px;
   }
+
   .bar_item {
     background: #e5e5e5;
     @include font(500, 16px, 19px);
     color: #000000;
     vertical-align: middle;
     text-align: start;
+
     // cursor: pointer;
     label {
       cursor: inherit;
@@ -354,34 +426,53 @@ export default {
         border: none;
         cursor: pointer;
         transition: all 0.2s ease-out;
+
         &_up {
           @include bg_image("@/assets/sort_up.svg");
         }
+
         &_down {
           @include bg_image("@/assets/sort_down.svg");
         }
       }
     }
   }
+
   .bar_item:first-child {
     cursor: default;
     width: 17px !important;
   }
 }
+
 .row {
   // cursor: pointer;
 }
+.item:first-child {
+  width: 17px !important;
+  text-align: center;
+  font-size: 16px;
+  .checkbox + label::before {
+    margin-right: 0;
+  }
+  .filter {
+    display: none;
+  }
+}
+
 .space {
   height: 16px;
   border: none;
 }
+
 .hidden-row {
   background-color: #dde8f082;
   cursor: default;
 }
+
 .cursor_pointer {
   cursor: pointer;
 }
+
 .item {
   padding: 10px;
   padding-left: 15px;
@@ -391,12 +482,14 @@ export default {
   text-align: start;
   min-width: 50px;
 }
+
 .table {
   border-collapse: collapse;
   margin: 0 auto;
   // overflow-x: scroll;
   // width: calc(100% + 42px);
   width: 100%;
+
   // height: 550px;
   // display: block;
   .main-grid-bar {
@@ -405,27 +498,33 @@ export default {
     top: -1px;
   }
 }
+
 .main {
   width: 100%;
 }
+
 .item:first-child {
   width: 17px !important;
   // text-align: center;
 }
+
 .text {
   position: relative;
   top: 20px;
   margin: 0 auto;
   @include font(500, 18px);
 }
+
 .rows-enter-active,
 .rows-leave-active {
   transition: opacity 0.15s ease-in-out;
 }
+
 .rows-enter-from,
 .rows-leave-to {
   opacity: 0;
 }
+
 .blur {
   transition: filter 0.2s ease-out;
   filter: blur(5px);

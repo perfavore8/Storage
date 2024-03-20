@@ -15,6 +15,7 @@ export default {
       sort: {},
     },
     isLoading: false,
+    archived: false,
     importStuff: {
       data: [],
     },
@@ -35,6 +36,9 @@ export default {
     },
     updateIsLoadingProducts(state, value) {
       state.isLoading = value;
+    },
+    updateArchived(state, value) {
+      state.archived = value;
     },
     updateImportStuff(state, value) {
       Object.assign(state.importStuff, value);

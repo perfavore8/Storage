@@ -30,7 +30,7 @@
                     <ImportStuffSelector
                       :options_props="options_type"
                       @select="
-                        (option, idx) => option_select(option, idx, 'type')
+                        (option, idx) => option_select(option, idx, 'type', row)
                       "
                       @toggleShowOptions="toggleShowOptions"
                       :selected_option="row.type"
@@ -51,6 +51,7 @@
                     <input
                       type="text"
                       v-model="row.article"
+                      :ref="(el) => (row.refs.article = el)"
                       @focusin="
                         set_selected_field_autocomplete(
                           'article',
@@ -136,7 +137,7 @@
                         "
                         @select="
                           (option, idx) =>
-                            option_select(option, idx, 'batch_category')
+                            option_select(option, idx, 'batch_category', row)
                         "
                         @toggleShowOptions="toggleShowOptions"
                         :selected_option="row.batch_category"
@@ -146,19 +147,31 @@
                       <input
                         type="text"
                         v-model="row.batch"
+                        :ref="(el) => (row.refs.batch = el)"
                         class="input"
                         :class="{
                           not_valid:
-                            (row.batch === '' || row.batch === undefined) &&
+                            (row.batch === '' ||
+                              row.batch === undefined ||
+                              (row.batch_category_options_values?.includes(
+                                row.batch
+                              ) &&
+                                row.batch_category?.value === -1)) &&
                             try_accept &&
-                            row.type.value != 2 &&
-                            false,
+                            row.type.value != 2,
                         }"
                         :title="
                           (row.batch === '' || row.batch === undefined) &&
                           try_accept &&
                           row.type.value != 2
                             ? t('ostatki.fieldE')
+                            : row.batch_category_options_values?.includes(
+                                row.batch
+                              ) &&
+                              row.batch_category?.value === -1 &&
+                              try_accept &&
+                              row.type.value != 2
+                            ? t('ostatki.doubleBatch')
                             : null
                         "
                         :disabled="
@@ -171,7 +184,7 @@
                     <ImportStuffSelector
                       :options_props="row.wh_options"
                       @select="
-                        (option, idx) => option_select(option, idx, 'wh')
+                        (option, idx) => option_select(option, idx, 'wh', row)
                       "
                       @toggleShowOptions="toggleShowOptions"
                       :selected_option="row.wh"
@@ -183,6 +196,7 @@
                     <input
                       type="number"
                       v-model="row.count"
+                      :ref="(el) => (row.refs.count = el)"
                       class="input"
                       :disabled="row.type.value == 2"
                       min="0"
@@ -204,7 +218,8 @@
                     <ImportStuffSelector
                       :options_props="units_options"
                       @select="
-                        (option, idx) => option_select(option, idx, 'units')
+                        (option, idx) =>
+                          option_select(option, idx, 'units', row)
                       "
                       @toggleShowOptions="toggleShowOptions"
                       :selected_option="row.units"
@@ -218,6 +233,7 @@
                     <input
                       type="number"
                       v-model="row.cost_price"
+                      :ref="(el) => (row.refs.cost_price = el)"
                       class="input"
                       min="0"
                       :class="{
@@ -241,7 +257,8 @@
                     <ImportStuffSelector
                       :options_props="row.price_cat_options"
                       @select="
-                        (option, idx) => option_select(option, idx, 'price_cat')
+                        (option, idx) =>
+                          option_select(option, idx, 'price_cat', row)
                       "
                       @toggleShowOptions="toggleShowOptions"
                       :selected_option="row.price_cat"
@@ -253,10 +270,17 @@
                     <input
                       type="number"
                       v-model="row.price.cost"
+                      :ref="(el) => (row.refs.cost = el)"
                       class="input"
                       min="0"
                       :disabled="!row.new && !row.newBatch"
                     />
+                  </td>
+                  <td class="item">
+                    <span class="pl-2">{{ row.cost_sum }}</span>
+                  </td>
+                  <td class="item">
+                    <span class="pl-2">{{ row.sum }}</span>
                   </td>
                   <td
                     class="item"
@@ -323,7 +347,8 @@
                     <ImportStuffSelector
                       :options_props="categories_options"
                       @select="
-                        (option, idx) => option_select(option, idx, 'category')
+                        (option, idx) =>
+                          option_select(option, idx, 'category', row)
                       "
                       @toggleShowOptions="toggleShowOptions"
                       :selected_option="row.category"
@@ -335,6 +360,7 @@
                     <input
                       type="text"
                       v-model="row.description"
+                      :ref="(el) => (row.refs.description = el)"
                       class="input"
                     />
                   </td>
@@ -371,6 +397,20 @@
         </ul>
       </teleport>
       <div class="footer">
+        <div class="flex flex-row gap-4 items-center text-slate-800">
+          <span class="flex flex-row items-center gap-2">
+            {{ $t("ostatki.total_count") }}
+            <h5 class="font-semibold">{{ total.count || 0 }}</h5>
+          </span>
+          <span class="flex flex-row items-center gap-2">
+            {{ $t("ostatki.total_cost_sum") }}
+            <h5 class="font-semibold">{{ total.cost_sum || 0 }}</h5>
+          </span>
+          <span class="flex flex-row items-center gap-2">
+            {{ $t("ostatki.total_sum") }}
+            <h5 class="font-semibold">{{ total.sum || 0 }}</h5>
+          </span>
+        </div>
         <btns-save-close
           @close="close"
           @save="save"
@@ -386,6 +426,9 @@ import ImportStuffSelector from "@/components/ImportStuffSelector.vue";
 import BtnsSaveClose from "@/components/BtnsSaveClose.vue";
 import { useLangConfiguration } from "@/composables/langConfiguration";
 import { currentExeptions } from "@/composables/exceptions";
+import { computed, nextTick, reactive } from "vue";
+import { useValidate } from "@/composables/validate";
+const { formatNumber } = useValidate();
 
 const { t } = useLangConfiguration();
 
@@ -419,6 +462,8 @@ export default {
         t("ostatki.seb"),
         t("ostatki.price3"),
         t("ostatki.price3"),
+        t("ostatki.cost_sum"),
+        t("ostatki.sum"),
         t("ostatki.ndsT"),
         t("ostatki.cat2"),
         t("ostatki.op"),
@@ -444,12 +489,20 @@ export default {
       timer: 0,
       targetAutocomplete: null,
       copyCurrentItems: [],
-      fieldsForValidation: ["article", "name", "count", "cost_price"],
+      fieldsForValidation: ["article", "name", "count", "cost_price", "batch"],
       fieldsServiceForValidation: ["article", "name", "cost_price"],
       try_accept: false,
       acceptBtnDisable: false,
       optionsX: null,
       optionsY: null,
+      focusList: {
+        type: "article",
+        batch_category: "batch",
+        wh: "count",
+        units: "cost_price",
+        price_cat: "cost",
+        category: "description",
+      },
     };
   },
   computed: {
@@ -469,6 +522,24 @@ export default {
       this.new_items.forEach((val) => arr.push(val.batch_category));
       return arr;
     },
+    total() {
+      const res = {};
+      res.count = this.new_items.length;
+      res.cost_sum = formatNumber(
+        this.new_items.reduce((acc, item) => (acc += item.cost_sum), 0)
+      );
+      res.amount_sum = formatNumber(
+        this.new_items.reduce(
+          (acc, item) => (acc += item.sum - item.cost_sum),
+          0
+        )
+      );
+      res.sum = formatNumber(
+        this.new_items.reduce((acc, item) => (acc += item.sum), 0)
+      );
+
+      return res;
+    },
     isValid() {
       let isValid = true;
       const list = [this.fieldsForValidation, this.fieldsServiceForValidation];
@@ -476,9 +547,20 @@ export default {
         const isService = item.type.value == 2;
         let list2 = [];
         isService ? (list2 = list[1]) : (list2 = list[0]);
-        if (!item.new) return;
+        // if (!item.new) return;
         list2.forEach((field) => {
           const fields = field.split(".");
+          if (field === "batch" && item.batch_category?.value === -1) {
+            isValid =
+              isValid &&
+              this.validation(item[field], [
+                {
+                  type: "!includes",
+                  value: item.batch_category_options_values || [],
+                },
+              ]);
+            return;
+          }
           if (fields[1]) {
             isValid = isValid && this.validation(item[fields[0]][fields[1]]);
           } else {
@@ -557,7 +639,7 @@ export default {
   },
   methods: {
     push_new_item() {
-      const item = {
+      const item = reactive({
         new: true,
         type: { name: t("ostatki.tov"), value: 1 },
         article: "",
@@ -592,7 +674,10 @@ export default {
           this.price_cat_options,
           this.searchParentsCat(this.searchBaseCategory())
         ),
-      };
+        refs: {},
+      });
+      item.sum = computed(() => Number(item.count * item.price.cost));
+      item.cost_sum = computed(() => Number(item.count * item.cost_price));
       this.new_items.push(item);
     },
     pushCurrentItems() {
@@ -616,7 +701,7 @@ export default {
       });
     },
     pushCurrentItem(val, idx) {
-      const item = {
+      const item = reactive({
         new: false,
         id: val.id,
         type: { name: t("ostatki.tov"), value: 1 },
@@ -652,7 +737,10 @@ export default {
           this.price_cat_options,
           this.searchParentsCat(val.category)
         ),
-      };
+        refs: {},
+      });
+      item.sum = computed(() => Number(item.count * item.price.cost));
+      item.cost_sum = computed(() => Number(item.count * item.cost_price));
       this.currentItemsBatchs[val.fields.article]?.forEach((value) =>
         item.batch_category_options.push({
           name: value.fields.batch,
@@ -661,6 +749,11 @@ export default {
       );
       item.batch_category = item.batch_category_options.find(
         (value) => value.value == val.fields.batch
+      );
+      item.batch_category_options_values = computed(() =>
+        item.batch_category_options
+          .map((el) => el.value)
+          .filter((el) => el !== -1)
       );
       if (idx != undefined) {
         Object.assign(this.new_items[idx], item);
@@ -759,10 +852,14 @@ export default {
       if (extraOptions != undefined)
         extraOptions.forEach((option) => {
           if (option.type == "length") res = res && val.length > option.value;
+          if (option.type == "includes")
+            res = res && option.value?.includes(val);
+          if (option.type == "!includes")
+            res = res && !option.value?.includes(val);
         });
       return res;
     },
-    option_select(option, idx, cat) {
+    option_select(option, idx, cat, row) {
       this.new_items[idx][cat] = { ...option };
       if (cat === "batch_category" && option.value != -1) {
         const article = this.new_items[idx].article;
@@ -771,6 +868,7 @@ export default {
         );
         this.pushCurrentItem(item, idx);
       }
+      nextTick(() => row?.refs?.[this.focusList[cat]]?.focus());
     },
     close() {
       this.$emit("close");
@@ -1006,14 +1104,20 @@ export default {
               width: 5%;
             }
             .item:nth-child(12) {
-              width: 15%;
-              min-width: 150px;
+              width: 5%;
             }
             .item:nth-child(13) {
+              width: 5%;
+            }
+            .item:nth-child(14) {
               width: 15%;
               min-width: 150px;
             }
-            .item:nth-child(14) {
+            .item:nth-child(15) {
+              width: 15%;
+              min-width: 150px;
+            }
+            .item:nth-child(16) {
               width: 5.3%;
               min-width: 44px;
               max-width: 44px;
@@ -1060,7 +1164,7 @@ export default {
     }
     .footer {
       display: flex;
-      justify-content: end;
+      justify-content: space-between;
       padding: 15px 50px;
     }
   }

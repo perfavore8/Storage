@@ -19,8 +19,27 @@
           {{ $t("ostatki.btn3") }}
         </button>
       </template>
-      <button class="btn btn_grey smallBtn" @click="archive_data()">
-        {{ $t("ostatki.btn4") }}
+      <button
+        class="btn btn_grey smallBtn relative"
+        @click="archive_data()"
+        :disabled="archived"
+      >
+        <span :class="[archived && 'opacity-70']">
+          {{ $t("ostatki.btn4") }}
+        </span>
+        <img
+          v-if="archived"
+          decoding="async"
+          style="width: 25%"
+          width="24"
+          height="24"
+          fetchpriority="low"
+          data-was=""
+          processed="true"
+          data-src="https://media.tenor.com/5o2p0tH5LFQAAAAj/hug.gif"
+          class="opacity-70 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          src="https://media.tenor.com/5o2p0tH5LFQAAAAj/hug.gif"
+        />
       </button>
     </div>
   </transition>
@@ -55,6 +74,8 @@ export default {
 
     const archive_data = () => context.emit("archive_data");
 
+    const archived = computed(() => store.state.products.archived);
+
     return {
       show_buttons,
       oneC,
@@ -62,6 +83,7 @@ export default {
       openCancelPosition,
       openMoveProductsBetweenWhs,
       archive_data,
+      archived,
     };
   },
 };

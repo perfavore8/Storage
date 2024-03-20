@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="!isGoogleAuth && !order?.is_google_auth"
+    v-show="!isPublicOrder"
     class="flex flex-row w-full justify-center gap-2"
   >
     <h1 class="text-xl text-slate-900">
@@ -268,6 +269,7 @@ export default {
       isGoogleAuth,
       routeToGoogleAuth,
       order,
+      isPublicOrder,
       t,
     };
   },

@@ -89,7 +89,7 @@
               </div>
             </th>
           </template>
-          <template v-if="isTest">
+          <template v-if="isTest || isTest3">
             <th
               class="item item_icon title"
               v-if="selectedTab.havePublicOrderConfig"
@@ -320,7 +320,7 @@
               <label :for="idx + 'nd'"></label>
             </td>
           </template>
-          <template v-if="isTest">
+          <template v-if="isTest || isTest3">
             <td
               class="box item text-lg"
               v-if="selectedTab.havePublicOrderConfig"
@@ -517,7 +517,7 @@
               <label :for="idx + 'n3'"></label>
             </td>
           </template>
-          <template v-if="isTest">
+          <template v-if="isTest || isTest3">
             <td
               class="box item text-lg"
               v-if="selectedTab.havePublicOrderConfig"
@@ -603,7 +603,7 @@
 
 <script>
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { isTest2, isTest } from "@/composables/isTest";
+import { isTest2, isTest, isTest3 } from "@/composables/isTest";
 import store from "@/store";
 import SelectorVue from "./SelectorVue.vue";
 import { useEntitiesFieldsProperties } from "@/composables/entitiesFieldsProperties";
@@ -707,10 +707,16 @@ export default {
           double_in_new_bath: { disabled: false, value: false },
         },
       };
-      item[selectedTab.value.publicOrderConfigField].public_order_visible = {
-        disabled: false,
-        value: false,
-      };
+      if (selectedTab.value.publicOrderConfigField) {
+        item[selectedTab.value.publicOrderConfigField].public_order_visible = {
+          disabled: false,
+          value: false,
+        };
+        item[selectedTab.value.publicOrderConfigField].public_order_editable = {
+          disabled: false,
+          value: false,
+        };
+      }
       if (
         !selectedTab.value.haveLeadConfig &&
         !selectedTab.value.havePublicOrderConfig
@@ -1164,6 +1170,7 @@ export default {
       types,
       isTest,
       isTest2,
+      isTest3,
       add_new_field,
       add_new,
       updateAllFields,
