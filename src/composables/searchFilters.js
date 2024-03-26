@@ -82,7 +82,7 @@ export function useSearchFilters(setOfInstructions) {
   const confirmFilters = () => {
     const filter = {};
     const addToFilter = (val, value) => {
-      const code = val.code.split(/_(.*)/s)[1];
+      const code = val.code.split(/_(.*)/s)[1] || val.code;
       if (Config.hasDifferentSources) {
         if (!filter[val.titleCode]) filter[val.titleCode] = {};
         filter[val.titleCode][code] = value;
