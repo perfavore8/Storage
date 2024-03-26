@@ -411,12 +411,11 @@ export default {
     },
 
     async downloadOrders(context, params) {
-      params;
-      // return await ApiReqFunc({
-      //   url: "orders/export",
-      //   method: "post",
-      //   data: params,
-      // });
+      return await ApiReqFunc({
+        url: "orders/export",
+        method: "post",
+        data: params,
+      });
     },
   },
 };

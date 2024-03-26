@@ -75,8 +75,7 @@
                       :class="{
                         not_valid:
                           (row.article === '' || row.article === undefined) &&
-                          try_accept &&
-                          row.new,
+                          try_accept,
                       }"
                       :title="
                         (row.article === '' || row.article === undefined) &&
@@ -84,7 +83,7 @@
                           ? t('ostatki.fieldE')
                           : null
                       "
-                      :disabled="!row.new"
+                      :disabled="!row.new && !!row.article"
                     />
                   </td>
                   <td
@@ -115,8 +114,7 @@
                       :class="{
                         not_valid:
                           (row.name === '' || row.name === undefined) &&
-                          try_accept &&
-                          row.new,
+                          try_accept,
                       }"
                       :title="
                         (row.name === '' || row.name === undefined) &&
