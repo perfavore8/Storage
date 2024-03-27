@@ -103,10 +103,21 @@
                 <div
                   class="card-futter flex flex-row justify-between items-center"
                 >
-                  <span>
-                    {{ formatNumber(element.sum || element.budget || 0) }}
-                    {{ isTest3 ? "$" : "₽" }}
-                  </span>
+                  <div class="flex flex-col gap-2">
+                    <span>
+                      {{ formatNumber(element.sum || element.budget || 0) }}
+                      {{ isTest3 ? "$" : "₽" }}
+                    </span>
+                    <input
+                      type="checkbox"
+                      class="checkbox"
+                      :id="element.id + 'checkboxkb'"
+                      v-if="selected[element.id] != undefined"
+                      v-model="selected[element.id].value"
+                      @change="selected[element.id].item = element"
+                    />
+                    <label :for="element.id + 'checkboxkb'"></label>
+                  </div>
                   <div class="img_wrapper">
                     <img
                       :src="
@@ -140,12 +151,13 @@ import router from "@/router";
 import { useValidate } from "@/composables/validate";
 import { useCheckMobile } from "@/composables/checkMobile";
 import { isTest3 } from "@/composables/isTest";
+import { watch } from "vue";
 export default {
   components: {
     draggable,
   },
   props: { hideFinalSteps: Boolean },
-  setup() {
+  setup(props, context) {
     const { getRandomColor3 } = useColor();
     const { pipelines, startPromise } = useOrdersPipelinesSelect();
     const { formatNumber } = useValidate();
@@ -224,6 +236,7 @@ export default {
       nextTick(() => {
         setColors();
         setVisible();
+        setSelected();
       });
     };
 
@@ -305,6 +318,42 @@ export default {
       updateList();
     };
 
+    const selected = ref({});
+    const setSelected = () => {
+      selected.value = {};
+      pipelines.selected.statuses.forEach((el) => {
+        el.res.data.forEach((el2) => {
+          selected.value[el2.id] = { value: false, item: {} };
+        });
+      });
+    };
+    const selectedIds = computed(() =>
+      Object.values(selected.value)
+        .filter((val) => val.value)
+        .map((val) => val.item.id)
+    );
+
+    watch(
+      () => Object.values(selected.value).some((el) => el?.value),
+      (v) => context.emit("updateNeedShowDownload", v)
+    );
+
+    watch(
+      () => [selectedIds.value, params.value],
+      () => {
+        const p = {
+          ...params.value,
+          leads_id: selectedIds.value,
+        };
+        context.emit("updateDlParams", p);
+      }
+    );
+
+    watch(
+      () => props.flag,
+      () => setSelected()
+    );
+
     return {
       isDataLoading,
       updateList,
@@ -319,12 +368,14 @@ export default {
       formatNumber,
       isTest3,
       ...useCheckMobile(),
+      selected,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
+@import "@/app.scss";
 .sortable-ghost {
   @apply bg-slate-50 text-slate-400 border-slate-400/50;
 }
